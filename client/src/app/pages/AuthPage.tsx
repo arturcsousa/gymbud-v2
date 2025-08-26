@@ -1,19 +1,23 @@
-import { useEffect, useRef } from "react";
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { finalizeOnboarding } from "@/onboarding/actions";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 export function AuthPage() {
   const ranRef = useRef(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSignUp, setIsSignUp] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session && !ranRef.current) {
         ranRef.current = true;
         try {
-          // Create a default plan seed
           const defaultSeed = {
             goals: ["general_fitness"],
             experience_level: "new",
@@ -27,18 +31,15 @@ export function AuthPage() {
           await finalizeOnboarding(defaultSeed);
         } catch (error) {
           console.error('Onboarding failed:', error);
-          // Could show error toast here
         }
       }
     });
 
-    // Also check for existing session (e.g., magic link)
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session && !ranRef.current) {
         ranRef.current = true;
         try {
-          // Create a default plan seed
           const defaultSeed = {
             goals: ["general_fitness"],
             experience_level: "new",
@@ -57,9 +58,34 @@ export function AuthPage() {
     };
 
     checkSession();
-
     return () => subscription.unsubscribe();
   }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+      }
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-900 via-teal-950 to-black relative overflow-hidden">
@@ -92,48 +118,57 @@ export function AuthPage() {
             />
           </div>
           
-          <h1 className="text-4xl font-extrabold text-white mb-2 text-center tracking-tight">Join GymBud</h1>
-          <p className="text-white/70 mb-8 text-center text-lg">Create your account or sign in to continue.</p>
+          <h1 className="text-4xl font-extrabold text-white mb-8 text-center tracking-tight">
+            {t('auth.title', 'Join GymBud')}
+          </h1>
           
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-            <Auth 
-              supabaseClient={supabase} 
-              appearance={{ 
-                theme: ThemeSupa,
-                style: {
-                  button: {
-                    background: '#18C7B6',
-                    color: 'white',
-                    borderRadius: '12px',
-                    fontWeight: '600',
-                    fontSize: '16px',
-                    padding: '12px 24px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  },
-                  input: {
-                    borderRadius: '12px',
-                    border: '1px solid #e2e8f0',
-                    padding: '12px 16px',
-                    fontSize: '16px',
-                    backgroundColor: '#f8fafc'
-                  },
-                  label: {
-                    color: '#374151',
-                    fontWeight: '500',
-                    fontSize: '14px'
-                  },
-                  anchor: {
-                    color: '#18C7B6',
-                    textDecoration: 'none',
-                    fontWeight: '500'
-                  }
-                }
-              }} 
-              providers={[]}
-              redirectTo={`${window.location.origin}/app/session/today`}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="email"
+              placeholder={t('auth.email', 'Email address')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-2xl bg-white/90 backdrop-blur-sm border-0 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              required
             />
+            
+            <input
+              type="password"
+              placeholder={t('auth.password', 'Password')}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-2xl bg-white/90 backdrop-blur-sm border-0 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              required
+            />
+            
+            {error && (
+              <div className="text-red-300 text-sm text-center">{error}</div>
+            )}
+            
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-6 rounded-2xl bg-teal-500 hover:bg-teal-600 text-white font-semibold text-lg transition-colors duration-200 disabled:opacity-50"
+            >
+              {loading 
+                ? t('auth.loading', 'Loading...') 
+                : isSignUp 
+                  ? t('auth.createAccount', 'Create Account')
+                  : t('auth.signIn', 'Sign In')
+              }
+            </button>
+          </form>
+          
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setIsSignUp(!isSignUp)}
+              className="text-white/70 hover:text-white transition-colors duration-200"
+            >
+              {isSignUp 
+                ? t('auth.haveAccount', 'Already have an account? Sign in')
+                : t('auth.needAccount', "Don't have an account? Sign up")
+              }
+            </button>
           </div>
         </div>
       </div>
