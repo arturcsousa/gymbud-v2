@@ -16,7 +16,7 @@ interface Session {
   sets?: number
 }
 
-export default function HistoryPage() {
+function HistoryPage() {
   const { t } = useTranslation(['app', 'common'])
   const [, setLocation] = useLocation()
   const [sessions, setSessions] = useState<Session[]>([])
@@ -203,3 +203,5 @@ export default function HistoryPage() {
     </ContentLayout>
   )
 }
+
+export { HistoryPage as default }

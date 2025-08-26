@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { supabase } from '@/lib/supabase'
 
-export default function SettingsPage() {
+function SettingsPage() {
   const { t, i18n } = useTranslation(['app', 'common'])
   const [, setLocation] = useLocation()
   const [loading, setLoading] = useState(true)
@@ -279,3 +279,5 @@ export default function SettingsPage() {
     </ContentLayout>
   )
 }
+
+export { SettingsPage as default }

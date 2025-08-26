@@ -14,7 +14,7 @@ interface Session {
   notes?: string
 }
 
-export default function HomePage() {
+function HomePage() {
   const { t } = useTranslation(['app', 'common'])
   const [, setLocation] = useLocation()
   const [todaySession, setTodaySession] = useState<Session | null>(null)
@@ -173,3 +173,5 @@ export default function HomePage() {
     </div>
   )
 }
+
+export { HomePage as default }

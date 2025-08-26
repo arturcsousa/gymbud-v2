@@ -14,7 +14,7 @@ interface Set {
   completed: boolean
 }
 
-export default function SessionPage() {
+function SessionPage() {
   const { t } = useTranslation(['app', 'common'])
   const [, setLocation] = useLocation()
   const [loading, setLoading] = useState(true)
@@ -302,3 +302,5 @@ export default function SessionPage() {
     </ContentLayout>
   )
 }
+
+export { SessionPage as default }

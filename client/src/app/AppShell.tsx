@@ -1,7 +1,6 @@
 import { useEffect, useState, ReactNode } from 'react'
 import { Route, Switch } from 'wouter'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { persistQueryClient } from '@tanstack/react-query-persist-client'
 
 import { supabase } from '@/lib/supabase'
 import { GradientLayout } from '@/app/components/GradientLayout'
@@ -11,14 +10,14 @@ import { OfflineIndicator } from '@/app/components/OfflineIndicator'
 import { ConflictBanner } from '@/app/components/ConflictBanner'
 
 // Pages
-import AuthPage from '@/app/pages/AuthPage'
-import HomePage from '@/app/pages/HomePage'
-import SessionPage from '@/app/pages/SessionPage'
-import HistoryPage from '@/app/pages/HistoryPage'
-import HistoryDetailPage from '@/app/pages/HistoryDetailPage'
+import { AuthPage } from '@/app/pages/AuthPage'
+import { HomePage } from '@/app/pages/HomePage'
+import { SessionPage } from '@/app/pages/SessionPage'
+import { HistoryPage } from '@/app/pages/HistoryPage'
+import { HistoryDetailPage } from '@/app/pages/HistoryDetailPage'
 import { LibraryPage } from '@/app/pages/LibraryPage'
-import SettingsPage from '@/app/pages/SettingsPage'
-import NotFoundPage from '@/app/pages/NotFoundPage'
+import { SettingsPage } from '@/app/pages/SettingsPage'
+import { NotFoundPage } from '@/app/pages/NotFoundPage'
 
 // Create query client
 const queryClient = new QueryClient({
