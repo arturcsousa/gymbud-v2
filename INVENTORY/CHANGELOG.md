@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## August 26, 2025 12:00 ET
+**Redesigned** WhyDifferent and Programs sections to remove orange backgrounds.
+- Updated: `WhyDifferent.tsx` - changed from orange background to deep teal with glassmorphic cards
+- Updated: `Programs.tsx` - changed from orange background to gradient teal with white cards and colored borders
+- Added: Proper translation key usage for all 6 features in WhyDifferent section
+- Added: Decorative gradient elements and improved hover animations
+- Context: Better visual hierarchy and readability while maintaining design cohesion
+- Migrations: N/A (design improvements only)
+
 ## August 26, 2025 11:52 ET
 **Redesigned** landing page to match provided design with exact color palette.
 - Updated: Color palette to use exact design colors (#005870, #0C8F93, #18C7B6, #FF9F1C)
