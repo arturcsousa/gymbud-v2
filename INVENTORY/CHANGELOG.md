@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## August 26, 2025 18:34 ET
+**Refactored** AuthPage with Supabase Auth UI and proper auth state handling
+- **Auth UI Component**: Replaced custom form with `@supabase/auth-ui-react` for robust authentication
+- **Auth State Subscription**: Added `onAuthStateChange` listener to handle SIGNED_IN events properly
+- **Mutex Pattern**: Implemented `ranRef` to prevent duplicate `finalizeOnboarding` calls on hot reloads
+- **Session Handling**: Covers both email confirmation ON/OFF scenarios with `getSession()` check
+- **Plan Activation**: Triggers plan creation only after guaranteed valid JWT authentication
+- **Navigation**: Uses `window.location.href` for reliable redirect to `/app/session/today`
+- Context: Robust auth flow that handles all Supabase auth scenarios and prevents race conditions
+- Migrations: N/A (auth flow enhancement only)
+
 ## August 26, 2025 18:28 ET
 **Integrated** signup flow with plan creation and session navigation
 - **Signup Flow**: After successful account creation, automatically calls `finalizeOnboarding()` function

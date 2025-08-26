@@ -1,30 +1,26 @@
 // client/src/onboarding/actions.ts
 import { supabase } from "@/lib/supabase";
+import { navigate } from "wouter/use-location";
 
-export async function finalizeOnboarding(planSeed?: unknown, navigate?: (path: string) => void) {
-  // Create a default plan seed if none provided
-  const defaultSeed = {
-    goals: ["general_fitness"],
-    experience_level: "new",
-    frequency_days_per_week: 3,
-    schedule_days: ["monday", "wednesday", "friday"],
-    session_duration_min: 45,
-    environment: "professional_gym",
-    coaching_tone: "supportive"
-  };
-
-  // Ensure the user has an ACTIVE plan using our EF
-  const { error } = await supabase.functions.invoke("plan-get-or-create", {
-    body: { seed: planSeed || defaultSeed },
+export async function finalizeOnboarding(planSeed: unknown) {
+  // Ensure active plan (idempotent EF)
+  const { data, error } = await supabase.functions.invoke("plan-get-or-create", {
+    body: { seed: planSeed },
   });
+  if (error) throw new Error(error.message || "Failed to activate plan");
 
-  if (error) {
-    // Surface a friendly message later (Phase A.5: error mapping)
-    throw new Error(error.message || "Failed to activate plan");
+  // Optional but recommended for instant workout flow:
+  // set assessment_required = false, allowed by RLS for own profile
+  const { data: user } = await supabase.auth.getUser();
+  if (user?.user?.id) {
+    await supabase
+      .from("profiles")
+      .update({ assessment_required: false })
+      .eq("user_id", user.user.id);
+    // ignore small errors here; not critical for navigation
   }
 
-  // Jump straight into today's session if navigate function provided
-  if (navigate) {
-    navigate("/app/session/today");
-  }
+  // Straight to the session route (your session page can show a "preparing..." state
+  // until session-get-or-create is wired in Phase D)
+  navigate("/app/session/today");
 }
