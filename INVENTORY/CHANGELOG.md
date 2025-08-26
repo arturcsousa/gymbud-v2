@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 18:10 ET
+**Fixed** Supabase signup 500 error with database trigger
+- **Root Cause**: Missing profile creation trigger caused "Database error saving new user" during signup
+- **Database Trigger**: Added `app2.handle_new_user()` function to auto-create profile records on auth.users insert
+- **Profile Defaults**: Uses metadata from signup or sensible defaults (first_name, last_name, DOB, height, weight, locale)
+- **Security**: Function uses SECURITY DEFINER with proper search_path for safe execution
+- **Migration**: Applied `add_auth_user_profile_trigger` migration to production database
+- Context: Signup flow now works end-to-end without database constraint violations
+- Migrations: `add_auth_user_profile_trigger` - creates trigger and handler function
+
 ## August 26, 2025 18:06 ET
 **Enhanced** auth page branding and simplified user flow
 - **Logo Placement**: Moved GymBud logo to center/top of auth form with larger size (20x20) and enhanced shadow
@@ -157,6 +167,8 @@
 ## January 26, 2025 14:56 ET
 **Completed** Phase A Step 3 - Real server sync implementation for offline-first PWA
 - **Edge Function**: Created `supabase/functions/sync-logged-sets/index.ts` for idempotent app2.logged_sets inserts
+  - Behavior: Returns ACTIVE plan if exists, promotes DRAFT to ACTIVE, or creates new ACTIVE plan with seed
+  - RLS enforcement via user JWT forwarding, structured error responses, CORS support
 - **Server Integration**: Replaced SEND_NOT_IMPLEMENTED placeholder in `client/src/sync/queue.ts` with real Supabase Edge Function calls
 - **RLS Compliance**: Edge Function uses end-user JWT for proper Row Level Security enforcement
 - **Idempotency**: Uses queue mutation ID as primary key for conflict-free upserts with `onConflict: "id"`
