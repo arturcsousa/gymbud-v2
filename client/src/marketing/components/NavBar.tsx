@@ -11,7 +11,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-sm" style={{ backgroundColor: `${PALETTE.deepTeal}f0` }}>
+    <nav className="sticky top-0 z-50 backdrop-blur-sm bg-gradient-to-r from-[#005870] to-[#0C8F93] shadow-lg">
       <div className="mx-auto max-w-7xl px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="text-xl font-bold text-white">GymBud</div>
@@ -41,7 +41,7 @@ export default function NavBar() {
             </button>
             <a
               href={ctaHref('nav')}
-              className="rounded-lg px-4 py-2 font-semibold text-white transition-all hover:scale-105"
+              className="rounded-lg px-4 py-2 font-semibold text-white transition-all hover:scale-105 shadow-md"
               style={{ backgroundColor: PALETTE.aqua }}
             >
               {t('common:cta.start_free')}

@@ -1,4 +1,3 @@
-import { Route } from 'wouter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Landing from '@/marketing/Landing';
 import { AppShell } from '@/app/AppShell';
@@ -15,17 +14,21 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  // Check if we're on the app subdomain
+  const isAppDomain = window.location.hostname === 'app.gymbud.ai' || 
+                     window.location.hostname === 'localhost' ||
+                     window.location.hostname.includes('vercel.app');
+
   return (
     <QueryClientProvider client={queryClient}>
       <OfflineBanner />
-      <AppShell>
-        <Route path="/" component={Landing} />
-        {/* Optional stubs for future long-form pages if we keep them: */}
-        <Route path="/how-it-works">{() => <Landing />}</Route>
-        <Route path="/programs">{() => <Landing />}</Route>
-        <Route path="/pricing">{() => <Landing />}</Route>
-        <Route path="/faq">{() => <Landing />}</Route>
-      </AppShell>
+      {isAppDomain ? (
+        // Render app routes for app.gymbud.ai
+        <AppShell />
+      ) : (
+        // Render landing page for gymbud.ai
+        <Landing />
+      )}
     </QueryClientProvider>
   );
 }
