@@ -90,6 +90,31 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - **Route Protection**: AuthGuard component redirects unauthenticated users
 - **Session Management**: Automatic token refresh and logout handling
 
+## URL Architecture
+
+### Domain Separation
+- **gymbud.ai** - Marketing landing page (separate Vercel project)
+  - Landing page, pricing, features, blog
+  - CTA buttons link to app.gymbud.ai for signup/login
+- **app.gymbud.ai** - PWA application (this project)
+  - Authentication, onboarding, workout sessions
+  - Offline-first Progressive Web App
+  - All user data and functionality
+
+### Environment Variables
+```bash
+# Current project (app.gymbud.ai)
+VITE_APP_URL=https://app.gymbud.ai      # This PWA application
+VITE_SITE_URL=https://gymbud.ai         # Marketing site (external)
+VITE_SUPABASE_URL=https://lrcrmmquuwphxispctgq.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJ...           # Full key in .env.local
+```
+
+### Deployment Strategy
+- **Marketing Site**: Separate repository deployed to gymbud.ai
+- **PWA Application**: This repository deployed to app.gymbud.ai
+- **Cross-linking**: Marketing CTAs → app.gymbud.ai, App settings → gymbud.ai
+
 ## Data Layer Architecture
 
 ### IndexedDB Schema (Dexie)

@@ -262,6 +262,31 @@ import { NotFoundPage } from '@/app/pages/NotFoundPage'
 - **Legacy Function Removal**: Eliminated unsafe `handleSetComplete` and `handleSetChange` functions that caused TS7053 indexing errors
 - **Build Compatibility**: All exports now match imports exactly, eliminating TypeScript compilation errors
 
+## URL Architecture & Deployment
+
+### Domain Structure
+- **gymbud.ai** - Marketing landing page (separate project)
+  - Static marketing content, pricing, features
+  - Links to app.gymbud.ai for user signup/login
+- **app.gymbud.ai** - PWA application (this repository)
+  - User authentication and onboarding
+  - Workout sessions, history, library, settings
+  - Offline-first Progressive Web App functionality
+
+### Environment Configuration
+```bash
+# PWA Application Environment (app.gymbud.ai)
+VITE_APP_URL=https://app.gymbud.ai      # This PWA
+VITE_SITE_URL=https://gymbud.ai         # Marketing site
+VITE_SUPABASE_URL=https://lrcrmmquuwphxispctgq.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJ...           # Supabase anonymous key
+```
+
+### Deployment Requirements
+- **Vercel Environment Variables**: Must configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in project settings
+- **PWA Manifest**: Updated to use existing icons and GymBud color scheme (#005870)
+- **Domain Separation**: Clear distinction between marketing (gymbud.ai) and application (app.gymbud.ai)
+
 ## Usage Patterns
 
 ### Component Usage

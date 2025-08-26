@@ -48,6 +48,15 @@
 - Context: Eliminated TS7053 error "Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'WorkoutSet'"
 - Migrations: Build should now succeed with zero TypeScript errors
 
+## January 26, 2025 17:10 ET
+**Fixed** Runtime deployment issues and clarified URL structure
+- **Supabase Environment**: Added debug logging to identify missing environment variables in production builds
+- **PWA Manifest**: Fixed icon paths from non-existent `pwa-*` files to existing `icons/icon-192.png`, updated theme colors to match GymBud design (#005870)
+- **URL Structure Clarification**: Updated `.env.local` with clear comments distinguishing gymbud.ai (marketing) vs app.gymbud.ai (PWA application)
+- **Environment Variables**: Marked `NEXT_PUBLIC_SITE_URL` as deprecated, clarified Vercel deployment requirements
+- Context: Resolved blank page issues and PWA manifest errors, established clear separation between marketing site and app domains
+- Migrations: Requires Vercel environment variable configuration for production deployment
+
 ## January 26, 2025 16:45 ET
 **Fixed** TypeScript build errors preventing Vercel deployment
 - **Import/Package Fixes**: Corrected AppShell.tsx to import `createSyncStoragePersister` from `@tanstack/react-query-persist-client` instead of wrong package
