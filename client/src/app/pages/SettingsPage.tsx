@@ -11,7 +11,6 @@ import { supabase } from '@/lib/supabase'
 export default function SettingsPage() {
   const { t, i18n } = useTranslation(['app', 'common'])
   const [, setLocation] = useLocation()
-  const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   
@@ -30,7 +29,6 @@ export default function SettingsPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        setUser(user)
         setEmail(user.email || '')
       }
       

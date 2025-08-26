@@ -13,21 +13,19 @@ interface SessionPageProps {
   }
 }
 
-export default function SessionPage({ params }: SessionPageProps) {
+export default function SessionPage() {
   const { t } = useTranslation(['app', 'common'])
   const [, setLocation] = useLocation()
-  const [session, setSession] = useState<any>(null)
-  const [exercises, setExercises] = useState<any[]>([])
-  const [currentExercise, setCurrentExercise] = useState(0)
-  const [sets, setSets] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
+  const [sets, setSets] = useState<any[]>([])
   const [timer, setTimer] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
 
   useEffect(() => {
     loadSession()
     startTimer()
-  }, [params.id])
+  }, [])
 
   useEffect(() => {
     let interval: NodeJS.Timeout
@@ -41,29 +39,23 @@ export default function SessionPage({ params }: SessionPageProps) {
 
   const loadSession = async () => {
     try {
-      // Load session data (placeholder)
-      setSession({
-        id: params.id,
-        name: 'Push Day',
-        status: 'in_progress',
-        startedAt: new Date()
-      })
-
       // Load exercises (placeholder)
-      setExercises([
+      const exercises = [
         { id: '1', name: 'Bench Press', sets: 3, reps: '8-10', weight: 135 },
         { id: '2', name: 'Incline Dumbbell Press', sets: 3, reps: '10-12', weight: 60 },
         { id: '3', name: 'Push-ups', sets: 2, reps: '15-20', weight: 0 },
         { id: '4', name: 'Shoulder Press', sets: 3, reps: '8-10', weight: 95 },
         { id: '5', name: 'Tricep Dips', sets: 2, reps: '12-15', weight: 0 }
-      ])
+      ]
 
       // Initialize sets for current exercise
-      setSets([
+      const sets = [
         { id: '1', reps: '', weight: '', completed: false },
         { id: '2', reps: '', weight: '', completed: false },
         { id: '3', reps: '', weight: '', completed: false }
-      ])
+      ]
+
+      setSets(sets)
     } catch (error) {
       console.error('Error loading session:', error)
     } finally {
@@ -94,8 +86,8 @@ export default function SessionPage({ params }: SessionPageProps) {
   }
 
   const handleNextExercise = () => {
-    if (currentExercise < exercises.length - 1) {
-      setCurrentExercise(currentExercise + 1)
+    if (currentExerciseIndex < 4) {
+      setCurrentExerciseIndex(currentExerciseIndex + 1)
       // Reset sets for next exercise
       setSets([
         { id: '1', reps: '', weight: '', completed: false },
@@ -106,8 +98,8 @@ export default function SessionPage({ params }: SessionPageProps) {
   }
 
   const handlePreviousExercise = () => {
-    if (currentExercise > 0) {
-      setCurrentExercise(currentExercise - 1)
+    if (currentExerciseIndex > 0) {
+      setCurrentExerciseIndex(currentExerciseIndex - 1)
       // Reset sets for previous exercise
       setSets([
         { id: '1', reps: '', weight: '', completed: false },
@@ -137,23 +129,31 @@ export default function SessionPage({ params }: SessionPageProps) {
     )
   }
 
-  const currentExerciseData = exercises[currentExercise]
-  const progress = ((currentExercise + 1) / exercises.length) * 100
+  const exercises = [
+    { id: '1', name: 'Bench Press', sets: 3, reps: '8-10', weight: 135 },
+    { id: '2', name: 'Incline Dumbbell Press', sets: 3, reps: '10-12', weight: 60 },
+    { id: '3', name: 'Push-ups', sets: 2, reps: '15-20', weight: 0 },
+    { id: '4', name: 'Shoulder Press', sets: 3, reps: '8-10', weight: 95 },
+    { id: '5', name: 'Tricep Dips', sets: 2, reps: '12-15', weight: 0 }
+  ]
+
+  const currentExerciseData = exercises[currentExerciseIndex]
+  const progress = ((currentExerciseIndex + 1) / exercises.length) * 100
 
   return (
     <ContentLayout
       showNavigation={true}
-      onBack={currentExercise > 0 ? handlePreviousExercise : handlePauseWorkout}
-      onNext={currentExercise < exercises.length - 1 ? handleNextExercise : handleFinishWorkout}
-      nextLabel={currentExercise < exercises.length - 1 ? t('app:session.nextExercise') : t('app:session.finish')}
-      backLabel={currentExercise > 0 ? t('app:session.previous') : t('app:session.pause')}
+      onBack={currentExerciseIndex > 0 ? handlePreviousExercise : handlePauseWorkout}
+      onNext={currentExerciseIndex < exercises.length - 1 ? handleNextExercise : handleFinishWorkout}
+      nextLabel={currentExerciseIndex < exercises.length - 1 ? t('app:session.nextExercise') : t('app:session.finish')}
+      backLabel={currentExerciseIndex > 0 ? t('app:session.previous') : t('app:session.pause')}
     >
       <div className="space-y-6">
         {/* Progress Header */}
         <div className="mb-4 sm:mb-8 flex-shrink-0">
           <div className="flex justify-between items-center mb-2">
             <span className="text-white text-sm font-medium">
-              {t('app:session.exercise')} {currentExercise + 1} {t('common:of')} {exercises.length}
+              {t('app:session.exercise')} {currentExerciseIndex + 1} {t('common:of')} {exercises.length}
             </span>
             <span className="text-white text-sm font-medium">
               {Math.round(progress)}% {t('app:session.complete')}
@@ -271,9 +271,9 @@ export default function SessionPage({ params }: SessionPageProps) {
               <div
                 key={exercise.id}
                 className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
-                  index === currentExercise 
+                  index === currentExerciseIndex 
                     ? 'bg-white/20'
-                    : index < currentExercise 
+                    : index < currentExerciseIndex 
                       ? 'bg-green-500/20'
                       : 'bg-white/10'
                 }`}
@@ -290,16 +290,16 @@ export default function SessionPage({ params }: SessionPageProps) {
                 <Badge 
                   variant="secondary"
                   className={
-                    index === currentExercise 
+                    index === currentExerciseIndex 
                       ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
-                      : index < currentExercise 
+                      : index < currentExerciseIndex 
                         ? "bg-green-500/20 text-green-300 border-green-500/30"
                         : "bg-white/20 text-white border-white/30"
                   }
                 >
-                  {index === currentExercise 
+                  {index === currentExerciseIndex 
                     ? t('app:session.current')
-                    : index < currentExercise 
+                    : index < currentExerciseIndex 
                       ? t('app:session.completed')
                       : t('app:session.upcoming')
                   }

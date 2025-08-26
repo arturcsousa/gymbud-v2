@@ -1,8 +1,8 @@
 import { useEffect, useState, ReactNode } from 'react'
-import { Route, Switch, useLocation } from 'wouter'
+import { Route, Switch } from 'wouter'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { persistQueryClient } from '@tanstack/react-query-persist-client'
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
+import { createSyncStoragePersister } from '@tanstack/react-query-persist-client'
 
 import { supabase } from '@/lib/supabase'
 import { GradientLayout } from '@/app/components/GradientLayout'
@@ -48,7 +48,6 @@ interface AppShellProps {
 }
 
 export function AppShell({ children }: AppShellProps) {
-  const [location] = useLocation()
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 

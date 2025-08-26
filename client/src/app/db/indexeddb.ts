@@ -141,7 +141,7 @@ export class OfflineDataManager {
   }
 
   // Session operations
-  async getSessions(userId: string, limit = 50): Promise<Session[]> {
+  async getSessions(userId: string): Promise<Session[]> {
     return db.sessions
       .where('user_id')
       .equals(userId)

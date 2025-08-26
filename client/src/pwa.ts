@@ -4,7 +4,9 @@ export async function initPWA() {
   // Only initialize PWA in production builds
   if (import.meta.env.PROD) {
     try {
-      const { registerSW } = await import('virtual:pwa-register')
+      // Dynamic import only available in production with VitePWA plugin
+      const pwaModule = await import('virtual:pwa-register')
+      const { registerSW } = pwaModule
       
       const updateSW = registerSW({
         onNeedRefresh() {
@@ -13,17 +15,12 @@ export async function initPWA() {
         },
         onOfflineReady() {
           // Show offline ready notification
-          console.log('PWA ready to work offline')
-        },
+          console.log('PWA offline ready')
+        }
       })
-
-      // Optional: Check for updates periodically
-      setInterval(() => {
-        updateSW(true)
-      }, 60000) // Check every minute
-      
     } catch (error) {
-      console.warn('PWA registration failed:', error)
+      // PWA module not available in development
+      console.log('PWA not available in development mode')
     }
   }
 }
