@@ -1,10 +1,7 @@
 // client/src/onboarding/actions.ts
 import { supabase } from "@/lib/supabase";
-import { useLocation } from "wouter";
 
 export async function finalizeOnboarding(planSeed: unknown) {
-  const [, navigate] = useLocation();
-  
   // Ensure active plan (idempotent EF)
   const { error } = await supabase.functions.invoke("plan-get-or-create", {
     body: { seed: planSeed },
@@ -22,7 +19,6 @@ export async function finalizeOnboarding(planSeed: unknown) {
     // ignore small errors here; not critical for navigation
   }
 
-  // Straight to the session route (your session page can show a "preparing..." state
-  // until session-get-or-create is wired in Phase D)
-  navigate("/app/session/today");
+  // Navigate to session route using window.location for reliability
+  window.location.href = "/app/session/today";
 }
