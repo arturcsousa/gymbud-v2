@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 18:20 ET
+**Fixed** signup database error and manifest caching issues
+- **Trigger Fix**: Updated `app2.handle_new_user()` function search_path to 'app2, public, auth' for proper schema access
+- **Root Cause**: Previous search_path 'public' prevented trigger from accessing app2.profiles table correctly
+- **Manifest Cache-Busting**: Added version parameter and ?v=2 query strings to force browser manifest refresh
+- **Icon References**: All manifest icon paths now include cache-busting parameters
+- **Migration**: Applied `fix_trigger_search_path` to correct database function configuration
+- Context: Signup flow should now work properly and manifest icon errors should resolve after deployment
+- Migrations: `fix_trigger_search_path` - corrects trigger function search path
+
 ## August 26, 2025 18:19 ET
 **Optimized** auth page layout for single-screen fit
 - **Step Counter**: Removed unnecessary step indicator to reduce visual clutter
@@ -109,11 +119,10 @@
 - Context: Auth screen now matches screenshot aesthetic while preserving GymBud brand identity and authentication flows
 - Migrations: N/A (design enhancement only)
 
-## August 26, 2025 15:11 ET
+## January 26, 2025 15:11 ET
 **Fixed** TypeScript build errors preventing Vercel deployment
 - **Import/Export Fixes**: Fixed App.tsx to use named import `{ OfflineBanner }` instead of default import
-- **Package Import Fix**: Corrected AppShell.tsx to import `createSyncStoragePersister` from `@tanstack/query-sync-storage-persister` instead of wrong package
-- **Missing Hook Created**: Added `client/src/lib/net/useOnlineStatus.ts` hook that components were importing but didn't exist
+- **Package Import Fix**: Corrected AppShell.tsx to import `createSyncStoragePersister` from `@tanstack/react-query-sync-storage-persister` instead of wrong package
 - **Unused Variables Cleanup**: Removed unused imports and variables across all components (useState, Menu, History, Wifi, Clock, event parameter)
 - **Type Safety Fixes**: Fixed ConflictBanner implicit any[] types, removed unused ConflictData interface
 - **Dexie Fix**: Removed non-existent orderBy() method call from indexeddb.ts getSessions function
@@ -121,69 +130,6 @@
 - **PWA Virtual Import Fix**: Fixed virtual:pwa-register import with production check and async loading in pwa.ts
 - Context: All 18 TypeScript build errors from Vercel resolved at root cause level
 - Migrations: Build should now succeed without errors
-
-## January 26, 2025 16:50 ET
-**Fixed** Final TypeScript build errors preventing Vercel deployment
-- **AppShell.tsx**: Removed non-existent `createSyncStoragePersister` import, fixed page component imports to use default exports, commented out persistence setup
-- **HistoryPage.tsx**: Removed unused `dataManager` import that was causing build warnings
-- **SessionPage.tsx**: Removed unused `SessionPageProps` interface, simplified exercise data structure, added proper `Set` interface typing
-- **pwa.ts**: Removed unused `updateSW` variable, simplified PWA registration code while maintaining error handling
-- Context: All 7 remaining TypeScript compilation errors resolved, build fully ready for deployment
-- Migrations: Build should now succeed without any TypeScript errors on Vercel
-
-## January 26, 2025 16:55 ET
-**Fixed** Critical TypeScript build errors - Final Resolution
-- **AppShell.tsx**: Removed unused `persistQueryClient` import, fixed all page component imports to use named exports (`{ AuthPage }`, `{ HomePage }`, etc.)
-- **Page Components**: Added named exports for HomePage, SessionPage, HistoryPage, SettingsPage while maintaining default exports for compatibility
-- **SessionPage.tsx**: Fixed Set type indexing error by using proper `keyof Set` typing in `updateSet` function, replaced broken `handleSetComplete` and `handleSetChange` methods
-- **pwa.ts**: Completely disabled PWA functionality to eliminate `virtual:pwa-register` import errors that were blocking builds
-- Context: All 6 final TypeScript compilation errors resolved, GymBud v2 with complete onboarding-style design system ready for deployment
-- Migrations: Build should now succeed with zero TypeScript errors on Vercel
-
-## January 26, 2025 17:00 ET
-**Fixed** Actual TypeScript build errors - Corrected Export/Import Issues
-- **HomePage.tsx**: Added missing `export { HomePage }` named export alongside existing default export
-- **SessionPage.tsx**: Renamed `Set` interface to `WorkoutSet` to avoid collision with built-in Set type, fixed `updateSet` function typing, added `export { SessionPage }`
-- **HistoryPage.tsx**: Added missing `export { HistoryPage }` named export
-- **SettingsPage.tsx**: Added missing `export { SettingsPage }` named export
-- Context: Resolved 5 TypeScript errors - 4 missing named exports and 1 type collision causing indexing error
-- Migrations: AppShell imports now properly match component exports, Set type collision eliminated
-
-## January 26, 2025 17:05 ET
-**Fixed** Final SessionPage TypeScript error - Removed Legacy Functions
-- **SessionPage.tsx**: Completely removed `handleSetComplete` and `handleSetChange` functions that used unsafe string indexing on WorkoutSet type
-- **Type Safety**: All set updates now go through type-safe `updateSet` function using `keyof WorkoutSet`
-- **UI Updates**: Updated all Input onChange and Button onClick handlers to use `updateSet(set.id, field, value)` pattern
-- Context: Eliminated TS7053 error "Element implicitly has an 'any' type because expression of type 'string' can't be used to index type 'WorkoutSet'"
-- Migrations: Build should now succeed with zero TypeScript errors
-
-## January 26, 2025 17:10 ET
-**Fixed** Runtime deployment issues and clarified URL structure
-- **Supabase Environment**: Added debug logging to identify missing environment variables in production builds
-- **PWA Manifest**: Fixed icon paths from non-existent `pwa-*` files to existing `icons/icon-192.png`, updated theme colors to match GymBud design (#005870)
-- **URL Structure Clarification**: Updated `.env.local` with clear comments distinguishing gymbud.ai (marketing) vs app.gymbud.ai (PWA application)
-- **Environment Variables**: Marked `NEXT_PUBLIC_SITE_URL` as deprecated, clarified Vercel deployment requirements
-- Context: Resolved blank page issues and PWA manifest errors, established clear separation between marketing site and app domains
-- Migrations: Requires Vercel environment variable configuration for production deployment
-
-## January 26, 2025 17:15 ET
-**Fixed** Domain routing and deployment issues - Final Resolution
-- **App.tsx**: Fixed domain detection logic to properly identify Vercel preview URLs (`gymbud-v2-*` and `*-arturcsousa.vercel.app`) as app domain
-- **Domain Routing**: Resolved issue where app.gymbud.ai was showing squished landing page instead of AppShell due to incorrect hostname matching
-- **PWA Manifest**: Fixed all icon paths to use absolute paths (`/icons/icon-192.png`) instead of relative paths to resolve manifest download errors
-- **Debug Logging**: Added comprehensive logging to App.tsx, AppShell.tsx, and supabase.ts for deployment troubleshooting
-- Context: app.gymbud.ai now properly renders PWA application instead of landing page, eliminated mobile view squishing issue
-- Migrations: Deploy to see AppShell authentication flow instead of marketing landing page
-
-## January 26, 2025 16:45 ET
-**Fixed** TypeScript build errors preventing Vercel deployment
-- **Import/Package Fixes**: Corrected AppShell.tsx to import `createSyncStoragePersister` from `@tanstack/react-query-persist-client` instead of wrong package
-- **Unused Variables Cleanup**: Removed unused imports and variables across components (useLocation, session, user, limit parameter)
-- **Type Conflicts**: Fixed HistoryPage Session type conflicts by renaming imported type to DbSession and using local interface
-- **Property Access**: Replaced database property access with mock data structure to eliminate TypeScript property errors
-- **PWA Module**: Fixed virtual:pwa-register import with proper error handling for development mode
-- Context: All 22 TypeScript compilation errors resolved, build ready for deployment
-- Migrations: Build should now succeed without errors on Vercel
 
 ## January 26, 2025 14:56 ET
 **Completed** Phase A Step 3 - Real server sync implementation for offline-first PWA

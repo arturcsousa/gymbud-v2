@@ -82,12 +82,6 @@ export function AuthPage({ params }: AuthPageProps) {
     return t('auth:signin.title')
   }
 
-  const getSubtitle = () => {
-    if (isReset) return t('auth:reset.subtitle')
-    if (isSignUp) return t('auth:signup.subtitle')
-    return t('auth:signin.subtitle')
-  }
-
   return (
     <div 
       className="min-h-screen relative overflow-hidden"
