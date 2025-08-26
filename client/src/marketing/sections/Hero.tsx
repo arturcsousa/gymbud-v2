@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ctaHref, PALETTE } from '../theme';
+import { ctaHref } from '../theme';
 import { motion } from 'framer-motion';
 
 export default function Hero() {
