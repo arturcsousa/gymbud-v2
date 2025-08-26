@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { Search, Dumbbell, BookOpen } from 'lucide-react'
+import { ContentLayout } from '@/app/components/GradientLayout'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 
@@ -12,126 +12,136 @@ interface Exercise {
   category: string
   muscle_groups: string[]
   equipment: string[]
+  difficulty: 'beginner' | 'intermediate' | 'advanced'
   description: string
-  instructions: string[]
 }
 
 export function LibraryPage() {
-  const { t } = useTranslation(['app', 'library'])
+  const { t } = useTranslation(['app', 'common'])
+  const [, setLocation] = useLocation()
   const [exercises, setExercises] = useState<Exercise[]>([])
   const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
-  const [categoryFilter, setCategoryFilter] = useState<string>('all')
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
-  // Mock exercise data - in real app this would come from Supabase
-  const mockExercises: Exercise[] = [
-    {
-      id: '1',
-      name: 'Barbell Squat',
-      category: 'Compound',
-      muscle_groups: ['Quadriceps', 'Glutes', 'Hamstrings'],
-      equipment: ['Barbell', 'Squat Rack'],
-      description: 'A fundamental lower body compound movement',
-      instructions: [
-        'Set up barbell in squat rack at shoulder height',
-        'Position barbell on upper back/traps',
-        'Step back and position feet shoulder-width apart',
-        'Lower by pushing hips back and bending knees',
-        'Descend until thighs are parallel to floor',
-        'Drive through heels to return to starting position'
-      ]
-    },
-    {
-      id: '2',
-      name: 'Bench Press',
-      category: 'Compound',
-      muscle_groups: ['Chest', 'Shoulders', 'Triceps'],
-      equipment: ['Barbell', 'Bench'],
-      description: 'Primary upper body pushing movement',
-      instructions: [
-        'Lie on bench with eyes under the bar',
-        'Grip bar slightly wider than shoulder width',
-        'Retract shoulder blades and arch back slightly',
-        'Lower bar to chest with control',
-        'Press bar up in straight line over chest',
-        'Lock out arms at top'
-      ]
-    },
-    {
-      id: '3',
-      name: 'Deadlift',
-      category: 'Compound',
-      muscle_groups: ['Hamstrings', 'Glutes', 'Back', 'Traps'],
-      equipment: ['Barbell'],
-      description: 'Full body pulling movement',
-      instructions: [
-        'Stand with feet hip-width apart, bar over mid-foot',
-        'Bend at hips and knees to grip bar',
-        'Keep chest up and back straight',
-        'Drive through heels and extend hips',
-        'Stand tall with shoulders back',
-        'Lower bar with control'
-      ]
-    },
-    {
-      id: '4',
-      name: 'Pull-ups',
-      category: 'Compound',
-      muscle_groups: ['Lats', 'Rhomboids', 'Biceps'],
-      equipment: ['Pull-up Bar'],
-      description: 'Bodyweight upper body pulling exercise',
-      instructions: [
-        'Hang from bar with overhand grip',
-        'Hands slightly wider than shoulders',
-        'Pull body up until chin clears bar',
-        'Lower with control to full arm extension',
-        'Maintain straight body line throughout'
-      ]
-    },
-    {
-      id: '5',
-      name: 'Dumbbell Bicep Curls',
-      category: 'Isolation',
-      muscle_groups: ['Biceps'],
-      equipment: ['Dumbbells'],
-      description: 'Isolated bicep strengthening exercise',
-      instructions: [
-        'Stand with dumbbells at sides',
-        'Keep elbows close to body',
-        'Curl weights up by flexing biceps',
-        'Squeeze at top of movement',
-        'Lower with control'
-      ]
-    }
+  const categories = [
+    'all',
+    'chest',
+    'back',
+    'shoulders',
+    'arms',
+    'legs',
+    'core',
+    'cardio'
   ]
 
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => {
-      setExercises(mockExercises)
-      setLoading(false)
-    }, 500)
+    loadExercises()
   }, [])
 
   useEffect(() => {
     filterExercises()
-  }, [exercises, searchQuery, categoryFilter])
+  }, [exercises, searchQuery, selectedCategory])
+
+  const loadExercises = async () => {
+    try {
+      // Load exercises (placeholder data)
+      setExercises([
+        {
+          id: '1',
+          name: 'Bench Press',
+          category: 'chest',
+          muscle_groups: ['chest', 'triceps', 'shoulders'],
+          equipment: ['barbell', 'bench'],
+          difficulty: 'intermediate',
+          description: 'Classic compound movement for chest development'
+        },
+        {
+          id: '2',
+          name: 'Pull-ups',
+          category: 'back',
+          muscle_groups: ['lats', 'rhomboids', 'biceps'],
+          equipment: ['pull-up bar'],
+          difficulty: 'intermediate',
+          description: 'Bodyweight exercise for back and arm strength'
+        },
+        {
+          id: '3',
+          name: 'Squats',
+          category: 'legs',
+          muscle_groups: ['quadriceps', 'glutes', 'hamstrings'],
+          equipment: ['barbell', 'squat rack'],
+          difficulty: 'intermediate',
+          description: 'Fundamental lower body compound movement'
+        },
+        {
+          id: '4',
+          name: 'Push-ups',
+          category: 'chest',
+          muscle_groups: ['chest', 'triceps', 'shoulders'],
+          equipment: [],
+          difficulty: 'beginner',
+          description: 'Bodyweight chest exercise for all fitness levels'
+        },
+        {
+          id: '5',
+          name: 'Deadlift',
+          category: 'back',
+          muscle_groups: ['hamstrings', 'glutes', 'erector spinae'],
+          equipment: ['barbell'],
+          difficulty: 'advanced',
+          description: 'Full-body compound movement for strength'
+        },
+        {
+          id: '6',
+          name: 'Shoulder Press',
+          category: 'shoulders',
+          muscle_groups: ['deltoids', 'triceps'],
+          equipment: ['dumbbells'],
+          difficulty: 'intermediate',
+          description: 'Overhead pressing movement for shoulder development'
+        },
+        {
+          id: '7',
+          name: 'Plank',
+          category: 'core',
+          muscle_groups: ['abs', 'core'],
+          equipment: [],
+          difficulty: 'beginner',
+          description: 'Isometric core strengthening exercise'
+        },
+        {
+          id: '8',
+          name: 'Lunges',
+          category: 'legs',
+          muscle_groups: ['quadriceps', 'glutes', 'hamstrings'],
+          equipment: [],
+          difficulty: 'beginner',
+          description: 'Unilateral leg exercise for balance and strength'
+        }
+      ])
+    } catch (error) {
+      console.error('Error loading exercises:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const filterExercises = () => {
     let filtered = exercises
 
     // Filter by category
-    if (categoryFilter !== 'all') {
-      filtered = filtered.filter(exercise => exercise.category === categoryFilter)
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(exercise => exercise.category === selectedCategory)
     }
 
     // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(exercise => 
+      filtered = filtered.filter(exercise =>
         exercise.name.toLowerCase().includes(query) ||
-        exercise.muscle_groups.some(muscle => muscle.toLowerCase().includes(query)) ||
+        exercise.muscle_groups.some(mg => mg.toLowerCase().includes(query)) ||
         exercise.equipment.some(eq => eq.toLowerCase().includes(query))
       )
     }
@@ -139,150 +149,172 @@ export function LibraryPage() {
     setFilteredExercises(filtered)
   }
 
-  const categories = ['all', ...Array.from(new Set(exercises.map(ex => ex.category)))]
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case 'beginner':
+        return 'bg-green-500/20 text-green-300 border-green-500/30'
+      case 'intermediate':
+        return 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'
+      case 'advanced':
+        return 'bg-red-500/20 text-red-300 border-red-500/30'
+      default:
+        return 'bg-white/20 text-white border-white/30'
+    }
+  }
+
+  const handleBackToHome = () => {
+    setLocation('/')
+  }
+
+  const handleExerciseSelect = (exercise: Exercise) => {
+    // Placeholder for exercise selection
+    console.log('Selected exercise:', exercise)
+  }
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-muted rounded w-1/3"></div>
-          <div className="h-12 bg-muted rounded"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-48 bg-muted rounded"></div>
-            ))}
-          </div>
+      <ContentLayout title={t('app:nav.library')}>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
         </div>
-      </div>
+      </ContentLayout>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <BookOpen className="h-8 w-8" />
-          {t('library:title')}
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          {t('library:subtitle')}
-        </p>
-      </div>
+    <ContentLayout
+      title={t('app:nav.library')}
+      showNavigation={true}
+      onBack={handleBackToHome}
+      backLabel={t('app:nav.home')}
+      nextLabel=""
+      onNext={() => {}}
+    >
+      <div className="space-y-6">
+        {/* Search */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+          <Input
+            type="text"
+            placeholder={t('app:library.searchPlaceholder')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50"
+          />
+        </div>
 
-      {/* Filters */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            {/* Search */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={t('library:search.placeholder')}
-                value={searchQuery}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
-            {/* Category filter */}
-            <div className="flex gap-2">
-              {categories.map(category => (
-                <Button
-                  key={category}
-                  variant={categoryFilter === category ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setCategoryFilter(category)}
-                >
-                  {category === 'all' 
-                    ? t('library:filters.all')
-                    : t(`library:categories.${category.toLowerCase()}`)
-                  }
-                </Button>
-              ))}
-            </div>
+        {/* Category Filter */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+          <h3 className="text-white font-medium mb-3">
+            {t('app:library.categories')}
+          </h3>
+          
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  selectedCategory === category
+                    ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900'
+                    : 'bg-white/20 text-white hover:bg-white/30'
+                }`}
+              >
+                {t(`app:library.category.${category}`)}
+              </button>
+            ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Exercise grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredExercises.length === 0 ? (
-          <div className="col-span-full">
-            <Card>
-              <CardContent className="text-center py-12">
-                <Dumbbell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-medium mb-2">
-                  {exercises.length === 0 
-                    ? t('library:empty.title')
-                    : t('library:noResults.title')
-                  }
-                </h3>
-                <p className="text-muted-foreground">
-                  {exercises.length === 0 
-                    ? t('library:empty.message')
-                    : t('library:noResults.message')
-                  }
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        ) : (
-          filteredExercises.map((exercise) => (
-            <Card key={exercise.id} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg">{exercise.name}</CardTitle>
+        {/* Results Count */}
+        <div className="text-center">
+          <p className="text-white/80 text-sm">
+            {filteredExercises.length} {t('app:library.exercisesFound')}
+          </p>
+        </div>
+
+        {/* Exercises List */}
+        <div className="space-y-3">
+          {filteredExercises.map((exercise) => (
+            <div
+              key={exercise.id}
+              onClick={() => handleExerciseSelect(exercise)}
+              className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:bg-white/20 transition-all duration-200 transform hover:scale-105 cursor-pointer"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-white mb-1">
+                    {exercise.name}
+                  </h3>
+                  <p className="text-white/70 text-sm mb-2">
+                    {exercise.description}
+                  </p>
+                </div>
+                
+                <Badge className={getDifficultyColor(exercise.difficulty)}>
+                  {t(`app:library.difficulty.${exercise.difficulty}`)}
+                </Badge>
+              </div>
+
+              {/* Muscle Groups */}
+              <div className="mb-3">
                 <div className="flex flex-wrap gap-1">
-                  <Badge variant="secondary">{exercise.category}</Badge>
-                  {exercise.muscle_groups.slice(0, 2).map(muscle => (
-                    <Badge key={muscle} variant="outline" className="text-xs">
-                      {muscle}
+                  {exercise.muscle_groups.map((muscle) => (
+                    <Badge
+                      key={muscle}
+                      variant="secondary"
+                      className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-xs"
+                    >
+                      {t(`app:library.muscle.${muscle}`)}
                     </Badge>
                   ))}
-                  {exercise.muscle_groups.length > 2 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{exercise.muscle_groups.length - 2}
-                    </Badge>
-                  )}
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-3">
-                  {exercise.description}
-                </p>
-                
-                <div className="space-y-2">
-                  <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-1">
-                      {t('library:exercise.equipment')}
-                    </p>
-                    <div className="flex flex-wrap gap-1">
-                      {exercise.equipment.map(eq => (
-                        <Badge key={eq} variant="outline" className="text-xs">
-                          {eq}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-1">
-                      {t('library:exercise.muscles')}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {exercise.muscle_groups.join(', ')}
-                    </p>
-                  </div>
-                </div>
+              </div>
 
-                <Button variant="outline" size="sm" className="w-full mt-4">
-                  {t('library:exercise.viewDetails')}
-                </Button>
-              </CardContent>
-            </Card>
-          ))
+              {/* Equipment */}
+              {exercise.equipment.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {exercise.equipment.map((equipment) => (
+                    <Badge
+                      key={equipment}
+                      variant="outline"
+                      className="bg-white/10 text-white/80 border-white/30 text-xs"
+                    >
+                      {t(`app:library.equipment.${equipment}`)}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+
+              {exercise.equipment.length === 0 && (
+                <Badge
+                  variant="outline"
+                  className="bg-green-500/10 text-green-300 border-green-500/30 text-xs"
+                >
+                  {t('app:library.bodyweight')}
+                </Badge>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {filteredExercises.length === 0 && (
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center">
+            <div className="text-white/70 mb-4">
+              {t('app:library.noResults')}
+            </div>
+            <Button
+              onClick={() => {
+                setSearchQuery('')
+                setSelectedCategory('all')
+              }}
+              variant="ghost"
+              className="text-white hover:bg-white/20 rounded-xl"
+            >
+              {t('app:library.clearFilters')}
+            </Button>
+          </div>
         )}
       </div>
-    </div>
+    </ContentLayout>
   )
 }

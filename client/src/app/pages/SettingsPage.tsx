@@ -1,142 +1,283 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { Settings, User, Globe, Download, Trash2, LogOut } from 'lucide-react'
+import { ContentLayout } from '@/app/components/GradientLayout'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Switch } from '@/components/ui/switch'
 import { supabase } from '@/lib/supabase'
 
 export default function SettingsPage() {
-  const { t, i18n } = useTranslation(['settings', 'common'])
+  const { t, i18n } = useTranslation(['app', 'common'])
+  const [, setLocation] = useLocation()
   const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  
+  // Settings state
+  const [email, setEmail] = useState('')
+  const [notifications, setNotifications] = useState(true)
+  const [darkMode, setDarkMode] = useState(false)
+  const [units, setUnits] = useState<'metric' | 'imperial'>('imperial')
+  const [language, setLanguage] = useState('en')
 
   useEffect(() => {
-    // Get current user
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user)
-    })
+    loadUserData()
   }, [])
 
-  const handleSignOut = async () => {
-    setLoading(true)
+  const loadUserData = async () => {
     try {
-      await supabase.auth.signOut()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        setUser(user)
+        setEmail(user.email || '')
+      }
+      
+      // Load user preferences (placeholder)
+      setNotifications(true)
+      setDarkMode(false)
+      setUnits('imperial')
+      setLanguage(i18n.language)
     } catch (error) {
-      console.error('Error signing out:', error)
+      console.error('Error loading user data:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng)
+  const handleSaveSettings = async () => {
+    setSaving(true)
+    try {
+      // Save settings (placeholder)
+      console.log('Saving settings:', {
+        notifications,
+        darkMode,
+        units,
+        language
+      })
+      
+      // Change language if different
+      if (language !== i18n.language) {
+        await i18n.changeLanguage(language)
+      }
+    } catch (error) {
+      console.error('Error saving settings:', error)
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const exportData = async () => {
-    // Placeholder for data export functionality
-    console.log('Export data functionality to be implemented')
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut()
+      setLocation('/auth/signin')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
-  const clearData = async () => {
-    // Placeholder for data clearing functionality
-    console.log('Clear data functionality to be implemented')
+  const handleBackToHome = () => {
+    setLocation('/')
+  }
+
+  if (loading) {
+    return (
+      <ContentLayout title={t('app:nav.settings')}>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        </div>
+      </ContentLayout>
+    )
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <div className="flex items-center space-x-2 mb-6">
-        <Settings className="h-6 w-6" />
-        <h1 className="text-2xl font-bold">{t('settings:title')}</h1>
-      </div>
-
-      {/* Profile Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <User className="h-5 w-5" />
-            <span>{t('settings:profile.title')}</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {user && (
-            <div className="space-y-2">
-              <Label>{t('settings:profile.email')}</Label>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Language Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Globe className="h-5 w-5" />
-            <span>{t('settings:language.title')}</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex space-x-2">
-            <Button
-              variant={i18n.language === 'en' ? 'default' : 'outline'}
-              onClick={() => changeLanguage('en')}
-            >
-              English
-            </Button>
-            <Button
-              variant={i18n.language === 'pt-BR' ? 'default' : 'outline'}
-              onClick={() => changeLanguage('pt-BR')}
-            >
-              Português (BR)
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Data Management Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('settings:data.title')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-col space-y-2">
-            <Button variant="outline" onClick={exportData} className="justify-start">
-              <Download className="h-4 w-4 mr-2" />
-              {t('settings:data.export')}
-            </Button>
-            <Button variant="outline" onClick={clearData} className="justify-start text-destructive">
-              <Trash2 className="h-4 w-4 mr-2" />
-              {t('settings:data.clear')}
-            </Button>
-          </div>
+    <ContentLayout
+      title={t('app:nav.settings')}
+      showNavigation={true}
+      onBack={handleBackToHome}
+      onNext={handleSaveSettings}
+      nextLabel={t('app:settings.save')}
+      backLabel={t('app:nav.home')}
+      nextDisabled={saving}
+    >
+      <div className="space-y-6">
+        {/* Account Section */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+          <h2 className="text-lg font-bold text-white mb-4">
+            {t('app:settings.account')}
+          </h2>
           
-          <Alert>
-            <AlertDescription>
-              {t('settings:data.warning')}
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-      </Card>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-white text-sm mb-2 block">
+                {t('app:settings.email')}
+              </Label>
+              <Input
+                type="email"
+                value={email}
+                disabled
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/60 opacity-60"
+              />
+              <p className="text-white/60 text-xs mt-1">
+                {t('app:settings.emailReadonly')}
+              </p>
+            </div>
+          </div>
+        </div>
 
-      {/* Account Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('settings:account.title')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button 
-            variant="destructive" 
-            onClick={handleSignOut}
-            disabled={loading}
-            className="w-full"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            {loading ? t('common:loading') : t('settings:account.signOut')}
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+        {/* Preferences Section */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+          <h2 className="text-lg font-bold text-white mb-4">
+            {t('app:settings.preferences')}
+          </h2>
+          
+          <div className="space-y-6">
+            {/* Language */}
+            <div>
+              <Label className="text-white text-sm mb-2 block">
+                {t('app:settings.language')}
+              </Label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setLanguage('en')}
+                  className={`p-3 rounded-xl text-left transition-all duration-200 ${
+                    language === 'en' 
+                      ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
+                >
+                  <div className="font-medium">English</div>
+                  <div className="text-sm opacity-70">EN</div>
+                </button>
+                <button
+                  onClick={() => setLanguage('pt-BR')}
+                  className={`p-3 rounded-xl text-left transition-all duration-200 ${
+                    language === 'pt-BR' 
+                      ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
+                >
+                  <div className="font-medium">Português</div>
+                  <div className="text-sm opacity-70">PT-BR</div>
+                </button>
+              </div>
+            </div>
+
+            {/* Units */}
+            <div>
+              <Label className="text-white text-sm mb-2 block">
+                {t('app:settings.units')}
+              </Label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setUnits('imperial')}
+                  className={`p-3 rounded-xl text-left transition-all duration-200 ${
+                    units === 'imperial' 
+                      ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
+                >
+                  <div className="font-medium">{t('app:settings.imperial')}</div>
+                  <div className="text-sm opacity-70">lbs, ft, in</div>
+                </button>
+                <button
+                  onClick={() => setUnits('metric')}
+                  className={`p-3 rounded-xl text-left transition-all duration-200 ${
+                    units === 'metric' 
+                      ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
+                >
+                  <div className="font-medium">{t('app:settings.metric')}</div>
+                  <div className="text-sm opacity-70">kg, cm</div>
+                </button>
+              </div>
+            </div>
+
+            {/* Notifications */}
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-white text-sm font-medium">
+                  {t('app:settings.notifications')}
+                </Label>
+                <p className="text-white/70 text-xs mt-1">
+                  {t('app:settings.notificationsDesc')}
+                </p>
+              </div>
+              <Switch
+                checked={notifications}
+                onCheckedChange={setNotifications}
+                className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00BFA6] data-[state=checked]:to-[#64FFDA]"
+              />
+            </div>
+
+            {/* Dark Mode */}
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-white text-sm font-medium">
+                  {t('app:settings.darkMode')}
+                </Label>
+                <p className="text-white/70 text-xs mt-1">
+                  {t('app:settings.darkModeDesc')}
+                </p>
+              </div>
+              <Switch
+                checked={darkMode}
+                onCheckedChange={setDarkMode}
+                className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00BFA6] data-[state=checked]:to-[#64FFDA]"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Data Section */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+          <h2 className="text-lg font-bold text-white mb-4">
+            {t('app:settings.data')}
+          </h2>
+          
+          <div className="space-y-3">
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-white hover:bg-white/20 rounded-xl"
+            >
+              {t('app:settings.exportData')}
+            </Button>
+            
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-white hover:bg-white/20 rounded-xl"
+            >
+              {t('app:settings.syncData')}
+            </Button>
+          </div>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="bg-red-500/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-red-500/20">
+          <h2 className="text-lg font-bold text-red-300 mb-4">
+            {t('app:settings.dangerZone')}
+          </h2>
+          
+          <div className="space-y-3">
+            <Button
+              onClick={handleSignOut}
+              variant="ghost"
+              className="w-full justify-start text-red-300 hover:bg-red-500/20 rounded-xl"
+            >
+              {t('app:auth.signOut')}
+            </Button>
+            
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-red-300 hover:bg-red-500/20 rounded-xl"
+            >
+              {t('app:settings.deleteAccount')}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </ContentLayout>
   )
 }

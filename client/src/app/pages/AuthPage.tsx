@@ -1,248 +1,158 @@
 import { useState } from 'react'
 import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
+import { ContentLayout } from '@/app/components/GradientLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { supabase } from '@/lib/supabase'
 
 interface AuthPageProps {
-  params: { action?: string }
+  params: {
+    action?: string
+  }
 }
 
 export function AuthPage({ params }: AuthPageProps) {
-  const { t } = useTranslation(['app', 'auth'])
+  const { t } = useTranslation(['auth', 'common'])
   const [, setLocation] = useLocation()
+  const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [message, setMessage] = useState<string | null>(null)
+  const [error, setError] = useState('')
 
-  const isSignUp = params.action === 'signup'
-  const isReset = params.action === 'reset'
+  const action = params.action || 'signin'
+  const isSignUp = action === 'signup'
+  const isReset = action === 'reset'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
-    setMessage(null)
+    setError('')
 
     try {
       if (isReset) {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth/reset-confirm`
-        })
+        const { error } = await supabase.auth.resetPasswordForEmail(email)
         if (error) throw error
-        setMessage(t('auth:reset.emailSent'))
+        setError('Password reset email sent!')
       } else if (isSignUp) {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`
-          }
         })
         if (error) throw error
-        setMessage(t('auth:signup.checkEmail'))
+        setLocation('/')
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
-          password
+          password,
         })
         if (error) throw error
         setLocation('/')
       }
     } catch (error: any) {
-      setError(error.message || t('auth:errors.generic'))
+      setError(error.message)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleMagicLink = async () => {
-    if (!email) {
-      setError(t('auth:errors.emailRequired'))
-      return
-    }
-
-    setLoading(true)
-    setError(null)
-
-    try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`
-        }
-      })
-      if (error) throw error
-      setMessage(t('auth:magicLink.sent'))
-    } catch (error: any) {
-      setError(error.message || t('auth:errors.generic'))
-    } finally {
-      setLoading(false)
-    }
+  const getTitle = () => {
+    if (isReset) return t('auth:reset.title')
+    if (isSignUp) return t('auth:signup.title')
+    return t('auth:signin.title')
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-primary">GymBud</CardTitle>
-          <CardDescription>
-            {isReset 
-              ? t('auth:reset.title')
-              : isSignUp 
-                ? t('auth:signup.title')
-                : t('auth:signin.title')
-            }
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email field */}
+    <ContentLayout title={getTitle()}>
+      <div className="max-w-md mx-auto">
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-xl">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">{t('auth:fields.email')}</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('auth:placeholders.email')}
-                  className="pl-10"
-                  required
-                  disabled={loading}
-                />
-              </div>
+              <Label htmlFor="email" className="text-white font-medium">
+                {t('auth:email')}
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50"
+                placeholder={t('auth:emailPlaceholder')}
+              />
             </div>
 
-            {/* Password field (not shown for reset) */}
             {!isReset && (
               <div className="space-y-2">
-                <Label htmlFor="password">{t('auth:fields.password')}</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={t('auth:placeholders.password')}
-                    className="pl-10 pr-10"
-                    required
-                    disabled={loading}
-                    minLength={6}
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-1 top-1 h-8 w-8 p-0"
-                    onClick={() => setShowPassword(!showPassword)}
-                    disabled={loading}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
+                <Label htmlFor="password" className="text-white font-medium">
+                  {t('auth:password')}
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50"
+                  placeholder={t('auth:passwordPlaceholder')}
+                />
               </div>
             )}
 
-            {/* Error message */}
             {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
+              <div className="text-white bg-red-500/20 border border-red-500/30 rounded-lg p-3 text-sm">
+                {error}
+              </div>
             )}
 
-            {/* Success message */}
-            {message && (
-              <Alert>
-                <AlertDescription>{message}</AlertDescription>
-              </Alert>
-            )}
-
-            {/* Submit button */}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] h-12 text-base font-semibold rounded-xl transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
               {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-slate-900"></div>
               ) : (
-                isReset 
-                  ? t('auth:reset.submit')
-                  : isSignUp 
-                    ? t('auth:signup.submit')
-                    : t('auth:signin.submit')
+                <>
+                  {isReset && t('auth:reset.submit')}
+                  {isSignUp && t('auth:signup.submit')}
+                  {!isReset && !isSignUp && t('auth:signin.submit')}
+                </>
               )}
             </Button>
-
-            {/* Magic link option (for sign in only) */}
-            {!isSignUp && !isReset && (
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={handleMagicLink}
-                disabled={loading}
-              >
-                {t('auth:magicLink.button')}
-              </Button>
-            )}
           </form>
 
-          {/* Navigation links */}
-          <div className="mt-6 text-center space-y-2">
+          <div className="mt-6 text-center space-y-3">
             {!isReset && (
-              <div>
-                <span className="text-sm text-muted-foreground">
-                  {isSignUp ? t('auth:signup.hasAccount') : t('auth:signin.noAccount')}
-                </span>{' '}
-                <Button
-                  variant="link"
-                  className="p-0 h-auto text-sm"
+              <>
+                <button
                   onClick={() => setLocation(isSignUp ? '/auth/signin' : '/auth/signup')}
+                  className="text-white/80 hover:text-white text-sm underline transition-colors"
                 >
                   {isSignUp ? t('auth:signin.link') : t('auth:signup.link')}
-                </Button>
-              </div>
-            )}
-            
-            {!isSignUp && (
-              <div>
-                <Button
-                  variant="link"
-                  className="p-0 h-auto text-sm"
+                </button>
+                <br />
+                <button
                   onClick={() => setLocation('/auth/reset')}
+                  className="text-white/80 hover:text-white text-sm underline transition-colors"
                 >
                   {t('auth:reset.link')}
-                </Button>
-              </div>
+                </button>
+              </>
             )}
-
+            
             {isReset && (
-              <div>
-                <Button
-                  variant="link"
-                  className="p-0 h-auto text-sm"
-                  onClick={() => setLocation('/auth/signin')}
-                >
-                  {t('auth:signin.backToSignIn')}
-                </Button>
-              </div>
+              <button
+                onClick={() => setLocation('/auth/signin')}
+                className="text-white/80 hover:text-white text-sm underline transition-colors"
+              >
+                {t('auth:signin.link')}
+              </button>
             )}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </div>
+    </ContentLayout>
   )
 }

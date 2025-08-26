@@ -1,66 +1,79 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'wouter'
+import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { Play, Pause, Square, Plus, Trash2, Timer } from 'lucide-react'
+import { ContentLayout } from '@/app/components/GradientLayout'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 
-interface LoggedSet {
-  id: string
-  set_number: number
-  reps?: number
-  weight?: number
-  rpe?: number
-  notes?: string
+interface SessionPageProps {
+  params: {
+    id: string
+  }
 }
 
-interface SessionExercise {
-  id: string
-  exercise_name: string
-  order_index: number
-  logged_sets: LoggedSet[]
-}
-
-interface Session {
-  id: string
-  status: 'draft' | 'active' | 'completed'
-  started_at?: string
-  completed_at?: string
-  notes?: string
-  exercises: SessionExercise[]
-}
-
-export default function SessionPage() {
-  const { id } = useParams<{ id: string }>()
-  const { t } = useTranslation('session')
-  const [session, setSession] = useState<Session | null>(null)
+export default function SessionPage({ params }: SessionPageProps) {
+  const { t } = useTranslation(['app', 'common'])
+  const [, setLocation] = useLocation()
+  const [session, setSession] = useState<any>(null)
+  const [exercises, setExercises] = useState<any[]>([])
+  const [currentExercise, setCurrentExercise] = useState(0)
+  const [sets, setSets] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const [timer, setTimer] = useState(0)
-  const [isRunning, setIsRunning] = useState(false)
+  const [isTimerRunning, setIsTimerRunning] = useState(false)
 
   useEffect(() => {
-    // Load session data - placeholder for now
-    if (id) {
-      setSession({
-        id,
-        status: 'active',
-        started_at: new Date().toISOString(),
-        exercises: []
-      })
-    }
-  }, [id])
+    loadSession()
+    startTimer()
+  }, [params.id])
 
   useEffect(() => {
     let interval: NodeJS.Timeout
-    if (isRunning) {
+    if (isTimerRunning) {
       interval = setInterval(() => {
-        setTimer(timer => timer + 1)
+        setTimer(prev => prev + 1)
       }, 1000)
     }
     return () => clearInterval(interval)
-  }, [isRunning])
+  }, [isTimerRunning])
+
+  const loadSession = async () => {
+    try {
+      // Load session data (placeholder)
+      setSession({
+        id: params.id,
+        name: 'Push Day',
+        status: 'in_progress',
+        startedAt: new Date()
+      })
+
+      // Load exercises (placeholder)
+      setExercises([
+        { id: '1', name: 'Bench Press', sets: 3, reps: '8-10', weight: 135 },
+        { id: '2', name: 'Incline Dumbbell Press', sets: 3, reps: '10-12', weight: 60 },
+        { id: '3', name: 'Push-ups', sets: 2, reps: '15-20', weight: 0 },
+        { id: '4', name: 'Shoulder Press', sets: 3, reps: '8-10', weight: 95 },
+        { id: '5', name: 'Tricep Dips', sets: 2, reps: '12-15', weight: 0 }
+      ])
+
+      // Initialize sets for current exercise
+      setSets([
+        { id: '1', reps: '', weight: '', completed: false },
+        { id: '2', reps: '', weight: '', completed: false },
+        { id: '3', reps: '', weight: '', completed: false }
+      ])
+    } catch (error) {
+      console.error('Error loading session:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const startTimer = () => {
+    setIsTimerRunning(true)
+  }
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -68,131 +81,234 @@ export default function SessionPage() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
 
-  const startTimer = () => setIsRunning(true)
-  const pauseTimer = () => setIsRunning(false)
-  const stopTimer = () => {
-    setIsRunning(false)
-    setTimer(0)
+  const handleSetComplete = (setIndex: number) => {
+    const newSets = [...sets]
+    newSets[setIndex].completed = !newSets[setIndex].completed
+    setSets(newSets)
   }
 
-  if (!session) {
+  const handleSetChange = (setIndex: number, field: string, value: string) => {
+    const newSets = [...sets]
+    newSets[setIndex][field] = value
+    setSets(newSets)
+  }
+
+  const handleNextExercise = () => {
+    if (currentExercise < exercises.length - 1) {
+      setCurrentExercise(currentExercise + 1)
+      // Reset sets for next exercise
+      setSets([
+        { id: '1', reps: '', weight: '', completed: false },
+        { id: '2', reps: '', weight: '', completed: false },
+        { id: '3', reps: '', weight: '', completed: false }
+      ])
+    }
+  }
+
+  const handlePreviousExercise = () => {
+    if (currentExercise > 0) {
+      setCurrentExercise(currentExercise - 1)
+      // Reset sets for previous exercise
+      setSets([
+        { id: '1', reps: '', weight: '', completed: false },
+        { id: '2', reps: '', weight: '', completed: false },
+        { id: '3', reps: '', weight: '', completed: false }
+      ])
+    }
+  }
+
+  const handleFinishWorkout = () => {
+    setIsTimerRunning(false)
+    // Save session and navigate to history
+    setLocation('/history')
+  }
+
+  const handlePauseWorkout = () => {
+    setLocation('/')
+  }
+
+  if (loading) {
     return (
-      <div className="container mx-auto p-4">
-        <div className="text-center">Loading session...</div>
-      </div>
+      <ContentLayout title={t('app:session.loading')}>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        </div>
+      </ContentLayout>
     )
   }
 
+  const currentExerciseData = exercises[currentExercise]
+  const progress = ((currentExercise + 1) / exercises.length) * 100
+
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      {/* Session Header */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>{t('workout')}</span>
-            <Badge variant={session.status === 'active' ? 'default' : 'secondary'}>
-              {session.status}
-            </Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {/* Timer */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <Timer className="h-5 w-5" />
-              <span className="text-2xl font-mono">{formatTime(timer)}</span>
+    <ContentLayout
+      showNavigation={true}
+      onBack={currentExercise > 0 ? handlePreviousExercise : handlePauseWorkout}
+      onNext={currentExercise < exercises.length - 1 ? handleNextExercise : handleFinishWorkout}
+      nextLabel={currentExercise < exercises.length - 1 ? t('app:session.nextExercise') : t('app:session.finish')}
+      backLabel={currentExercise > 0 ? t('app:session.previous') : t('app:session.pause')}
+    >
+      <div className="space-y-6">
+        {/* Progress Header */}
+        <div className="mb-4 sm:mb-8 flex-shrink-0">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-white text-sm font-medium">
+              {t('app:session.exercise')} {currentExercise + 1} {t('common:of')} {exercises.length}
+            </span>
+            <span className="text-white text-sm font-medium">
+              {Math.round(progress)}% {t('app:session.complete')}
+            </span>
+          </div>
+          <div className="w-full bg-white/20 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] h-2 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Timer */}
+        <div className="text-center">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 inline-block">
+            <div className="text-2xl font-bold text-white mb-1">
+              {formatTime(timer)}
             </div>
-            <div className="flex space-x-2">
-              <Button onClick={startTimer} disabled={isRunning} size="sm">
-                <Play className="h-4 w-4" />
-              </Button>
-              <Button onClick={pauseTimer} disabled={!isRunning} size="sm" variant="outline">
-                <Pause className="h-4 w-4" />
-              </Button>
-              <Button onClick={stopTimer} size="sm" variant="outline">
-                <Square className="h-4 w-4" />
-              </Button>
+            <div className="text-white/70 text-sm">
+              {t('app:session.workoutTime')}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Exercises */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>{t('exercises.title')}</span>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              {t('exercises.add')}
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {session.exercises.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              {t('exercises.empty')}
-            </p>
-          ) : (
-            <div className="space-y-4">
-              {session.exercises.map((exercise) => (
-                <div key={exercise.id} className="border rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold">{exercise.exercise_name}</h3>
-                    <Button size="sm" variant="ghost">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+        {/* Current Exercise */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-bold text-white mb-2">
+              {currentExerciseData?.name}
+            </h2>
+            <div className="flex justify-center gap-4 text-sm text-white/80">
+              <span>{currentExerciseData?.sets} {t('app:session.sets')}</span>
+              <span>{currentExerciseData?.reps} {t('app:session.reps')}</span>
+              {currentExerciseData?.weight > 0 && (
+                <span>{currentExerciseData?.weight} lbs</span>
+              )}
+            </div>
+          </div>
+
+          {/* Sets */}
+          <div className="space-y-4">
+            {sets.map((set, index) => (
+              <div key={set.id} className="bg-white/10 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-white font-medium">
+                    {t('app:session.set')} {index + 1}
+                  </span>
+                  <Badge 
+                    variant={set.completed ? "default" : "secondary"}
+                    className={
+                      set.completed 
+                        ? "bg-green-500/20 text-green-300 border-green-500/30"
+                        : "bg-white/20 text-white border-white/30"
+                    }
+                  >
+                    {set.completed ? t('app:session.completed') : t('app:session.pending')}
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div>
+                    <Label className="text-white text-sm mb-1 block">
+                      {t('app:session.reps')}
+                    </Label>
+                    <Input
+                      type="number"
+                      value={set.reps}
+                      onChange={(e) => handleSetChange(index, 'reps', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                      placeholder="0"
+                    />
                   </div>
                   
-                  {/* Sets */}
-                  <div className="space-y-2">
-                    {exercise.logged_sets.map((set) => (
-                      <div key={set.id} className="grid grid-cols-5 gap-2 items-center">
-                        <Label className="text-sm">{t('set.setNumber')} {set.set_number}</Label>
-                        <Input 
-                          type="number" 
-                          placeholder={t('set.reps')}
-                          value={set.reps || ''}
-                          className="text-sm"
-                        />
-                        <Input 
-                          type="number" 
-                          placeholder={t('set.weight')}
-                          value={set.weight || ''}
-                          className="text-sm"
-                        />
-                        <Input 
-                          type="number" 
-                          placeholder={t('set.rpe')}
-                          value={set.rpe || ''}
-                          className="text-sm"
-                        />
-                        <Button size="sm" variant="ghost">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                    <Button size="sm" variant="outline" className="w-full">
-                      <Plus className="h-4 w-4 mr-2" />
-                      {t('set.add')}
-                    </Button>
+                  {currentExerciseData?.weight > 0 && (
+                    <div>
+                      <Label className="text-white text-sm mb-1 block">
+                        {t('app:session.weight')} (lbs)
+                      </Label>
+                      <Input
+                        type="number"
+                        value={set.weight}
+                        onChange={(e) => handleSetChange(index, 'weight', e.target.value)}
+                        className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                        placeholder="0"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <Button
+                  onClick={() => handleSetComplete(index)}
+                  variant={set.completed ? "secondary" : "default"}
+                  className={
+                    set.completed 
+                      ? "w-full bg-white/20 text-white hover:bg-white/30"
+                      : "w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1]"
+                  }
+                >
+                  {set.completed ? t('app:session.undo') : t('app:session.markComplete')}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Exercise List */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+          <h3 className="text-lg font-bold text-white mb-4">
+            {t('app:session.exerciseList')}
+          </h3>
+          
+          <div className="space-y-2">
+            {exercises.map((exercise, index) => (
+              <div
+                key={exercise.id}
+                className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
+                  index === currentExercise 
+                    ? 'bg-white/20'
+                    : index < currentExercise 
+                      ? 'bg-green-500/20'
+                      : 'bg-white/10'
+                }`}
+              >
+                <div>
+                  <div className="text-white font-medium">
+                    {exercise.name}
+                  </div>
+                  <div className="text-white/70 text-sm">
+                    {exercise.sets} × {exercise.reps}
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Actions */}
-      <div className="flex space-x-4">
-        <Button className="flex-1">
-          {t('actions.save')}
-        </Button>
-        <Button variant="outline" className="flex-1">
-          {t('actions.complete')}
-        </Button>
+                
+                <Badge 
+                  variant="secondary"
+                  className={
+                    index === currentExercise 
+                      ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
+                      : index < currentExercise 
+                        ? "bg-green-500/20 text-green-300 border-green-500/30"
+                        : "bg-white/20 text-white border-white/30"
+                  }
+                >
+                  {index === currentExercise 
+                    ? t('app:session.current')
+                    : index < currentExercise 
+                      ? t('app:session.completed')
+                      : t('app:session.upcoming')
+                  }
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </ContentLayout>
   )
 }

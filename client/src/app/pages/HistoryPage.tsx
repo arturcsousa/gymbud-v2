@@ -1,30 +1,32 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { Calendar, TrendingUp, Search } from 'lucide-react'
+import { ContentLayout } from '@/app/components/GradientLayout'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { dataManager, Session } from '@/app/db/indexeddb'
 import { supabase } from '@/lib/supabase'
 
+interface Session {
+  id: string
+  name: string
+  date: string
+  status: 'completed' | 'in_progress' | 'planned'
+  duration?: number
+  exercises?: number
+  totalSets?: number
+  totalReps?: number
+}
+
 export function HistoryPage() {
-  const { t } = useTranslation(['app', 'history'])
+  const { t } = useTranslation(['app', 'common'])
   const [, setLocation] = useLocation()
   const [sessions, setSessions] = useState<Session[]>([])
-  const [filteredSessions, setFilteredSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<Session['status'] | 'all'>('all')
 
   useEffect(() => {
     loadSessions()
   }, [])
-
-  useEffect(() => {
-    filterSessions()
-  }, [sessions, searchQuery, statusFilter])
 
   const loadSessions = async () => {
     try {
@@ -40,216 +42,158 @@ export function HistoryPage() {
     }
   }
 
-  const filterSessions = () => {
-    let filtered = sessions
-
-    // Filter by status
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(session => session.status === statusFilter)
-    }
-
-    // Filter by search query
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(session => 
-        session.data?.name?.toLowerCase().includes(query) ||
-        session.data?.exercises?.some((ex: any) => 
-          ex.name?.toLowerCase().includes(query)
-        )
-      )
-    }
-
-    setFilteredSessions(filtered)
-  }
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return new Intl.DateTimeFormat('en-US', {
       weekday: 'short',
       month: 'short',
-      day: 'numeric',
-      year: 'numeric'
+      day: 'numeric'
     }).format(date)
   }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
-        return <Badge variant="default">{t('app:session.completed')}</Badge>
+        return <Badge variant="default" className="bg-green-500/20 text-green-300 border-green-500/30">{t('app:session.completed')}</Badge>
       case 'in_progress':
-        return <Badge variant="secondary">{t('app:session.inProgress')}</Badge>
+        return <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30">{t('app:session.inProgress')}</Badge>
       case 'planned':
-        return <Badge variant="outline">{t('app:session.planned')}</Badge>
+        return <Badge variant="outline" className="bg-white/20 text-white border-white/30">{t('app:session.planned')}</Badge>
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline" className="bg-white/20 text-white border-white/30">{status}</Badge>
     }
   }
 
-  const getSessionStats = (session: Session) => {
-    const exercises = session.data?.exercises || []
-    const totalSets = exercises.reduce((acc: number, ex: any) => acc + (ex.sets?.length || 0), 0)
-    const duration = session.data?.duration ? Math.round(session.data.duration / 60) : null
+  const handleSessionClick = (sessionId: string) => {
+    setLocation(`/history/${sessionId}`)
+  }
 
-    return { exercises: exercises.length, sets: totalSets, duration }
+  const handleBackToHome = () => {
+    setLocation('/')
   }
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-muted rounded w-1/3"></div>
-          <div className="h-12 bg-muted rounded"></div>
-          <div className="space-y-4">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-24 bg-muted rounded"></div>
-            ))}
-          </div>
+      <ContentLayout title={t('app:nav.history')}>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
         </div>
-      </div>
+      </ContentLayout>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <TrendingUp className="h-8 w-8" />
-          {t('history:title')}
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          {t('history:subtitle')}
-        </p>
-      </div>
-
-      {/* Filters */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            {/* Search */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={t('history:search.placeholder')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
+    <ContentLayout
+      title={t('app:nav.history')}
+      showNavigation={true}
+      onBack={handleBackToHome}
+      backLabel={t('app:nav.home')}
+      nextLabel=""
+      onNext={() => {}}
+    >
+      <div className="space-y-4">
+        {/* Stats Summary */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+          <h2 className="text-lg font-bold text-white mb-4">
+            {t('app:history.summary')}
+          </h2>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">
+                {sessions.length}
+              </div>
+              <div className="text-white/70 text-sm">
+                {t('app:history.totalWorkouts')}
+              </div>
             </div>
-
-            {/* Status filter */}
-            <div className="flex gap-2">
-              <Button
-                variant={statusFilter === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('all')}
-              >
-                {t('history:filters.all')}
-              </Button>
-              <Button
-                variant={statusFilter === 'completed' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('completed')}
-              >
-                {t('app:session.status.completed')}
-              </Button>
-              <Button
-                variant={statusFilter === 'in_progress' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('in_progress')}
-              >
-                {t('app:session.status.in_progress')}
-              </Button>
+            
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">
+                {Math.round(sessions.reduce((acc, s) => acc + (s.data?.duration || 0), 0) / sessions.length) || 0}
+              </div>
+              <div className="text-white/70 text-sm">
+                {t('app:history.avgDuration')} min
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">
+                {sessions.reduce((acc, s) => acc + (s.data?.exercises?.length || 0), 0)}
+              </div>
+              <div className="text-white/70 text-sm">
+                {t('app:history.totalExercises')}
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-2xl font-bold text-white">
+                {sessions.reduce((acc, s) => acc + (s.data?.exercises?.reduce((acc, ex) => acc + (ex.sets?.length || 0), 0) || 0), 0)}
+              </div>
+              <div className="text-white/70 text-sm">
+                {t('app:history.totalSets')}
+              </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Sessions list */}
-      <div className="space-y-4">
-        {filteredSessions.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-12">
-              <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="font-medium mb-2">
-                {sessions.length === 0 
-                  ? t('history:empty.title')
-                  : t('history:noResults.title')
-                }
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                {sessions.length === 0 
-                  ? t('history:empty.message')
-                  : t('history:noResults.message')
-                }
-              </p>
-              {sessions.length === 0 && (
-                <Button onClick={() => setLocation('/')}>
-                  {t('history:empty.startFirst')}
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        ) : (
-          filteredSessions.map((session) => {
-            const stats = getSessionStats(session)
-            
-            return (
-              <Card 
-                key={session.id}
-                className="cursor-pointer hover:bg-muted/50 transition-colors"
-                onClick={() => setLocation(`/history/${session.id}`)}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-semibold text-lg">
-                          {session.data?.name || t('app:session.workout')}
-                        </h3>
-                        {getStatusBadge(session.status)}
-                      </div>
-                      
-                      <p className="text-muted-foreground mb-3">
-                        {formatDate(session.date)}
-                      </p>
-                      
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>
-                          {stats.exercises} {t('history:stats.exercises')}
-                        </span>
-                        <span>
-                          {stats.sets} {t('history:stats.sets')}
-                        </span>
-                        {stats.duration && (
-                          <span>
-                            {stats.duration} {t('history:stats.minutes')}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <div className="text-right">
-                      <Button variant="ghost" size="sm">
-                        {t('history:actions.view')}
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )
-          })
+        {/* Sessions List */}
+        <div className="space-y-3">
+          {sessions.map((session) => (
+            <div
+              key={session.id}
+              onClick={() => handleSessionClick(session.id)}
+              className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:bg-white/20 transition-all duration-200 transform hover:scale-105 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-white">
+                    {session.data?.name || t('app:session.workout')}
+                  </h3>
+                  <p className="text-white/70 text-sm">
+                    {formatDate(session.date)}
+                  </p>
+                </div>
+                
+                {getStatusBadge(session.status)}
+              </div>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm text-white/80">
+                <div>
+                  <span className="font-medium">{session.data?.duration || 0}</span>
+                  <span className="ml-1">{t('app:session.minutes')}</span>
+                </div>
+                <div>
+                  <span className="font-medium">{session.data?.exercises?.length || 0}</span>
+                  <span className="ml-1">{t('app:session.exercises')}</span>
+                </div>
+                <div>
+                  <span className="font-medium">{session.data?.exercises?.reduce((acc, ex) => acc + (ex.sets?.length || 0), 0) || 0}</span>
+                  <span className="ml-1">{t('app:session.sets')}</span>
+                </div>
+                <div>
+                  <span className="font-medium">{session.data?.exercises?.reduce((acc, ex) => acc + (ex.sets?.reduce((acc, set) => acc + (set.reps || 0), 0) || 0), 0) || 0}</span>
+                  <span className="ml-1">{t('app:session.reps')}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {sessions.length === 0 && (
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center">
+            <div className="text-white/70 mb-4">
+              {t('app:history.noSessions')}
+            </div>
+            <Button
+              onClick={handleBackToHome}
+              className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] h-11 px-6 text-base font-semibold rounded-xl transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              {t('app:session.start')}
+            </Button>
+          </div>
         )}
       </div>
-
-      {/* Load more button (for future pagination) */}
-      {filteredSessions.length >= 50 && (
-        <div className="text-center">
-          <Button variant="outline">
-            {t('history:actions.loadMore')}
-          </Button>
-        </div>
-      )}
-    </div>
+    </ContentLayout>
   )
 }

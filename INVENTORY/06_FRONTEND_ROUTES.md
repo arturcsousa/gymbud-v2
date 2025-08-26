@@ -27,25 +27,31 @@ Progressive Web Application (PWA) built with Vite + React using `wouter` for cli
 
 ### App Shell Structure
 ```
-AppShell.tsx (Main app wrapper)
+AppShell.tsx (Main app wrapper with GradientLayout)
 ├── TanStack Query Client (with persistence)
 ├── Supabase Auth Provider
 ├── Sync Engine Integration
 ├── Offline Indicator
 ├── Conflict Banner
 ├── AuthGuard (route protection)
-├── AppHeader (navigation + user menu)
-└── Route Components
-    ├── AuthPage.tsx (signin/signup/reset flows)
+└── Route Components (all using onboarding-style design)
+    ├── AuthPage.tsx (glassmorphic form with gradient background)
     ├── OnboardingPage.tsx (12-step wizard for profile setup)
-    ├── HomePage.tsx (dashboard with session summary)
-    ├── SessionPage.tsx (session runner with workout logging and timer)
-    ├── HistoryPage.tsx (workout history listing)
+    ├── HomePage.tsx (dashboard with glassmorphic cards and session summary)
+    ├── SessionPage.tsx (session runner with progress bar, timer, and exercise cards)
+    ├── HistoryPage.tsx (workout history with stats summary and session cards)
     ├── HistoryDetailPage.tsx (session detail view)
-    ├── LibraryPage.tsx (exercise database)
-    ├── SettingsPage.tsx (account management)
+    ├── LibraryPage.tsx (exercise database with search, filters, and interactive cards)
+    ├── SettingsPage.tsx (organized sections with toggle switches and preferences)
     └── NotFoundPage.tsx (404 fallback)
 ```
+
+### Design System Components
+- **GradientLayout**: Main container with gradient background (#005870 to #0C8F93 to #18C7B6)
+- **ContentLayout**: Page wrapper with title, navigation bar, and scrollable content area
+- **Glassmorphic Cards**: Semi-transparent cards with backdrop blur and subtle shadows
+- **Navigation Bar**: Back/next buttons with gradient styling and smooth transitions
+- **Interactive Elements**: Toggle switches, category buttons, search inputs with consistent styling
 
 ### PWA Infrastructure
 - **Service Worker**: VitePWA plugin with Workbox caching strategies

@@ -7,7 +7,7 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Library**: `react-i18next` + `i18next-browser-languagedetector`
 - **Languages**: EN (default), PT-BR
 - **Detection**: localStorage → navigator → htmlTag fallback
-- **Namespaces**: 14 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation)
+- **Namespaces**: 16 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, library)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
 ## File Structure
@@ -73,9 +73,83 @@ client/src/i18n/
 {
   "nav": {
     "home": "Home",
+    "session": "Session",
     "history": "History", 
     "library": "Library",
     "settings": "Settings"
+  },
+  "settings": {
+    "account": "Account",
+    "preferences": "Preferences",
+    "data": "Data",
+    "dangerZone": "Danger Zone",
+    "email": "Email",
+    "emailReadonly": "Email cannot be changed",
+    "language": "Language",
+    "units": "Units",
+    "imperial": "Imperial",
+    "metric": "Metric",
+    "notifications": "Notifications",
+    "notificationsDesc": "Receive workout reminders and progress updates",
+    "darkMode": "Dark Mode",
+    "darkModeDesc": "Switch between light and dark themes",
+    "exportData": "Export Data",
+    "syncData": "Sync Data",
+    "deleteAccount": "Delete Account",
+    "save": "Save Settings"
+  },
+  "library": {
+    "searchPlaceholder": "Search exercises...",
+    "categories": "Categories",
+    "category": {
+      "all": "All",
+      "chest": "Chest",
+      "back": "Back", 
+      "shoulders": "Shoulders",
+      "arms": "Arms",
+      "legs": "Legs",
+      "core": "Core",
+      "cardio": "Cardio"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate", 
+      "advanced": "Advanced"
+    },
+    "muscle": {
+      "chest": "Chest",
+      "triceps": "Triceps",
+      "shoulders": "Shoulders",
+      "lats": "Lats",
+      "rhomboids": "Rhomboids",
+      "biceps": "Biceps",
+      "quadriceps": "Quadriceps",
+      "glutes": "Glutes",
+      "hamstrings": "Hamstrings",
+      "deltoids": "Deltoids",
+      "abs": "Abs",
+      "core": "Core",
+      "erector spinae": "Erector Spinae"
+    },
+    "equipment": {
+      "barbell": "Barbell",
+      "bench": "Bench",
+      "pull-up bar": "Pull-up Bar",
+      "squat rack": "Squat Rack",
+      "dumbbells": "Dumbbells"
+    },
+    "bodyweight": "Bodyweight",
+    "exercisesFound": "exercises found",
+    "noResults": "No exercises found matching your criteria",
+    "clearFilters": "Clear Filters"
+  },
+  "sync": {
+    "offline": "You're offline",
+    "online": "Back online",
+    "syncing": "Syncing...",
+    "syncNow": "Sync Now",
+    "pendingChanges": "pending changes",
+    "conflicts": "Data conflicts detected"
   },
   "auth": {
     "signOut": "Sign Out"
@@ -84,12 +158,6 @@ client/src/i18n/
     "title": "You're Offline",
     "message": "Changes will sync when you're back online",
     "indicator": "Offline"
-  },
-  "sync": {
-    "conflicts": "Sync Conflicts Detected",
-    "conflictsMessage": "Some data conflicts need your attention",
-    "resolve": "Resolve",
-    "retry": "Retry Sync"
   },
   "session": {
     "workout": "Workout",

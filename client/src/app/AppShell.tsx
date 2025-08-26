@@ -5,10 +5,10 @@ import { persistQueryClient } from '@tanstack/react-query-persist-client'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 
 import { supabase } from '@/lib/supabase'
+import { GradientLayout } from '@/app/components/GradientLayout'
 
 import { AuthGuard } from '@/app/components/AuthGuard'
 import { OfflineIndicator } from '@/app/components/OfflineIndicator'
-import { AppHeader } from '@/app/components/AppHeader'
 import { ConflictBanner } from '@/app/components/ConflictBanner'
 
 // Pages
@@ -72,28 +72,25 @@ export function AppShell({ children }: AppShellProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
+      <GradientLayout>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+        </div>
+      </GradientLayout>
     )
   }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-background">
+      <GradientLayout>
         {/* Offline indicator */}
         <OfflineIndicator />
         
         {/* Conflict resolution banner */}
         <ConflictBanner />
-        
-        {/* App header (only show when authenticated and not on auth pages) */}
-        {user && !location.startsWith('/auth') && (
-          <AppHeader user={user} />
-        )}
 
         {/* Main content */}
-        <main className={user && !location.startsWith('/auth') ? 'pt-16' : ''}>
+        <div className="flex-1 flex flex-col">
           {children || (
             <Switch>
               {/* Auth routes */}
@@ -113,8 +110,8 @@ export function AppShell({ children }: AppShellProps) {
               <Route component={NotFoundPage} />
             </Switch>
           )}
-        </main>
-      </div>
+        </div>
+      </GradientLayout>
     </QueryClientProvider>
   )
 }
