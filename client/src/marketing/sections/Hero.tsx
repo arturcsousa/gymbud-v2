@@ -70,7 +70,9 @@ export default function Hero() {
                 className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-full border-2 transition-all duration-200 hover:scale-105"
                 style={{ 
                   borderColor: PALETTE.orange, 
-                  color: PALETTE.orange 
+                  color: PALETTE.orange,
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)'
                 }}
               >
                 {t('common:cta.see_how')}
