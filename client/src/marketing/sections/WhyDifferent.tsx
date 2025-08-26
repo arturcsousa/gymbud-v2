@@ -40,19 +40,24 @@ export default function WhyDifferent() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.35, delay: i * 0.05 }}
-              className="relative rounded-2xl p-[1px]"
-              style={{
-                background: `linear-gradient(180deg, ${f.accent}, transparent 60%)`,
-                boxShadow: `0 0 24px -6px ${f.accent}66`,
-              }}
+              className="relative"
             >
-              <div className="rounded-2xl glass ring-faint">
-                <div className="flex items-start gap-3 p-6 md:p-7">
+              <div 
+                className="rounded-2xl p-6 md:p-7"
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  boxShadow: `0 0 24px -6px ${f.accent}`
+                }}
+              >
+                <div className="flex items-start gap-3">
                   <div
-                    className="neon-icon flex h-10 w-10 items-center justify-center rounded-full"
+                    className="flex h-10 w-10 items-center justify-center rounded-full"
                     style={{
-                      boxShadow: `0 0 18px ${f.accent}99, inset 0 0 12px ${f.accent}55`,
-                      background: `${f.accent}22`, color: f.accent,
+                      boxShadow: `0 0 24px ${f.accent}, inset 0 0 12px ${f.accent}`,
+                      background: `${f.accent}22`, 
+                      color: f.accent,
                     }}
                     aria-hidden
                   >
@@ -63,7 +68,7 @@ export default function WhyDifferent() {
                     <p className="mt-1 text-sm leading-6 text-white/70">{t(f.descKey)}</p>
                   </div>
                 </div>
-                <div className="border-t border-white/10 px-6 py-4 md:px-7">
+                <div className="border-t border-white/10 mt-4 pt-4">
                   <a
                     href={ctaHref('why', { feature: f.titleKey })}
                     className="rounded-lg px-3 py-2 text-sm font-medium text-white/90 transition hover:text-white"

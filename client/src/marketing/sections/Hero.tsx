@@ -10,9 +10,7 @@ export default function Hero() {
       id="hero"
       className="relative overflow-hidden"
       style={{
-        background:
-          `radial-gradient(550px 300px at 110% 40%, ${PALETTE.aqua}, transparent 60%),
-           linear-gradient(180deg, ${PALETTE.deepTeal}, #063e50 65%, ${PALETTE.deepTeal})`,
+        background: 'linear-gradient(180deg, #005870, #042d3a)',
       }}
     >
       {/* decorative glow in brand orange */}
@@ -23,7 +21,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl font-extrabold tracking-tight text-white md:text-5xl"
+            className="text-5xl font-extrabold tracking-tight text-white md:text-6xl"
           >
             {t('landing:hero.title')}
           </motion.h1>
@@ -44,9 +42,15 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right visual block approximating the orange slice */}
+        {/* Right visual block with radial gradient and glow */}
         <div className="relative h-72 md:h-96">
-          <div className="absolute inset-0 rounded-3xl bg-[#FF9F1C] opacity-90" />
+          <div 
+            className="absolute inset-0 rounded-3xl" 
+            style={{
+              background: 'radial-gradient(circle at center, #FF9F1C, #e68000 70%)',
+              boxShadow: '0 0 60px #FF9F1Caa'
+            }}
+          />
           <div className="absolute -left-10 top-10 h-16 w-16 rounded-full bg-[#18C7B6] opacity-80 blur-sm" />
           <div className="absolute -right-8 bottom-14 h-24 w-24 rounded-full bg-[#0C8F93] opacity-70 blur-sm" />
         </div>

@@ -7,10 +7,17 @@ export default function FinalCta() {
     <section
       className="relative overflow-hidden"
       style={{
-        background: `linear-gradient(135deg, ${PALETTE.deepTeal}, ${PALETTE.teal} 50%, ${PALETTE.aqua})`,
+        background: `linear-gradient(135deg, #042d3a, #005870 50%, #0C8F93)`,
       }}
     >
-      <div className="mx-auto max-w-4xl px-6 py-20 text-center text-white">
+      {/* Aqua glow blob behind CTA */}
+      <div 
+        className="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
+        style={{
+          background: `radial-gradient(circle, ${PALETTE.aqua}44, transparent 70%)`,
+        }}
+      />
+      <div className="relative mx-auto max-w-4xl px-6 py-20 text-center text-white">
         <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">
           {t('landing:final_cta.title')}
         </h2>

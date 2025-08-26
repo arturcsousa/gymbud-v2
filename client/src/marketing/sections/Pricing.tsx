@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ctaHref } from '../theme';
 
-const CARD = 'rounded-2xl glass ring-faint p-6 flex flex-col text-white';
-
 export default function Pricing() {
   const { t } = useTranslation(['landing', 'common']);
   const plans = [
@@ -19,9 +17,24 @@ export default function Pricing() {
         </div>
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
           {plans.map((p, i) => (
-            <article key={i} className={`${CARD} ${p.popular ? 'ring-2 ring-white/50' : ''}`}>
+            <article 
+              key={i} 
+              className={`rounded-2xl p-6 flex flex-col text-white ${
+                p.popular ? 'ring-2 ring-white/50' : 'ring-1 ring-white/15'
+              }`}
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                backdropFilter: 'blur(24px)',
+              }}
+            >
               {p.ribbon ? (
-                <div className="mb-3 w-fit rounded-full bg-white/10 px-3 py-1 text-xs text-white/85">
+                <div 
+                  className="mb-3 w-fit rounded-full px-3 py-1 text-xs text-white/85"
+                  style={{
+                    background: 'linear-gradient(135deg, #18C7B6, #0C8F93)',
+                    boxShadow: '0 0 12px #18C7B6aa'
+                  }}
+                >
                   {p.ribbon}
                 </div>
               ) : null}
