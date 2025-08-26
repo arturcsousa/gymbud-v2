@@ -1,42 +1,76 @@
 import { useTranslation } from 'react-i18next';
-import { Dumbbell, Flame, Activity } from 'lucide-react';
+import { Dumbbell, Flame, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
 import { PALETTE } from '../theme';
 
 export default function Programs() {
   const { t } = useTranslation(['landing', 'common']);
-  const items = [
-    { icon: <Dumbbell />, title: t('landing:programs.muscle.title'),    desc: t('landing:programs.muscle.desc'),    color: PALETTE.aqua },
-    { icon: <Flame />,    title: t('landing:programs.weight.title'),    desc: t('landing:programs.weight.desc'),    color: PALETTE.orange },
-    { icon: <Activity />, title: t('landing:programs.endurance.title'), desc: t('landing:programs.endurance.desc'), color: PALETTE.teal },
+  
+  const programs = [
+    { 
+      icon: <Dumbbell className="h-8 w-8" />, 
+      title: t('landing:programs.muscle.title'),    
+      desc: t('landing:programs.muscle.desc'),    
+      color: PALETTE.orange 
+    },
+    { 
+      icon: <Flame className="h-8 w-8" />, 
+      title: t('landing:programs.weight.title'),    
+      desc: t('landing:programs.weight.desc'),    
+      color: PALETTE.deepTeal 
+    },
+    { 
+      icon: <Activity className="h-8 w-8" />, 
+      title: t('landing:programs.endurance.title'), 
+      desc: t('landing:programs.endurance.desc'), 
+      color: PALETTE.aqua 
+    },
   ];
+
   return (
-    <section id="programs" className="bg-[#063e50]">
-      <div className="mx-auto max-w-7xl px-6 py-16 text-white">
-        <h2 className="text-3xl font-extrabold tracking-tight">{t('landing:programs.title')}</h2>
-        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {items.map((it, i) => (
-            <div 
-              key={i} 
-              className="p-[1px] rounded-2xl"
-              style={{
-                background: `linear-gradient(180deg, transparent, ${it.color} 60%)`,
-              }}
-            >
-              <article 
-                className="rounded-2xl p-6 glass ring-faint text-white h-full"
-                style={{ boxShadow: `0 0 24px -10px ${it.color}aa` }}
+    <section id="programs" style={{ background: PALETTE.orange }} className="py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
+            {t('landing:programs.title')}
+          </h2>
+          <h3 className="text-2xl lg:text-3xl font-bold" style={{ color: PALETTE.deepTeal }}>
+            Programas & Objetivos
+          </h3>
+        </div>
+
+        {/* Carousel-style layout */}
+        <div className="relative">
+          {/* Navigation arrows */}
+          <button className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-all">
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-all">
+            <ChevronRight className="h-6 w-6" />
+          </button>
+
+          {/* Program cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-16">
+            {programs.map((program, i) => (
+              <div 
+                key={i} 
+                className="rounded-2xl p-8 text-center transform hover:scale-105 transition-all duration-300"
+                style={{ backgroundColor: program.color }}
               >
-                <div
-                  className="neon-icon mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full"
-                  style={{ color: it.color, background: `${it.color}22`, boxShadow: `0 0 18px ${it.color}88` }}
-                >
-                  <div className="h-5 w-5">{it.icon}</div>
+                <div className="mb-6">
+                  <div 
+                    className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4"
+                    style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
+                  >
+                    {program.icon}
+                  </div>
                 </div>
-                <h3 className="font-semibold">{it.title}</h3>
-                <p className="mt-1 text-sm text-white/80">{it.desc}</p>
-              </article>
-            </div>
-          ))}
+                <h3 className="text-xl font-bold text-white mb-4">{program.title}</h3>
+                <p className="text-white/90 text-sm leading-relaxed">
+                  {program.desc}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## August 26, 2025 11:52 ET
+**Redesigned** landing page to match provided design with exact color palette.
+- Updated: Color palette to use exact design colors (#005870, #0C8F93, #18C7B6, #FF9F1C)
+- Redesigned: `Hero.tsx` with curved gradient background, proper button styling, and full-height layout
+- Redesigned: `HowItWorks.tsx` with person image placeholder on right and feature list on left
+- Redesigned: `WhyDifferent.tsx` with orange background and colorful program cards layout
+- Redesigned: `Programs.tsx` with carousel-style card layout and navigation arrows
+- Redesigned: `Pricing.tsx` with simple white cards on teal background matching design
+- Fixed: Removed unused PALETTE import from Hero.tsx to resolve TypeScript build error
+- Context: Complete visual redesign to match provided mockup, maintaining all translation functionality
+- Migrations: N/A (design changes only)
+
 ## August 26, 2025 11:46 ET
 **Fixed** translation key issues across all marketing components.
 - Fixed: `Progress.tsx` - replaced hardcoded English text with `landing:progress.metrics.*` keys

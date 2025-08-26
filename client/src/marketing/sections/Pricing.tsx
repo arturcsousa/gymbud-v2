@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ctaHref } from '../theme';
+import { ctaHref, PALETTE } from '../theme';
 
 export default function Pricing() {
   const { t } = useTranslation(['landing', 'common']);
@@ -24,47 +24,54 @@ export default function Pricing() {
     },
   ];
   return (
-    <section id="pricing" className="bg-[#063e50]">
-      <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className="text-white">
-          <h2 className="text-3xl font-extrabold tracking-tight">{t('landing:pricing.title')}</h2>
-          <p className="mt-2 text-white/80">{t('landing:pricing.subtitle')}</p>
+    <section id="pricing" style={{ background: PALETTE.deepTeal }} className="py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
+            {t('landing:pricing.title')}
+          </h2>
+          <h3 className="text-2xl lg:text-3xl font-bold" style={{ color: PALETTE.orange }}>
+            Preços Simples e Transparentes
+          </h3>
         </div>
-        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {plans.map((p, i) => (
-            <article 
+            <div 
               key={i} 
-              className={`rounded-2xl p-6 flex flex-col text-white ${
-                p.popular ? 'ring-2 ring-white/50' : 'ring-1 ring-white/15'
+              className={`rounded-2xl p-8 text-center bg-white relative ${
+                p.popular ? 'transform scale-105' : ''
               }`}
-              style={{
-                background: 'rgba(255,255,255,0.05)',
-                backdropFilter: 'blur(24px)',
-              }}
             >
-              {p.popular ? (
+              {p.popular && (
                 <div 
-                  className="mb-3 w-fit rounded-full px-3 py-1 text-xs text-white/85"
-                  style={{
-                    background: 'linear-gradient(135deg, #18C7B6, #0C8F93)',
-                    boxShadow: '0 0 12px #18C7B6aa'
-                  }}
+                  className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 rounded-full text-sm font-semibold text-white"
+                  style={{ backgroundColor: PALETTE.aqua }}
                 >
                   {t('landing:pricing.most_popular')}
                 </div>
-              ) : null}
-              <h3 className="text-lg font-semibold">{t(p.nameKey)}</h3>
-              <div className="mt-2 text-3xl font-extrabold text-white">
-                {t(p.priceKey)}
+              )}
+              <h3 className="text-2xl font-bold mb-4" style={{ color: PALETTE.deepTeal }}>
+                {t(p.nameKey)}
+              </h3>
+              <div className="mb-6">
+                <div className="text-4xl font-extrabold" style={{ color: PALETTE.deepTeal }}>
+                  {t(p.priceKey).split(' ')[0]}
+                </div>
+                <div className="text-gray-600">
+                  {t(p.priceKey).split(' ').slice(1).join(' ')}
+                </div>
               </div>
-              <p className="mt-4 text-sm text-white/80">{t(p.descKey)}</p>
+              <p className="text-gray-700 mb-8 text-sm leading-relaxed">
+                {t(p.descKey)}
+              </p>
               <a
                 href={ctaHref('pricing', { plan: t(p.nameKey) })}
-                className="mt-6 rounded-lg bg-white px-4 py-2 text-center font-semibold text-[#043747]"
+                className="block w-full py-3 px-6 rounded-full font-semibold text-white transition-all hover:scale-105"
+                style={{ backgroundColor: PALETTE.deepTeal }}
               >
                 {t('common:cta.start_free')}
               </a>
-            </article>
+            </div>
           ))}
         </div>
       </div>
