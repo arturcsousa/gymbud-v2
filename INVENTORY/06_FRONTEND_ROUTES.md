@@ -87,26 +87,28 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 ### Authentication Flow
 - **Route**: `/auth`
 - **Component**: `AuthPage`
-- **UI**: Supabase Auth UI component (`@supabase/auth-ui-react`)
+- **UI**: Supabase Auth UI component (`@supabase/auth-ui-react`) with custom styling
 - **Features**:
   - Email/password signup and signin
   - Magic link support
-  - Internationalization (EN/PT-BR)
-  - Glassmorphic design matching landing page
+  - Internationalization (EN/PT-BR) with LanguageSwitcher in header
+  - Glassmorphic design with gradient background and decorative blobs
+  - Custom brand colors (#18C7B6) overriding default Supabase styling
   - Auth state subscription with proper cleanup
 - **Post-Auth Flow**:
   1. `onAuthStateChange` detects `SIGNED_IN` event
   2. Calls `finalizeOnboarding()` with default plan seed
   3. Creates/activates plan via `plan-get-or-create` Edge Function
   4. Sets `assessment_required = false` for instant access
-  5. Navigates to `/app/session/today` using wouter
+  5. Navigates to `/app/session/today` using `window.location.href`
 
 ## Technical Implementation
 - **Auth State**: Uses `{ data: { subscription } } = supabase.auth.onAuthStateChange(...)`
 - **Cleanup**: Proper `subscription.unsubscribe()` in useEffect cleanup
 - **Mutex**: `ranRef` prevents duplicate `finalizeOnboarding` calls
 - **Error Handling**: Non-blocking profile updates with console logging
-- **Navigation**: wouter's `useLocation()` hook for SPA routing
+- **Navigation**: `window.location.href` for reliable post-auth redirect (avoids React hooks violations)
+- **Custom Styling**: Inline CSS overrides for Supabase Auth UI components
 
 ## App Routes
 - **Route**: `/app/session/today`
@@ -116,8 +118,8 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 
 ## Navigation Patterns
 - **Auth → App**: Automatic redirect after successful authentication
-- **SPA Routing**: Uses wouter's `navigate()` for proper client-side routing
-- **Error Handling**: Non-blocking profile updates, graceful error recovery
+- **Error Recovery**: React hooks error #321 resolved by removing `useLocation` from async functions
+- **Reliable Navigation**: Direct `window.location.href` ensures navigation works regardless of React context
 
 ## URL Architecture
 

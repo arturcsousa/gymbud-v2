@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## August 26, 2025 19:52 ET
+**Restored** custom AuthPage design and fixed React hooks error
+- **React Error Fix**: Removed `useLocation` hook from async `finalizeOnboarding` function (React error #321)
+- **Navigation Fix**: Switched back to `window.location.href` for reliable post-auth navigation
+- **Custom Design**: Restored glassmorphic design with gradient background and decorative blobs
+- **Brand Styling**: Added custom CSS to override Supabase Auth UI with teal brand colors (#18C7B6)
+- **Language Switcher**: Re-added LanguageSwitcher component to header for i18n support
+- **TypeScript Fix**: Removed unused React import to resolve TS6133 build error
+- Context: Ensures auth page displays with premium branding while maintaining robust authentication flow
+- Migrations: N/A (UI and error fixes only)
+
 ## August 26, 2025 18:42 ET
 **Fixed** TypeScript subscription unsubscribe pattern
 - **Subscription Fix**: Corrected destructuring to `{ data: { subscription } }` from `onAuthStateChange`
