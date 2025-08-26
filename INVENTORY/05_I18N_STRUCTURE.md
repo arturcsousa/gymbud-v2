@@ -8,7 +8,7 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Languages**: EN (default), PT-BR
 - **Detection**: localStorage → navigator → htmlTag fallback
 - **Namespaces**: 14 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation)
-- **Settings**: `keySeparator: false`, `returnNull: false`, `escapeValue: false`
+- **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
 ## File Structure
 ```

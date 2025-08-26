@@ -20,17 +20,17 @@ Single Page Application (SPA) built with Vite + React using `wouter` for client-
 ### Landing Page Structure
 ```
 Landing.tsx (Main orchestrator)
-├── NavBar.tsx (Sticky header with navigation)
+├── NavBar.tsx (Sticky header with navigation + logo)
 ├── UspTicker.tsx (Scrolling benefits ticker)
-├── Hero.tsx (Main hero section)
-├── HowItWorks.tsx (3-step process)
-├── WhyDifferent.tsx (Feature differentiators)  
-├── Programs.tsx (Training programs)
-├── Progress.tsx (Progress tracking demo)
-├── Pricing.tsx (Pricing plans)
+├── Hero.tsx (Logo + hero image + main CTA)
+├── HowItWorks.tsx (3-step process with person image)
+├── WhyDifferent.tsx (Glassmorphic feature cards)  
+├── Programs.tsx (Training program cards with gradient background)
+├── Progress.tsx (Enhanced phone mockup + metric cards)
+├── Pricing.tsx (3-tier pricing with popular highlight)
 ├── Faq.tsx (Accordion FAQ)
-├── FinalCta.tsx (Final call-to-action)
-├── Footer.tsx (Simple footer)
+├── FinalCta.tsx (Dual CTA with gradient background)
+├── Footer.tsx (Logo + navigation links)
 └── MobileCTA.tsx (Sticky mobile CTA)
 ```
 
