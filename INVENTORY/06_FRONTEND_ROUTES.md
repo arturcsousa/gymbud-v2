@@ -60,6 +60,7 @@ export { ComponentName }             // Named export for AppShell
 ### Type Safety Improvements
 - **SessionPage**: Renamed `Set` interface to `WorkoutSet` to avoid collision with built-in JavaScript Set type
 - **Type Indexing**: Fixed `updateSet` function to use `keyof WorkoutSet` for proper type safety
+- **Legacy Function Removal**: Eliminated `handleSetComplete` and `handleSetChange` functions that used unsafe string indexing
 - **Import Alignment**: All AppShell imports now match component exports exactly
 
 ### Design System Components
