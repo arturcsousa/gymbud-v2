@@ -8,7 +8,7 @@ export function AuthPage() {
   const ranRef = useRef(false);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const subscription = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session && !ranRef.current) {
         ranRef.current = true;
         try {
@@ -57,7 +57,7 @@ export function AuthPage() {
 
     checkSession();
 
-    return () => subscription.unsubscribe();
+    return () => subscription.data.unsubscribe();
   }, []);
 
   return (
