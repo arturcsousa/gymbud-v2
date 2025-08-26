@@ -18,7 +18,7 @@ const LanguageSwitcher: React.FC = () => {
   };
 
   const getCurrentLanguageLabel = () => {
-    return i18n.language === 'pt-BR' ? t('lang.ptbr') : t('lang.en');
+    return i18n.language === 'pt-BR' ? t('languages.pt-BR') : t('languages.en');
   };
 
   return (
@@ -34,17 +34,18 @@ const LanguageSwitcher: React.FC = () => {
           onClick={() => changeLanguage('en')}
           className={i18n.language === 'en' ? 'bg-accent' : ''}
         >
-          {t('lang.en')}
+          {t('languages.en')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => changeLanguage('pt-BR')}
           className={i18n.language === 'pt-BR' ? 'bg-accent' : ''}
         >
-          {t('lang.ptbr')}
+          {t('languages.pt-BR')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
+export { LanguageSwitcher };
 export default LanguageSwitcher;

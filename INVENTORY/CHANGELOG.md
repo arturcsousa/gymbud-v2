@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## January 26, 2025 14:05 ET
+**Completed** Database schema rebuild and documentation
+- **DB Schema**: Created complete `INVENTORY/03_DB_SCHEMA.sql` with app2 tables, views, RLS policies, and comments
+- **DB Documentation**: Added `INVENTORY/03_DB_NOTES.md` with table-by-table descriptions and architectural notes
+- **Schema Execution**: Core app2 schema rebuilt directly in Supabase production database
+- **RLS Security**: All tables secured with user-scoped Row Level Security policies
+- **Views Added**: `v_session_exercises_enriched` and `v_session_metrics` for UI data consumption
+- Context: Fresh database foundation ready for offline-first PWA with deterministic training engine
+- Migrations: **IMPORTANT** - Regenerate CSV catalog files from Supabase to sync inventory documentation
+
+## January 26, 2025 13:57 ET
+**Fixed** TypeScript build errors and completed shadcn/ui component library
+- **shadcn/ui Components**: Created missing UI components (Input, Badge, Card, Label, Textarea, Switch, Alert) with proper Radix UI integration
+- **Environment Variables**: Added `vite-env.d.ts` with TypeScript declarations for `import.meta.env` access
+- **Component Fixes**: Fixed LanguageSwitcher exports and translation key usage (`languages.en` vs `lang.en`)
+- **Page Components**: Updated SessionPage, SettingsPage, LibraryPage with proper TypeScript types and event handlers
+- **Sync Engine**: Fixed environment variable access and type assertions for service worker sync API
+- **Dependencies**: Added missing Radix UI packages (@radix-ui/react-label, @radix-ui/react-switch) to package.json
+- **Import Cleanup**: Removed unused imports and variables, added proper React.ChangeEvent type annotations
+- Context: All TypeScript compilation errors resolved, PWA ready for development and testing
+- Migrations: Run `npm install` to install new Radix UI dependencies
+
 ## January 26, 2025 13:20 ET
 **Completed** GymBud Offline-First PWA Implementation
 - **PWA Infrastructure**: Added VitePWA plugin with manifest, service worker registration, and update handling

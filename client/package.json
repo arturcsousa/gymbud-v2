@@ -27,11 +27,14 @@
     "lucide-react": "^0.294.0",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-switch": "^1.0.3",
     "zod": "^3.22.0",
     "framer-motion": "^10.16.0",
     "@supabase/supabase-js": "^2.39.0",
     "dexie": "^3.2.4",
-    "workbox-window": "^7.0.0"
+    "workbox-window": "^7.0.0",
+    "class-variance-authority": "^0.7.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

@@ -1,3 +1,66 @@
 {
-  "placeholder": "Onboarding wizard strings"
+  "title": "Welcome to GymBud",
+  "subtitle": "Let's set up your personalized training plan",
+  "steps": {
+    "profile": {
+      "title": "Personal Information",
+      "description": "Tell us about yourself"
+    },
+    "goals": {
+      "title": "Training Goals",
+      "description": "What do you want to achieve?"
+    },
+    "experience": {
+      "title": "Experience Level",
+      "description": "How long have you been training?"
+    },
+    "schedule": {
+      "title": "Training Schedule",
+      "description": "When can you train?"
+    },
+    "equipment": {
+      "title": "Available Equipment",
+      "description": "What equipment do you have access to?"
+    },
+    "preferences": {
+      "title": "Training Preferences",
+      "description": "What type of training do you prefer?"
+    },
+    "workout": {
+      "title": "Workout Routine",
+      "description": "What's your typical workout routine?"
+    },
+    "diet": {
+      "title": "Dietary Preferences",
+      "description": "What's your dietary preference?"
+    },
+    "progress": {
+      "title": "Progress Tracking",
+      "description": "How do you track your progress?"
+    },
+    "motivation": {
+      "title": "Motivation",
+      "description": "What motivates you to work out?"
+    },
+    "account": {
+      "title": "Account Setup",
+      "description": "Let's set up your account"
+    },
+    "final": {
+      "title": "Final Check",
+      "description": "Review your setup before completing"
+    }
+  },
+  "navigation": {
+    "next": "Next",
+    "previous": "Previous",
+    "skip": "Skip",
+    "finish": "Complete Setup"
+  },
+  "progress": "Step {{current}} of {{total}}",
+  "completion": {
+    "title": "Setup Complete!",
+    "message": "Your personalized training plan is ready",
+    "cta": "Start Training"
+  }
 }

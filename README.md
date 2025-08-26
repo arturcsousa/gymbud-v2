@@ -239,7 +239,29 @@ Sync Engine: replay queue on reconnect, background + manual sync.
 
 Conflict Resolution: Last-Write-Wins (with UI affordance to resolve conflicts).
 
-UX: Global offline indicator, “Offline Mode: changes will sync later”.
+UX: Global offline indicator, "Offline Mode: changes will sync later".
+
+🎨 Component Library (shadcn/ui)
+
+Complete UI component system with Radix UI primitives:
+
+Input, Badge, Card (with Header/Content/Footer), Label, Textarea, Switch, Alert, Button, Dropdown Menu.
+
+TypeScript-first with proper event handlers and accessibility.
+
+Consistent design system with variant-based styling via class-variance-authority.
+
+🔧 Development Stack
+
+TypeScript: Full type safety with proper import.meta.env declarations.
+
+Vite: Fast development server with hot reload and optimized builds.
+
+ESLint + Prettier: Code consistency and formatting.
+
+Vitest: Unit testing framework.
+
+TailwindCSS: Utility-first styling with custom design tokens.
 
 ✅ Definition of Done (B2C Only)
 

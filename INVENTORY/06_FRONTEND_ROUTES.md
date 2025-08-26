@@ -14,8 +14,9 @@ Progressive Web Application (PWA) built with Vite + React using `wouter` for cli
 
 ### App Routes (/app/*)
 - **`/app/auth/:mode?`** - Authentication (signin, signup, reset)
+- **`/app/onboarding`** - 12-step onboarding wizard for profile setup and plan generation
 - **`/app/home`** - Dashboard with today's session and recent activity
-- **`/app/session/:id?`** - Workout logging interface with timer
+- **`/app/session/:id?`** - Session runner with workout logging interface and timer
 - **`/app/history`** - Workout history listing with search/filters
 - **`/app/history/:id`** - Detailed view of completed session
 - **`/app/library`** - Exercise database with search and categories
@@ -36,8 +37,9 @@ AppShell.tsx (Main app wrapper)
 ├── AppHeader (navigation + user menu)
 └── Route Components
     ├── AuthPage.tsx (signin/signup/reset flows)
+    ├── OnboardingPage.tsx (12-step wizard for profile setup)
     ├── HomePage.tsx (dashboard with session summary)
-    ├── SessionPage.tsx (workout logging with timer)
+    ├── SessionPage.tsx (session runner with workout logging and timer)
     ├── HistoryPage.tsx (workout history listing)
     ├── HistoryDetailPage.tsx (session detail view)
     ├── LibraryPage.tsx (exercise database)
@@ -149,9 +151,28 @@ mutation_queue: { id, table_name, operation, data, user_id, created_at }
 
 ## Development Workflow
 - **Hot Reload**: Vite development server with instant updates
-- **Type Safety**: Full TypeScript coverage
+- **Type Safety**: Full TypeScript coverage with proper environment variable declarations
 - **Linting**: ESLint + Prettier for code consistency
-- **Build**: Production-ready builds via `pnpm build`
+- **Build**: Production-ready builds via `pnpm build` with TypeScript compilation
+- **Component Library**: Complete shadcn/ui integration with Radix UI primitives
+
+## Component Library (shadcn/ui)
+- **Input**: Text input with proper styling and focus states
+- **Badge**: Variant-based badges (default, secondary, destructive, outline)
+- **Card**: Complete card system (Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter)
+- **Label**: Accessible form labels with Radix UI integration
+- **Textarea**: Multi-line text input with consistent styling
+- **Switch**: Toggle switches for settings and preferences
+- **Alert**: Alert messages with title and description variants
+- **Button**: Already implemented with multiple variants and sizes
+- **Dropdown Menu**: Navigation and action menus
+
+## TypeScript Configuration
+- **Environment Variables**: Proper `import.meta.env` declarations in `vite-env.d.ts`
+- **Strict Mode**: Full type checking with no implicit any
+- **Event Handlers**: Proper `React.ChangeEvent<T>` type annotations
+- **Component Props**: Interface definitions for all custom components
+- **Service Worker**: Type assertions for experimental APIs
 
 ## Future Considerations
 - **App Integration**: Seamless handoff to app.gymbud.ai

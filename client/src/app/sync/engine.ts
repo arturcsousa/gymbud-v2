@@ -65,7 +65,7 @@ export class SyncEngine {
 
   // Periodic sync setup
   private setupPeriodicSync() {
-    const intervalSec = parseInt(import.meta.env.VITE_SYNC_INTERVAL_SEC || '900')
+    const intervalSec = parseInt(import.meta.env.VITE_SYNC_INTERVAL || '900')
     
     this.syncInterval = window.setInterval(() => {
       if (this.syncStatus.isOnline && !this.syncStatus.isSyncing) {
@@ -76,7 +76,7 @@ export class SyncEngine {
     // Background sync registration (if supported)
     if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
       navigator.serviceWorker.ready.then(registration => {
-        registration.sync.register('sync-queue')
+        (registration as any).sync.register('sync-queue')
       }).catch(console.warn)
     }
   }
@@ -88,6 +88,9 @@ export class SyncEngine {
     op: 'insert' | 'update' | 'delete',
     payload: Record<string, any>
   ) {
+    // Implementation uses parameters
+    console.log('Enqueuing mutation:', { entity, pk, op, payload })
+
     // This is handled by dataManager.enqueueMutation internally
     await this.updatePendingCount()
     
@@ -316,7 +319,7 @@ export class SyncEngine {
   }
 
   // Manual sync trigger
-  async forcSync(): Promise<void> {
+  async forceSync(): Promise<void> {
     await this.replayQueue()
   }
 

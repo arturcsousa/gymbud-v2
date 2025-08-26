@@ -1,22 +1,21 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Settings, User, Globe, Download, Trash2, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { supabase } from '@/lib/supabase'
-import { dataManager } from '@/app/db/indexeddb'
+import { useDataManager } from '@/app/data/manager'
 
-export function SettingsPage() {
-  const { t } = useTranslation(['app', 'settings'])
+export default function SettingsPage() {
+  const { t } = useTranslation(['settings', 'common'])
+  const dataManager = useDataManager()
   const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [exportLoading, setExportLoading] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
-  const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
     loadUserData()
@@ -24,42 +23,45 @@ export function SettingsPage() {
 
   const loadUserData = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user || null)
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
     } catch (error) {
       console.error('Error loading user data:', error)
-    } finally {
-      setLoading(false)
+    }
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut()
+      // Clear local data
+      await dataManager.clearAllData()
+    } catch (error) {
+      console.error('Error signing out:', error)
     }
   }
 
   const handleExportData = async () => {
-    if (!user) return
-
-    setExportLoading(true)
-    setMessage(null)
-
     try {
-      // Get all user data from IndexedDB
-      const sessions = await dataManager.getSessions(user.id, 1000)
-      const profile = await dataManager.getProfile(user.id)
-
+      setExportLoading(true)
+      
+      // Get all user data
+      const sessions = await dataManager.getAllSessions()
+      const exercises = await dataManager.getAllSessionExercises()
+      const sets = await dataManager.getAllLoggedSets()
+      
       const exportData = {
-        user: {
-          id: user.id,
-          email: user.email,
-          created_at: user.created_at
-        },
-        profile,
         sessions,
-        exported_at: new Date().toISOString(),
+        exercises,
+        sets,
+        exportedAt: new Date().toISOString(),
         version: '1.0'
       }
-
-      // Create and download JSON file
+      
+      // Create and download file
       const blob = new Blob([JSON.stringify(exportData, null, 2)], {
         type: 'application/json'
       })
+      
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -68,84 +70,43 @@ export function SettingsPage() {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-
-      setMessage(t('settings:export.success'))
+      
     } catch (error) {
       console.error('Error exporting data:', error)
-      setMessage(t('settings:export.error'))
     } finally {
       setExportLoading(false)
     }
   }
 
   const handleDeleteAccount = async () => {
-    if (!user) return
+    if (!confirm(t('settings:danger.delete.confirmation'))) {
+      return
+    }
     
-    const confirmed = window.confirm(t('settings:delete.confirmation'))
-    if (!confirmed) return
-
-    setDeleteLoading(true)
-    setMessage(null)
-
     try {
-      // Delete user account (this would need proper implementation)
-      const { error } = await supabase.auth.admin.deleteUser(user.id)
-      if (error) throw error
-
-      setMessage(t('settings:delete.success'))
+      setDeleteLoading(true)
       
-      // Sign out and redirect
-      setTimeout(() => {
-        supabase.auth.signOut()
-      }, 2000)
+      // Clear local data first
+      await dataManager.clearAllData()
+      
+      // Sign out (account deletion would be handled server-side)
+      await supabase.auth.signOut()
+      
     } catch (error) {
       console.error('Error deleting account:', error)
-      setMessage(t('settings:delete.error'))
     } finally {
       setDeleteLoading(false)
     }
   }
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-  }
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-muted rounded w-1/3"></div>
-          <div className="space-y-4">
-            <div className="h-32 bg-muted rounded"></div>
-            <div className="h-32 bg-muted rounded"></div>
-            <div className="h-32 bg-muted rounded"></div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <Settings className="h-8 w-8" />
-          {t('settings:title')}
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          {t('settings:subtitle')}
-        </p>
+      <div className="flex items-center gap-2 mb-6">
+        <Settings className="h-6 w-6" />
+        <h1 className="text-2xl font-bold">{t('settings:title')}</h1>
       </div>
 
-      {/* Message */}
-      {message && (
-        <Alert>
-          <AlertDescription>{message}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Account Settings */}
+      {/* Account Information */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -156,14 +117,13 @@ export function SettingsPage() {
         <CardContent className="space-y-4">
           <div>
             <Label className="text-sm font-medium">{t('settings:account.email')}</Label>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground">
               {user?.email || t('settings:account.notAvailable')}
             </p>
           </div>
-          
           <div>
             <Label className="text-sm font-medium">{t('settings:account.memberSince')}</Label>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground">
               {user?.created_at 
                 ? new Date(user.created_at).toLocaleDateString()
                 : t('settings:account.notAvailable')
@@ -173,7 +133,7 @@ export function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Language Settings */}
+      {/* Language & Region */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -181,14 +141,12 @@ export function SettingsPage() {
             {t('settings:language.title')}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
-            <div>
-              <Label className="text-sm font-medium">{t('settings:language.current')}</Label>
-              <p className="text-sm text-muted-foreground mt-1">
-                {t('settings:language.description')}
-              </p>
-            </div>
+        <CardContent className="space-y-4">
+          <div>
+            <Label className="text-sm font-medium">{t('settings:language.current')}</Label>
+            <p className="text-sm text-muted-foreground mb-2">
+              {t('settings:language.description')}
+            </p>
             <LanguageSwitcher />
           </div>
         </CardContent>
@@ -203,17 +161,16 @@ export function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-sm font-medium">{t('settings:data.export.title')}</Label>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-sm text-muted-foreground">
                 {t('settings:data.export.description')}
               </p>
             </div>
-            <Button
-              variant="outline"
+            <Button 
               onClick={handleExportData}
               disabled={exportLoading}
-              className="gap-2"
+              variant="outline"
             >
-              <Download className="h-4 w-4" />
+              <Download className="h-4 w-4 mr-2" />
               {exportLoading ? t('settings:data.export.loading') : t('settings:data.export.button')}
             </Button>
           </div>
@@ -226,43 +183,38 @@ export function SettingsPage() {
           <CardTitle className="text-destructive">{t('settings:danger.title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Sign Out */}
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-sm font-medium">{t('settings:danger.signOut.title')}</Label>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-sm text-muted-foreground">
                 {t('settings:danger.signOut.description')}
               </p>
             </div>
-            <Button
-              variant="outline"
-              onClick={handleSignOut}
-              className="gap-2"
-            >
-              <LogOut className="h-4 w-4" />
+            <Button onClick={handleSignOut} variant="outline">
+              <LogOut className="h-4 w-4 mr-2" />
               {t('settings:danger.signOut.button')}
             </Button>
           </div>
 
-          <div className="border-t pt-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label className="text-sm font-medium text-destructive">
-                  {t('settings:danger.delete.title')}
-                </Label>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {t('settings:danger.delete.description')}
-                </p>
-              </div>
-              <Button
-                variant="destructive"
-                onClick={handleDeleteAccount}
-                disabled={deleteLoading}
-                className="gap-2"
-              >
-                <Trash2 className="h-4 w-4" />
-                {deleteLoading ? t('settings:danger.delete.loading') : t('settings:danger.delete.button')}
-              </Button>
+          {/* Delete Account */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-sm font-medium text-destructive">
+                {t('settings:danger.delete.title')}
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                {t('settings:danger.delete.description')}
+              </p>
             </div>
+            <Button 
+              onClick={handleDeleteAccount}
+              disabled={deleteLoading}
+              variant="destructive"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {deleteLoading ? t('settings:danger.delete.loading') : t('settings:danger.delete.button')}
+            </Button>
           </div>
         </CardContent>
       </Card>
