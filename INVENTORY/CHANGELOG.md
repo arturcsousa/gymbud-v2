@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## August 26, 2025 18:42 ET
+**Fixed** TypeScript subscription unsubscribe pattern
+- **Subscription Fix**: Corrected destructuring to `{ data: { subscription } }` from `onAuthStateChange`
+- **Unsubscribe Pattern**: Uses `subscription.unsubscribe()` directly for proper cleanup
+- **Build Error**: Resolved TS2339 error preventing successful compilation
+- Context: Ensures proper Supabase v2 auth state subscription cleanup without TypeScript errors
+- Migrations: N/A (TypeScript fix only)
+
+## August 26, 2025 18:41 ET
+**Fixed** Supabase v2 unsubscribe pattern and verified RLS permissions
+- **RLS Verification**: Confirmed correct Row Level Security policy enforcement for all tables
+- **Unsubscribe Fix**: Corrected `onAuthStateChange` unsubscribe pattern to prevent memory leaks
+- **Type Safety**: Improved TypeScript type annotations for `onAuthStateChange` callback and subscription
+- **Error Handling**: Enhanced error logging for Supabase auth state subscription errors
+- Context: Ensures proper Supabase v2 auth state subscription cleanup and RLS policy enforcement
+- Migrations: N/A (TypeScript fix and RLS verification)
+
 ## August 26, 2025 18:37 ET
 **Enhanced** finalizeOnboarding with profile flag and proper navigation
 - **Profile Flag**: Sets `assessment_required = false` to enable instant workout access without assessment barriers

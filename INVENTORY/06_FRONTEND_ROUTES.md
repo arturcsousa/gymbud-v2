@@ -93,13 +93,31 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
   - Magic link support
   - Internationalization (EN/PT-BR)
   - Glassmorphic design matching landing page
-  - Auth state subscription for seamless flow
+  - Auth state subscription with proper cleanup
 - **Post-Auth Flow**:
   1. `onAuthStateChange` detects `SIGNED_IN` event
   2. Calls `finalizeOnboarding()` with default plan seed
   3. Creates/activates plan via `plan-get-or-create` Edge Function
   4. Sets `assessment_required = false` for instant access
-  5. Navigates to `/app/session/today`
+  5. Navigates to `/app/session/today` using wouter
+
+## Technical Implementation
+- **Auth State**: Uses `{ data: { subscription } } = supabase.auth.onAuthStateChange(...)`
+- **Cleanup**: Proper `subscription.unsubscribe()` in useEffect cleanup
+- **Mutex**: `ranRef` prevents duplicate `finalizeOnboarding` calls
+- **Error Handling**: Non-blocking profile updates with console logging
+- **Navigation**: wouter's `useLocation()` hook for SPA routing
+
+## App Routes
+- **Route**: `/app/session/today`
+- **Purpose**: Main workout session interface
+- **Access**: Requires authenticated user with active plan
+- **State**: Can show "preparing..." until session data loads
+
+## Navigation Patterns
+- **Auth → App**: Automatic redirect after successful authentication
+- **SPA Routing**: Uses wouter's `navigate()` for proper client-side routing
+- **Error Handling**: Non-blocking profile updates, graceful error recovery
 
 ## URL Architecture
 
