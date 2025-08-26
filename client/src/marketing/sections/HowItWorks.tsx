@@ -2,16 +2,16 @@ import { useTranslation } from 'react-i18next';
 import { ClipboardList, Dumbbell, LineChart } from 'lucide-react';
 
 export default function HowItWorks() {
-  const { t } = useTranslation('landing');
+  const { t } = useTranslation(['landing', 'common']);
   const items = [
-    { icon: <ClipboardList className="h-5 w-5" />, title: t('how.steps.assess.title'), desc: t('how.steps.assess.desc') },
-    { icon: <Dumbbell className="h-5 w-5" />, title: t('how.steps.generate.title'), desc: t('how.steps.generate.desc') },
-    { icon: <LineChart className="h-5 w-5" />, title: t('how.steps.train.title'), desc: t('how.steps.train.desc') },
+    { icon: <ClipboardList className="h-5 w-5" />, title: t('landing:how.steps.assess.title'), desc: t('landing:how.steps.assess.desc') },
+    { icon: <Dumbbell className="h-5 w-5" />, title: t('landing:how.steps.generate.title'), desc: t('landing:how.steps.generate.desc') },
+    { icon: <LineChart className="h-5 w-5" />, title: t('landing:how.steps.train.title'), desc: t('landing:how.steps.train.desc') },
   ];
   return (
     <section id="how" className="bg-[#0d5568]">
       <div className="mx-auto max-w-7xl px-6 py-16 text-white">
-        <h2 className="text-3xl font-extrabold tracking-tight">{t('how.title')}</h2>
+        <h2 className="text-3xl font-extrabold tracking-tight">{t('landing:how.title')}</h2>
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
           {items.map((it, i) => (
             <div key={i} className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur">

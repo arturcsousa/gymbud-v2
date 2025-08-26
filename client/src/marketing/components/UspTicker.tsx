@@ -1,18 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { PALETTE } from '../theme';
 
 export default function UspTicker() {
-  const { t } = useTranslation('landing');
+  const { t } = useTranslation(['landing', 'common']);
   return (
-    <div
-      className="w-full"
-      style={{
-        background: `linear-gradient(90deg, ${PALETTE.teal}, ${PALETTE.aqua} 40%, ${PALETTE.orange})`,
-      }}
-    >
-      <div className="mx-auto max-w-7xl px-6 py-2 text-center text-sm font-medium text-white">
-        {t('hero.usp_ticker')}
-      </div>
+    <div className="bg-gradient-to-r from-[#18C7B6] to-[#0C8F93] py-2 text-center text-sm text-white">
+      {t('landing:hero.usp_ticker')}
     </div>
   );
 }

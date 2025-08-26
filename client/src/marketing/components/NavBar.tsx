@@ -1,50 +1,41 @@
 import { ctaHref } from '../theme';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'wouter';
 import { Globe } from 'lucide-react';
 
 export default function NavBar() {
   const { t, i18n } = useTranslation(['common', 'landing']);
-  const nav = [
-    { href: '/how-it-works', label: t('common:nav.how_it_works') },
-    { href: '/programs', label: t('common:nav.programs') },
-    { href: '/pricing', label: t('common:nav.pricing') },
-    { href: '/faq', label: t('common:nav.faq') },
-  ];
-
-  const switchLang = () => i18n.changeLanguage(i18n.language === 'pt-BR' ? 'en' : 'pt-BR');
+  
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'pt-BR' : 'en';
+    i18n.changeLanguage(newLang);
+  };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#043747]/80 backdrop-blur supports-[backdrop-filter]:bg-[#043747]/60">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-        <Link href="/" className="text-white">
-          <span className="text-xl font-extrabold tracking-tight">GymBud</span>
-        </Link>
-        <nav className="hidden items-center gap-6 md:flex">
-          {nav.map(n => (
-            <Link key={n.href} href={n.href} className="text-white/80 hover:text-white">
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="flex items-center gap-3">
-          <button
-            className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-3 py-2 text-sm text-white hover:border-white/40"
-            onClick={switchLang}
-            aria-label="Switch language"
-            title="Switch language"
-          >
-            <Globe className="h-4 w-4" />
-            <span className="hidden sm:inline">{i18n.language}</span>
-          </button>
-          <a
-            href={ctaHref('nav')}
-            className="rounded-lg bg-white px-3 py-2 text-sm font-semibold text-[#043747]"
-          >
-            {t('common:cta.start_free')}
-          </a>
+    <nav className="sticky top-0 z-50 bg-[#042d3a]/95 backdrop-blur-sm">
+      <div className="mx-auto max-w-7xl px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="text-xl font-bold text-white">GymBud</div>
+          <div className="hidden items-center gap-6 md:flex">
+            <a href="#how" className="text-white/80 hover:text-white">{t('common:nav.how_it_works')}</a>
+            <a href="#programs" className="text-white/80 hover:text-white">{t('common:nav.programs')}</a>
+            <a href="#pricing" className="text-white/80 hover:text-white">{t('common:nav.pricing')}</a>
+            <a href="#faq" className="text-white/80 hover:text-white">{t('common:nav.faq')}</a>
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-1 text-white/80 hover:text-white"
+            >
+              <Globe className="h-4 w-4" />
+              {i18n.language === 'en' ? 'PT' : 'EN'}
+            </button>
+            <a
+              href={ctaHref('nav')}
+              className="rounded-lg bg-white px-4 py-2 font-semibold text-[#043747]"
+            >
+              {t('common:cta.start_free')}
+            </a>
+          </div>
         </div>
       </div>
-    </header>
+    </nav>
   );
 }

@@ -6,12 +6,12 @@ import { ctaHref, PALETTE } from '../theme';
 type Feature = { icon: JSX.Element; titleKey: string; descKey: string; accent: string };
 
 export default function WhyDifferent() {
-  const { t } = useTranslation('landing');
+  const { t } = useTranslation(['landing', 'common']);
 
   const features: Feature[] = [
-    { icon: <CheckCircle className="h-6 w-6" />, titleKey: 'different.items.deterministic.title', descKey: 'different.items.deterministic.desc', accent: PALETTE.aqua },
-    { icon: <Activity className="h-6 w-6" />, titleKey: 'different.items.coach.title', descKey: 'different.items.coach.desc', accent: PALETTE.teal },
-    { icon: <Clock className="h-6 w-6" />, titleKey: 'different.items.rest.title', descKey: 'different.items.rest.desc', accent: PALETTE.orange },
+    { icon: <CheckCircle className="h-6 w-6" />, titleKey: 'landing:different.items.deterministic.title', descKey: 'landing:different.items.deterministic.desc', accent: PALETTE.aqua },
+    { icon: <Activity className="h-6 w-6" />, titleKey: 'landing:different.items.coach.title', descKey: 'landing:different.items.coach.desc', accent: PALETTE.teal },
+    { icon: <Clock className="h-6 w-6" />, titleKey: 'landing:different.items.rest.title', descKey: 'landing:different.items.rest.desc', accent: PALETTE.orange },
   ];
 
   return (
@@ -28,7 +28,7 @@ export default function WhyDifferent() {
       <div className="mx-auto max-w-7xl px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-            {t('different.title')}
+            {t('landing:different.title')}
           </h2>
         </div>
 

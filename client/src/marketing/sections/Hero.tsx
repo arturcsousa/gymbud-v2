@@ -3,7 +3,7 @@ import { ctaHref, PALETTE } from '../theme';
 import { motion } from 'framer-motion';
 
 export default function Hero() {
-  const { t } = useTranslation('landing');
+  const { t } = useTranslation(['landing', 'common']);
 
   return (
     <section
@@ -25,9 +25,9 @@ export default function Hero() {
             viewport={{ once: true }}
             className="text-4xl font-extrabold tracking-tight text-white md:text-5xl"
           >
-            {t('hero.title')}
+            {t('landing:hero.title')}
           </motion.h1>
-          <p className="mt-4 max-w-xl text-white/80">{t('hero.subtitle')}</p>
+          <p className="mt-4 max-w-xl text-white/80">{t('landing:hero.subtitle')}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
               href={ctaHref('hero_primary')}

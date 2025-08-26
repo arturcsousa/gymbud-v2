@@ -3,22 +3,22 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 export default function Faq() {
-  const { t } = useTranslation('faq');
+  const { t } = useTranslation(['faq', 'common']);
   const [open, setOpen] = useState<number | null>(null);
   
   const items = [
-    { q: t('items.diff.question'), a: t('items.diff.answer') },
-    { q: t('items.busy_gym.question'), a: t('items.busy_gym.answer') },
-    { q: t('items.injuries.question'), a: t('items.injuries.answer') },
-    { q: t('items.data.question'), a: t('items.data.answer') },
-    { q: t('items.accuracy.question'), a: t('items.accuracy.answer') },
-    { q: t('items.ptbr.question'), a: t('items.ptbr.answer') },
+    { q: t('faq:items.diff.question'), a: t('faq:items.diff.answer') },
+    { q: t('faq:items.busy_gym.question'), a: t('faq:items.busy_gym.answer') },
+    { q: t('faq:items.injuries.question'), a: t('faq:items.injuries.answer') },
+    { q: t('faq:items.data.question'), a: t('faq:items.data.answer') },
+    { q: t('faq:items.accuracy.question'), a: t('faq:items.accuracy.answer') },
+    { q: t('faq:items.ptbr.question'), a: t('faq:items.ptbr.answer') },
   ];
 
   return (
     <section id="faq" className="bg-[#042d3a]">
       <div className="mx-auto max-w-4xl px-6 py-16 text-white">
-        <h2 className="text-3xl font-extrabold tracking-tight">{t('title')}</h2>
+        <h2 className="text-3xl font-extrabold tracking-tight">{t('faq:title')}</h2>
         <div className="mt-8 space-y-4">
           {items.map((item, i) => (
             <div key={i} className="rounded-2xl glass ring-faint">

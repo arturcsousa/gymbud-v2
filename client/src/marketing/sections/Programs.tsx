@@ -5,16 +5,16 @@ import { PALETTE } from '../theme';
 const CARD = 'rounded-2xl p-6 glass ring-faint text-white';
 
 export default function Programs() {
-  const { t } = useTranslation('landing');
+  const { t } = useTranslation(['landing', 'common']);
   const items = [
-    { icon: <Dumbbell />, title: t('programs.muscle.title'),    desc: t('programs.muscle.desc'),    color: PALETTE.aqua },
-    { icon: <Flame />,    title: t('programs.weight.title'),    desc: t('programs.weight.desc'),    color: PALETTE.orange },
-    { icon: <Activity />, title: t('programs.endurance.title'), desc: t('programs.endurance.desc'), color: PALETTE.teal },
+    { icon: <Dumbbell />, title: t('landing:programs.muscle.title'),    desc: t('landing:programs.muscle.desc'),    color: PALETTE.aqua },
+    { icon: <Flame />,    title: t('landing:programs.weight.title'),    desc: t('landing:programs.weight.desc'),    color: PALETTE.orange },
+    { icon: <Activity />, title: t('landing:programs.endurance.title'), desc: t('landing:programs.endurance.desc'), color: PALETTE.teal },
   ];
   return (
     <section id="programs" className="bg-[#063e50]">
       <div className="mx-auto max-w-7xl px-6 py-16 text-white">
-        <h2 className="text-3xl font-extrabold tracking-tight">{t('programs.title')}</h2>
+        <h2 className="text-3xl font-extrabold tracking-tight">{t('landing:programs.title')}</h2>
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
           {items.map((it, i) => (
             <article key={i} className={CARD} style={{ boxShadow: `0 0 24px -10px ${it.color}aa` }}>
