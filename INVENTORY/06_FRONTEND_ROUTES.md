@@ -92,9 +92,13 @@ logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, up
 ## UX Components
 
 ### Offline Indicators
-- **OfflineIndicator**: Network status, sync progress, pending mutations
-- **ConflictBanner**: Data conflict resolution UI with merge options
-- **AppHeader**: Navigation with user menu and sign out
+- **OfflineBanner**: Global offline status banner with manual sync trigger using `useOnlineStatus` hook
+- **OfflineIndicator**: Fixed bottom-right network status indicator with retry button
+- **ConflictBanner**: Data conflict resolution UI with placeholder for future conflict handling
+- **AppHeader**: Navigation with user menu, sign out, and responsive design
+
+### Utility Hooks
+- **useOnlineStatus**: Custom hook for real-time network connectivity detection using browser online/offline events
 
 ### Form Patterns
 - **Optimistic Updates**: Immediate UI feedback with rollback on errors

@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## August 26, 2025 15:11 ET
+**Fixed** TypeScript build errors preventing Vercel deployment
+- **Import/Export Fixes**: Fixed App.tsx to use named import `{ OfflineBanner }` instead of default import
+- **Package Import Fix**: Corrected AppShell.tsx to import `createSyncStoragePersister` from `@tanstack/query-sync-storage-persister` instead of wrong package
+- **Missing Hook Created**: Added `client/src/lib/net/useOnlineStatus.ts` hook that components were importing but didn't exist
+- **Unused Variables Cleanup**: Removed unused imports and variables across all components (useState, Menu, History, Wifi, Clock, event parameter)
+- **Type Safety Fixes**: Fixed ConflictBanner implicit any[] types, removed unused ConflictData interface
+- **Dexie Fix**: Removed non-existent orderBy() method call from indexeddb.ts getSessions function
+- **Badge Variant Fix**: Changed Badge variant from 'success' to 'default' in HistoryPage to match available variants
+- **PWA Virtual Import Fix**: Fixed virtual:pwa-register import with production check and async loading in pwa.ts
+- Context: All 18 TypeScript build errors from Vercel resolved at root cause level
+- Migrations: Build should now succeed without errors
+
 ## January 26, 2025 14:56 ET
 **Completed** Phase A Step 3 - Real server sync implementation for offline-first PWA
 - **Edge Function**: Created `supabase/functions/sync-logged-sets/index.ts` for idempotent app2.logged_sets inserts

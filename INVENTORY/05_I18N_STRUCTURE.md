@@ -73,32 +73,29 @@ client/src/i18n/
 {
   "nav": {
     "home": "Home",
-    "session": "Session",
-    "history": "History",
+    "history": "History", 
     "library": "Library",
     "settings": "Settings"
   },
+  "auth": {
+    "signOut": "Sign Out"
+  },
+  "offline": {
+    "title": "You're Offline",
+    "message": "Changes will sync when you're back online",
+    "indicator": "Offline"
+  },
   "sync": {
-    "online": "Online",
-    "offline": "Offline",
-    "syncing": "Syncing...",
-    "lastSync": "Last sync: {{time}}",
-    "pendingChanges": "{{count}} pending changes",
-    "syncNow": "Sync Now",
-    "syncError": "Sync failed"
+    "conflicts": "Sync Conflicts Detected",
+    "conflictsMessage": "Some data conflicts need your attention",
+    "resolve": "Resolve",
+    "retry": "Retry Sync"
   },
-  "conflicts": {
-    "title": "Data Conflict",
-    "message": "Your local changes conflict with server data",
-    "keepLocal": "Keep Local",
-    "useServer": "Use Server",
-    "merge": "Merge",
-    "dismiss": "Dismiss"
-  },
-  "sessionStatus": {
-    "active": "Active",
+  "session": {
+    "workout": "Workout",
     "completed": "Completed",
-    "paused": "Paused"
+    "inProgress": "In Progress", 
+    "planned": "Planned"
   }
 }
 ```
