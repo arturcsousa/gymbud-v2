@@ -1,21 +1,42 @@
 {
   "logo_aria": "GymBud Logo",
   "nav": {
-    "how_it_works": "How it Works",
-    "why_different": "Why We're Different",
+    "home": "Home",
+    "howItWorks": "How It Works",
     "programs": "Programs",
     "pricing": "Pricing",
     "faq": "FAQ",
-    "sign_in": "Sign In"
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
   },
   "cta": {
+    "primary": "Start Your Journey",
+    "secondary": "Learn More",
+    "getStarted": "Get Started",
+    "signUp": "Sign Up Free",
+    "tryFree": "Try Free",
     "start_free": "Start Free",
     "see_how": "See How It Works",
     "see_pricing": "See Pricing",
     "learn_more": "Learn More"
   },
-  "lang": {
+  "languages": {
     "en": "English",
+    "pt-BR": "Português (Brasil)",
     "ptbr": "Português (BR)"
-  }
+  },
+  "backHome": "Back to Home",
+  "goBack": "Go Back",
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "close": "Close",
+  "next": "Next",
+  "previous": "Previous",
+  "continue": "Continue",
+  "finish": "Finish"
 }

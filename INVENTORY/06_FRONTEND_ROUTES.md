@@ -1,7 +1,7 @@
 # GymBud v2 - Frontend Routes & Architecture
 
 ## Overview
-Single Page Application (SPA) built with Vite + React using `wouter` for client-side routing with anchor scrolling for marketing sections.
+Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
 ## Route Structure
 
@@ -12,50 +12,90 @@ Single Page Application (SPA) built with Vite + React using `wouter` for client-
 - **`/pricing`** - Scrolls to Pricing section
 - **`/faq`** - Scrolls to FAQ section
 
-### App Routes (Future)
-- **`/app/*`** - Placeholder for app.gymbud.ai integration
+### App Routes (/app/*)
+- **`/app/auth/:mode?`** - Authentication (signin, signup, reset)
+- **`/app/home`** - Dashboard with today's session and recent activity
+- **`/app/session/:id?`** - Workout logging interface with timer
+- **`/app/history`** - Workout history listing with search/filters
+- **`/app/history/:id`** - Detailed view of completed session
+- **`/app/library`** - Exercise database with search and categories
+- **`/app/settings`** - Account management and preferences
+- **`/app/*`** - Catch-all 404 page
 
 ## Component Architecture
 
-### Landing Page Structure
+### App Shell Structure
 ```
-Landing.tsx (Main orchestrator)
-├── NavBar.tsx (Sticky header with navigation + logo)
-├── UspTicker.tsx (Scrolling benefits ticker)
-├── Hero.tsx (Logo + hero image + main CTA)
-├── HowItWorks.tsx (3-step process with person image)
-├── WhyDifferent.tsx (Glassmorphic feature cards)  
-├── Programs.tsx (Training program cards with gradient background)
-├── Progress.tsx (Enhanced phone mockup + metric cards)
-├── Pricing.tsx (3-tier pricing with popular highlight)
-├── Faq.tsx (Accordion FAQ)
-├── FinalCta.tsx (Dual CTA with gradient background)
-├── Footer.tsx (Logo + navigation links)
-└── MobileCTA.tsx (Sticky mobile CTA)
-```
-
-### Design System
-- **Theme**: Centralized in `client/src/marketing/theme.ts`
-- **Colors**: Dark-teal glassmorphic with neon accents (aqua, teal, orange)
-- **Effects**: Glass cards with backdrop blur, neon glows, gradient backgrounds
-- **Typography**: Extrabold headings, clean body text
-- **Responsive**: Mobile-first with sticky elements
-
-### Anchor Scrolling Implementation
-```tsx
-// Landing.tsx - Anchor scrolling logic
-useEffect(() => {
-  if (location === '/how-it-works') {
-    document.getElementById('how')?.scrollIntoView({ behavior: 'smooth' });
-  }
-  // ... other routes
-}, [location]);
+AppShell.tsx (Main app wrapper)
+├── TanStack Query Client (with persistence)
+├── Supabase Auth Provider
+├── Sync Engine Integration
+├── Offline Indicator
+├── Conflict Banner
+├── AuthGuard (route protection)
+├── AppHeader (navigation + user menu)
+└── Route Components
+    ├── AuthPage.tsx (signin/signup/reset flows)
+    ├── HomePage.tsx (dashboard with session summary)
+    ├── SessionPage.tsx (workout logging with timer)
+    ├── HistoryPage.tsx (workout history listing)
+    ├── HistoryDetailPage.tsx (session detail view)
+    ├── LibraryPage.tsx (exercise database)
+    ├── SettingsPage.tsx (account management)
+    └── NotFoundPage.tsx (404 fallback)
 ```
 
-### Navigation Links
-- **Internal**: Anchor links (`#how`, `#programs`, etc.)
-- **External**: App CTAs via `ctaHref()` with UTM parameters
-- **Language**: Toggle between EN/PT-BR with persistence
+### PWA Infrastructure
+- **Service Worker**: VitePWA plugin with Workbox caching strategies
+- **Manifest**: `/public/manifest.webmanifest` with app metadata and shortcuts
+- **IndexedDB**: Dexie-based offline data layer with versioned schema
+- **Sync Engine**: Queue-based mutation replay with conflict resolution
+- **Update Handling**: Service worker update prompts in main.tsx
+
+### Offline-First Data Flow
+```
+User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Supabase
+                     ↓
+              UI Updates (optimistic)
+```
+
+### Authentication Flow
+- **Supabase Auth**: JWT-based authentication with session persistence
+- **Offline Tolerance**: Auth state cached in IndexedDB for offline access
+- **Route Protection**: AuthGuard component redirects unauthenticated users
+- **Session Management**: Automatic token refresh and logout handling
+
+## Data Layer Architecture
+
+### IndexedDB Schema (Dexie)
+```typescript
+// Database tables with versioned schema
+profiles: { id, user_id, name, email, created_at, updated_at }
+plans: { id, user_id, name, description, created_at, updated_at }
+sessions: { id, user_id, plan_id, status, started_at, completed_at, notes }
+session_exercises: { id, session_id, exercise_name, order_index }
+logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes }
+mutation_queue: { id, table_name, operation, data, user_id, created_at }
+```
+
+### Sync Engine Features
+- **Queue Management**: FIFO mutation replay with retry logic
+- **Conflict Resolution**: Last-write-wins with server precedence
+- **Network Awareness**: Automatic sync on connectivity changes
+- **Background Sync**: Service worker background sync registration
+- **Error Handling**: Exponential backoff and auth error detection
+
+## UX Components
+
+### Offline Indicators
+- **OfflineIndicator**: Network status, sync progress, pending mutations
+- **ConflictBanner**: Data conflict resolution UI with merge options
+- **AppHeader**: Navigation with user menu and sign out
+
+### Form Patterns
+- **Optimistic Updates**: Immediate UI feedback with rollback on errors
+- **Validation**: Client-side validation with server-side confirmation
+- **Loading States**: Skeleton loaders and progress indicators
 
 ## SEO & Meta Tags
 

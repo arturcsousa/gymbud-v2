@@ -1,0 +1,48 @@
+{
+  "title": "Workout History",
+  "subtitle": "Track your fitness journey",
+  "search": {
+    "placeholder": "Search workouts..."
+  },
+  "filters": {
+    "all": "All"
+  },
+  "stats": {
+    "exercises": "exercises",
+    "sets": "sets",
+    "minutes": "min"
+  },
+  "actions": {
+    "view": "View Details",
+    "loadMore": "Load More"
+  },
+  "empty": {
+    "title": "No workouts yet",
+    "message": "Start your first workout to see it here",
+    "startFirst": "Start First Workout"
+  },
+  "noResults": {
+    "title": "No matching workouts",
+    "message": "Try adjusting your search or filters"
+  },
+  "detail": {
+    "back": "Back to History",
+    "edit": "Edit Session",
+    "backToHistory": "Back to History",
+    "notFound": {
+      "title": "Session Not Found",
+      "message": "The workout session you're looking for doesn't exist."
+    },
+    "stats": {
+      "date": "Date",
+      "duration": "Duration",
+      "exercises": "Exercises",
+      "notRecorded": "Not recorded"
+    },
+    "noExercises": "No exercises recorded",
+    "noSets": "No sets recorded",
+    "notes": {
+      "title": "Session Notes"
+    }
+  }
+}

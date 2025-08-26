@@ -16,11 +16,16 @@ client/src/i18n/
 ├── index.ts                    # Main i18n configuration
 ├── locales/
 │   ├── en/                     # English translations
-│   │   ├── common.json         # Navigation, CTAs, language labels
+│   │   ├── common.json         # Navigation, CTAs, language labels, UI strings
 │   │   ├── landing.json        # Marketing page content
 │   │   ├── faq.json           # FAQ questions and answers
-│   │   ├── auth.json          # Authentication flows
-│   │   └── [11 other namespaces].json
+│   │   ├── app.json           # App navigation, sync status, conflicts
+│   │   ├── auth.json          # Authentication flows (signin, signup, reset)
+│   │   ├── session.json       # Workout logging interface
+│   │   ├── history.json       # Workout history and detail views
+│   │   ├── library.json       # Exercise database browsing
+│   │   ├── settings.json      # Account management, data export
+│   │   └── [5 other namespaces].json
 │   └── pt-BR/                  # Portuguese Brazil translations
 │       ├── common.json
 │       ├── landing.json
@@ -34,75 +39,126 @@ client/src/i18n/
 ```json
 {
   "nav": {
-    "how_it_works": "How it Works",
-    "why_different": "Why We're Different",
+    "home": "Home",
+    "howItWorks": "How It Works",
     "programs": "Programs",
     "pricing": "Pricing",
     "faq": "FAQ",
-    "sign_in": "Sign In"
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
   },
   "cta": {
-    "start_free": "Start Free",
-    "see_how": "See How It Works",
-    "learn_more": "Learn More"
+    "primary": "Start Your Journey",
+    "secondary": "Learn More",
+    "getStarted": "Get Started",
+    "signUp": "Sign Up Free",
+    "tryFree": "Try Free"
   },
-  "lang": {
+  "languages": {
     "en": "English",
-    "ptbr": "Português (BR)"
+    "pt-BR": "Português (Brasil)"
+  },
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit"
+}
+```
+
+### App Namespace (`app.json`)
+```json
+{
+  "nav": {
+    "home": "Home",
+    "session": "Session",
+    "history": "History",
+    "library": "Library",
+    "settings": "Settings"
+  },
+  "sync": {
+    "online": "Online",
+    "offline": "Offline",
+    "syncing": "Syncing...",
+    "lastSync": "Last sync: {{time}}",
+    "pendingChanges": "{{count}} pending changes",
+    "syncNow": "Sync Now",
+    "syncError": "Sync failed"
+  },
+  "conflicts": {
+    "title": "Data Conflict",
+    "message": "Your local changes conflict with server data",
+    "keepLocal": "Keep Local",
+    "useServer": "Use Server",
+    "merge": "Merge",
+    "dismiss": "Dismiss"
+  },
+  "sessionStatus": {
+    "active": "Active",
+    "completed": "Completed",
+    "paused": "Paused"
   }
 }
 ```
 
-### Landing Namespace (`landing.json`)
+### Authentication Namespace (`auth.json`)
 ```json
 {
-  "hero": {
-    "title": "Personal training that's actually personal",
-    "subtitle": "The only AI fitness app with a deterministic engine + adaptive coach..."
+  "signin": {
+    "title": "Sign in to your account",
+    "submit": "Sign In",
+    "noAccount": "Don't have an account?",
+    "link": "Sign up"
   },
-  "how": {
-    "title": "How it Works",
-    "steps": {
-      "assess": { "title": "Assess", "desc": "Tell us your goals..." },
-      "generate": { "title": "Generate", "desc": "Get a deterministic plan..." }
-    }
+  "signup": {
+    "title": "Create your account",
+    "submit": "Sign Up",
+    "hasAccount": "Already have an account?",
+    "link": "Sign in",
+    "checkEmail": "Check your email for a confirmation link"
   },
-  "different": {
-    "title": "Why We're Different",
-    "items": {
-      "deterministic": { "title": "Deterministic Engine", "desc": "No roulette..." },
-      "coach": { "title": "Adaptive Coach", "desc": "Ask the coach to swap..." }
-    }
+  "reset": {
+    "title": "Reset your password",
+    "submit": "Send Reset Email",
+    "link": "Forgot password?",
+    "emailSent": "Password reset email sent"
   },
-  "programs": {
-    "title": "Programs & Goals",
-    "muscle": { "title": "Muscle Building", "desc": "Build muscle size..." },
-    "weight": { "title": "Weight Loss", "desc": "Burn fat while keeping..." },
-    "endurance": { "title": "Endurance", "desc": "Boost stamina..." }
+  "fields": {
+    "email": "Email",
+    "password": "Password"
   },
-  "progress": {
-    "title": "Proof of Progress",
-    "subtitle": "Track every rep, set, and weight automatically"
-  },
-  "pricing": {
-    "title": "Pricing",
-    "subtitle": "Choose the plan that fits your goals"
-  },
-  "final_cta": {
-    "title": "Ready to train smarter?",
-    "subtitle": "Join thousands who've transformed their training with GymBud"
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "emailRequired": "Email is required"
   }
 }
 ```
 
-### FAQ Namespace (`faq.json`)
+### Session Namespace (`session.json`)
 ```json
 {
-  "title": "FAQ",
-  "items": {
-    "free": { "question": "Is GymBud really free to try?", "answer": "Yes! Start with our free tier..." },
-    "beginner": { "question": "I'm a complete beginner. Can I use GymBud?", "answer": "Absolutely..." },
-    "equipment": { "question": "What if my gym doesn't have certain equipment?", "answer": "The coach can instantly swap..." }
+  "workout": "Workout",
+  "timer": {
+    "title": "Workout Timer"
+  },
+  "exercises": {
+    "title": "Exercises",
+    "add": "Add Exercise",
+    "empty": "No exercises added yet. Add your first exercise to get started!"
+  },
+  "set": {
+    "add": "Add Set",
+    "setNumber": "Set",
+    "reps": "Reps",
+    "weight": "Weight",
+    "rpe": "RPE",
+    "notes": "Notes"
+  },
+  "actions": {
+    "save": "Save Progress",
+    "complete": "Complete Session"
   }
 }
 ```

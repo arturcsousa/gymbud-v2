@@ -1,6 +1,7 @@
 import { Route } from 'wouter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Landing from '@/marketing/Landing';
+import { AppShell } from '@/app/AppShell';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -12,15 +13,19 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function App() {
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Route path="/" component={Landing} />
-      {/* Optional stubs for future long-form pages if we keep them: */}
-      <Route path="/how-it-works">{() => <Landing />}</Route>
-      <Route path="/programs">{() => <Landing />}</Route>
-      <Route path="/pricing">{() => <Landing />}</Route>
-      <Route path="/faq">{() => <Landing />}</Route>
+      <AppShell>
+        <Route path="/" component={Landing} />
+        {/* Optional stubs for future long-form pages if we keep them: */}
+        <Route path="/how-it-works">{() => <Landing />}</Route>
+        <Route path="/programs">{() => <Landing />}</Route>
+        <Route path="/pricing">{() => <Landing />}</Route>
+        <Route path="/faq">{() => <Landing />}</Route>
+      </AppShell>
     </QueryClientProvider>
   );
 }
+
+export default App;

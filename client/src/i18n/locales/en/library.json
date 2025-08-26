@@ -1,0 +1,27 @@
+{
+  "title": "Exercise Library",
+  "subtitle": "Browse and discover exercises",
+  "search": {
+    "placeholder": "Search exercises, muscles, or equipment..."
+  },
+  "filters": {
+    "all": "All"
+  },
+  "categories": {
+    "compound": "Compound",
+    "isolation": "Isolation"
+  },
+  "exercise": {
+    "equipment": "Equipment",
+    "muscles": "Target Muscles",
+    "viewDetails": "View Details"
+  },
+  "empty": {
+    "title": "No exercises available",
+    "message": "Exercise library is being updated"
+  },
+  "noResults": {
+    "title": "No exercises found",
+    "message": "Try different search terms or filters"
+  }
+}
