@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Moon, Eye, EyeOff, Globe } from 'lucide-react'
+import { Moon, Eye, EyeOff } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
