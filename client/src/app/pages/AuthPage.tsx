@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Eye, EyeOff } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { finalizeOnboarding } from '@/onboarding/actions'
 
 interface AuthPageProps {
   params: {
@@ -60,7 +61,8 @@ export function AuthPage({ params }: AuthPageProps) {
           setError(t('auth:signup.checkEmail'))
           return
         }
-        setLocation('/')
+        // Call finalizeOnboarding to create plan and navigate to session
+        await finalizeOnboarding(undefined, setLocation)
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,

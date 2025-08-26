@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 18:28 ET
+**Integrated** signup flow with plan creation and session navigation
+- **Signup Flow**: After successful account creation, automatically calls `finalizeOnboarding()` function
+- **Plan Creation**: Triggers `plan-get-or-create` Edge Function with default plan seed for new users
+- **Navigation**: Redirects to `/app/session/today` instead of returning to auth page
+- **Default Plan**: Creates general fitness plan (3x/week, 45min sessions, supportive coaching)
+- **Error Handling**: Proper error propagation from Edge Function to user interface
+- Context: Complete end-to-end flow from signup to active session ready for workout
+- Migrations: N/A (integration enhancement only)
+
 ## August 26, 2025 18:20 ET
 **Fixed** signup database error and manifest caching issues
 - **Trigger Fix**: Updated `app2.handle_new_user()` function search_path to 'app2, public, auth' for proper schema access
