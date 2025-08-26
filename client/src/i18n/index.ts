@@ -33,6 +33,16 @@ import ptBRPricing from './locales/pt-BR/pricing.json';
 import ptBRErrors from './locales/pt-BR/errors.json';
 import ptBRValidation from './locales/pt-BR/validation.json';
 
+const RTL_LANG_PREFIXES = ['ar', 'fa', 'he', 'ur'];
+
+function setHtmlLangAttributes(lng: string | undefined) {
+  const html = document.documentElement;
+  const lang = (lng || 'en').toString();
+  html.setAttribute('lang', lang);
+  const isRtl = RTL_LANG_PREFIXES.some(prefix => lang.toLowerCase().startsWith(prefix));
+  html.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+}
+
 const resources = {
   en: {
     common: enCommon,
@@ -93,5 +103,15 @@ i18n
       useSuspense: false,
     },
   });
+
+// Ensure initial attributes are correct
+setHtmlLangAttributes(i18n.language);
+
+// Keep attributes in sync on language changes
+i18n.on('languageChanged', (lng) => {
+  try {
+    setHtmlLangAttributes(lng);
+  } catch { /* no-op */ }
+});
 
 export default i18n;
