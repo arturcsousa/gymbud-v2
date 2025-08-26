@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## January 26, 2025 14:42 ET
+**Completed** Dexie offline-first database and sync queue implementation
+- **Dexie Database**: Created `client/src/db/gymbud-db.ts` with versioned schema for offline-first data storage
+- **Database Tables**: meta, queue_mutations, sessions, session_exercises, logged_sets with proper indexing
+- **Sync Queue**: Implemented `client/src/sync/queue.ts` with enqueue, flush, exponential backoff, and cross-tab coordination
+- **Queue Features**: Single-flight processing, BroadcastChannel coordination, retry logic with backoff delays
+- **Sync Integration**: Added `client/src/sync/init.ts` for automatic sync on network reconnection and manual triggers
+- **Live Updates**: Enhanced OfflineBanner with useLiveQuery to show real-time pending changes count
+- **Dependencies**: Added dexie and dexie-react-hooks for reactive offline database operations
+- Context: Complete offline-first foundation ready for session logging and data synchronization
+- Migrations: Next step - implement server-side sync via Edge Functions to replace SEND_NOT_IMPLEMENTED placeholder
+
 ## January 26, 2025 14:35 ET
 **Completed** PWA infrastructure implementation with offline-first capabilities
 - **PWA Configuration**: Updated `vite.config.ts` with VitePWA plugin, manifest, and service worker settings

@@ -1,12 +1,21 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useOnlineStatus } from '@/lib/net/useOnlineStatus'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { db } from '@/db/gymbud-db'
+import { requestFlush } from '@/sync/queue'
 
 export default function OfflineBanner() {
   const online = useOnlineStatus()
   const { t } = useTranslation('app')
   const [syncing, setSyncing] = useState(false)
   const [lastSync, setLastSync] = useState<string | null>(null)
+
+  const pending = useLiveQuery(
+    () => db.queue_mutations.where('status').equals('queued').count(),
+    [],
+    0
+  ) ?? 0
 
   useEffect(() => {
     const onOfflineReady = () => console.info('[PWA] offline ready')
@@ -22,16 +31,22 @@ export default function OfflineBanner() {
   async function syncNow() {
     setSyncing(true)
     try {
-      // Step 1 placeholder: check SW updates
+      // Step 1: check SW updates
       if ((window as any).__gymbud_check_sw) await (window as any).__gymbud_check_sw()
-
-      // Step 2 (next step): we'll flush the mutation queue here
-      window.dispatchEvent(new CustomEvent('gymbud:sync-now'))
+      // Step 2: ask queue to flush
+      requestFlush()
       setLastSync(new Date().toLocaleString())
     } finally {
       setSyncing(false)
     }
   }
+
+  const leftText = syncing
+    ? t('sync.syncing')
+    : online
+      ? t('sync.online') + (pending ? ` — ${t('sync.pendingChanges', { count: pending })}` : '') +
+        (lastSync ? ` — ${t('sync.lastSync', { time: lastSync })}` : '')
+      : t('sync.offline')
 
   return (
     <div className="w-full sticky top-0 z-50">
@@ -39,11 +54,7 @@ export default function OfflineBanner() {
         ${online ? 'bg-emerald-600' : 'bg-amber-600'}`}>
         <div className="flex items-center gap-2">
           <span className="inline-block h-2 w-2 rounded-full bg-white/90" />
-          {syncing
-            ? t('sync.syncing')
-            : online
-              ? t('sync.online') + (lastSync ? ` — ${t('sync.lastSync', { time: lastSync })}` : '')
-              : t('sync.offline')}
+          {leftText}
         </div>
         <button
           onClick={syncNow}

@@ -72,12 +72,11 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 ### IndexedDB Schema (Dexie)
 ```typescript
 // Database tables with versioned schema
-profiles: { id, user_id, name, email, created_at, updated_at }
-plans: { id, user_id, name, description, created_at, updated_at }
-sessions: { id, user_id, plan_id, status, started_at, completed_at, notes }
-session_exercises: { id, session_id, exercise_name, order_index }
-logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes }
-mutation_queue: { id, table_name, operation, data, user_id, created_at }
+meta: { key, value, updated_at }
+queue_mutations: { id, entity, op, payload, user_id, idempotency_key, status, retries, next_attempt_at, created_at, updated_at }
+sessions: { id, user_id, plan_id, status, started_at, completed_at, notes, updated_at }
+session_exercises: { id, session_id, exercise_name, order_index, updated_at }
+logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, updated_at }
 ```
 
 ### Sync Engine Features

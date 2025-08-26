@@ -4,8 +4,10 @@ import './i18n'
 import App from './App.tsx'
 import './index.css'
 import { initPWA } from './pwa'
+import { initSync } from './sync/init'
 
 initPWA()
+initSync()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
