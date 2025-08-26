@@ -1,3 +1,66 @@
 {
-  "placeholder": "Onboarding wizard strings"
+  "title": "Bem-vindo ao GymBud",
+  "subtitle": "Vamos configurar seu plano de treino personalizado",
+  "steps": {
+    "profile": {
+      "title": "Informações Pessoais",
+      "description": "Conte-nos sobre você"
+    },
+    "goals": {
+      "title": "Objetivos de Treino",
+      "description": "O que você quer alcançar?"
+    },
+    "experience": {
+      "title": "Nível de Experiência",
+      "description": "Há quanto tempo você treina?"
+    },
+    "schedule": {
+      "title": "Cronograma de Treino",
+      "description": "Quando você pode treinar?"
+    },
+    "equipment": {
+      "title": "Equipamentos Disponíveis",
+      "description": "Quais equipamentos você tem acesso?"
+    },
+    "preferences": {
+      "title": "Preferências de Treino",
+      "description": "Que tipo de treino você prefere?"
+    },
+    "workout": {
+      "title": "Rotina de Exercícios",
+      "description": "Qual é sua rotina típica de exercícios?"
+    },
+    "diet": {
+      "title": "Preferências Alimentares",
+      "description": "Qual é sua preferência alimentar?"
+    },
+    "progress": {
+      "title": "Acompanhamento de Progresso",
+      "description": "Como você acompanha seu progresso?"
+    },
+    "motivation": {
+      "title": "Motivação",
+      "description": "O que te motiva a treinar?"
+    },
+    "account": {
+      "title": "Configuração da Conta",
+      "description": "Vamos configurar sua conta"
+    },
+    "final": {
+      "title": "Verificação Final",
+      "description": "Revise sua configuração antes de completar"
+    }
+  },
+  "navigation": {
+    "next": "Próximo",
+    "previous": "Anterior",
+    "skip": "Pular",
+    "finish": "Completar Configuração"
+  },
+  "progress": "Passo {{current}} de {{total}}",
+  "completion": {
+    "title": "Configuração Completa!",
+    "message": "Seu plano de treino personalizado está pronto",
+    "cta": "Começar a Treinar"
+  }
 }
