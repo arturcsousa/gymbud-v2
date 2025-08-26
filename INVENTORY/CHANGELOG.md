@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 18:06 ET
+**Enhanced** auth page branding and simplified user flow
+- **Logo Placement**: Moved GymBud logo to center/top of auth form with larger size (20x20) and enhanced shadow
+- **Header Simplification**: Removed header logo, kept only language switcher and dark mode toggle aligned right
+- **Skip Functionality**: Removed "Skip for now" option from signup flow to ensure proper user registration
+- **Visual Hierarchy**: Improved focus on centered branding with animated logo entrance
+- **User Flow**: Streamlined signup process requires completion before app access
+- Context: Auth page now has cleaner branding focus and enforced registration flow
+- Migrations: N/A (UI enhancement only)
+
 ## August 26, 2025 18:00 ET
 **Implemented** complete i18n support for auth page with language switcher
 - **Translation Keys**: Created comprehensive auth translation keys for EN and PT-BR locales

@@ -120,26 +120,8 @@ export function AuthPage({ params }: AuthPageProps) {
         style={{ backgroundColor: PALETTE.aqua }}
       />
 
-      {/* Header with Logo, Language Switcher and Dark Mode Toggle */}
-      <div className="relative z-20 flex justify-between items-center p-6 pt-12">
-        <div className="flex items-center gap-4">
-          {/* GymBud Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-4 bg-slate-800 rounded-full"></div>
-                <div className="w-6 h-6 border-2 border-slate-800 rounded-full flex items-center justify-center">
-                  <div className="w-2 h-2 bg-slate-800 rounded-full"></div>
-                  <div className="absolute w-1 h-1 bg-slate-800 rounded-full ml-2 mt-1"></div>
-                  <div className="absolute w-1 h-1 bg-slate-800 rounded-full mr-2 mt-1"></div>
-                </div>
-                <div className="w-2 h-4 bg-slate-800 rounded-full"></div>
-              </div>
-            </div>
-            <span className="text-white text-2xl font-bold">GymBud</span>
-          </div>
-        </div>
-        
+      {/* Header with Language Switcher and Dark Mode Toggle */}
+      <div className="relative z-20 flex justify-end items-center p-6 pt-12">
         <div className="flex items-center gap-3">
           {/* Language Switcher */}
           <div className="text-white">
@@ -161,6 +143,27 @@ export function AuthPage({ params }: AuthPageProps) {
           transition={{ duration: 0.6 }}
           className="w-full max-w-md"
         >
+          {/* Centered GymBud Logo */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="flex flex-col items-center mb-12"
+          >
+            <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl mb-4">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-6 bg-slate-800 rounded-full"></div>
+                <div className="w-8 h-8 border-3 border-slate-800 rounded-full flex items-center justify-center">
+                  <div className="w-3 h-3 bg-slate-800 rounded-full"></div>
+                  <div className="absolute w-1.5 h-1.5 bg-slate-800 rounded-full ml-3 mt-1.5"></div>
+                  <div className="absolute w-1.5 h-1.5 bg-slate-800 rounded-full mr-3 mt-1.5"></div>
+                </div>
+                <div className="w-3 h-6 bg-slate-800 rounded-full"></div>
+              </div>
+            </div>
+            <span className="text-white text-3xl font-bold tracking-wide">GymBud</span>
+          </motion.div>
+
           {/* Step Indicator */}
           <div className="text-center mb-12">
             <motion.p 
@@ -299,19 +302,6 @@ export function AuthPage({ params }: AuthPageProps) {
                 >
                   {t('auth:reset.backToSignIn')}
                 </button>
-              )}
-
-              {/* Skip for now - only show on signup */}
-              {isSignUp && (
-                <div className="pt-6">
-                  <button
-                    onClick={() => setLocation('/')}
-                    className="text-white/70 hover:text-white text-lg transition-colors font-medium"
-                    style={{ color: PALETTE.orange }}
-                  >
-                    {t('auth:signup.skip')}
-                  </button>
-                </div>
               )}
             </div>
           </motion.div>
