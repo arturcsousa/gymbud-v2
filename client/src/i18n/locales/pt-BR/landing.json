@@ -6,6 +6,7 @@
   },
   "how": {
     "title": "Como Funciona",
+    "subtitle": "Como Funciona",
     "steps": {
       "assess": { "title": "Avaliação", "desc": "Conte seus objetivos, ambiente e possíveis lesões." },
       "generate": { "title": "Gerar", "desc": "Receba um plano determinístico — mesmos dados, mesmo plano sempre." },
@@ -15,6 +16,7 @@
   },
   "different": {
     "title": "Por que é Diferente",
+    "subtitle": "O que nos Torna Diferentes",
     "items": {
       "deterministic": { "title": "Motor Determinístico", "desc": "Nada de roleta. Mesmos dados sempre geram o mesmo treino." },
       "coach": { "title": "Coach Adaptativo", "desc": "Peça para trocar, ajustar ou encurtar durante a sessão." },
@@ -50,7 +52,7 @@
   },
   "pricing": {
     "title": "Planos",
-    "subtitle": "Escolha o plano que combina com seus objetivos",
+    "subtitle": "Escolha o plano que melhor atende às suas necessidades",
     "most_popular": "Mais Popular",
     "plans": {
       "free": { "title": "Grátis", "desc": "Sessões e histórico limitados — teste o motor agora.", "price": "R$0 / para sempre" },

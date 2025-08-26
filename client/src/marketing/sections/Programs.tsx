@@ -57,7 +57,7 @@ export default function Programs() {
             {t('landing:programs.title')}
           </h2>
           <h3 className="text-2xl lg:text-3xl font-bold" style={{ color: PALETTE.aqua }}>
-            Programas & Objetivos
+            {t('landing:programs.subtitle')}
           </h3>
         </div>
 

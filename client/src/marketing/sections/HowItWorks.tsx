@@ -37,7 +37,7 @@ export default function HowItWorks() {
               {t('landing:how.title')}
             </h2>
             <h3 className="text-2xl lg:text-3xl font-bold mb-12" style={{ color: PALETTE.aqua }}>
-              Como Funciona
+              {t('landing:how.subtitle')}
             </h3>
             
             <div className="space-y-8">

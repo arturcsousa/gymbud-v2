@@ -48,16 +48,27 @@ export default function WhyDifferent() {
   return (
     <section
       id="why"
-      className="py-20"
-      style={{ background: PALETTE.deepTeal }}
+      className="py-20 relative"
+      style={{ 
+        background: `linear-gradient(180deg, ${PALETTE.teal} 0%, ${PALETTE.deepTeal} 100%)` 
+      }}
     >
-      <div className="mx-auto max-w-7xl px-6">
+      {/* Decorative wave separator */}
+      <div 
+        className="absolute top-0 left-0 w-full h-20"
+        style={{
+          background: PALETTE.deepTeal,
+          clipPath: 'polygon(0 0, 100% 0, 100% 60%, 0 100%)'
+        }}
+      />
+      
+      <div className="mx-auto max-w-7xl px-6 pt-12">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
             {t('landing:different.title')}
           </h2>
           <h3 className="text-2xl lg:text-3xl font-bold" style={{ color: PALETTE.aqua }}>
-            O que nos Torna Diferentes
+            {t('landing:different.subtitle')}
           </h3>
         </div>
 

@@ -31,7 +31,7 @@ export default function Pricing() {
             {t('landing:pricing.title')}
           </h2>
           <h3 className="text-2xl lg:text-3xl font-bold" style={{ color: PALETTE.orange }}>
-            Preços Simples e Transparentes
+            {t('landing:pricing.subtitle')}
           </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">

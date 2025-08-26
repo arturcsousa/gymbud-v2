@@ -6,6 +6,7 @@
   },
   "how": {
     "title": "How it Works",
+    "subtitle": "How it Works",
     "steps": {
       "assess": { "title": "Assess", "desc": "Tell us your goals, environment, and any injuries." },
       "generate": { "title": "Generate", "desc": "Get a deterministic plan—same inputs, same plan every time." },
@@ -15,6 +16,7 @@
   },
   "different": {
     "title": "Why We're Different",
+    "subtitle": "Why We're Different",
     "items": {
       "deterministic": { "title": "Deterministic Engine", "desc": "No roulette. Same inputs always mean the same program." },
       "coach": { "title": "Adaptive Coach", "desc": "Ask the coach to swap, adjust, or compress mid-session." },
@@ -26,6 +28,7 @@
   },
   "programs": {
     "title": "Programs & Goals",
+    "subtitle": "Programs & Goals",
     "muscle": { "title": "Muscle Building", "desc": "Build muscle size with proven progressive overload." },
     "weight": { "title": "Weight Loss", "desc": "Burn fat while keeping muscle through smart conditioning." },
     "endurance": { "title": "Endurance", "desc": "Boost stamina and resilience for longer sessions." },

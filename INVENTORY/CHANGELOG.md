@@ -147,3 +147,23 @@
 - Responsive design with mobile-first approach
 - Smooth anchor scrolling for SPA navigation
 - Environment variable integration for app URLs
+
+## [2025-01-26 12:12] - Translation Keys Final Fixes
+### Fixed
+- **WhyDifferent Section**: Replaced hardcoded Portuguese subtitle "O que nos Torna Diferentes" with translation key `landing:different.subtitle`
+- **Programs Section**: Replaced hardcoded Portuguese subtitle "Programas & Objetivos" with translation key `landing:programs.subtitle`  
+- **Pricing Section**: Replaced hardcoded Portuguese subtitle "Preços Simples e Transparentes" with translation key `landing:pricing.subtitle`
+- **Translation Files**: Added missing subtitle keys to both EN and PT-BR landing.json files for different, programs sections
+- **PT-BR Pricing**: Updated pricing subtitle to match existing structure "Escolha o plano que melhor atende às suas necessidades"
+
+### Verified
+- **Complete Translation Coverage**: All marketing components now use proper translation keys instead of hardcoded text
+- **Language Picker**: Confirmed working correctly in navbar for EN/PT-BR switching
+- **FAQ Component**: Verified proper translation key usage for all FAQ items and title
+- **All Sections**: Hero, HowItWorks, WhyDifferent, Programs, Progress, Pricing, FinalCta, and NavBar all use translation keys
+
+### Technical Details
+- All hardcoded Portuguese text replaced with `t('landing:section.key')` pattern
+- Translation keys follow consistent naming convention across all components
+- Both EN and PT-BR locale files have complete coverage for all sections
+- Language switching persists correctly via localStorage
