@@ -1,11 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ctaHref, PALETTE } from '../theme';
 
-const APP_URL =
-  (import.meta as any).env?.NEXT_PUBLIC_SITE_URL ||
-  (import.meta as any).env?.VITE_SITE_URL ||
-  'https://app.gymbud.ai';
-
 export default function FinalCta() {
   const { t } = useTranslation(['landing', 'common']);
   return (
