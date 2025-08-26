@@ -23,10 +23,11 @@ function App() {
     isVercel: window.location.hostname.includes('vercel.app')
   });
 
-  // Check if we're on the app subdomain
+  // Check if we're on the app subdomain - FIXED: Check for exact Vercel preview URL
   const isAppDomain = window.location.hostname === 'app.gymbud.ai' || 
                      window.location.hostname === 'localhost' ||
-                     window.location.hostname.includes('vercel.app');
+                     window.location.hostname.startsWith('gymbud-v2-') ||
+                     window.location.hostname.includes('-arturcsousa.vercel.app');
 
   console.log('App.tsx - Rendering:', isAppDomain ? 'AppShell' : 'Landing');
 
