@@ -30,9 +30,19 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative mx-auto max-w-7xl px-6 py-20 min-h-screen flex items-center">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+      <div className="relative z-10 flex min-h-screen items-center">
+        <div className="mx-auto max-w-7xl px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Left side - Content */}
           <div className="text-white z-10">
+            {/* Logo */}
+            <div className="flex justify-center lg:justify-start mb-8">
+              <img 
+                src="/images/gymbud-wh.png" 
+                alt="GymBud Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
+            
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -48,34 +58,46 @@ export default function Hero() {
             <div className="flex flex-wrap gap-4">
               <a
                 href={ctaHref('hero_primary')}
-                className="px-8 py-4 rounded-full font-semibold text-white transition-all hover:scale-105"
-                style={{
-                  background: PALETTE.aqua,
-                  boxShadow: `0 4px 20px ${PALETTE.aqua}40`,
+                className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105"
+                style={{ 
+                  backgroundColor: PALETTE.aqua, 
+                  color: PALETTE.deepTeal 
                 }}
               >
                 {t('common:cta.start_free')}
               </a>
-              <a
-                href="#how"
-                className="px-8 py-4 rounded-full border-2 font-semibold text-white transition-all hover:scale-105"
-                style={{
-                  borderColor: PALETTE.orange,
-                  color: PALETTE.orange,
+              <button
+                className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-full border-2 transition-all duration-200 hover:scale-105"
+                style={{ 
+                  borderColor: PALETTE.orange, 
+                  color: PALETTE.orange 
                 }}
               >
                 {t('common:cta.see_how')}
-              </a>
+              </button>
             </div>
           </div>
 
-          {/* Right side - placeholder for person image */}
-          <div className="relative z-10 flex justify-center lg:justify-end">
-            <div className="w-80 h-96 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
-              <span className="text-white/60 text-center">
-                Hero Image<br />Placeholder
-              </span>
-            </div>
+          {/* Right side - Hero Image */}
+          <div className="relative">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="relative"
+            >
+              <img 
+                src="/images/hero-image.png" 
+                alt="GymBud App Preview" 
+                className="w-full h-auto max-w-lg mx-auto rounded-2xl shadow-2xl"
+              />
+              {/* Decorative glow effect */}
+              <div 
+                className="absolute inset-0 rounded-2xl opacity-20 blur-xl"
+                style={{ backgroundColor: PALETTE.aqua }}
+              />
+            </motion.div>
           </div>
         </div>
       </div>
