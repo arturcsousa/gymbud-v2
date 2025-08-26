@@ -51,6 +51,7 @@
   "pricing": {
     "title": "Pricing",
     "subtitle": "Choose the plan that fits your goals",
+    "most_popular": "Most Popular",
     "plans": {
       "free": { "title": "Free", "desc": "Limited sessions and history — try the engine now.", "price": "$0 / forever" },
       "pro": { "title": "Pro", "desc": "Full access to deterministic plans, coach, and progress tracking.", "price": "$14.99 / month" },

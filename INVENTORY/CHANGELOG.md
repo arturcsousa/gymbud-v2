@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 11:46 ET
+**Fixed** translation key issues across all marketing components.
+- Fixed: `Progress.tsx` - replaced hardcoded English text with `landing:progress.metrics.*` keys
+- Fixed: `Pricing.tsx` - replaced hardcoded plan data with `landing:pricing.plans.*` keys and added `most_popular` key
+- Fixed: `WhyDifferent.tsx` - now displays all 6 features from locale files instead of just 3
+- Fixed: `HowItWorks.tsx` - added missing progress step, now shows all 4 steps with proper grid layout
+- Updated: Added `most_popular` translation key to both EN and PT-BR locale files
+- Context: All components now properly use translation keys, ensuring full EN/PT-BR language support
+- Migrations: N/A (translation fixes only)
+
 ## August 26, 2025 11:08 ET
 **Reorganized** marketing structure with centralized theme utilities and anchor scrolling.
 - New: `client/src/marketing/theme.ts` with PALETTE constants and ctaHref utility function

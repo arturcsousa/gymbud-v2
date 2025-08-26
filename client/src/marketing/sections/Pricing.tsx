@@ -4,9 +4,24 @@ import { ctaHref } from '../theme';
 export default function Pricing() {
   const { t } = useTranslation(['landing', 'common']);
   const plans = [
-    { name: 'Basic',   price: '19', ribbon: '',                         popular: false },
-    { name: 'Pro',     price: '29', ribbon: 'Most Popular', popular: true },
-    { name: 'Premium', price: '49', ribbon: '',                         popular: false },
+    { 
+      nameKey: 'landing:pricing.plans.free.title', 
+      descKey: 'landing:pricing.plans.free.desc',
+      priceKey: 'landing:pricing.plans.free.price',
+      popular: false 
+    },
+    { 
+      nameKey: 'landing:pricing.plans.pro.title', 
+      descKey: 'landing:pricing.plans.pro.desc',
+      priceKey: 'landing:pricing.plans.pro.price',
+      popular: true 
+    },
+    { 
+      nameKey: 'landing:pricing.plans.annual.title', 
+      descKey: 'landing:pricing.plans.annual.desc',
+      priceKey: 'landing:pricing.plans.annual.price',
+      popular: false 
+    },
   ];
   return (
     <section id="pricing" className="bg-[#063e50]">
@@ -27,7 +42,7 @@ export default function Pricing() {
                 backdropFilter: 'blur(24px)',
               }}
             >
-              {p.ribbon ? (
+              {p.popular ? (
                 <div 
                   className="mb-3 w-fit rounded-full px-3 py-1 text-xs text-white/85"
                   style={{
@@ -35,20 +50,16 @@ export default function Pricing() {
                     boxShadow: '0 0 12px #18C7B6aa'
                   }}
                 >
-                  {p.ribbon}
+                  {t('landing:pricing.most_popular')}
                 </div>
               ) : null}
-              <h3 className="text-lg font-semibold">{p.name}</h3>
+              <h3 className="text-lg font-semibold">{t(p.nameKey)}</h3>
               <div className="mt-2 text-3xl font-extrabold text-white">
-                ${p.price}<span className="text-base font-medium text-white/70">/month</span>
+                {t(p.priceKey)}
               </div>
-              <ul className="mt-4 space-y-2 text-sm text-white/80">
-                <li>• AI-powered training plans</li>
-                <li>• Progress tracking & analytics</li>
-                <li>• 24/7 customer support</li>
-              </ul>
+              <p className="mt-4 text-sm text-white/80">{t(p.descKey)}</p>
               <a
-                href={ctaHref('pricing', { plan: p.name as string })}
+                href={ctaHref('pricing', { plan: t(p.nameKey) })}
                 className="mt-6 rounded-lg bg-white px-4 py-2 text-center font-semibold text-[#043747]"
               >
                 {t('common:cta.start_free')}

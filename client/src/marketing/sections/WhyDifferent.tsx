@@ -12,6 +12,9 @@ export default function WhyDifferent() {
     { icon: <CheckCircle className="h-6 w-6" />, titleKey: 'landing:different.items.deterministic.title', descKey: 'landing:different.items.deterministic.desc', accent: PALETTE.aqua },
     { icon: <Activity className="h-6 w-6" />, titleKey: 'landing:different.items.coach.title', descKey: 'landing:different.items.coach.desc', accent: PALETTE.teal },
     { icon: <Clock className="h-6 w-6" />, titleKey: 'landing:different.items.rest.title', descKey: 'landing:different.items.rest.desc', accent: PALETTE.orange },
+    { icon: <CheckCircle className="h-6 w-6" />, titleKey: 'landing:different.items.constraints.title', descKey: 'landing:different.items.constraints.desc', accent: PALETTE.aqua },
+    { icon: <Activity className="h-6 w-6" />, titleKey: 'landing:different.items.runner.title', descKey: 'landing:different.items.runner.desc', accent: PALETTE.teal },
+    { icon: <Clock className="h-6 w-6" />, titleKey: 'landing:different.items.data.title', descKey: 'landing:different.items.data.desc', accent: PALETTE.orange },
   ];
 
   return (
@@ -32,7 +35,7 @@ export default function WhyDifferent() {
           </h2>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-2">
           {features.map((f, i) => (
             <motion.article
               key={f.titleKey}

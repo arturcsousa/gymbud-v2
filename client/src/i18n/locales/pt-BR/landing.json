@@ -51,6 +51,7 @@
   "pricing": {
     "title": "Planos",
     "subtitle": "Escolha o plano que combina com seus objetivos",
+    "most_popular": "Mais Popular",
     "plans": {
       "free": { "title": "Grátis", "desc": "Sessões e histórico limitados — teste o motor agora.", "price": "R$0 / para sempre" },
       "pro": { "title": "Pro", "desc": "Acesso completo a planos determinísticos, coach e progresso.", "price": "R$59,90 / mês" },
