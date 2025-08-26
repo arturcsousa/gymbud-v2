@@ -35,11 +35,11 @@ export default function Hero() {
           {/* Left side - Content */}
           <div className="text-white z-10">
             {/* Logo */}
-            <div className="flex justify-center lg:justify-start mb-8">
+            <div className="flex justify-center mb-12">
               <img 
                 src="/images/gymbud-wh.png" 
                 alt="GymBud Logo" 
-                className="h-16 w-auto"
+                className="h-48 w-auto"
               />
             </div>
             
