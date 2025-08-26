@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## August 26, 2025 18:00 ET
+**Implemented** complete i18n support for auth page with language switcher
+- **Translation Keys**: Created comprehensive auth translation keys for EN and PT-BR locales
+- **Language Switcher**: Added LanguageSwitcher component to auth page header for real-time language switching
+- **Browser Detection**: Leverages existing i18n browser language detection from landing page setup
+- **Translation Coverage**: All text elements now use proper translation keys (titles, subtitles, buttons, placeholders, errors)
+- **User Experience**: Language preference persists across sessions via localStorage
+- **Bilingual Content**: Complete Portuguese translations for all auth flows (signin, signup, reset)
+- Context: Auth page now fully supports EN/PT-BR with seamless language switching
+- Migrations: N/A (i18n enhancement only)
+
 ## August 26, 2025 17:56 ET
 **Fixed** PWA manifest icon error and enhanced auth error handling
 - **PWA Manifest**: Fixed icon paths from `/icons/icon-192.png` to `/icons/icon-192.jpg` to match actual file format
@@ -52,7 +63,8 @@
 - **Layout Enhancement**: Added step indicator, large headings with contextual subtitles, and spacious input fields (h-14)
 - **Modern Styling**: Implemented rounded-2xl corners, dark slate input backgrounds with teal focus states (#18C7B6)
 - **Interactive Elements**: Primary button using GymBud teal with hover animations, "Skip for now" link for signup flow
-- **Technical Improvements**: Removed ContentLayout dependency for full design control, maintained all auth functionality
+- **Decorative Elements**: Added gradient blobs and curved clip-path sections matching landing page aesthetic
+- **Typography**: Updated to use extrabold headings and improved text contrast with proper font weights
 - Context: Auth screen now matches screenshot aesthetic while preserving GymBud brand identity and authentication flows
 - Migrations: N/A (design enhancement only)
 

@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Moon, Eye, EyeOff } from 'lucide-react'
+import { Moon, Eye, EyeOff, Globe } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
 interface AuthPageProps {
   params: {
@@ -42,7 +43,7 @@ export function AuthPage({ params }: AuthPageProps) {
       if (isReset) {
         const { error } = await supabase.auth.resetPasswordForEmail(email)
         if (error) throw error
-        setError('Password reset email sent!')
+        setError(t('auth:reset.emailSent'))
       } else if (isSignUp) {
         console.log('Attempting signup with:', { email, passwordLength: password.length })
         const { data, error } = await supabase.auth.signUp({
@@ -56,7 +57,7 @@ export function AuthPage({ params }: AuthPageProps) {
         }
         // Check if email confirmation is required
         if (data?.user && !data.session) {
-          setError('Please check your email for a confirmation link before signing in.')
+          setError(t('auth:signup.checkEmail'))
           return
         }
         setLocation('/')
@@ -69,22 +70,28 @@ export function AuthPage({ params }: AuthPageProps) {
         setLocation('/')
       }
     } catch (error: any) {
-      setError(error.message)
+      setError(error.message || t('auth:errors.generic'))
     } finally {
       setLoading(false)
     }
   }
 
   const getTitle = () => {
-    if (isReset) return 'Reset your password'
-    if (isSignUp) return 'Join GymBud'
-    return 'Welcome back'
+    if (isReset) return t('auth:reset.title')
+    if (isSignUp) return t('auth:signup.title')
+    return t('auth:signin.title')
   }
 
   const getSubtitle = () => {
-    if (isReset) return 'Enter your email to reset your password'
-    if (isSignUp) return 'Start your fitness journey with AI-powered training'
-    return 'Continue your fitness journey'
+    if (isReset) return t('auth:reset.subtitle')
+    if (isSignUp) return t('auth:signup.subtitle')
+    return t('auth:signin.subtitle')
+  }
+
+  const getStepIndicator = () => {
+    if (isReset) return t('auth:reset.step')
+    if (isSignUp) return t('auth:signup.step')
+    return t('auth:signin.step')
   }
 
   return (
@@ -113,7 +120,7 @@ export function AuthPage({ params }: AuthPageProps) {
         style={{ backgroundColor: PALETTE.aqua }}
       />
 
-      {/* Header with Logo and Dark Mode Toggle */}
+      {/* Header with Logo, Language Switcher and Dark Mode Toggle */}
       <div className="relative z-20 flex justify-between items-center p-6 pt-12">
         <div className="flex items-center gap-4">
           {/* GymBud Logo */}
@@ -133,9 +140,17 @@ export function AuthPage({ params }: AuthPageProps) {
           </div>
         </div>
         
-        <button className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 shadow-lg">
-          <Moon className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Language Switcher */}
+          <div className="text-white">
+            <LanguageSwitcher />
+          </div>
+          
+          {/* Dark Mode Toggle */}
+          <button className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 shadow-lg">
+            <Moon className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -154,7 +169,7 @@ export function AuthPage({ params }: AuthPageProps) {
               transition={{ delay: 0.2 }}
               className="text-white/70 text-sm mb-6 font-medium"
             >
-              {isSignUp ? 'Step 1 of 2' : isReset ? 'Password Reset' : 'Welcome Back'}
+              {getStepIndicator()}
             </motion.p>
             
             <motion.h1 
@@ -193,7 +208,7 @@ export function AuthPage({ params }: AuthPageProps) {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="h-14 bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/60 focus:ring-white/20 rounded-2xl text-lg px-6 backdrop-blur-sm transition-all duration-200"
-                  placeholder="Email address"
+                  placeholder={t('auth:placeholders.email')}
                 />
               </div>
 
@@ -207,7 +222,7 @@ export function AuthPage({ params }: AuthPageProps) {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="h-14 bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/60 focus:ring-white/20 rounded-2xl text-lg px-6 pr-14 backdrop-blur-sm transition-all duration-200"
-                    placeholder="Password"
+                    placeholder={t('auth:placeholders.password')}
                   />
                   <button
                     type="button"
@@ -244,9 +259,9 @@ export function AuthPage({ params }: AuthPageProps) {
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2" style={{ borderColor: PALETTE.deepTeal }}></div>
                 ) : (
                   <>
-                    {isReset && 'Send Reset Email'}
-                    {isSignUp && 'Create Account'}
-                    {!isReset && !isSignUp && 'Sign In'}
+                    {isReset && t('auth:reset.submit')}
+                    {isSignUp && t('auth:signup.submit')}
+                    {!isReset && !isSignUp && t('auth:signin.submit')}
                   </>
                 )}
               </Button>
@@ -259,7 +274,10 @@ export function AuthPage({ params }: AuthPageProps) {
                   onClick={() => setLocation(isSignUp ? '/auth/signin' : '/auth/signup')}
                   className="text-white/80 hover:text-white text-base transition-colors font-medium"
                 >
-                  {isSignUp ? 'Already have an account? Sign in' : 'Don\'t have an account? Sign up'}
+                  {isSignUp ? 
+                    `${t('auth:signup.hasAccount')} ${t('auth:signup.link')}` : 
+                    `${t('auth:signin.noAccount')} ${t('auth:signin.link')}`
+                  }
                 </button>
               )}
               
@@ -269,7 +287,7 @@ export function AuthPage({ params }: AuthPageProps) {
                     onClick={() => setLocation('/auth/reset')}
                     className="text-white/80 hover:text-white text-base transition-colors font-medium"
                   >
-                    Forgot password?
+                    {t('auth:reset.link')}
                   </button>
                 </div>
               )}
@@ -279,7 +297,7 @@ export function AuthPage({ params }: AuthPageProps) {
                   onClick={() => setLocation('/auth/signin')}
                   className="text-white/80 hover:text-white text-base transition-colors font-medium"
                 >
-                  Back to sign in
+                  {t('auth:reset.backToSignIn')}
                 </button>
               )}
 
@@ -291,7 +309,7 @@ export function AuthPage({ params }: AuthPageProps) {
                     className="text-white/70 hover:text-white text-lg transition-colors font-medium"
                     style={{ color: PALETTE.orange }}
                   >
-                    Skip for now
+                    {t('auth:signup.skip')}
                   </button>
                 </div>
               )}
