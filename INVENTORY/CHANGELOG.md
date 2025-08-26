@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## August 26, 2025 17:54 ET
+**Redesigned** auth page with landing page aesthetic and enhanced UX
+- **Visual Cohesion**: Applied landing page design language with curved gradients and GymBud color palette
+- **Background**: Replaced improvised slate gradient with proper GymBud gradient (deepTeal → teal → aqua) plus curved orange accent
+- **Glassmorphic Design**: Added backdrop-blur glassmorphic form container with white/10 opacity and border accents
+- **Enhanced Animations**: Integrated Framer Motion with staggered entrance animations and smooth transitions
+- **Improved UX**: Added password visibility toggle, enhanced focus states, and better visual hierarchy
+- **Decorative Elements**: Added gradient blobs and curved clip-path sections matching landing page aesthetic
+- **Typography**: Updated to use extrabold headings and improved text contrast with proper font weights
+- Context: Auth page now seamlessly matches landing page design quality and brand consistency
+- Migrations: N/A (design enhancement only)
+
+## August 26, 2025 17:52 ET
+**Fixed** TypeScript build errors preventing deployment
+- **AuthPage.tsx**: Removed unused `Label` import that was causing TS6133 error
+- **onboarding/actions.ts**: Fixed wouter import from `wouter/use-location` to `wouter` and used `useLocation()` hook properly
+- **onboarding/actions.ts**: Removed unused `data` variable from Edge Function response destructuring
+- Context: All TypeScript compilation errors resolved, build ready for deployment
+- Migrations: N/A (build fixes only)
+
 ## August 26, 2025 17:47 ET
 **Implemented** plan management system with Edge Function and onboarding flow
 - **Edge Function**: Created `supabase/functions/plan-get-or-create/index.ts` for idempotent plan creation/activation
@@ -179,6 +199,8 @@
 - Updated: `Programs.tsx` - changed from orange background to gradient teal with white cards and colored borders
 - Added: Proper translation key usage for all 6 features in WhyDifferent section
 - Added: Decorative gradient elements and improved hover animations
+- Added: Interactive CTA buttons with UTM tracking to app subdomain
+- Added: `client/src/index.css` neon-icon utility for hover effects
 - Context: Better visual hierarchy and readability while maintaining design cohesion
 - Migrations: N/A (design improvements only)
 
