@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## August 26, 2025 09:11 ET
+**Fixed** TypeScript build errors preventing Vercel deployment.
+- Fixed: Removed unused React import from `client/src/App.tsx`
+- Fixed: Created missing `client/src/i18n/locales/en/auth.json` file
+- Fixed: Replaced non-existent `CursorClick` with `Click` icon in `WhyDifferent.tsx`
+- Context: Resolved all TypeScript compilation errors for successful deployment
+- Migrations: N/A (build fixes only)
+
 ## August 25, 2025 21:20 ET
 **Added** Vercel deployment configuration for production hosting.
 - New: `vercel.json` with SPA routing, security headers, and build configuration

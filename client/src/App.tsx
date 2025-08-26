@@ -1,4 +1,3 @@
-import React from 'react';
 import { Route } from 'wouter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Landing from '@/marketing/Landing';

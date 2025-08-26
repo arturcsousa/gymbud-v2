@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Brain, Wand2, Timer, Dumbbell, CursorClick, Database } from 'lucide-react';
+import { Brain, Wand2, Timer, Dumbbell, Click, Database } from 'lucide-react';
 
 const features = [
   { key: 'deterministic', Icon: Brain },
   { key: 'coach', Icon: Wand2 },
   { key: 'rest', Icon: Timer },
   { key: 'constraints', Icon: Dumbbell },
-  { key: 'runner', Icon: CursorClick },
+  { key: 'runner', Icon: Click },
   { key: 'data', Icon: Database },
 ];
 
