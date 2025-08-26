@@ -1,12 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './i18n'
-import App from './App.tsx'
+import { App } from './App.tsx'
 import './index.css'
+import './i18n'
 import { initPWA } from './pwa'
 import { initSync } from './sync/init'
 
-initPWA()
+// Initialize PWA
+initPWA().catch(console.error)
+
+// Initialize sync system
 initSync()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
