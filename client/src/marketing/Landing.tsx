@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
+import { useLocation } from 'wouter';
 import UspTicker from './components/UspTicker';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
+import MobileCTA from './components/MobileCTA';
 import Hero from './sections/Hero';
 import HowItWorks from './sections/HowItWorks';
 import WhyDifferent from './sections/WhyDifferent';
@@ -10,7 +13,23 @@ import Pricing from './sections/Pricing';
 import Faq from './sections/Faq';
 import FinalCta from './sections/FinalCta';
 
+const PATH_TO_ANCHOR: Record<string, string> = {
+  '/how-it-works': 'how',
+  '/programs': 'programs',
+  '/pricing': 'pricing',
+  '/faq': 'faq',
+};
+
 export default function Landing() {
+  const [location] = useLocation();
+
+  useEffect(() => {
+    const id = PATH_TO_ANCHOR[location];
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 dark:from-[#0b0b0f] dark:to-[#0a0a0d]">
       <UspTicker />
@@ -25,14 +44,8 @@ export default function Landing() {
         <Faq />
         <FinalCta />
       </main>
+      <MobileCTA />
       <Footer />
-      {/* Sticky mobile CTA */}
-      <a
-        href={(import.meta as any).env?.NEXT_PUBLIC_SITE_URL || (import.meta as any).env?.VITE_SITE_URL || 'https://app.gymbud.ai'}
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 md:hidden rounded-full bg-indigo-600 px-6 py-3 text-white font-semibold shadow-lg"
-      >
-        Start Free
-      </a>
     </div>
   );
 }

@@ -26,6 +26,9 @@
   },
   "programs": {
     "title": "Programs & Goals",
+    "muscle": { "title": "Muscle Building", "desc": "Build muscle size with proven progressive overload." },
+    "weight": { "title": "Weight Loss", "desc": "Burn fat while keeping muscle through smart conditioning." },
+    "endurance": { "title": "Endurance", "desc": "Boost stamina and resilience for longer sessions." },
     "goals": {
       "hypertrophy": "Build muscle size with proven progressive overload.",
       "strength": "Get stronger with optimized sets and rep schemes.",
@@ -36,6 +39,7 @@
   },
   "progress": {
     "title": "Proof of Progress",
+    "subtitle": "Track every rep, set, and weight automatically",
     "metrics": {
       "prs": "Track every personal record, lift after lift.",
       "volume": "See your training volume and intensity climb.",
@@ -46,6 +50,7 @@
   },
   "pricing": {
     "title": "Pricing",
+    "subtitle": "Choose the plan that fits your goals",
     "plans": {
       "free": { "title": "Free", "desc": "Limited sessions and history — try the engine now.", "price": "$0 / forever" },
       "pro": { "title": "Pro", "desc": "Full access to deterministic plans, coach, and progress tracking.", "price": "$14.99 / month" },
@@ -54,6 +59,7 @@
   },
   "final_cta": {
     "title": "Ready to train smarter?",
+    "subtitle": "Join thousands who've transformed their training with GymBud",
     "primary": "Start Free",
     "secondary": "See a Sample Session"
   }

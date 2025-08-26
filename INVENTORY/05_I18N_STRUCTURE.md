@@ -1,94 +1,150 @@
-# i18n Structure (EN, PT-BR)
+# GymBud v2 - i18n Structure
 
-**Stack:** i18next, react-i18next, i18next-browser-languagedetector
-
-## Languages
-- `en` (default)
-- `pt-BR`
-
-## Namespaces (by JSON file)
-- Marketing: `landing`, `faq`
-- Shared UI: `common`
-- App (future-proofed): `app`, `auth`, `onboarding`, `assessment`, `plan`, `session`, `coach`, `progress`, `pricing`, `errors`, `validation`
-
-## File Layout
-
-```
-client/src/i18n/
-├── index.ts                    # Bootstrap config + HTML lang/dir sync
-└── locales/
-    ├── en/
-    │   ├── common.json         # Navigation, CTA, language labels
-    │   ├── landing.json        # Hero, features, pricing, CTA sections
-    │   ├── faq.json           # Common questions and answers
-    │   ├── app.json           # Placeholder for app UI strings
-    │   ├── auth.json          # Placeholder for login/signup/OTP
-    │   ├── onboarding.json    # Placeholder for onboarding wizard
-    │   ├── assessment.json    # Placeholder for baseline assessments
-    │   ├── plan.json          # Placeholder for plan pages
-    │   ├── session.json       # Placeholder for session runner UI
-    │   ├── coach.json         # Placeholder for coach prompts
-    │   ├── progress.json      # Placeholder for charts/metrics
-    │   ├── pricing.json       # Placeholder for app pricing
-    │   ├── errors.json        # Placeholder for error messages
-    │   └── validation.json    # Placeholder for form validation
-    └── pt-BR/
-        ├── common.json         # Portuguese navigation, CTA, labels
-        ├── landing.json        # Portuguese hero, features, pricing
-        ├── faq.json           # Portuguese FAQ content
-        ├── app.json           # Placeholder for Portuguese app UI
-        ├── auth.json          # Placeholder for Portuguese auth
-        ├── onboarding.json    # Placeholder for Portuguese onboarding
-        ├── assessment.json    # Placeholder for Portuguese assessment
-        ├── plan.json          # Placeholder for Portuguese plan
-        ├── session.json       # Placeholder for Portuguese session
-        ├── coach.json         # Placeholder for Portuguese coach
-        ├── progress.json      # Placeholder for Portuguese progress
-        ├── pricing.json       # Placeholder for Portuguese pricing
-        ├── errors.json        # Placeholder for Portuguese errors
-        └── validation.json    # Placeholder for Portuguese validation
-```
+## Overview
+Bilingual internationalization setup using `react-i18next` with English (EN) as default and Portuguese Brazil (PT-BR) as secondary language.
 
 ## Configuration
-- `keySeparator: false` – flat keys inside each namespace  
-- `fallbackLng: 'en'`  
-- `supportedLngs: ['en', 'pt-BR']`
-- Interpolation: `escapeValue: false`  
-- Detection order: localStorage → navigator → htmlTag
-- Language persistence: localStorage
-- Lazy loading: All resources imported at build time
+- **Library**: `react-i18next` + `i18next-browser-languagedetector`
+- **Languages**: EN (default), PT-BR
+- **Detection**: localStorage → navigator → htmlTag fallback
+- **Namespaces**: 14 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation)
+- **Settings**: `keySeparator: false`, `returnNull: false`, `escapeValue: false`
 
-## HTML Integration
-- **Dynamic lang attribute:** `<html lang>` updates on language change
-- **RTL support:** `<html dir>` set to 'rtl' for Arabic, Farsi, Hebrew, Urdu
-- **Default fallback:** `lang="en" dir="ltr"` in index.html
-- **Event handling:** `languageChanged` listener syncs DOM attributes
+## File Structure
+```
+client/src/i18n/
+├── index.ts                    # Main i18n configuration
+├── locales/
+│   ├── en/                     # English translations
+│   │   ├── common.json         # Navigation, CTAs, language labels
+│   │   ├── landing.json        # Marketing page content
+│   │   ├── faq.json           # FAQ questions and answers
+│   │   ├── auth.json          # Authentication flows
+│   │   └── [11 other namespaces].json
+│   └── pt-BR/                  # Portuguese Brazil translations
+│       ├── common.json
+│       ├── landing.json
+│       ├── faq.json
+│       └── [mirror structure]
+```
+
+## Key Translation Structures
+
+### Common Namespace (`common.json`)
+```json
+{
+  "nav": {
+    "how_it_works": "How it Works",
+    "why_different": "Why We're Different",
+    "programs": "Programs",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "sign_in": "Sign In"
+  },
+  "cta": {
+    "start_free": "Start Free",
+    "see_how": "See How It Works",
+    "learn_more": "Learn More"
+  },
+  "lang": {
+    "en": "English",
+    "ptbr": "Português (BR)"
+  }
+}
+```
+
+### Landing Namespace (`landing.json`)
+```json
+{
+  "hero": {
+    "title": "Personal training that's actually personal",
+    "subtitle": "The only AI fitness app with a deterministic engine + adaptive coach..."
+  },
+  "how": {
+    "title": "How it Works",
+    "steps": {
+      "assess": { "title": "Assess", "desc": "Tell us your goals..." },
+      "generate": { "title": "Generate", "desc": "Get a deterministic plan..." }
+    }
+  },
+  "different": {
+    "title": "Why We're Different",
+    "items": {
+      "deterministic": { "title": "Deterministic Engine", "desc": "No roulette..." },
+      "coach": { "title": "Adaptive Coach", "desc": "Ask the coach to swap..." }
+    }
+  },
+  "programs": {
+    "title": "Programs & Goals",
+    "muscle": { "title": "Muscle Building", "desc": "Build muscle size..." },
+    "weight": { "title": "Weight Loss", "desc": "Burn fat while keeping..." },
+    "endurance": { "title": "Endurance", "desc": "Boost stamina..." }
+  },
+  "progress": {
+    "title": "Proof of Progress",
+    "subtitle": "Track every rep, set, and weight automatically"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "Choose the plan that fits your goals"
+  },
+  "final_cta": {
+    "title": "Ready to train smarter?",
+    "subtitle": "Join thousands who've transformed their training with GymBud"
+  }
+}
+```
+
+### FAQ Namespace (`faq.json`)
+```json
+{
+  "title": "FAQ",
+  "items": {
+    "free": { "question": "Is GymBud really free to try?", "answer": "Yes! Start with our free tier..." },
+    "beginner": { "question": "I'm a complete beginner. Can I use GymBud?", "answer": "Absolutely..." },
+    "equipment": { "question": "What if my gym doesn't have certain equipment?", "answer": "The coach can instantly swap..." }
+  }
+}
+```
 
 ## Usage Patterns
-```typescript
+
+### Component Usage
+```tsx
+import { useTranslation } from 'react-i18next';
+
 // Single namespace
-const { t } = useTranslation('landing');
-t('hero.title')
+const { t } = useTranslation('common');
+const title = t('nav.pricing');
 
 // Multiple namespaces
 const { t } = useTranslation(['common', 'landing']);
-t('common:nav.home')
-t('landing:hero.title')
+const cta = t('common:cta.start_free');
+const hero = t('landing:hero.title');
+
+// With namespace prefix
+const title = t('landing:hero.title');
 ```
 
-## Language Switching
-- **Component:** `LanguageSwitcher.tsx` with Globe icon dropdown
-- **Persistence:** Selection saved to localStorage
-- **Integration:** Embedded in NavBar component
-- **Accessibility:** Proper ARIA labels and screen reader support
+### HTML Integration
+- Automatic `lang` and `dir` attribute synchronization
+- RTL language detection for Arabic, Farsi, Hebrew, Urdu
+- Language change event listener updates document attributes
 
-## Content Status
-- **Complete:** common, landing, faq namespaces with full EN/PT-BR content
-- **Placeholders:** All app-related namespaces ready for future implementation
-- **Marketing ready:** All marketing site strings translated and implemented
+### Language Switching
+- `LanguageSwitcher` component with Globe icon dropdown
+- Persistence via localStorage
+- Immediate UI updates on language change
 
 ## Conventions
-- All new UI strings must be added under the appropriate namespace in **both** languages
-- Use semantic keys (e.g., `hero.title` not `text1`)
-- Keep keys flat within namespaces (no nested objects)
-- Maintain consistent terminology across languages
+- **Keys**: Use dot notation (e.g., `hero.title`, `nav.pricing`)
+- **Namespaces**: Lowercase, descriptive (common, landing, faq, etc.)
+- **Structure**: Nested objects for logical grouping
+- **Consistency**: Mirror EN structure exactly in PT-BR files
+- **Fallback**: Missing PT-BR keys fall back to EN automatically
+
+## Development Notes
+- All marketing components use proper namespace prefixes
+- Translation keys aligned with actual locale file structure
+- FAQ uses `question`/`answer` pattern for consistency
+- CTA buttons centralized in `common:cta.*` namespace

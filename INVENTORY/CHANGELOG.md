@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 11:08 ET
+**Reorganized** marketing structure with centralized theme utilities and anchor scrolling.
+- New: `client/src/marketing/theme.ts` with PALETTE constants and ctaHref utility function
+- Updated: `client/src/marketing/Landing.tsx` with anchor scrolling for route-to-section navigation
+- New: `client/src/marketing/components/MobileCTA.tsx` using theme utilities and i18n
+- Added: `client/src/index.css` glass and ring-faint utility classes for glassmorphic effects
+- Updated: PATH_TO_ANCHOR mapping for /how-it-works, /programs, /pricing, /faq routes
+- Context: Centralized styling system, improved navigation UX, consistent UTM tracking
+- Migrations: Environment variable VITE_APP_URL for app subdomain targeting
+
 ## August 26, 2025 10:44 ET
 **Redesigned** WhyDifferent section with dark-teal glassmorphic styling and neon accents.
 - Updated: `client/src/marketing/sections/WhyDifferent.tsx` with cohesive dark-teal gradient backdrop
@@ -70,3 +80,39 @@
 - New: `INVENTORY/06_FRONTEND_ROUTES.md`
 - Context: Fresh slate marketing → app split, EN/PT-BR namespaces seeded for landing + future app.
 - Migrations: N/A (frontend-only)
+
+## August 26, 2025 11:00 ET
+**Completed** marketing component updates.
+### Added
+- **Theme System**: Created centralized `client/src/marketing/theme.ts` with color palette constants and CTA utility function
+- **MobileCTA Component**: Added sticky mobile call-to-action button with consistent styling
+- **Landing Component**: Main orchestrator with anchor scrolling functionality for SPA routes
+- **Translation Keys**: Added missing keys in `landing.json`, `common.json`, and `faq.json` for component alignment
+
+### Changed
+- **All Marketing Sections**: Complete redesign with dark-teal glassmorphic styling and neon accents:
+  - `Hero.tsx`: Gradient backgrounds, orange visual elements, proper CTA buttons
+  - `HowItWorks.tsx`: Glass cards with backdrop blur and icon styling
+  - `WhyDifferent.tsx`: Neon-bordered feature cards with interactive CTAs
+  - `Programs.tsx`: Themed program cards with color-coded icons
+  - `Progress.tsx`: Mock phone frame with progress visualization
+  - `Pricing.tsx`: Glass pricing cards with popular plan highlighting
+  - `Faq.tsx`: Accordion-style FAQ with smooth animations
+  - `FinalCta.tsx`: Gradient CTA section with dual action buttons
+- **Navigation Components**:
+  - `NavBar.tsx`: Updated with theme colors and proper navigation links
+  - `Footer.tsx`: Simplified footer with consistent styling
+  - `UspTicker.tsx`: Theme-aligned ticker component
+- **CSS Utilities**: Added `.neon-icon`, `.glass`, and `.ring-faint` classes for glassmorphic effects
+
+### Fixed
+- **Translation Alignment**: All components now use correct i18n keys from locale files
+- **Icon Imports**: Fixed lucide-react icon import errors across components
+- **Type Safety**: Proper TypeScript types for all component props and theme utilities
+
+### Technical
+- Consistent use of `PALETTE` constants from theme file
+- UTM parameter generation via `ctaHref()` utility
+- Responsive design with mobile-first approach
+- Smooth anchor scrolling for SPA navigation
+- Environment variable integration for app URLs

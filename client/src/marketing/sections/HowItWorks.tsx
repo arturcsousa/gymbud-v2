@@ -1,34 +1,28 @@
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import { ClipboardList, Cog, PlayCircle, LineChart } from 'lucide-react';
-
-const items = [
-  { key: 'assess', Icon: ClipboardList },
-  { key: 'generate', Icon: Cog },
-  { key: 'train', Icon: PlayCircle },
-  { key: 'progress', Icon: LineChart },
-];
+import { ClipboardList, Dumbbell, LineChart } from 'lucide-react';
 
 export default function HowItWorks() {
   const { t } = useTranslation('landing');
+  const items = [
+    { icon: <ClipboardList className="h-5 w-5" />, title: t('how.steps.assess.title'), desc: t('how.steps.assess.desc') },
+    { icon: <Dumbbell className="h-5 w-5" />, title: t('how.steps.generate.title'), desc: t('how.steps.generate.desc') },
+    { icon: <LineChart className="h-5 w-5" />, title: t('how.steps.train.title'), desc: t('how.steps.train.desc') },
+  ];
   return (
-    <section id="how" className="mx-auto max-w-7xl px-4 py-16">
-      <h2 className="text-3xl sm:text-4xl font-bold">{t('how.title')}</h2>
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map(({ key, Icon }, i) => (
-          <motion.div
-            key={key}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.05 }}
-            className="rounded-2xl border border-black/10 p-6 shadow-sm bg-white/70 dark:bg-white/5 backdrop-blur"
-          >
-            <Icon className="h-6 w-6 opacity-70" />
-            <h3 className="mt-4 font-semibold">{t(`how.steps.${key}.title`)}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{t(`how.steps.${key}.desc`)}</p>
-          </motion.div>
-        ))}
+    <section id="how" className="bg-[#0d5568]">
+      <div className="mx-auto max-w-7xl px-6 py-16 text-white">
+        <h2 className="text-3xl font-extrabold tracking-tight">{t('how.title')}</h2>
+        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {items.map((it, i) => (
+            <div key={i} className="rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur">
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                {it.icon}
+              </div>
+              <h3 className="font-semibold">{it.title}</h3>
+              <p className="mt-1 text-sm text-white/80">{it.desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
