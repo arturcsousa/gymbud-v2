@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, ReactNode } from 'react'
 import { Route, Switch, useLocation } from 'wouter'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { persistQueryClient } from '@tanstack/react-query-persist-client'
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
+import { createSyncStoragePersister } from '@tanstack/react-query-persist-client'
 import { useTranslation } from 'react-i18next'
 
 import { supabase } from '@/lib/supabase'
@@ -15,12 +15,12 @@ import { AppHeader } from '@/app/components/AppHeader'
 import { ConflictBanner } from '@/app/components/ConflictBanner'
 
 // Pages
-import { HomePage } from '@/app/pages/HomePage'
-import { SessionPage } from '@/app/pages/SessionPage'
+import HomePage from '@/app/pages/HomePage'
+import SessionPage from '@/app/pages/SessionPage'
 import { HistoryPage } from '@/app/pages/HistoryPage'
 import { HistoryDetailPage } from '@/app/pages/HistoryDetailPage'
 import { LibraryPage } from '@/app/pages/LibraryPage'
-import { SettingsPage } from '@/app/pages/SettingsPage'
+import SettingsPage from '@/app/pages/SettingsPage'
 import { AuthPage } from '@/app/pages/AuthPage'
 import { NotFoundPage } from '@/app/pages/NotFoundPage'
 
@@ -46,8 +46,11 @@ persistQueryClient({
   maxAge: 1000 * 60 * 60 * 24, // 24 hours
 })
 
-export function AppShell() {
-  const { t } = useTranslation(['app', 'common'])
+interface AppShellProps {
+  children?: ReactNode
+}
+
+export function AppShell({ children }: AppShellProps) {
   const [location] = useLocation()
   const [syncStatus, setSyncStatus] = useState<SyncStatus>(syncEngine.getStatus())
   const [user, setUser] = useState<any>(null)
@@ -70,7 +73,7 @@ export function AppShell() {
         
         if (event === 'SIGNED_IN') {
           // Trigger sync when user signs in
-          syncEngine.forcSync()
+          syncEngine.forceSync()
         }
       }
     )
@@ -117,28 +120,30 @@ export function AppShell() {
         
         {/* App header (only show when authenticated and not on auth pages) */}
         {user && !location.startsWith('/auth') && (
-          <AppHeader user={user} syncStatus={syncStatus} />
+          <AppHeader user={user} />
         )}
 
         {/* Main content */}
         <main className={user && !location.startsWith('/auth') ? 'pt-16' : ''}>
-          <Switch>
-            {/* Auth routes */}
-            <Route path="/auth/:action?" component={AuthPage} />
-            
-            {/* Protected app routes */}
-            <AuthGuard user={user}>
-              <Route path="/" component={HomePage} />
-              <Route path="/session/:id" component={SessionPage} />
-              <Route path="/history" component={HistoryPage} />
-              <Route path="/history/:id" component={HistoryDetailPage} />
-              <Route path="/library" component={LibraryPage} />
-              <Route path="/settings" component={SettingsPage} />
-            </AuthGuard>
-            
-            {/* 404 fallback */}
-            <Route component={NotFoundPage} />
-          </Switch>
+          {children || (
+            <Switch>
+              {/* Auth routes */}
+              <Route path="/auth/:action?" component={AuthPage} />
+              
+              {/* Protected app routes */}
+              <AuthGuard user={user}>
+                <Route path="/" component={HomePage} />
+                <Route path="/session/:id" component={SessionPage} />
+                <Route path="/history" component={HistoryPage} />
+                <Route path="/history/:id" component={HistoryDetailPage} />
+                <Route path="/library" component={LibraryPage} />
+                <Route path="/settings" component={SettingsPage} />
+              </AuthGuard>
+              
+              {/* 404 fallback */}
+              <Route component={NotFoundPage} />
+            </Switch>
+          )}
         </main>
       </div>
     </QueryClientProvider>

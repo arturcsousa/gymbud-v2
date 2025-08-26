@@ -22,7 +22,7 @@
     "@tanstack/react-query-persist-client": "^5.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "dexie": "^4.0.8",
+    "dexie": "^4.2.0",
     "dexie-react-hooks": "^1.1.7",
     "framer-motion": "^10.16.0",
     "i18next": "^23.7.0",
