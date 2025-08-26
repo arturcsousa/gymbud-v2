@@ -80,11 +80,14 @@ logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, up
 ```
 
 ### Sync Engine Features
-- **Queue Management**: FIFO mutation replay with retry logic
-- **Conflict Resolution**: Last-write-wins with server precedence
-- **Network Awareness**: Automatic sync on connectivity changes
+- **Queue Management**: FIFO mutation replay with retry logic and exponential backoff
+- **Server Integration**: Real Supabase Edge Function calls for app2.logged_sets inserts
+- **Idempotency**: Conflict-free upserts using queue mutation ID as primary key
+- **RLS Compliance**: End-user JWT authentication for proper Row Level Security
+- **Network Awareness**: Automatic sync on connectivity changes and manual triggers
 - **Background Sync**: Service worker background sync registration
-- **Error Handling**: Exponential backoff and auth error detection
+- **Error Handling**: Structured response validation with proper error codes
+- **Cross-tab Coordination**: BroadcastChannel for single-flight sync processing
 
 ## UX Components
 

@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## January 26, 2025 14:56 ET
+**Completed** Phase A Step 3 - Real server sync implementation for offline-first PWA
+- **Edge Function**: Created `supabase/functions/sync-logged-sets/index.ts` for idempotent app2.logged_sets inserts
+- **Server Integration**: Replaced SEND_NOT_IMPLEMENTED placeholder in `client/src/sync/queue.ts` with real Supabase Edge Function calls
+- **RLS Compliance**: Edge Function uses end-user JWT for proper Row Level Security enforcement
+- **Idempotency**: Uses queue mutation ID as primary key for conflict-free upserts with `onConflict: "id"`
+- **Error Handling**: Structured response validation with proper error codes and messages
+- **Scope**: Only app2.logged_sets inserts supported initially, other mutations remain queued for future expansion
+- Context: End-to-end sync flow now functional - enqueue → offline → online → flush → DB insert
+- Migrations: Deploy Edge Function with `supabase functions deploy sync-logged-sets`
+
 ## January 26, 2025 14:42 ET
 **Completed** Dexie offline-first database and sync queue implementation
 - **Dexie Database**: Created `client/src/db/gymbud-db.ts` with versioned schema for offline-first data storage

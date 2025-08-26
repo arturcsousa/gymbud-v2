@@ -1,4 +1,5 @@
 import { db, type QueueMutation, type QueueOp } from '@/db/gymbud-db'
+import { supabase } from '@/lib/supabase'
 
 let flushLock = false
 const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('gymbud-sync') : null
@@ -34,11 +35,26 @@ export async function pendingCount(): Promise<number> {
   return db.queue_mutations.where('status').equals('queued').count()
 }
 
-// Placeholder sender – to be implemented in Step 3 (Supabase/EF writes)
-async function sendToServer(_m: QueueMutation): Promise<void> {
-  // NOTE: Intentionally not implemented yet; we'll wire this to Edge Functions next step.
-  // Throw to trigger backoff while keeping mutations pending.
-  throw new Error('SEND_NOT_IMPLEMENTED')
+async function sendToServer(m: QueueMutation): Promise<void> {
+  if (m.entity === 'app2.logged_sets' && m.op === 'insert') {
+    // Ensure the row uses the queue id as the primary key for idempotency
+    const payload = { id: m.id, ...m.payload }
+
+    const { data, error } = await supabase.functions.invoke('sync-logged-sets', {
+      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+    })
+
+    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+
+    const res = data?.results?.[0]
+    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+    }
+    return
+  }
+
+  // keep others queued until we add server support
+  throw new Error('UNSUPPORTED_MUTATION')
 }
 
 function backoffDelay(retries: number) {
