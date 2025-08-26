@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## August 26, 2025 10:44 ET
+**Redesigned** WhyDifferent section with dark-teal glassmorphic styling and neon accents.
+- Updated: `client/src/marketing/sections/WhyDifferent.tsx` with cohesive dark-teal gradient backdrop
+- Added: Glass cards with subtle blur, semi-transparent backgrounds, and neon accent borders
+- Added: Color palette constants (deepTeal, teal, aqua, orange, paleOrange)
+- Added: Decorative gradient blobs and enhanced animations
+- Added: Interactive CTA buttons with UTM tracking to app subdomain
+- Added: `client/src/index.css` neon-icon utility for hover effects
+- Context: Modern glassmorphic design maintains existing i18n keys, improves visual hierarchy
+- Migrations: N/A (styling enhancement only)
+
 ## August 26, 2025 10:06 ET
 **Updated** inventory documentation with current implementation details.
 - Updated: `INVENTORY/05_I18N_STRUCTURE.md` with HTML lang/dir sync, usage patterns, content status

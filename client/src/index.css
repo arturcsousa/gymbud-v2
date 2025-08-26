@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Neon border helper (optional) */
+.neon-icon {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.neon-icon:hover {
+  transform: translateY(-1px) scale(1.03);
+}
