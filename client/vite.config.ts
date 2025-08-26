@@ -9,56 +9,31 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      injectRegister: 'auto',
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'GymBud',
         short_name: 'GymBud',
-        description: 'Your AI-powered fitness companion',
-        theme_color: '#0ea5e9',
-        background_color: '#ffffff',
+        description: 'AI personal training. Deterministic, offline-first.',
+        theme_color: '#005870',
+        background_color: '#001a22',
         display: 'standalone',
-        orientation: 'portrait',
         scope: '/',
         start_url: '/',
         icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
-          }
+          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/icons/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+        ],
+        shortcuts: [
+          { name: 'Start Session', url: '/app/home', icons: [{ src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' }] }
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'supabase-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 // 24 hours
-              }
-            }
-          },
-          {
-            urlPattern: /\/api\/.*/i,
-            handler: 'NetworkOnly'
-          }
-        ]
-      }
+        navigateFallback: '/index.html',
+        globPatterns: ['**/*.{js,css,html,svg,png,webp,woff2}'],
+      },
+      devOptions: { enabled: true, navigateFallbackAllowlist: [/^\/$/,/^\/app\//] }
     })
   ],
   resolve: {
