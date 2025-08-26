@@ -4,23 +4,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/lib/supabase";
 import { finalizeOnboarding } from "@/onboarding/actions";
 
-const DEFAULT_SEED = {
-  goals: ["general_fitness"],
-  experience_level: "new",
-  frequency_days_per_week: 3,
-  schedule_days: ["monday", "wednesday", "friday"],
-  session_duration_min: 45,
-  environment: "professional_gym",
-  coaching_tone: "supportive",
-};
-
-interface AuthPageProps {
-  params: {
-    action?: string
-  }
-}
-
-export function AuthPage({ params }: AuthPageProps) {
+export function AuthPage() {
   const ranRef = useRef(false);
 
   useEffect(() => {

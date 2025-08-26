@@ -85,10 +85,21 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 ```
 
 ### Authentication Flow
-- **Supabase Auth**: JWT-based authentication with session persistence
-- **Offline Tolerance**: Auth state cached in IndexedDB for offline access
-- **Route Protection**: AuthGuard component redirects unauthenticated users
-- **Session Management**: Automatic token refresh and logout handling
+- **Route**: `/auth`
+- **Component**: `AuthPage`
+- **UI**: Supabase Auth UI component (`@supabase/auth-ui-react`)
+- **Features**:
+  - Email/password signup and signin
+  - Magic link support
+  - Internationalization (EN/PT-BR)
+  - Glassmorphic design matching landing page
+  - Auth state subscription for seamless flow
+- **Post-Auth Flow**:
+  1. `onAuthStateChange` detects `SIGNED_IN` event
+  2. Calls `finalizeOnboarding()` with default plan seed
+  3. Creates/activates plan via `plan-get-or-create` Edge Function
+  4. Sets `assessment_required = false` for instant access
+  5. Navigates to `/app/session/today`
 
 ## URL Architecture
 

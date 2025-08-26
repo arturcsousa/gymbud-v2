@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 18:37 ET
+**Enhanced** finalizeOnboarding with profile flag and proper navigation
+- **Profile Flag**: Sets `assessment_required = false` to enable instant workout access without assessment barriers
+- **Navigation Fix**: Replaced `window.location.href` with wouter's `navigate()` for proper SPA routing
+- **Error Resilience**: Profile update errors don't block navigation flow (non-critical operation)
+- **Plan Seed**: Moved default seed definition to AuthPage for better organization and reusability
+- **Instant Access**: Users can now go straight to workouts after signup without additional gating
+- Context: Enables "workout right away" flow while maintaining robust plan creation system
+- Migrations: N/A (profile update enhancement only)
+
 ## August 26, 2025 18:34 ET
 **Refactored** AuthPage with Supabase Auth UI and proper auth state handling
 - **Auth UI Component**: Replaced custom form with `@supabase/auth-ui-react` for robust authentication

@@ -1,10 +1,12 @@
 // client/src/onboarding/actions.ts
 import { supabase } from "@/lib/supabase";
-import { navigate } from "wouter/use-location";
+import { useLocation } from "wouter";
 
 export async function finalizeOnboarding(planSeed: unknown) {
+  const [, navigate] = useLocation();
+  
   // Ensure active plan (idempotent EF)
-  const { data, error } = await supabase.functions.invoke("plan-get-or-create", {
+  const { error } = await supabase.functions.invoke("plan-get-or-create", {
     body: { seed: planSeed },
   });
   if (error) throw new Error(error.message || "Failed to activate plan");
