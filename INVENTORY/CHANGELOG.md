@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## August 26, 2025 10:06 ET
+**Updated** inventory documentation with current implementation details.
+- Updated: `INVENTORY/05_I18N_STRUCTURE.md` with HTML lang/dir sync, usage patterns, content status
+- Updated: `INVENTORY/06_FRONTEND_ROUTES.md` with SPA structure, deployment config, SEO details
+- Context: Documentation now reflects complete i18n setup, routing implementation, and Vercel deployment
+- Migrations: N/A (documentation only)
+
 ## August 26, 2025 09:13 ET
 **Fixed** TypeScript build errors preventing Vercel deployment.
 - Fixed: Removed unused React import from `client/src/App.tsx`
