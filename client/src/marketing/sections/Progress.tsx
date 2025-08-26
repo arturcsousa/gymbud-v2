@@ -5,8 +5,8 @@ export default function Progress() {
   return (
     <section id="progress" className="bg-[#042d3a]">
       <div className="mx-auto max-w-7xl px-6 py-16 text-white">
-        <h2 className="text-3xl font-extrabold tracking-tight">{t('landing:progress.title')}</h2>
-        <p className="mt-2 text-white/80">{t('landing:progress.subtitle')}</p>
+        <h2 className="text-3xl font-extrabold tracking-tight">{t('progress.title')}</h2>
+        <p className="mt-2 text-white/80">{t('progress.subtitle')}</p>
         <div className="mt-8 grid grid-cols-1 items-center gap-8 md:grid-cols-[380px,1fr]">
           {/* mocked app phone frame */}
           <div className="relative h-[520px] w-[260px] self-center justify-self-center rounded-[36px] bg-black/70 p-4 ring-1 ring-white/10">
@@ -17,11 +17,11 @@ export default function Progress() {
             </div>
           </div>
           <ul className="grid gap-4 text-white/85">
-            <li>• {t('landing:progress.metrics.prs')}</li>
-            <li>• {t('landing:progress.metrics.volume')}</li>
-            <li>• {t('landing:progress.metrics.streaks')}</li>
-            <li>• {t('landing:progress.metrics.rest')}</li>
-            <li>• {t('landing:progress.metrics.history')}</li>
+            <li>• {t('progress.metrics.prs')}</li>
+            <li>• {t('progress.metrics.volume')}</li>
+            <li>• {t('progress.metrics.streaks')}</li>
+            <li>• {t('progress.metrics.rest')}</li>
+            <li>• {t('progress.metrics.history')}</li>
           </ul>
         </div>
       </div>

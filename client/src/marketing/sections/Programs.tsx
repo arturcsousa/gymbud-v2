@@ -9,20 +9,20 @@ export default function Programs() {
   const programs = [
     { 
       icon: <Dumbbell className="h-8 w-8" />, 
-      title: t('landing:programs.muscle.title'),    
-      desc: t('landing:programs.muscle.desc'),    
+      title: t('programs.muscle.title'),    
+      desc: t('programs.muscle.desc'),    
       color: PALETTE.orange 
     },
     { 
       icon: <Flame className="h-8 w-8" />, 
-      title: t('landing:programs.weight.title'),    
-      desc: t('landing:programs.weight.desc'),    
+      title: t('programs.weight.title'),    
+      desc: t('programs.weight.desc'),    
       color: PALETTE.aqua 
     },
     { 
       icon: <Activity className="h-8 w-8" />, 
-      title: t('landing:programs.endurance.title'), 
-      desc: t('landing:programs.endurance.desc'), 
+      title: t('programs.endurance.title'), 
+      desc: t('programs.endurance.desc'), 
       color: PALETTE.teal 
     },
   ];
@@ -54,10 +54,10 @@ export default function Programs() {
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
-            {t('landing:programs.title')}
+            {t('programs.title')}
           </h2>
           <h3 className="text-2xl lg:text-3xl font-bold" style={{ color: PALETTE.aqua }}>
-            {t('landing:programs.subtitle')}
+            {t('programs.subtitle')}
           </h3>
         </div>
 

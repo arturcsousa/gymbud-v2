@@ -8,18 +8,18 @@ export default function HowItWorks() {
   const features = [
     { 
       icon: <User className="h-6 w-6" />, 
-      title: t('landing:how.steps.assess.title'), 
-      subtitle: t('landing:how.steps.assess.desc') 
+      title: t('how.steps.assess.title'), 
+      subtitle: t('how.steps.assess.desc') 
     },
     { 
       icon: <Calendar className="h-6 w-6" />, 
-      title: t('landing:how.steps.generate.title'), 
-      subtitle: t('landing:how.steps.generate.desc') 
+      title: t('how.steps.generate.title'), 
+      subtitle: t('how.steps.generate.desc') 
     },
     { 
       icon: <TrendingUp className="h-6 w-6" />, 
-      title: t('landing:how.steps.train.title'), 
-      subtitle: t('landing:how.steps.train.desc') 
+      title: t('how.steps.train.title'), 
+      subtitle: t('how.steps.train.desc') 
     },
   ];
 
@@ -34,10 +34,10 @@ export default function HowItWorks() {
           {/* Left side - Content */}
           <div className="text-white">
             <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-2">
-              {t('landing:how.title')}
+              {t('how.title')}
             </h2>
             <h3 className="text-2xl lg:text-3xl font-bold mb-12" style={{ color: PALETTE.aqua }}>
-              {t('landing:how.subtitle')}
+              {t('how.subtitle')}
             </h3>
             
             <div className="space-y-8">

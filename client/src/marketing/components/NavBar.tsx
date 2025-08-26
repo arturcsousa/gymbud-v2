@@ -16,11 +16,21 @@ export default function NavBar() {
         <div className="flex items-center justify-between">
           <div className="text-xl font-bold text-white">GymBud</div>
           <div className="hidden items-center gap-6 md:flex">
-            <a href="#how" className="text-white/80 hover:text-white transition-colors">{t('common:nav.how_it_works')}</a>
-            <a href="#why" className="text-white/80 hover:text-white transition-colors">{t('common:nav.why_different')}</a>
-            <a href="#programs" className="text-white/80 hover:text-white transition-colors">{t('common:nav.programs')}</a>
-            <a href="#pricing" className="text-white/80 hover:text-white transition-colors">{t('common:nav.pricing')}</a>
-            <a href="#faq" className="text-white/80 hover:text-white transition-colors">{t('common:nav.faq')}</a>
+            <a href="#how" className="text-white/80 hover:text-white transition-colors">
+              {t('common:nav.how_it_works')}
+            </a>
+            <a href="#why" className="text-white/80 hover:text-white transition-colors">
+              {t('common:nav.why_different')}
+            </a>
+            <a href="#programs" className="text-white/80 hover:text-white transition-colors">
+              {t('common:nav.programs')}
+            </a>
+            <a href="#pricing" className="text-white/80 hover:text-white transition-colors">
+              {t('common:nav.pricing')}
+            </a>
+            <a href="#faq" className="text-white/80 hover:text-white transition-colors">
+              {t('common:nav.faq')}
+            </a>
             <button
               onClick={toggleLanguage}
               className="flex items-center gap-1 text-white/80 hover:text-white transition-colors px-2 py-1 rounded"

@@ -92,7 +92,8 @@ i18n
       caches: ['localStorage'],
     },
 
-    keySeparator: false,
+    keySeparator: '.',
+    nsSeparator: ':',
     returnNull: false,
     
     interpolation: {

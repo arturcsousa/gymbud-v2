@@ -39,10 +39,10 @@ export default function Hero() {
               viewport={{ once: true }}
               className="text-5xl lg:text-6xl font-extrabold tracking-tight mb-6"
             >
-              {t('landing:hero.title')}
+              {t('hero.title')}
             </motion.h1>
             <p className="text-xl text-white/90 mb-8 max-w-lg leading-relaxed">
-              {t('landing:hero.subtitle')}
+              {t('hero.subtitle')}
             </p>
             
             <div className="flex flex-wrap gap-4">

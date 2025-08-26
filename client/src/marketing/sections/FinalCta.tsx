@@ -18,23 +18,36 @@ export default function FinalCta() {
         }}
       />
       <div className="relative mx-auto max-w-4xl px-6 py-20 text-center text-white">
-        <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">
-          {t('landing:final_cta.title')}
-        </h2>
-        <p className="mt-4 text-lg text-white/90">{t('landing:final_cta.subtitle')}</p>
-        <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <a
-            href={ctaHref('final_cta')}
-            className="rounded-lg bg-white px-6 py-3 font-semibold text-[#043747] shadow-lg hover:bg-white/95"
-          >
-            {t('common:cta.start_free')}
-          </a>
-          <a
-            href="#how"
-            className="rounded-lg border border-white/40 px-6 py-3 font-semibold text-white hover:border-white/60 hover:bg-white/10"
-          >
-            {t('common:cta.see_how')}
-          </a>
+        <div className="text-center">
+          <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 text-white">
+            {t('final_cta.title')}
+          </h2>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            {t('final_cta.subtitle')}
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-4">
+            <a
+              href={ctaHref('final_primary')}
+              className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105"
+              style={{ 
+                backgroundColor: PALETTE.aqua, 
+                color: PALETTE.deepTeal 
+              }}
+            >
+              {t('common:cta.start_free')}
+            </a>
+            <a
+              href="#pricing"
+              className="inline-flex items-center px-8 py-4 text-lg font-semibold rounded-full border-2 transition-all duration-200 hover:scale-105"
+              style={{ 
+                borderColor: PALETTE.orange, 
+                color: PALETTE.orange 
+              }}
+            >
+              {t('common:cta.see_pricing')}
+            </a>
+          </div>
         </div>
       </div>
     </section>

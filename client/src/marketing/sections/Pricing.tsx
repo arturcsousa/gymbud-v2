@@ -5,21 +5,21 @@ export default function Pricing() {
   const { t } = useTranslation(['landing', 'common']);
   const plans = [
     { 
-      nameKey: 'landing:pricing.plans.free.title', 
-      descKey: 'landing:pricing.plans.free.desc',
-      priceKey: 'landing:pricing.plans.free.price',
+      nameKey: 'pricing.plans.free.title', 
+      descKey: 'pricing.plans.free.desc',
+      priceKey: 'pricing.plans.free.price',
       popular: false 
     },
     { 
-      nameKey: 'landing:pricing.plans.pro.title', 
-      descKey: 'landing:pricing.plans.pro.desc',
-      priceKey: 'landing:pricing.plans.pro.price',
+      nameKey: 'pricing.plans.pro.title', 
+      descKey: 'pricing.plans.pro.desc',
+      priceKey: 'pricing.plans.pro.price',
       popular: true 
     },
     { 
-      nameKey: 'landing:pricing.plans.annual.title', 
-      descKey: 'landing:pricing.plans.annual.desc',
-      priceKey: 'landing:pricing.plans.annual.price',
+      nameKey: 'pricing.plans.annual.title', 
+      descKey: 'pricing.plans.annual.desc',
+      priceKey: 'pricing.plans.annual.price',
       popular: false 
     },
   ];
@@ -28,10 +28,10 @@ export default function Pricing() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
-            {t('landing:pricing.title')}
+            {t('pricing.title')}
           </h2>
           <h3 className="text-2xl lg:text-3xl font-bold" style={{ color: PALETTE.orange }}>
-            {t('landing:pricing.subtitle')}
+            {t('pricing.subtitle')}
           </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -47,7 +47,7 @@ export default function Pricing() {
                   className="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 rounded-full text-sm font-semibold text-white"
                   style={{ backgroundColor: PALETTE.aqua }}
                 >
-                  {t('landing:pricing.most_popular')}
+                  {t('pricing.most_popular')}
                 </div>
               )}
               <h3 className="text-2xl font-bold mb-4" style={{ color: PALETTE.deepTeal }}>

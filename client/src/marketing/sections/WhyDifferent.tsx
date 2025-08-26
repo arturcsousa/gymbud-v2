@@ -9,38 +9,38 @@ export default function WhyDifferent() {
   const features = [
     { 
       icon: <CheckCircle className="h-6 w-6" />, 
-      titleKey: 'landing:different.items.deterministic.title', 
-      descKey: 'landing:different.items.deterministic.desc',
+      titleKey: 'different.items.deterministic.title', 
+      descKey: 'different.items.deterministic.desc',
       color: PALETTE.aqua
     },
     { 
       icon: <Activity className="h-6 w-6" />, 
-      titleKey: 'landing:different.items.coach.title', 
-      descKey: 'landing:different.items.coach.desc',
+      titleKey: 'different.items.coach.title', 
+      descKey: 'different.items.coach.desc',
       color: PALETTE.teal
     },
     { 
       icon: <Clock className="h-6 w-6" />, 
-      titleKey: 'landing:different.items.rest.title', 
-      descKey: 'landing:different.items.rest.desc',
+      titleKey: 'different.items.rest.title', 
+      descKey: 'different.items.rest.desc',
       color: PALETTE.orange
     },
     { 
       icon: <Zap className="h-6 w-6" />, 
-      titleKey: 'landing:different.items.constraints.title', 
-      descKey: 'landing:different.items.constraints.desc',
+      titleKey: 'different.items.constraints.title', 
+      descKey: 'different.items.constraints.desc',
       color: PALETTE.aqua
     },
     { 
       icon: <Shield className="h-6 w-6" />, 
-      titleKey: 'landing:different.items.runner.title', 
-      descKey: 'landing:different.items.runner.desc',
+      titleKey: 'different.items.runner.title', 
+      descKey: 'different.items.runner.desc',
       color: PALETTE.teal
     },
     { 
       icon: <Database className="h-6 w-6" />, 
-      titleKey: 'landing:different.items.data.title', 
-      descKey: 'landing:different.items.data.desc',
+      titleKey: 'different.items.data.title', 
+      descKey: 'different.items.data.desc',
       color: PALETTE.orange
     },
   ];
@@ -64,11 +64,11 @@ export default function WhyDifferent() {
       
       <div className="mx-auto max-w-7xl px-6 pt-12">
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
-            {t('landing:different.title')}
+          <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 text-white">
+            {t('different.title')}
           </h2>
           <h3 className="text-2xl lg:text-3xl font-bold" style={{ color: PALETTE.aqua }}>
-            {t('landing:different.subtitle')}
+            {t('different.subtitle')}
           </h3>
         </div>
 
