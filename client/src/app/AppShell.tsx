@@ -3,11 +3,8 @@ import { Route, Switch, useLocation } from 'wouter'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { persistQueryClient } from '@tanstack/react-query-persist-client'
 import { createSyncStoragePersister } from '@tanstack/react-query-persist-client'
-import { useTranslation } from 'react-i18next'
 
 import { supabase } from '@/lib/supabase'
-import { dataManager } from '@/app/db/indexeddb'
-import { syncEngine, SyncStatus } from '@/app/sync/engine'
 
 import { AuthGuard } from '@/app/components/AuthGuard'
 import { OfflineIndicator } from '@/app/components/OfflineIndicator'
@@ -52,7 +49,6 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const [location] = useLocation()
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>(syncEngine.getStatus())
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -61,7 +57,6 @@ export function AppShell({ children }: AppShellProps) {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      dataManager.setUserId(session?.user?.id ?? null)
       setLoading(false)
     })
 
@@ -69,37 +64,11 @@ export function AppShell({ children }: AppShellProps) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null)
-        dataManager.setUserId(session?.user?.id ?? null)
-        
-        if (event === 'SIGNED_IN') {
-          // Trigger sync when user signs in
-          syncEngine.forceSync()
-        }
       }
     )
 
     return () => subscription.unsubscribe()
   }, [])
-
-  // Sync status subscription
-  useEffect(() => {
-    const unsubscribe = syncEngine.subscribe(setSyncStatus)
-    return unsubscribe
-  }, [])
-
-  // Network status for TanStack Query
-  useEffect(() => {
-    queryClient.getQueryCache().subscribe(() => {
-      queryClient.setDefaultOptions({
-        queries: {
-          networkMode: syncStatus.isOnline ? 'online' : 'offlineFirst',
-        },
-        mutations: {
-          networkMode: syncStatus.isOnline ? 'online' : 'offlineFirst',
-        },
-      })
-    })
-  }, [syncStatus.isOnline])
 
   if (loading) {
     return (
@@ -113,7 +82,7 @@ export function AppShell({ children }: AppShellProps) {
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-background">
         {/* Offline indicator */}
-        <OfflineIndicator status={syncStatus} />
+        <OfflineIndicator />
         
         {/* Conflict resolution banner */}
         <ConflictBanner />

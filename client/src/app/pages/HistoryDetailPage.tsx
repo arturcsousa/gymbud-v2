@@ -56,7 +56,7 @@ export function HistoryDetailPage({ params }: HistoryDetailPageProps) {
     const variants = {
       planned: 'secondary',
       in_progress: 'default',
-      completed: 'success',
+      completed: 'default',
       skipped: 'destructive'
     } as const
 

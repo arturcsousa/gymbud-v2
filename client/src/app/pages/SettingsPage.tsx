@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Settings, User, Globe, Download, Trash2, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'

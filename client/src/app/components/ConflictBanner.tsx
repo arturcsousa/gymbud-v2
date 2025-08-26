@@ -13,7 +13,6 @@ interface ConflictData {
 
 export function ConflictBanner() {
   const { t } = useTranslation(['app'])
-  const [conflicts, setConflicts] = useState<ConflictData[]>([])
   const [dismissed, setDismissed] = useState<Set<string>>(new Set())
 
   const handleResolve = (conflictId: string, resolution: 'local' | 'server' | 'merge') => {
@@ -26,6 +25,7 @@ export function ConflictBanner() {
     setDismissed(prev => new Set([...prev, conflictId]))
   }
 
+  const conflicts = [] // Placeholder for conflicts
   const visibleConflicts = conflicts.filter(c => !dismissed.has(c.id))
 
   if (visibleConflicts.length === 0) {

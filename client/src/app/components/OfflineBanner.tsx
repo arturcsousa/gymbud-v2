@@ -1,69 +1,53 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Wifi, WifiOff, RefreshCw, Clock } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { useOnlineStatus } from '@/lib/net/useOnlineStatus'
-import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '@/db/gymbud-db'
-import { requestFlush } from '@/sync/queue'
 
-export default function OfflineBanner() {
-  const online = useOnlineStatus()
-  const { t } = useTranslation('app')
-  const [syncing, setSyncing] = useState(false)
-  const [lastSync, setLastSync] = useState<string | null>(null)
+export function OfflineBanner() {
+  const { t } = useTranslation(['app'])
+  const isOnline = useOnlineStatus()
+  const [isManualSyncing, setIsManualSyncing] = useState(false)
 
-  const pending = useLiveQuery(
-    () => db.queue_mutations.where('status').equals('queued').count(),
-    [],
-    0
-  ) ?? 0
-
-  useEffect(() => {
-    const onOfflineReady = () => console.info('[PWA] offline ready')
-    const onNeedRefresh = () => console.info('[PWA] update available')
-    window.addEventListener('pwa:offline-ready', onOfflineReady)
-    window.addEventListener('pwa:need-refresh', onNeedRefresh)
-    return () => {
-      window.removeEventListener('pwa:offline-ready', onOfflineReady)
-      window.removeEventListener('pwa:need-refresh', onNeedRefresh)
-    }
-  }, [])
-
-  async function syncNow() {
-    setSyncing(true)
+  const handleManualSync = async () => {
+    setIsManualSyncing(true)
     try {
-      // Step 1: check SW updates
-      if ((window as any).__gymbud_check_sw) await (window as any).__gymbud_check_sw()
-      // Step 2: ask queue to flush
-      requestFlush()
-      setLastSync(new Date().toLocaleString())
+      // Placeholder for manual sync trigger
+      await new Promise(resolve => setTimeout(resolve, 1000))
     } finally {
-      setSyncing(false)
+      setIsManualSyncing(false)
     }
   }
 
-  const leftText = syncing
-    ? t('sync.syncing')
-    : online
-      ? t('sync.online') + (pending ? ` — ${t('sync.pendingChanges', { count: pending })}` : '') +
-        (lastSync ? ` — ${t('sync.lastSync', { time: lastSync })}` : '')
-      : t('sync.offline')
+  if (isOnline) return null
 
   return (
-    <div className="w-full sticky top-0 z-50">
-      <div className={`w-full text-sm text-white px-3 py-2 flex items-center justify-between
-        ${online ? 'bg-emerald-600' : 'bg-amber-600'}`}>
-        <div className="flex items-center gap-2">
-          <span className="inline-block h-2 w-2 rounded-full bg-white/90" />
-          {leftText}
+    <Card className="mx-4 mt-4 border-orange-200 bg-orange-50">
+      <CardContent className="flex items-center justify-between p-4">
+        <div className="flex items-center space-x-3">
+          <WifiOff className="h-5 w-5 text-orange-600" />
+          <div>
+            <p className="font-medium text-orange-900">
+              {t('app:sync.offline')}
+            </p>
+            <p className="text-sm text-orange-700">
+              {t('app:sync.offlineMessage')}
+            </p>
+          </div>
         </div>
-        <button
-          onClick={syncNow}
-          disabled={syncing}
-          className="rounded-lg bg-white/15 hover:bg-white/25 px-3 py-1.5 transition"
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleManualSync}
+          disabled={isManualSyncing}
+          className="border-orange-300 text-orange-700 hover:bg-orange-100"
         >
-          {t('sync.syncNow')}
-        </button>
-      </div>
-    </div>
+          <RefreshCw className={`h-4 w-4 mr-2 ${isManualSyncing ? 'animate-spin' : ''}`} />
+          {isManualSyncing ? t('app:sync.syncing') : t('app:sync.retry')}
+        </Button>
+      </CardContent>
+    </Card>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'wouter'
 import { useTranslation } from 'react-i18next'
 import { Play, Pause, Square, Plus, Trash2, Timer } from 'lucide-react'
@@ -135,7 +135,7 @@ export default function SessionPage() {
             </p>
           ) : (
             <div className="space-y-4">
-              {session.exercises.map((exercise, index) => (
+              {session.exercises.map((exercise) => (
                 <div key={exercise.id} className="border rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-semibold">{exercise.exercise_name}</h3>
@@ -146,7 +146,7 @@ export default function SessionPage() {
                   
                   {/* Sets */}
                   <div className="space-y-2">
-                    {exercise.logged_sets.map((set, setIndex) => (
+                    {exercise.logged_sets.map((set) => (
                       <div key={set.id} className="grid grid-cols-5 gap-2 items-center">
                         <Label className="text-sm">{t('set.setNumber')} {set.set_number}</Label>
                         <Input 

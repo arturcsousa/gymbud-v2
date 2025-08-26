@@ -23,7 +23,7 @@ export const initPWA = async () => {
     } else {
       console.info('[PWA] Service worker registration not available in development')
     }
-  } catch {
-    console.info('[PWA] Service worker registration not available')
+  } catch (error) {
+    console.info('[PWA] Service worker registration not available:', error)
   }
 }

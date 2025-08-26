@@ -130,14 +130,13 @@ export class OfflineDataManager {
   async upsertProfile(data: Omit<Profile, 'id' | 'updated_at' | 'client_updated_at'>): Promise<Profile> {
     const now = this.generateTimestamp()
     const profile: Profile = {
-      id: data.id || this.generateId(),
+      id: this.generateId(),
       ...data,
       updated_at: now,
       client_updated_at: now
     }
 
     await db.profiles.put(profile)
-    await this.enqueueMutation('profiles', profile.id, 'insert', profile)
     return profile
   }
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { Calendar, TrendingUp, Filter, Search } from 'lucide-react'
+import { Calendar, TrendingUp, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -209,7 +209,9 @@ export function HistoryPage() {
                         <h3 className="font-semibold text-lg">
                           {session.data?.name || t('app:session.workout')}
                         </h3>
-                        {getStatusBadge(session.status)}
+                        <Badge variant={session.status === 'completed' ? 'default' : 'secondary'}>
+                          {session.status}
+                        </Badge>
                       </div>
                       
                       <p className="text-muted-foreground mb-3">

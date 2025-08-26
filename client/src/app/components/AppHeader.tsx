@@ -1,6 +1,7 @@
-import { Menu, User, Settings, LogOut } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
 import { useLocation } from 'wouter'
+import { useTranslation } from 'react-i18next'
+import { Menu, User, LogOut, Settings, History, Dumbbell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -10,14 +11,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { supabase } from '@/lib/supabase'
-import { SyncStatus } from '@/app/sync/engine'
 
 interface AppHeaderProps {
   user: any
-  syncStatus: SyncStatus
 }
 
-export function AppHeader({ user, syncStatus }: AppHeaderProps) {
+export function AppHeader({ user }: AppHeaderProps) {
   const { t } = useTranslation(['app', 'common'])
   const [, setLocation] = useLocation()
 
@@ -31,102 +30,52 @@ export function AppHeader({ user, syncStatus }: AppHeaderProps) {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
-      <div className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
-        {/* Logo and brand */}
-        <div className="flex items-center gap-3">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center space-x-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => handleNavigation('/')}
-            className="text-lg font-bold text-primary"
+            className="font-semibold"
           >
+            <Dumbbell className="h-5 w-5 mr-2" />
             GymBud
           </Button>
         </div>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleNavigation('/')}
-          >
+        <nav className="hidden md:flex items-center space-x-6">
+          <Button variant="ghost" onClick={() => handleNavigation('/')}>
             {t('app:nav.home')}
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleNavigation('/history')}
-          >
+          <Button variant="ghost" onClick={() => handleNavigation('/history')}>
             {t('app:nav.history')}
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleNavigation('/library')}
-          >
+          <Button variant="ghost" onClick={() => handleNavigation('/library')}>
             {t('app:nav.library')}
           </Button>
         </nav>
 
-        {/* User menu */}
-        <div className="flex items-center gap-2">
-          {/* Mobile menu */}
-          <div className="md:hidden">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <Menu className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleNavigation('/')}>
-                  {t('app:nav.home')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleNavigation('/history')}>
-                  {t('app:nav.history')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleNavigation('/library')}>
-                  {t('app:nav.library')}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleNavigation('/settings')}>
-                  <Settings className="h-4 w-4 mr-2" />
-                  {t('app:nav.settings')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  {t('app:auth.signOut')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {/* Desktop user menu */}
-          <div className="hidden md:block">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span className="max-w-32 truncate">
-                    {user?.email || t('app:auth.user')}
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleNavigation('/settings')}>
-                  <Settings className="h-4 w-4 mr-2" />
-                  {t('app:nav.settings')}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  {t('app:auth.signOut')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        <div className="flex items-center space-x-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <User className="h-4 w-4 mr-2" />
+                {user?.email?.split('@')[0] || 'User'}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleNavigation('/settings')}>
+                <Settings className="h-4 w-4 mr-2" />
+                {t('app:nav.settings')}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                {t('app:auth.signOut')}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
