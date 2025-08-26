@@ -35,16 +35,32 @@ AppShell.tsx (Main app wrapper with GradientLayout)
 ├── Conflict Banner
 ├── AuthGuard (route protection)
 └── Route Components (all using onboarding-style design)
-    ├── AuthPage.tsx (glassmorphic form with gradient background) - named export
+    ├── AuthPage.tsx (glassmorphic form with gradient background) - named export ✓
     ├── OnboardingPage.tsx (12-step wizard for profile setup)
-    ├── HomePage.tsx (dashboard with glassmorphic cards and session summary) - named export
-    ├── SessionPage.tsx (session runner with progress bar, timer, and exercise cards) - named export
-    ├── HistoryPage.tsx (workout history with stats summary and session cards) - named export
+    ├── HomePage.tsx (dashboard with glassmorphic cards and session summary) - named export ✓
+    ├── SessionPage.tsx (session runner with progress bar, timer, and exercise cards) - named export ✓
+    ├── HistoryPage.tsx (workout history with stats summary and session cards) - named export ✓
     ├── HistoryDetailPage.tsx (session detail view) - named export
-    ├── LibraryPage.tsx (exercise database with search, filters, and interactive cards) - named export
-    ├── SettingsPage.tsx (organized sections with toggle switches and preferences) - named export
+    ├── LibraryPage.tsx (exercise database with search, filters, and interactive cards) - named export ✓
+    ├── SettingsPage.tsx (organized sections with toggle switches and preferences) - named export ✓
     └── NotFoundPage.tsx (404 fallback) - named export
 ```
+
+### Component Export Pattern
+All page components now use dual export structure:
+```typescript
+// Component definition
+function ComponentName() { /* ... */ }
+
+// Dual exports for maximum compatibility
+export { ComponentName as default }  // Default export
+export { ComponentName }             // Named export for AppShell
+```
+
+### Type Safety Improvements
+- **SessionPage**: Renamed `Set` interface to `WorkoutSet` to avoid collision with built-in JavaScript Set type
+- **Type Indexing**: Fixed `updateSet` function to use `keyof WorkoutSet` for proper type safety
+- **Import Alignment**: All AppShell imports now match component exports exactly
 
 ### Design System Components
 - **GradientLayout**: Main container with gradient background (#005870 to #0C8F93 to #18C7B6)

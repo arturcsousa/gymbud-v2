@@ -239,8 +239,8 @@ function ComponentName() {
   // Component implementation
 }
 
-export { ComponentName as default }
-export { ComponentName } // Named export for AppShell imports
+export { ComponentName as default }  // Default export
+export { ComponentName }             // Named export for AppShell imports
 ```
 
 ### Import Pattern in AppShell
@@ -255,6 +255,11 @@ import { LibraryPage } from '@/app/pages/LibraryPage'
 import { SettingsPage } from '@/app/pages/SettingsPage'
 import { NotFoundPage } from '@/app/pages/NotFoundPage'
 ```
+
+### Type Safety Resolution
+- **SessionPage Interface**: Renamed `Set` to `WorkoutSet` to avoid collision with built-in JavaScript Set type
+- **Function Typing**: Updated `updateSet` function to use `keyof WorkoutSet` for proper TypeScript indexing
+- **Build Compatibility**: All exports now match imports exactly, eliminating TypeScript compilation errors
 
 ## Usage Patterns
 
