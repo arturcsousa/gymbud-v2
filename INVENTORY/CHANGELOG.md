@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## August 26, 2025 17:47 ET
+**Implemented** plan management system with Edge Function and onboarding flow
+- **Edge Function**: Created `supabase/functions/plan-get-or-create/index.ts` for idempotent plan creation/activation
+  - Behavior: Returns ACTIVE plan if exists, promotes DRAFT to ACTIVE, or creates new ACTIVE plan with seed
+  - RLS enforcement via user JWT forwarding, structured error responses, CORS support
+- **Onboarding Action**: Added `client/src/onboarding/actions.ts` with `finalizeOnboarding()` function
+  - Calls plan-get-or-create Edge Function with plan seed from wizard
+  - Navigates to `/app/session/today` after successful plan activation
+- **Plan Guard Helper**: Created `client/src/lib/plan/ensureActivePlan.ts` for app entry self-healing
+  - Queries for active plan and calls Edge Function if none exists
+  - Optional seed parameter for fallback plan creation
+- **Dependencies**: Added `@supabase/auth-ui-react` and `@supabase/auth-ui-shared` packages
+- Context: Complete plan lifecycle management ready for onboarding wizard integration
+- Migrations: Deploy Edge Function with `supabase functions deploy plan-get-or-create`
+
 ## August 26, 2025 17:43 ET
 **Redesigned** auth screen to match provided screenshot with dark theme and GymBud branding
 - **Visual Design**: Transformed auth screen with dark gradient background using slate colors (#0f172a → #1e293b → #334155)
