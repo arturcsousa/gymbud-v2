@@ -281,3 +281,4 @@ function SettingsPage() {
 }
 
 export { SettingsPage as default }
+export { SettingsPage }

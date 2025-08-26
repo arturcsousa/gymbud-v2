@@ -205,3 +205,4 @@ function HistoryPage() {
 }
 
 export { HistoryPage as default }
+export { HistoryPage }

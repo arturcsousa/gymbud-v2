@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 
-interface Set {
+interface WorkoutSet {
   id: string
   reps: string
   weight: string
@@ -19,7 +19,7 @@ function SessionPage() {
   const [, setLocation] = useLocation()
   const [loading, setLoading] = useState(true)
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
-  const [sets, setSets] = useState<Set[]>([])
+  const [sets, setSets] = useState<WorkoutSet[]>([])
   const [timer, setTimer] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
 
@@ -41,7 +41,7 @@ function SessionPage() {
   const loadSession = async () => {
     try {
       // Initialize sets for current exercise
-      const initialSets = [
+      const initialSets: WorkoutSet[] = [
         { id: '1', reps: '', weight: '', completed: false },
         { id: '2', reps: '', weight: '', completed: false },
         { id: '3', reps: '', weight: '', completed: false }
@@ -304,3 +304,4 @@ function SessionPage() {
 }
 
 export { SessionPage as default }
+export { SessionPage }

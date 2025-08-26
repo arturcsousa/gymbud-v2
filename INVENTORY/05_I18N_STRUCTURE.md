@@ -228,6 +228,34 @@ client/src/i18n/
 }
 ```
 
+## Component Export Structure
+
+### Page Components with Named Exports
+All major page components now support both named and default exports for build compatibility:
+
+```typescript
+// HomePage.tsx, SessionPage.tsx, HistoryPage.tsx, SettingsPage.tsx
+function ComponentName() {
+  // Component implementation
+}
+
+export { ComponentName as default }
+export { ComponentName } // Named export for AppShell imports
+```
+
+### Import Pattern in AppShell
+```typescript
+// AppShell.tsx uses named imports for all page components
+import { AuthPage } from '@/app/pages/AuthPage'
+import { HomePage } from '@/app/pages/HomePage'
+import { SessionPage } from '@/app/pages/SessionPage'
+import { HistoryPage } from '@/app/pages/HistoryPage'
+import { HistoryDetailPage } from '@/app/pages/HistoryDetailPage'
+import { LibraryPage } from '@/app/pages/LibraryPage'
+import { SettingsPage } from '@/app/pages/SettingsPage'
+import { NotFoundPage } from '@/app/pages/NotFoundPage'
+```
+
 ## Usage Patterns
 
 ### Component Usage

@@ -28,22 +28,22 @@ Progressive Web Application (PWA) built with Vite + React using `wouter` for cli
 ### App Shell Structure
 ```
 AppShell.tsx (Main app wrapper with GradientLayout)
-├── TanStack Query Client (with persistence)
+├── TanStack Query Client (with persistence disabled for build compatibility)
 ├── Supabase Auth Provider
 ├── Sync Engine Integration
 ├── Offline Indicator
 ├── Conflict Banner
 ├── AuthGuard (route protection)
 └── Route Components (all using onboarding-style design)
-    ├── AuthPage.tsx (glassmorphic form with gradient background)
+    ├── AuthPage.tsx (glassmorphic form with gradient background) - named export
     ├── OnboardingPage.tsx (12-step wizard for profile setup)
-    ├── HomePage.tsx (dashboard with glassmorphic cards and session summary)
-    ├── SessionPage.tsx (session runner with progress bar, timer, and exercise cards)
-    ├── HistoryPage.tsx (workout history with stats summary and session cards)
-    ├── HistoryDetailPage.tsx (session detail view)
-    ├── LibraryPage.tsx (exercise database with search, filters, and interactive cards)
-    ├── SettingsPage.tsx (organized sections with toggle switches and preferences)
-    └── NotFoundPage.tsx (404 fallback)
+    ├── HomePage.tsx (dashboard with glassmorphic cards and session summary) - named export
+    ├── SessionPage.tsx (session runner with progress bar, timer, and exercise cards) - named export
+    ├── HistoryPage.tsx (workout history with stats summary and session cards) - named export
+    ├── HistoryDetailPage.tsx (session detail view) - named export
+    ├── LibraryPage.tsx (exercise database with search, filters, and interactive cards) - named export
+    ├── SettingsPage.tsx (organized sections with toggle switches and preferences) - named export
+    └── NotFoundPage.tsx (404 fallback) - named export
 ```
 
 ### Design System Components
@@ -54,11 +54,11 @@ AppShell.tsx (Main app wrapper with GradientLayout)
 - **Interactive Elements**: Toggle switches, category buttons, search inputs with consistent styling
 
 ### PWA Infrastructure
-- **Service Worker**: VitePWA plugin with Workbox caching strategies
+- **Service Worker**: VitePWA plugin with Workbox caching strategies (currently disabled for build compatibility)
 - **Manifest**: `/public/manifest.webmanifest` with app metadata and shortcuts
 - **IndexedDB**: Dexie-based offline data layer with versioned schema
 - **Sync Engine**: Queue-based mutation replay with conflict resolution
-- **Update Handling**: Service worker update prompts in main.tsx
+- **Update Handling**: Service worker update prompts (currently disabled)
 
 ### Offline-First Data Flow
 ```

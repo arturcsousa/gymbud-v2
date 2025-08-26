@@ -175,3 +175,4 @@ function HomePage() {
 }
 
 export { HomePage as default }
+export { HomePage }
