@@ -1,10 +1,10 @@
 // client/src/onboarding/actions.ts
 import { supabase } from "@/lib/supabase";
-import { navigate } from "wouter/use-location";
+import { useLocation } from "wouter";
 
 export async function finalizeOnboarding(planSeed: unknown) {
   // Ensure the user has an ACTIVE plan using our EF
-  const { data, error } = await supabase.functions.invoke("plan-get-or-create", {
+  const { error } = await supabase.functions.invoke("plan-get-or-create", {
     body: { seed: planSeed },
   });
 
@@ -15,5 +15,6 @@ export async function finalizeOnboarding(planSeed: unknown) {
 
   // Jump straight into today's session. If session-get-or-create isn't live yet,
   // your SessionPage can show a "preparing…" state or Home auto-start shim.
+  const [, navigate] = useLocation();
   navigate("/app/session/today");
 }
