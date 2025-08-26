@@ -1,29 +1,29 @@
 // Check if PWA register is available (only in production builds with VitePWA)
 
-export const initPWA = async () => {
-  // Check if PWA register is available (only in production builds with VitePWA)
-  try {
-    if (import.meta.env.PROD) {
+export async function initPWA() {
+  // Only initialize PWA in production builds
+  if (import.meta.env.PROD) {
+    try {
       const { registerSW } = await import('virtual:pwa-register')
       
       const updateSW = registerSW({
-        immediate: false,
         onNeedRefresh() {
-          // SW waiting: emit event for a future in-app toast
-          window.dispatchEvent(new CustomEvent('pwa:need-refresh'))
+          // Show update available notification
+          console.log('PWA update available')
         },
         onOfflineReady() {
-          // App is cache-ready for offline
-          window.dispatchEvent(new CustomEvent('pwa:offline-ready'))
-        }
+          // Show offline ready notification
+          console.log('PWA ready to work offline')
+        },
       })
 
-      // Allow manual checks (used by "Sync now" for now)
-      ;(window as any).__gymbud_check_sw = () => updateSW()
-    } else {
-      console.info('[PWA] Service worker registration not available in development')
+      // Optional: Check for updates periodically
+      setInterval(() => {
+        updateSW(true)
+      }, 60000) // Check every minute
+      
+    } catch (error) {
+      console.warn('PWA registration failed:', error)
     }
-  } catch (error) {
-    console.info('[PWA] Service worker registration not available:', error)
   }
 }

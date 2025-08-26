@@ -1,7 +1,6 @@
-import { useState } from 'react'
 import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { Menu, User, LogOut, Settings, History, Dumbbell } from 'lucide-react'
+import { User, LogOut, Settings, Dumbbell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,

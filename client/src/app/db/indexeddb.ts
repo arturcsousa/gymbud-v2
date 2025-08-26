@@ -145,9 +145,6 @@ export class OfflineDataManager {
     return db.sessions
       .where('user_id')
       .equals(userId)
-      .orderBy('date')
-      .reverse()
-      .limit(limit)
       .toArray()
   }
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Wifi, WifiOff, RefreshCw, Clock } from 'lucide-react'
+import { WifiOff, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useOnlineStatus } from '@/lib/net/useOnlineStatus'

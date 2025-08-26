@@ -72,19 +72,17 @@ export function HistoryPage() {
     }).format(date)
   }
 
-  const getStatusBadge = (status: Session['status']) => {
-    const variants = {
-      planned: 'secondary',
-      in_progress: 'default',
-      completed: 'success',
-      skipped: 'destructive'
-    } as const
-
-    return (
-      <Badge variant={variants[status] || 'secondary'}>
-        {t(`app:session.status.${status}`)}
-      </Badge>
-    )
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return <Badge variant="default">{t('app:session.completed')}</Badge>
+      case 'in_progress':
+        return <Badge variant="secondary">{t('app:session.inProgress')}</Badge>
+      case 'planned':
+        return <Badge variant="outline">{t('app:session.planned')}</Badge>
+      default:
+        return <Badge variant="outline">{status}</Badge>
+    }
   }
 
   const getSessionStats = (session: Session) => {
@@ -209,9 +207,7 @@ export function HistoryPage() {
                         <h3 className="font-semibold text-lg">
                           {session.data?.name || t('app:session.workout')}
                         </h3>
-                        <Badge variant={session.status === 'completed' ? 'default' : 'secondary'}>
-                          {session.status}
-                        </Badge>
+                        {getStatusBadge(session.status)}
                       </div>
                       
                       <p className="text-muted-foreground mb-3">
