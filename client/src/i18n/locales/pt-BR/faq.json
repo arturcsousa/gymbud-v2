@@ -1,11 +1,17 @@
 {
   "title": "Perguntas Frequentes",
   "items": {
-    "diff": { "q": "Como o GymBud é diferente de outros apps de treino com IA?", "a": "Outros apps jogam na sorte. O GymBud usa motor determinístico + coach adaptativo: mesmos dados, mesmo plano, ajustes reais durante a sessão." },
-    "busy_gym": { "q": "E se a academia estiver cheia e o equipamento ocupado?", "a": "Peça para o coach trocar na hora — você recebe alternativas que mantêm seus objetivos sem perder ritmo." },
-    "injuries": { "q": "Posso treinar mesmo com lesões?", "a": "Sim. Informe as lesões e o GymBud prescreve variações seguras para joelho, ombro, costas e mais." },
-    "data": { "q": "Perco meu histórico se cancelar?", "a": "Não. Seus dados são seus. Exporte quando quiser e guarde para sempre." },
-    "accuracy": { "q": "Quão preciso é o coach de IA?", "a": "Ele só age dentro de parâmetros seguros e baseados em evidência — sempre racional, nunca aleatório." },
-    "ptbr": { "q": "O app está disponível em português?", "a": "Sim. O GymBud funciona totalmente em EN e PT-BR." }
+    "free": { "question": "O GymBud é realmente grátis para testar?", "answer": "Sim! Comece com nosso plano gratuito para experimentar o motor determinístico e o coach adaptativo." },
+    "beginner": { "question": "Sou iniciante completo. Posso usar o GymBud?", "answer": "Absolutamente. O GymBud se adapta ao seu nível de experiência e te guia na forma correta e progressão." },
+    "equipment": { "question": "E se minha academia não tiver certos equipamentos?", "answer": "O coach pode trocar exercícios instantaneamente baseado no que está disponível. Sem equipamento? Sem problema." },
+    "time": { "question": "E se eu só tiver 30 minutos para treinar?", "answer": "Peça para o coach comprimir sua sessão. Você receberá os exercícios mais importantes para seu tempo." },
+    "progress": { "question": "Como sei se estou progredindo?", "answer": "Acompanhe automaticamente cada repetição, série e carga. Veja seus ganhos de força e progressão de volume ao longo do tempo." },
+    "cancel": { "question": "Posso cancelar a qualquer momento?", "answer": "Sim, e seu histórico de treinos continua sendo seu para sempre. Exporte seus dados quando quiser." },
+    "diff": { "question": "Como o GymBud é diferente de outros apps de treino com IA?", "answer": "Outros apps jogam na sorte. O GymBud usa motor determinístico + coach adaptativo: mesmos dados, mesmo plano, ajustes reais durante a sessão." },
+    "busy_gym": { "question": "E se a academia estiver cheia e o equipamento ocupado?", "answer": "Peça para o coach trocar na hora — você recebe alternativas que mantêm seus objetivos sem perder ritmo." },
+    "injuries": { "question": "Posso treinar mesmo com lesões?", "answer": "Sim. Informe as lesões e o GymBud prescreve variações seguras para joelho, ombro, costas e mais." },
+    "data": { "question": "Perco meu histórico se cancelar?", "answer": "Não. Seus dados são seus. Exporte quando quiser e guarde para sempre." },
+    "accuracy": { "question": "Quão preciso é o coach de IA?", "answer": "Ele só age dentro de parâmetros seguros e baseados em evidência — sempre racional, nunca aleatório." },
+    "ptbr": { "question": "O app está disponível em português?", "answer": "Sim. O GymBud funciona totalmente em EN e PT-BR." }
   }
 }

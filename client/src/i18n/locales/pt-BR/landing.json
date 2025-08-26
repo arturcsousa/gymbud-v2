@@ -26,6 +26,9 @@
   },
   "programs": {
     "title": "Programas & Objetivos",
+    "muscle": { "title": "Ganho de Massa", "desc": "Ganhe massa muscular com sobrecarga progressiva comprovada." },
+    "weight": { "title": "Perda de Peso", "desc": "Queime gordura mantendo a massa com condicionamento inteligente." },
+    "endurance": { "title": "Resistência", "desc": "Aumente resistência e fôlego para treinos mais longos." },
     "goals": {
       "hypertrophy": "Ganhe massa muscular com sobrecarga progressiva comprovada.",
       "strength": "Fique mais forte com séries e repetições otimizadas.",
@@ -36,6 +39,7 @@
   },
   "progress": {
     "title": "Prova de Progresso",
+    "subtitle": "Acompanhe automaticamente cada repetição, série e carga",
     "metrics": {
       "prs": "Acompanhe cada recorde pessoal, treino após treino.",
       "volume": "Veja seu volume e intensidade subindo.",
@@ -46,6 +50,7 @@
   },
   "pricing": {
     "title": "Planos",
+    "subtitle": "Escolha o plano que combina com seus objetivos",
     "plans": {
       "free": { "title": "Grátis", "desc": "Sessões e histórico limitados — teste o motor agora.", "price": "R$0 / para sempre" },
       "pro": { "title": "Pro", "desc": "Acesso completo a planos determinísticos, coach e progresso.", "price": "R$59,90 / mês" },
@@ -54,6 +59,7 @@
   },
   "final_cta": {
     "title": "Pronto para treinar de forma mais inteligente?",
+    "subtitle": "Junte-se a milhares que transformaram seus treinos com o GymBud",
     "primary": "Comece Grátis",
     "secondary": "Veja uma Sessão de Exemplo"
   }
