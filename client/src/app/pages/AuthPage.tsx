@@ -128,12 +128,12 @@ export function AuthPage({ params }: AuthPageProps) {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1, duration: 0.5 }}
-            className="flex flex-col items-center mb-8"
+            className="flex flex-col items-center mb-6"
           >
             <img 
               src="/images/gymbud-wh.png" 
               alt="GymBud" 
-              className="w-20 h-20 mb-4"
+              className="w-32 h-32 mb-2"
             />
           </motion.div>
 
