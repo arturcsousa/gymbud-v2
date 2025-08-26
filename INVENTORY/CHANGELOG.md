@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## August 26, 2025 17:43 ET
+**Redesigned** auth screen to match provided screenshot with dark theme and GymBud branding
+- **Visual Design**: Transformed auth screen with dark gradient background using slate colors (#0f172a → #1e293b → #334155)
+- **GymBud Branding**: Added custom logo with dumbbell icon and "GymBud" text in header, plus moon icon for dark mode toggle
+- **Layout Enhancement**: Added step indicator, large headings with contextual subtitles, and spacious input fields (h-14)
+- **Modern Styling**: Implemented rounded-2xl corners, dark slate input backgrounds with teal focus states (#18C7B6)
+- **Interactive Elements**: Primary button using GymBud teal with hover animations, "Skip for now" link for signup flow
+- **Technical Improvements**: Removed ContentLayout dependency for full design control, maintained all auth functionality
+- Context: Auth screen now matches screenshot aesthetic while preserving GymBud brand identity and authentication flows
+- Migrations: N/A (design enhancement only)
+
 ## August 26, 2025 15:11 ET
 **Fixed** TypeScript build errors preventing Vercel deployment
 - **Import/Export Fixes**: Fixed App.tsx to use named import `{ OfflineBanner }` instead of default import
