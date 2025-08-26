@@ -65,16 +65,12 @@ function SessionPage() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
 
-  const handleSetComplete = (setIndex: number) => {
-    const newSets = [...sets]
-    newSets[setIndex].completed = !newSets[setIndex].completed
-    setSets(newSets)
-  }
-
-  const handleSetChange = (setIndex: number, field: string, value: string) => {
-    const newSets = [...sets]
-    newSets[setIndex][field] = value
-    setSets(newSets)
+  const updateSet = (setId: string, field: keyof WorkoutSet, value: string | boolean) => {
+    setSets(prevSets => 
+      prevSets.map(set => 
+        set.id === setId ? { ...set, [field]: value } : set
+      )
+    )
   }
 
   const handleNextExercise = () => {
@@ -212,7 +208,7 @@ function SessionPage() {
                     <Input
                       type="number"
                       value={set.reps}
-                      onChange={(e) => handleSetChange(index, 'reps', e.target.value)}
+                      onChange={(e) => updateSet(set.id, 'reps', e.target.value)}
                       className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
                       placeholder="0"
                     />
@@ -226,7 +222,7 @@ function SessionPage() {
                       <Input
                         type="number"
                         value={set.weight}
-                        onChange={(e) => handleSetChange(index, 'weight', e.target.value)}
+                        onChange={(e) => updateSet(set.id, 'weight', e.target.value)}
                         className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
                         placeholder="0"
                       />
@@ -235,7 +231,7 @@ function SessionPage() {
                 </div>
 
                 <Button
-                  onClick={() => handleSetComplete(index)}
+                  onClick={() => updateSet(set.id, 'completed', !set.completed)}
                   variant={set.completed ? "secondary" : "default"}
                   className={
                     set.completed 
