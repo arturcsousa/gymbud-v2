@@ -46,25 +46,32 @@ export function AppShell({ children }: AppShellProps) {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
+  console.log('AppShell - Initializing with user:', user?.id || 'none')
+
   // Auth state management
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('AppShell - Initial session:', session?.user?.id || 'none')
       setUser(session?.user ?? null)
       setLoading(false)
     })
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_, session) => {
-        setUser(session?.user ?? null)
-      }
-    )
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('AppShell - Auth state change:', session?.user?.id || 'none')
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
 
     return () => subscription.unsubscribe()
   }, [])
 
+  // Loading state
   if (loading) {
+    console.log('AppShell - Showing loading state')
     return (
       <GradientLayout>
         <div className="flex-1 flex items-center justify-center">
@@ -73,6 +80,8 @@ export function AppShell({ children }: AppShellProps) {
       </GradientLayout>
     )
   }
+
+  console.log('AppShell - Rendering main content, user authenticated:', !!user)
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -14,10 +14,21 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  // Debug logging
+  console.log('App.tsx - Domain Check:', {
+    hostname: window.location.hostname,
+    href: window.location.href,
+    isApp: window.location.hostname === 'app.gymbud.ai',
+    isLocalhost: window.location.hostname === 'localhost',
+    isVercel: window.location.hostname.includes('vercel.app')
+  });
+
   // Check if we're on the app subdomain
   const isAppDomain = window.location.hostname === 'app.gymbud.ai' || 
                      window.location.hostname === 'localhost' ||
                      window.location.hostname.includes('vercel.app');
+
+  console.log('App.tsx - Rendering:', isAppDomain ? 'AppShell' : 'Landing');
 
   return (
     <QueryClientProvider client={queryClient}>
