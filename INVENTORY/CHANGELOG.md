@@ -57,6 +57,15 @@
 - Context: Resolved blank page issues and PWA manifest errors, established clear separation between marketing site and app domains
 - Migrations: Requires Vercel environment variable configuration for production deployment
 
+## January 26, 2025 17:15 ET
+**Fixed** Domain routing and deployment issues - Final Resolution
+- **App.tsx**: Fixed domain detection logic to properly identify Vercel preview URLs (`gymbud-v2-*` and `*-arturcsousa.vercel.app`) as app domain
+- **Domain Routing**: Resolved issue where app.gymbud.ai was showing squished landing page instead of AppShell due to incorrect hostname matching
+- **PWA Manifest**: Fixed all icon paths to use absolute paths (`/icons/icon-192.png`) instead of relative paths to resolve manifest download errors
+- **Debug Logging**: Added comprehensive logging to App.tsx, AppShell.tsx, and supabase.ts for deployment troubleshooting
+- Context: app.gymbud.ai now properly renders PWA application instead of landing page, eliminated mobile view squishing issue
+- Migrations: Deploy to see AppShell authentication flow instead of marketing landing page
+
 ## January 26, 2025 16:45 ET
 **Fixed** TypeScript build errors preventing Vercel deployment
 - **Import/Package Fixes**: Corrected AppShell.tsx to import `createSyncStoragePersister` from `@tanstack/react-query-persist-client` instead of wrong package

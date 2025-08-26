@@ -115,6 +115,21 @@ VITE_SUPABASE_ANON_KEY=eyJ...           # Full key in .env.local
 - **PWA Application**: This repository deployed to app.gymbud.ai
 - **Cross-linking**: Marketing CTAs → app.gymbud.ai, App settings → gymbud.ai
 
+### Domain Detection Logic
+```typescript
+// App.tsx - Fixed domain routing for Vercel deployments
+const isAppDomain = window.location.hostname === 'app.gymbud.ai' || 
+                   window.location.hostname === 'localhost' ||
+                   window.location.hostname.startsWith('gymbud-v2-') ||
+                   window.location.hostname.includes('-arturcsousa.vercel.app');
+```
+
+### PWA Manifest Configuration
+- **Icon Paths**: Fixed to use absolute paths (`/icons/icon-192.png`)
+- **Theme Colors**: Updated to GymBud brand colors (#005870)
+- **Shortcuts**: Configured for session start and history access
+- **Display Mode**: Standalone PWA with portrait orientation
+
 ## Data Layer Architecture
 
 ### IndexedDB Schema (Dexie)

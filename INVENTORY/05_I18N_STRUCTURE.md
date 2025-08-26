@@ -287,6 +287,24 @@ VITE_SUPABASE_ANON_KEY=eyJ...           # Supabase anonymous key
 - **PWA Manifest**: Updated to use existing icons and GymBud color scheme (#005870)
 - **Domain Separation**: Clear distinction between marketing (gymbud.ai) and application (app.gymbud.ai)
 
+### Domain Routing Implementation
+```typescript
+// App.tsx - Domain detection for proper routing
+const isAppDomain = window.location.hostname === 'app.gymbud.ai' || 
+                   window.location.hostname === 'localhost' ||
+                   window.location.hostname.startsWith('gymbud-v2-') ||
+                   window.location.hostname.includes('-arturcsousa.vercel.app');
+
+// Conditional rendering based on domain
+return isAppDomain ? <AppShell /> : <Landing />;
+```
+
+### Debug Logging Infrastructure
+- **App.tsx**: Domain detection and routing decisions
+- **AppShell.tsx**: Authentication state and component initialization
+- **supabase.ts**: Environment variable validation and Supabase client setup
+- **Purpose**: Troubleshoot deployment issues and verify correct app flow
+
 ## Usage Patterns
 
 ### Component Usage
