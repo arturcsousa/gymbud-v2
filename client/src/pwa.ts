@@ -1,20 +1,17 @@
-// Check if PWA register is available (only in production builds with VitePWA)
+// PWA initialization - only works in production builds with VitePWA plugin
 
 export async function initPWA() {
   // Only initialize PWA in production builds
   if (import.meta.env.PROD) {
     try {
-      // Dynamic import only available in production with VitePWA plugin
-      const pwaModule = await import('virtual:pwa-register')
-      const { registerSW } = pwaModule
+      // This module only exists in production builds with VitePWA
+      const { registerSW } = await import('virtual:pwa-register')
       
-      const updateSW = registerSW({
+      registerSW({
         onNeedRefresh() {
-          // Show update available notification
           console.log('PWA update available')
         },
         onOfflineReady() {
-          // Show offline ready notification
           console.log('PWA offline ready')
         }
       })

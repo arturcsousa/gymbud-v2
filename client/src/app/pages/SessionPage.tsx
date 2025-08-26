@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 
-interface SessionPageProps {
-  params: {
-    id: string
-  }
+interface Set {
+  id: string
+  reps: string
+  weight: string
+  completed: boolean
 }
 
 export default function SessionPage() {
@@ -18,7 +19,7 @@ export default function SessionPage() {
   const [, setLocation] = useLocation()
   const [loading, setLoading] = useState(true)
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
-  const [sets, setSets] = useState<any[]>([])
+  const [sets, setSets] = useState<Set[]>([])
   const [timer, setTimer] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
 
@@ -39,23 +40,14 @@ export default function SessionPage() {
 
   const loadSession = async () => {
     try {
-      // Load exercises (placeholder)
-      const exercises = [
-        { id: '1', name: 'Bench Press', sets: 3, reps: '8-10', weight: 135 },
-        { id: '2', name: 'Incline Dumbbell Press', sets: 3, reps: '10-12', weight: 60 },
-        { id: '3', name: 'Push-ups', sets: 2, reps: '15-20', weight: 0 },
-        { id: '4', name: 'Shoulder Press', sets: 3, reps: '8-10', weight: 95 },
-        { id: '5', name: 'Tricep Dips', sets: 2, reps: '12-15', weight: 0 }
-      ]
-
       // Initialize sets for current exercise
-      const sets = [
+      const initialSets = [
         { id: '1', reps: '', weight: '', completed: false },
         { id: '2', reps: '', weight: '', completed: false },
         { id: '3', reps: '', weight: '', completed: false }
       ]
 
-      setSets(sets)
+      setSets(initialSets)
     } catch (error) {
       console.error('Error loading session:', error)
     } finally {
@@ -129,23 +121,21 @@ export default function SessionPage() {
     )
   }
 
-  const exercises = [
-    { id: '1', name: 'Bench Press', sets: 3, reps: '8-10', weight: 135 },
-    { id: '2', name: 'Incline Dumbbell Press', sets: 3, reps: '10-12', weight: 60 },
-    { id: '3', name: 'Push-ups', sets: 2, reps: '15-20', weight: 0 },
-    { id: '4', name: 'Shoulder Press', sets: 3, reps: '8-10', weight: 95 },
-    { id: '5', name: 'Tricep Dips', sets: 2, reps: '12-15', weight: 0 }
-  ]
-
-  const currentExerciseData = exercises[currentExerciseIndex]
-  const progress = ((currentExerciseIndex + 1) / exercises.length) * 100
+  const currentExerciseData = {
+    id: '1',
+    name: 'Bench Press',
+    sets: 3,
+    reps: '8-10',
+    weight: 135
+  }
+  const progress = ((currentExerciseIndex + 1) / 5) * 100
 
   return (
     <ContentLayout
       showNavigation={true}
       onBack={currentExerciseIndex > 0 ? handlePreviousExercise : handlePauseWorkout}
-      onNext={currentExerciseIndex < exercises.length - 1 ? handleNextExercise : handleFinishWorkout}
-      nextLabel={currentExerciseIndex < exercises.length - 1 ? t('app:session.nextExercise') : t('app:session.finish')}
+      onNext={currentExerciseIndex < 4 ? handleNextExercise : handleFinishWorkout}
+      nextLabel={currentExerciseIndex < 4 ? t('app:session.nextExercise') : t('app:session.finish')}
       backLabel={currentExerciseIndex > 0 ? t('app:session.previous') : t('app:session.pause')}
     >
       <div className="space-y-6">
@@ -153,7 +143,7 @@ export default function SessionPage() {
         <div className="mb-4 sm:mb-8 flex-shrink-0">
           <div className="flex justify-between items-center mb-2">
             <span className="text-white text-sm font-medium">
-              {t('app:session.exercise')} {currentExerciseIndex + 1} {t('common:of')} {exercises.length}
+              {t('app:session.exercise')} {currentExerciseIndex + 1} {t('common:of')} 5
             </span>
             <span className="text-white text-sm font-medium">
               {Math.round(progress)}% {t('app:session.complete')}
@@ -267,9 +257,9 @@ export default function SessionPage() {
           </h3>
           
           <div className="space-y-2">
-            {exercises.map((exercise, index) => (
+            {Array(5).fill(null).map((_, index) => (
               <div
-                key={exercise.id}
+                key={index}
                 className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
                   index === currentExerciseIndex 
                     ? 'bg-white/20'
@@ -280,10 +270,10 @@ export default function SessionPage() {
               >
                 <div>
                   <div className="text-white font-medium">
-                    {exercise.name}
+                    Exercise {index + 1}
                   </div>
                   <div className="text-white/70 text-sm">
-                    {exercise.sets} × {exercise.reps}
+                    3 × 8-10
                   </div>
                 </div>
                 

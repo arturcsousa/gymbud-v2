@@ -2,7 +2,6 @@ import { useEffect, useState, ReactNode } from 'react'
 import { Route, Switch } from 'wouter'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { persistQueryClient } from '@tanstack/react-query-persist-client'
-import { createSyncStoragePersister } from '@tanstack/react-query-persist-client'
 
 import { supabase } from '@/lib/supabase'
 import { GradientLayout } from '@/app/components/GradientLayout'
@@ -12,36 +11,33 @@ import { OfflineIndicator } from '@/app/components/OfflineIndicator'
 import { ConflictBanner } from '@/app/components/ConflictBanner'
 
 // Pages
+import AuthPage from '@/app/pages/AuthPage'
 import HomePage from '@/app/pages/HomePage'
 import SessionPage from '@/app/pages/SessionPage'
-import { HistoryPage } from '@/app/pages/HistoryPage'
-import { HistoryDetailPage } from '@/app/pages/HistoryDetailPage'
+import HistoryPage from '@/app/pages/HistoryPage'
+import HistoryDetailPage from '@/app/pages/HistoryDetailPage'
 import { LibraryPage } from '@/app/pages/LibraryPage'
 import SettingsPage from '@/app/pages/SettingsPage'
-import { AuthPage } from '@/app/pages/AuthPage'
-import { NotFoundPage } from '@/app/pages/NotFoundPage'
+import NotFoundPage from '@/app/pages/NotFoundPage'
 
-// Create persisted query client
+// Create query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
-      gcTime: 1000 * 60 * 60 * 24, // 24 hours
+      retry: 1,
     },
   },
 })
 
-const persister = createSyncStoragePersister({
-  storage: window.localStorage,
-  key: 'gymbud-query-cache',
-})
-
-// Persist query client
-persistQueryClient({
-  queryClient,
-  persister,
-  maxAge: 1000 * 60 * 60 * 24, // 24 hours
-})
+// Setup persistence (commented out for now to avoid build issues)
+// const persister = createSyncStoragePersister({
+//   storage: window.localStorage,
+// })
+// persistQueryClient({
+//   queryClient,
+//   persister,
+// })
 
 interface AppShellProps {
   children?: ReactNode

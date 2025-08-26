@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { ContentLayout } from '@/app/components/GradientLayout'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { dataManager, Session as DbSession } from '@/app/db/indexeddb'
 import { supabase } from '@/lib/supabase'
 
 interface Session {
