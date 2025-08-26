@@ -1,0 +1,11 @@
+{
+  "title": "FAQ",
+  "items": {
+    "diff": { "q": "How is GymBud different from other AI fitness apps?", "a": "Other apps roll the dice. We use a deterministic engine + adaptive coach: same inputs, same plan, real adjustments in-session." },
+    "busy_gym": { "q": "What if my gym is busy and equipment is taken?", "a": "Ask the coach to swap instantly — you'll get alternatives that match your goals without breaking flow." },
+    "injuries": { "q": "Can I train with injuries?", "a": "Yes. Flag them and GymBud will prescribe safe variants for knees, shoulders, back, and more." },
+    "data": { "q": "Do I lose my history if I cancel?", "a": "No. Your data stays yours. Export anytime and keep it forever." },
+    "accuracy": { "q": "How accurate is the AI coach?", "a": "It only acts within safe, evidence-based parameters — adjustments are always rational, not random." },
+    "ptbr": { "q": "Do you support Portuguese?", "a": "Yes. GymBud is fully available in EN and PT-BR." }
+  }
+}

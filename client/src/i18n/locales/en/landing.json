@@ -1,0 +1,60 @@
+{
+  "hero": {
+    "title": "Personal training that's actually personal",
+    "subtitle": "The only AI fitness app with a deterministic engine + adaptive coach. Reproducible plans, in-session guidance, and real progress tracking.",
+    "usp_ticker": "Deterministic training engine • Real-time AI coach • Rest-aware prescriptions • Data stays yours"
+  },
+  "how": {
+    "title": "How it Works",
+    "steps": {
+      "assess": { "title": "Assess", "desc": "Tell us your goals, environment, and any injuries." },
+      "generate": { "title": "Generate", "desc": "Get a deterministic plan—same inputs, same plan every time." },
+      "train": { "title": "Train", "desc": "Run today's session with a coach who can swap, adjust, or shorten live." },
+      "progress": { "title": "Progress", "desc": "Track every rep, weight, rest, and PR automatically." }
+    }
+  },
+  "different": {
+    "title": "Why We're Different",
+    "items": {
+      "deterministic": { "title": "Deterministic Engine", "desc": "No roulette. Same inputs always mean the same program." },
+      "coach": { "title": "Adaptive Coach", "desc": "Ask the coach to swap, adjust, or compress mid-session." },
+      "rest": { "title": "Rest-Aware Prescriptions", "desc": "Rest isn't an afterthought—it's built into every set." },
+      "constraints": { "title": "Real-World Constraints", "desc": "Gym busy? Traveling? Injured? Plans adapt instantly." },
+      "runner": { "title": "Session Runner UX", "desc": "Log sets in seconds. No clunky spreadsheets." },
+      "data": { "title": "Data Ownership", "desc": "Your history is yours—export anytime, keep it forever." }
+    }
+  },
+  "programs": {
+    "title": "Programs & Goals",
+    "goals": {
+      "hypertrophy": "Build muscle size with proven progressive overload.",
+      "strength": "Get stronger with optimized sets and rep schemes.",
+      "fat_loss": "Burn fat while keeping muscle through smart conditioning.",
+      "endurance": "Boost stamina and resilience for longer sessions.",
+      "return": "Ease back into training safely after breaks or injuries."
+    }
+  },
+  "progress": {
+    "title": "Proof of Progress",
+    "metrics": {
+      "prs": "Track every personal record, lift after lift.",
+      "volume": "See your training volume and intensity climb.",
+      "streaks": "Stay motivated with consistency streaks.",
+      "rest": "Master your rest discipline with real data.",
+      "history": "Drill down into your history for every exercise."
+    }
+  },
+  "pricing": {
+    "title": "Pricing",
+    "plans": {
+      "free": { "title": "Free", "desc": "Limited sessions and history — try the engine now.", "price": "$0 / forever" },
+      "pro": { "title": "Pro", "desc": "Full access to deterministic plans, coach, and progress tracking.", "price": "$14.99 / month" },
+      "annual": { "title": "Annual", "desc": "Everything in Pro at a discounted yearly rate (2 months free).", "price": "$149 / year" }
+    }
+  },
+  "final_cta": {
+    "title": "Ready to train smarter?",
+    "primary": "Start Free",
+    "secondary": "See a Sample Session"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "logo_aria": "GymBud Logo",
+  "nav": {
+    "how_it_works": "How it Works",
+    "why_different": "Why We're Different",
+    "programs": "Programs",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "sign_in": "Sign In"
+  },
+  "cta": {
+    "start_free": "Start Free",
+    "see_how": "See How It Works"
+  },
+  "lang": {
+    "en": "English",
+    "ptbr": "Português (BR)"
+  }
+}

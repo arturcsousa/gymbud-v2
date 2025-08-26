@@ -1,0 +1,19 @@
+{
+  "logo_aria": "Logo GymBud",
+  "nav": {
+    "how_it_works": "Como Funciona",
+    "why_different": "Por que é Diferente",
+    "programs": "Programas",
+    "pricing": "Planos",
+    "faq": "Perguntas Frequentes",
+    "sign_in": "Entrar"
+  },
+  "cta": {
+    "start_free": "Comece Grátis",
+    "see_how": "Veja Como Funciona"
+  },
+  "lang": {
+    "en": "English",
+    "ptbr": "Português (BR)"
+  }
+}
