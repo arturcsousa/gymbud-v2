@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Moon, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
@@ -88,12 +88,6 @@ export function AuthPage({ params }: AuthPageProps) {
     return t('auth:signin.subtitle')
   }
 
-  const getStepIndicator = () => {
-    if (isReset) return t('auth:reset.step')
-    if (isSignUp) return t('auth:signup.step')
-    return t('auth:signin.step')
-  }
-
   return (
     <div 
       className="min-h-screen relative overflow-hidden"
@@ -120,78 +114,45 @@ export function AuthPage({ params }: AuthPageProps) {
         style={{ backgroundColor: PALETTE.aqua }}
       />
 
-      {/* Header with Language Switcher and Dark Mode Toggle */}
-      <div className="relative z-20 flex justify-end items-center p-6 pt-12">
-        <div className="flex items-center gap-3">
-          {/* Language Switcher */}
-          <div className="text-white">
-            <LanguageSwitcher />
-          </div>
-          
-          {/* Dark Mode Toggle */}
-          <button className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-all duration-200 shadow-lg">
-            <Moon className="w-5 h-5" />
-          </button>
+      {/* Header with Language Switcher only */}
+      <div className="relative z-20 flex justify-end items-center p-4 pt-6">
+        <div className="text-white">
+          <LanguageSwitcher />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pb-12 pt-8">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="w-full max-w-md"
         >
-          {/* Centered GymBud Logo */}
+          {/* Centered GymBud White Logo */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1, duration: 0.5 }}
-            className="flex flex-col items-center mb-12"
+            className="flex flex-col items-center mb-8"
           >
-            <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl mb-4">
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-6 bg-slate-800 rounded-full"></div>
-                <div className="w-8 h-8 border-3 border-slate-800 rounded-full flex items-center justify-center">
-                  <div className="w-3 h-3 bg-slate-800 rounded-full"></div>
-                  <div className="absolute w-1.5 h-1.5 bg-slate-800 rounded-full ml-3 mt-1.5"></div>
-                  <div className="absolute w-1.5 h-1.5 bg-slate-800 rounded-full mr-3 mt-1.5"></div>
-                </div>
-                <div className="w-3 h-6 bg-slate-800 rounded-full"></div>
-              </div>
-            </div>
-            <span className="text-white text-3xl font-bold tracking-wide">GymBud</span>
+            <img 
+              src="/images/gymbud-wh.png" 
+              alt="GymBud" 
+              className="w-20 h-20 mb-4"
+            />
           </motion.div>
 
-          {/* Step Indicator */}
-          <div className="text-center mb-12">
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-white/70 text-sm mb-6 font-medium"
-            >
-              {getStepIndicator()}
-            </motion.p>
-            
+          {/* Title Section */}
+          <div className="text-center mb-8">
             <motion.h1 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-white text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight"
+              className="text-white text-3xl lg:text-4xl font-extrabold mb-4 tracking-tight"
             >
               {getTitle()}
             </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-white/80 text-lg leading-relaxed"
-            >
-              {getSubtitle()}
-            </motion.p>
           </div>
 
           {/* Glassmorphic Form Container */}

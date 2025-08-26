@@ -24,21 +24,32 @@ const LanguageSwitcher: React.FC = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="gap-2 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all duration-200 shadow-lg border border-white/20 rounded-xl"
+        >
           <Globe className="h-4 w-4" />
           {getCurrentLanguageLabel()}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent 
+        align="end" 
+        className="bg-white/95 backdrop-blur-xl border border-white/30 shadow-2xl rounded-xl text-slate-800"
+      >
         <DropdownMenuItem
           onClick={() => changeLanguage('en')}
-          className={i18n.language === 'en' ? 'bg-accent' : ''}
+          className={`hover:bg-slate-100 cursor-pointer rounded-lg ${
+            i18n.language === 'en' ? 'bg-slate-200 font-semibold' : ''
+          }`}
         >
           {t('languages.en')}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => changeLanguage('pt-BR')}
-          className={i18n.language === 'pt-BR' ? 'bg-accent' : ''}
+          className={`hover:bg-slate-100 cursor-pointer rounded-lg ${
+            i18n.language === 'pt-BR' ? 'bg-slate-200 font-semibold' : ''
+          }`}
         >
           {t('languages.pt-BR')}
         </DropdownMenuItem>

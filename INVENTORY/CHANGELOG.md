@@ -1,14 +1,35 @@
 # CHANGELOG
 
+## August 26, 2025 18:19 ET
+**Optimized** auth page layout for single-screen fit
+- **Step Counter**: Removed unnecessary step indicator to reduce visual clutter
+- **Spacing Optimization**: Reduced margins and padding throughout (header p-4 pt-6, content py-4, logo mb-8)
+- **Logo Size**: Decreased logo from 24x24 to 20x20 for better proportions
+- **Title Size**: Reduced from text-5xl to text-4xl for mobile-friendly sizing
+- **Viewport Fit**: Layout now fits standard screen heights without scrolling
+- Context: Auth page provides focused, compact experience optimized for all screen sizes
+- Migrations: N/A (UI optimization only)
+
+## August 26, 2025 18:14 ET
+**Refined** auth page UI with cleaner header and improved branding
+- **Logo Placement**: Moved GymBud logo to center/top of auth form with larger size (20x20) and enhanced shadow
+- **Header Simplification**: Removed header logo, kept only language switcher and dark mode toggle aligned right
+- **Skip Functionality**: Removed "Skip for now" option from signup flow to ensure proper user registration
+- **Visual Hierarchy**: Improved focus on centered branding with animated logo entrance
+- **User Flow**: Streamlined signup process requires completion before app access
+- Context: Auth page now has cleaner branding focus and enforced registration flow
+- Migrations: N/A (UI enhancement only)
+
 ## August 26, 2025 18:10 ET
-**Fixed** Supabase signup 500 error with database trigger
-- **Root Cause**: Missing profile creation trigger caused "Database error saving new user" during signup
-- **Database Trigger**: Added `app2.handle_new_user()` function to auto-create profile records on auth.users insert
-- **Profile Defaults**: Uses metadata from signup or sensible defaults (first_name, last_name, DOB, height, weight, locale)
-- **Security**: Function uses SECURITY DEFINER with proper search_path for safe execution
-- **Migration**: Applied `add_auth_user_profile_trigger` migration to production database
-- Context: Signup flow now works end-to-end without database constraint violations
-- Migrations: `add_auth_user_profile_trigger` - creates trigger and handler function
+**Implemented** complete i18n support for auth page with language switcher
+- **Translation Keys**: Created comprehensive auth translation keys for EN and PT-BR locales
+- **Language Switcher**: Added LanguageSwitcher component to auth page header for real-time language switching
+- **Browser Detection**: Leverages existing i18n browser language detection from landing page setup
+- **Translation Coverage**: All text elements now use proper translation keys (titles, subtitles, buttons, placeholders, errors)
+- **User Experience**: Language preference persists across sessions via localStorage
+- **Bilingual Content**: Complete Portuguese translations for all auth flows (signin, signup, reset)
+- Context: Auth page now fully supports EN/PT-BR with seamless language switching
+- Migrations: N/A (i18n enhancement only)
 
 ## August 26, 2025 18:06 ET
 **Enhanced** auth page branding and simplified user flow
@@ -21,15 +42,19 @@
 - Migrations: N/A (UI enhancement only)
 
 ## August 26, 2025 18:00 ET
-**Implemented** complete i18n support for auth page with language switcher
-- **Translation Keys**: Created comprehensive auth translation keys for EN and PT-BR locales
-- **Language Switcher**: Added LanguageSwitcher component to auth page header for real-time language switching
-- **Browser Detection**: Leverages existing i18n browser language detection from landing page setup
-- **Translation Coverage**: All text elements now use proper translation keys (titles, subtitles, buttons, placeholders, errors)
-- **User Experience**: Language preference persists across sessions via localStorage
-- **Bilingual Content**: Complete Portuguese translations for all auth flows (signin, signup, reset)
-- Context: Auth page now fully supports EN/PT-BR with seamless language switching
-- Migrations: N/A (i18n enhancement only)
+**Implemented** plan management system with Edge Function and onboarding flow
+- **Edge Function**: Created `supabase/functions/plan-get-or-create/index.ts` for idempotent plan creation/activation
+  - Behavior: Returns ACTIVE plan if exists, promotes DRAFT to ACTIVE, or creates new ACTIVE plan with seed
+  - RLS enforcement via user JWT forwarding, structured error responses, CORS support
+- **Onboarding Action**: Added `client/src/onboarding/actions.ts` with `finalizeOnboarding()` function
+  - Calls plan-get-or-create Edge Function with plan seed from wizard
+  - Navigates to `/app/session/today` after successful plan activation
+- **Plan Guard Helper**: Created `client/src/lib/plan/ensureActivePlan.ts` for app entry self-healing
+  - Queries for active plan and calls Edge Function if none exists
+  - Optional seed parameter for fallback plan creation
+- **Dependencies**: Added `@supabase/auth-ui-react` and `@supabase/auth-ui-shared` packages
+- Context: Complete plan lifecycle management ready for onboarding wizard integration
+- Migrations: Deploy Edge Function with `supabase functions deploy plan-get-or-create`
 
 ## August 26, 2025 17:56 ET
 **Fixed** PWA manifest icon error and enhanced auth error handling
@@ -62,19 +87,15 @@
 - Migrations: N/A (build fixes only)
 
 ## August 26, 2025 17:47 ET
-**Implemented** plan management system with Edge Function and onboarding flow
-- **Edge Function**: Created `supabase/functions/plan-get-or-create/index.ts` for idempotent plan creation/activation
-  - Behavior: Returns ACTIVE plan if exists, promotes DRAFT to ACTIVE, or creates new ACTIVE plan with seed
-  - RLS enforcement via user JWT forwarding, structured error responses, CORS support
-- **Onboarding Action**: Added `client/src/onboarding/actions.ts` with `finalizeOnboarding()` function
-  - Calls plan-get-or-create Edge Function with plan seed from wizard
-  - Navigates to `/app/session/today` after successful plan activation
-- **Plan Guard Helper**: Created `client/src/lib/plan/ensureActivePlan.ts` for app entry self-healing
-  - Queries for active plan and calls Edge Function if none exists
-  - Optional seed parameter for fallback plan creation
-- **Dependencies**: Added `@supabase/auth-ui-react` and `@supabase/auth-ui-shared` packages
-- Context: Complete plan lifecycle management ready for onboarding wizard integration
-- Migrations: Deploy Edge Function with `supabase functions deploy plan-get-or-create`
+**Implemented** complete i18n support for auth page with language switcher
+- **Translation Keys**: Created comprehensive auth translation keys for EN and PT-BR locales
+- **Language Switcher**: Added LanguageSwitcher component to auth page header for real-time language switching
+- **Browser Detection**: Leverages existing i18n browser language detection from landing page setup
+- **Translation Coverage**: All text elements now use proper translation keys (titles, subtitles, buttons, placeholders, errors)
+- **User Experience**: Language preference persists across sessions via localStorage
+- **Bilingual Content**: Complete Portuguese translations for all auth flows (signin, signup, reset)
+- Context: Auth page now fully supports EN/PT-BR with seamless language switching
+- Migrations: N/A (i18n enhancement only)
 
 ## August 26, 2025 17:43 ET
 **Redesigned** auth screen to match provided screenshot with dark theme and GymBud branding
