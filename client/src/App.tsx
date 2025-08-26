@@ -1,14 +1,7 @@
 import React from 'react';
-import { Router, Route, Switch } from 'wouter';
+import { Route } from 'wouter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-// Pages (placeholders for now)
-import HomePage from './pages/HomePage';
-import HowItWorksPage from './pages/HowItWorksPage';
-import ProgramsPage from './pages/ProgramsPage';
-import PricingPage from './pages/PricingPage';
-import FAQPage from './pages/FAQPage';
-import NotFoundPage from './pages/NotFoundPage';
+import Landing from '@/marketing/Landing';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -20,38 +13,15 @@ const queryClient = new QueryClient({
   },
 });
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Switch>
-          {/* Marketing site routes */}
-          <Route path="/" component={HomePage} />
-          <Route path="/how-it-works" component={HowItWorksPage} />
-          <Route path="/programs" component={ProgramsPage} />
-          <Route path="/pricing" component={PricingPage} />
-          <Route path="/faq" component={FAQPage} />
-          
-          {/* App routes (placeholder - will link to app.gymbud.ai in production) */}
-          <Route path="/app/:rest*">
-            {() => (
-              <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                  <h1 className="text-2xl font-bold mb-4">App Coming Soon</h1>
-                  <p className="text-gray-600">
-                    The GymBud app will be available at app.gymbud.ai
-                  </p>
-                </div>
-              </div>
-            )}
-          </Route>
-          
-          {/* 404 fallback */}
-          <Route component={NotFoundPage} />
-        </Switch>
-      </Router>
+      <Route path="/" component={Landing} />
+      {/* Optional stubs for future long-form pages if we keep them: */}
+      <Route path="/how-it-works">{() => <Landing />}</Route>
+      <Route path="/programs">{() => <Landing />}</Route>
+      <Route path="/pricing">{() => <Landing />}</Route>
+      <Route path="/faq">{() => <Landing />}</Route>
     </QueryClientProvider>
   );
 }
-
-export default App;
