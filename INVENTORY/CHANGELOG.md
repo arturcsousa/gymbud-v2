@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 17:56 ET
+**Fixed** PWA manifest icon error and enhanced auth error handling
+- **PWA Manifest**: Fixed icon paths from `/icons/icon-192.png` to `/icons/icon-192.jpg` to match actual file format
+- **Icon Type**: Updated MIME type from `image/png` to `image/jpeg` for proper PWA manifest validation
+- **Auth Debugging**: Added comprehensive logging for Supabase signup process to diagnose 500 errors
+- **Email Confirmation**: Added proper handling for email confirmation flow with user-friendly messaging
+- **Error Details**: Enhanced error logging with signup attempt details and response inspection
+- Context: Resolved PWA manifest download errors and improved auth error visibility for debugging
+- Migrations: N/A (bug fixes and debugging enhancements)
+
 ## August 26, 2025 17:54 ET
 **Redesigned** auth page with landing page aesthetic and enhanced UX
 - **Visual Cohesion**: Applied landing page design language with curved gradients and GymBud color palette

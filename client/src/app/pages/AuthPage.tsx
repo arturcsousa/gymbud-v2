@@ -44,11 +44,21 @@ export function AuthPage({ params }: AuthPageProps) {
         if (error) throw error
         setError('Password reset email sent!')
       } else if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        console.log('Attempting signup with:', { email, passwordLength: password.length })
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
         })
-        if (error) throw error
+        console.log('Signup response:', { data, error })
+        if (error) {
+          console.error('Signup error details:', error)
+          throw error
+        }
+        // Check if email confirmation is required
+        if (data?.user && !data.session) {
+          setError('Please check your email for a confirmation link before signing in.')
+          return
+        }
         setLocation('/')
       } else {
         const { error } = await supabase.auth.signInWithPassword({
