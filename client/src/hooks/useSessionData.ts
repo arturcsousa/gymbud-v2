@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { db } from '@/db/gymbud-db';
+import { db, SessionRow, SessionExerciseRow, LoggedSetRow, SyncEventRow } from '@/db/gymbud-db';
 import { supabase } from '@/lib/supabase';
 import { enqueueLoggedSet, enqueueSessionUpdate } from '@/sync/queue';
 
@@ -59,6 +59,46 @@ interface SessionData {
   notes: string | null;
 }
 
+// Helper function to convert database rows to app types
+function convertSessionRow(row: SessionRow): SessionData {
+  return {
+    ...row,
+    session_date: new Date().toISOString().split('T')[0], // Default to today if missing
+    status: row.status === 'draft' ? 'pending' : row.status as 'pending' | 'active' | 'completed' | 'cancelled',
+    updated_at: new Date(row.updated_at).toISOString()
+  }
+}
+
+function convertSessionExerciseRows(rows: SessionExerciseRow[]): SessionExercise[] {
+  return rows.map(row => ({
+    session_exercise_id: row.id,
+    user_id: '', // Will be filled from session data
+    session_id: row.session_id,
+    session_date: new Date().toISOString().split('T')[0],
+    plan_id: null,
+    exercise_name: row.exercise_name,
+    order_index: row.order_index,
+    sets: 3, // Default values - these should come from prescription
+    reps: null,
+    rest_sec: 90,
+    weight: null,
+    rpe: null,
+    notes: null,
+    is_warmup: false,
+    updated_at: new Date(row.updated_at).toISOString()
+  }))
+}
+
+function convertLoggedSetRows(rows: LoggedSetRow[]): LoggedSet[] {
+  return rows.map(row => ({
+    ...row,
+    duration_sec: null,
+    meta: null,
+    created_at: new Date(row.updated_at).toISOString(),
+    updated_at: new Date(row.updated_at).toISOString()
+  }))
+}
+
 export function useSessionData(sessionId?: string) {
   const [offlineData, setOfflineData] = useState<{
     session: SessionData | null;
@@ -92,9 +132,9 @@ export function useSessionData(sessionId?: string) {
           .toArray();
 
         setOfflineData({
-          session: session as SessionData,
-          exercises: exercises as SessionExercise[],
-          loggedSets: loggedSets as LoggedSet[],
+          session: convertSessionRow(session as SessionRow),
+          exercises: convertSessionExerciseRows(exercises as SessionExerciseRow[]),
+          loggedSets: convertLoggedSetRows(loggedSets as LoggedSetRow[]),
         });
       } catch (error) {
         console.error('Failed to load offline session data:', error);
@@ -139,9 +179,9 @@ export function useSessionData(sessionId?: string) {
       if (setsError) throw setsError;
 
       return {
-        session: session as SessionData,
-        exercises: exercises as SessionExercise[],
-        loggedSets: loggedSets as LoggedSet[],
+        session: convertSessionRow(session as SessionRow),
+        exercises: convertSessionExerciseRows(exercises as SessionExerciseRow[]),
+        loggedSets: convertLoggedSetRows(loggedSets as LoggedSetRow[]),
       };
     },
     enabled: !!sessionId,
@@ -161,21 +201,19 @@ export function useSessionData(sessionId?: string) {
       notes?: string;
     }) => {
       const setId = crypto.randomUUID();
-      const loggedSet: LoggedSet = {
+      const loggedSet: LoggedSetRow = {
         id: setId,
         session_exercise_id: params.sessionExerciseId,
         set_number: params.setNumber,
         reps: params.reps || null,
         weight: params.weight || null,
         rpe: params.rpe || null,
-        duration_sec: params.durationSec || null,
         notes: params.notes || null,
-        meta: {},
-        created_at: new Date().toISOString(),
+        updated_at: Date.now()
       };
 
       // Store offline first
-      await db.logged_sets.put(loggedSet);
+      await db.logged_sets.add(loggedSet);
       
       // Enqueue for sync
       await enqueueLoggedSet({
@@ -190,18 +228,13 @@ export function useSessionData(sessionId?: string) {
       });
 
       // Add telemetry event
-      await db.sync_events.add({
+      const telemetryEvent: SyncEventRow = {
         ts: Date.now(),
-        kind: 'set_logged',
-        items: 1,
-        meta: {
-          exercise_id: params.sessionExerciseId,
-          set_number: params.setNumber,
-          reps: params.reps,
-          weight: params.weight,
-          rpe: params.rpe
-        }
-      });
+        kind: 'success',
+        code: 'set_logged',
+        items: 1
+      };
+      await db.sync_events.add(telemetryEvent);
 
       return loggedSet;
     },
@@ -216,7 +249,7 @@ export function useSessionData(sessionId?: string) {
             .where('session_exercise_id')
             .anyOf(exerciseIds)
             .toArray();
-          setOfflineData(prev => ({ ...prev, loggedSets: loggedSets as LoggedSet[] }));
+          setOfflineData(prev => ({ ...prev, loggedSets: convertLoggedSetRows(loggedSets as LoggedSetRow[]) }));
         };
         loadOfflineData();
       }
@@ -234,7 +267,7 @@ export function useSessionData(sessionId?: string) {
       if (!sessionId) throw new Error('No session ID');
 
       const updates = {
-        status: params.status,
+        status: params.status === 'pending' ? 'draft' : params.status,
         started_at: params.startedAt || null,
         completed_at: params.completedAt || null,
         notes: params.notes || null,
@@ -251,20 +284,17 @@ export function useSessionData(sessionId?: string) {
       });
 
       // Add telemetry event
-      await db.sync_events.add({
+      const eventCode = params.status === 'active' ? 'session_started' :
+                       params.status === 'completed' ? 'session_completed' :
+                       params.status === 'cancelled' ? 'session_cancelled' : 'session_updated';
+
+      const telemetryEvent: SyncEventRow = {
         ts: Date.now(),
-        kind: params.status === 'active' ? 'session_started' : 
-              params.status === 'completed' ? 'session_completed' : 
-              params.status === 'cancelled' ? 'session_cancelled' : 'session_updated',
-        items: 1,
-        meta: {
-          session_id: sessionId,
-          status: params.status,
-          duration_sec: params.completedAt && params.startedAt 
-            ? Math.floor((new Date(params.completedAt).getTime() - new Date(params.startedAt).getTime()) / 1000)
-            : null
-        }
-      });
+        kind: 'success',
+        code: eventCode,
+        items: 1
+      };
+      await db.sync_events.add(telemetryEvent);
 
       return updates;
     },
@@ -275,7 +305,7 @@ export function useSessionData(sessionId?: string) {
         const loadOfflineData = async () => {
           const session = await db.sessions.get(sessionId);
           if (session) {
-            setOfflineData(prev => ({ ...prev, session: session as SessionData }));
+            setOfflineData(prev => ({ ...prev, session: convertSessionRow(session as SessionRow) }));
           }
         };
         loadOfflineData();
@@ -289,12 +319,13 @@ export function useSessionData(sessionId?: string) {
     actual_sec?: number;
     exercise_id: string;
   }) => {
-    await db.sync_events.add({
+    const telemetryEvent: SyncEventRow = {
       ts: Date.now(),
-      kind: eventType,
-      items: 1,
-      meta: data
-    });
+      kind: 'success',
+      code: eventType,
+      items: data.actual_sec || 1
+    };
+    await db.sync_events.add(telemetryEvent);
   };
 
   // Helper function to log exercise navigation events
@@ -303,12 +334,13 @@ export function useSessionData(sessionId?: string) {
     to_exercise_id: string;
     exercise_index: number;
   }) => {
-    await db.sync_events.add({
+    const telemetryEvent: SyncEventRow = {
       ts: Date.now(),
-      kind: eventType,
-      items: 1,
-      meta: data
-    });
+      kind: 'success',
+      code: eventType,
+      items: 1
+    };
+    await db.sync_events.add(telemetryEvent);
   };
 
   // Computed data

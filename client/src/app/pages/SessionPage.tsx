@@ -11,7 +11,6 @@ import {
   ArrowRight, 
   CheckCircle, 
   Play, 
-  Pause, 
   SkipForward,
   Plus,
   Info,

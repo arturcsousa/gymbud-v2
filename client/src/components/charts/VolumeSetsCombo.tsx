@@ -1,4 +1,3 @@
-import React from 'react';
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 interface VolumeSetsComboProps {

@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Share2, TrendingUp, Activity } from 'lucide-react';
 import { toast } from 'sonner';
-import domtoimage from 'dom-to-image-more';
 import { Button } from '@/components/ui/button';
 import { ChartCard } from '@/components/charts/ChartCard';
 import { TrainingDaysBar } from '@/components/charts/TrainingDaysBar';
@@ -12,10 +11,15 @@ import { useStreakBadges } from '@/hooks/useStreakBadges';
 import { useSessionMetrics } from '@/hooks/useSessionMetrics';
 import { useProfileData } from '@/hooks/useProfileData';
 
+// Type declaration for dom-to-image-more
+declare module 'dom-to-image-more' {
+  export function toPng(node: HTMLElement, options?: any): Promise<string>;
+}
+
 export default function StatsPage() {
   const { t } = useTranslation(['stats', 'badges']);
   const shareRef = useRef<HTMLDivElement>(null);
-  const { currentStreak, checkAndAwardBadges } = useStreakBadges();
+  const { checkAndAwardBadges } = useStreakBadges();
   
   // Real data hooks
   const { metrics, isLoading: metricsLoading, isOffline: metricsOffline } = useSessionMetrics();
@@ -28,6 +32,7 @@ export default function StatsPage() {
     if (!shareRef.current) return;
 
     try {
+      const domtoimage = await import('dom-to-image-more');
       const dataUrl = await domtoimage.toPng(shareRef.current, {
         width: 1080,
         height: 1350,
@@ -39,7 +44,7 @@ export default function StatsPage() {
         },
       });
 
-      if (navigator.share && navigator.canShare) {
+      if (navigator.share && 'canShare' in navigator) {
         // Convert data URL to blob for sharing
         const response = await fetch(dataUrl);
         const blob = await response.blob();
