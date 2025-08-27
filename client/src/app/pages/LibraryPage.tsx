@@ -190,9 +190,9 @@ export function LibraryPage() {
           }}
         />
 
-        {/* Main content */}
-        <div className="min-h-screen grid place-items-center py-4 relative z-10">
-          <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
+        {/* Loading content */}
+        <div className="relative z-10 px-6 pt-8 pb-4">
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl ring-1 ring-white/20">
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
               <span className="ml-3 text-white text-sm">Loading...</span>
@@ -228,11 +228,11 @@ export function LibraryPage() {
         }}
       />
 
-      {/* Main content */}
-      <div className="min-h-screen grid place-items-center py-4 relative z-10">
-        <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-6">
+      {/* Main content - positioned directly on page */}
+      <div className="relative z-10 px-6 pt-8 pb-4 space-y-6">
+        {/* Header */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex items-center gap-3">
             <button
               onClick={handleBackToHome}
               className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200"
@@ -243,9 +243,11 @@ export function LibraryPage() {
               Exercise Library
             </h1>
           </div>
+        </div>
 
-          {/* Search */}
-          <div className="relative mb-4">
+        {/* Search */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/60" />
             <Input
               type="text"
@@ -255,27 +257,29 @@ export function LibraryPage() {
               className="bg-white/20 border-white/30 text-white placeholder:text-white/60 pl-10 h-10"
             />
           </div>
+        </div>
 
-          {/* Category Filter */}
-          <div className="mb-4">
-            <div className="flex flex-wrap gap-2">
-              {categories.slice(0, 4).map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
-                    selectedCategory === category
-                      ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900'
-                      : 'bg-white/20 text-white hover:bg-white/30'
-                  }`}
-                >
-                  {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
-            </div>
+        {/* Category Filter */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex flex-wrap gap-2">
+            {categories.slice(0, 4).map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
+                  selectedCategory === category
+                    ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900'
+                    : 'bg-white/20 text-white hover:bg-white/30'
+                }`}
+              >
+                {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
+              </button>
+            ))}
           </div>
+        </div>
 
-          {/* Results */}
+        {/* Results */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
           <div className="space-y-3 max-h-64 overflow-y-auto">
             {filteredExercises.slice(0, 4).map((exercise) => (
               <div

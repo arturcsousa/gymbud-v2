@@ -94,7 +94,7 @@ function HistoryPage() {
   if (loading) {
     return (
       <div 
-        className="min-h-screen relative overflow-hidden"
+        className="min-h-screen relative overflow-hidden pb-20"
         style={{
           background: '#005870', // PALETTE.deepTeal
         }}
@@ -116,9 +116,9 @@ function HistoryPage() {
           }}
         />
 
-        {/* Main content */}
-        <div className="min-h-screen grid place-items-center py-4 relative z-10">
-          <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
+        {/* Loading content */}
+        <div className="relative z-10 px-6 pt-8 pb-4">
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl ring-1 ring-white/20">
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
               <span className="ml-3 text-white text-sm">Loading...</span>
@@ -163,11 +163,11 @@ function HistoryPage() {
         }}
       />
 
-      {/* Main content */}
-      <div className="min-h-screen grid place-items-center py-4 relative z-10">
-        <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-6">
+      {/* Main content - positioned directly on page */}
+      <div className="relative z-10 px-6 pt-8 pb-4 space-y-6">
+        {/* Header */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex items-center gap-3">
             <button
               onClick={handleBackToHome}
               className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200"
@@ -178,37 +178,39 @@ function HistoryPage() {
               {t('app:nav.history')}
             </h1>
           </div>
+        </div>
 
-          {/* Stats Summary */}
-          <div className="bg-white/10 rounded-xl p-4 mb-6">
-            <h2 className="text-sm font-semibold text-white mb-3">
-              {t('app:history.stats')}
-            </h2>
+        {/* Stats Summary */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <h2 className="text-sm font-semibold text-white mb-3">
+            {t('app:history.stats')}
+          </h2>
+          
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <div className="text-lg font-bold text-white">{totalWorkouts}</div>
+              <div className="text-white/70 text-xs">{t('app:history.totalWorkouts')}</div>
+            </div>
             
-            <div className="grid grid-cols-3 gap-3 text-center">
-              <div>
-                <div className="text-lg font-bold text-white">{totalWorkouts}</div>
-                <div className="text-white/70 text-xs">{t('app:history.totalWorkouts')}</div>
-              </div>
-              
-              <div>
-                <div className="text-lg font-bold text-white">{Math.round(avgDuration)}m</div>
-                <div className="text-white/70 text-xs">{t('app:history.avgDuration')}</div>
-              </div>
-              
-              <div>
-                <div className="text-lg font-bold text-white">{totalSets}</div>
-                <div className="text-white/70 text-xs">{t('app:history.totalSets')}</div>
-              </div>
+            <div>
+              <div className="text-lg font-bold text-white">{Math.round(avgDuration)}m</div>
+              <div className="text-white/70 text-xs">{t('app:history.avgDuration')}</div>
+            </div>
+            
+            <div>
+              <div className="text-lg font-bold text-white">{totalSets}</div>
+              <div className="text-white/70 text-xs">{t('app:history.totalSets')}</div>
             </div>
           </div>
+        </div>
 
-          {/* Recent Sessions */}
+        {/* Recent Sessions */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <h2 className="text-sm font-semibold text-white mb-3">
+            {t('app:history.recentSessions')}
+          </h2>
+          
           <div className="space-y-3">
-            <h2 className="text-sm font-semibold text-white mb-3">
-              {t('app:history.recentSessions')}
-            </h2>
-            
             {sessions.map((session) => (
               <div
                 key={session.id}

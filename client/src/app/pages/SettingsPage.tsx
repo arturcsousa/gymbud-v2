@@ -123,7 +123,7 @@ function SettingsPage() {
   if (loading) {
     return (
       <div 
-        className="min-h-screen relative overflow-hidden"
+        className="min-h-screen relative overflow-hidden pb-20"
         style={{
           background: '#005870', // PALETTE.deepTeal
         }}
@@ -145,9 +145,9 @@ function SettingsPage() {
           }}
         />
 
-        {/* Main content */}
-        <div className="min-h-screen grid place-items-center py-4 relative z-10">
-          <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
+        {/* Loading content */}
+        <div className="relative z-10 px-6 pt-8 pb-4">
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl ring-1 ring-white/20">
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
               <span className="ml-3 text-white text-sm">Loading...</span>
@@ -183,11 +183,11 @@ function SettingsPage() {
         }}
       />
 
-      {/* Main content */}
-      <div className="min-h-screen grid place-items-center py-4 relative z-10">
-        <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-6">
+      {/* Main content - positioned directly on page */}
+      <div className="relative z-10 px-6 pt-8 pb-4 space-y-6">
+        {/* Header */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex items-center gap-3">
             <button
               onClick={handleBackToHome}
               className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200"
@@ -198,141 +198,141 @@ function SettingsPage() {
               {t('app:nav.settings')}
             </h1>
           </div>
+        </div>
 
-          {/* Account Section */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <User className="w-4 h-4 text-white" />
-              <h2 className="text-sm font-semibold text-white">{t('app:settings.account')}</h2>
-            </div>
-            <div className="bg-white/10 rounded-lg p-3">
-              <Label className="text-white text-xs mb-1 block opacity-70">
-                {t('app:settings.email')}
-              </Label>
-              <div className="text-white text-sm truncate">
-                {email || 'Not available'}
-              </div>
+        {/* Account Section */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex items-center gap-2 mb-3">
+            <User className="w-4 h-4 text-white" />
+            <h2 className="text-sm font-semibold text-white">{t('app:settings.account')}</h2>
+          </div>
+          <div className="bg-white/10 rounded-lg p-3">
+            <Label className="text-white text-xs mb-1 block opacity-70">
+              {t('app:settings.email')}
+            </Label>
+            <div className="text-white text-sm truncate">
+              {email || 'Not available'}
             </div>
           </div>
+        </div>
 
-          {/* Language Selection */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between bg-white/10 rounded-lg p-3">
-              <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-white" />
-                <span className="text-white text-sm">{t('app:settings.language')}</span>
-              </div>
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="bg-white/20 text-white text-sm rounded-lg px-3 py-1 border border-white/30 focus:outline-none focus:ring-2 focus:ring-[#00BFA6] focus:border-transparent"
-              >
-                <option value="en" className="bg-slate-800 text-white">{t('common:languages.en')}</option>
-                <option value="pt-BR" className="bg-slate-800 text-white">{t('common:languages.pt-BR')}</option>
-              </select>
+        {/* Language Selection */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Globe className="w-4 h-4 text-white" />
+              <span className="text-white text-sm">{t('app:settings.language')}</span>
             </div>
-          </div>
-
-          {/* Units */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Database className="w-4 h-4 text-white" />
-              <h2 className="text-sm font-semibold text-white">{t('app:settings.units')}</h2>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => setUnits('imperial')}
-                className={`p-2 rounded-lg text-xs transition-all duration-200 ${
-                  units === 'imperial' 
-                    ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
-                    : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                {t('app:settings.imperial')}
-              </button>
-              <button
-                onClick={() => setUnits('metric')}
-                className={`p-2 rounded-lg text-xs transition-all duration-200 ${
-                  units === 'metric' 
-                    ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
-                    : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                {t('app:settings.metric')}
-              </button>
-            </div>
-          </div>
-
-          {/* Notifications */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between bg-white/10 rounded-lg p-3">
-              <div className="flex items-center gap-2">
-                <Bell className="w-4 h-4 text-white" />
-                <span className="text-white text-sm">{t('app:settings.notifications')}</span>
-              </div>
-              <Switch
-                checked={notifications}
-                onCheckedChange={setNotifications}
-                className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00BFA6] data-[state=checked]:to-[#64FFDA]"
-              />
-            </div>
-          </div>
-
-          {/* Sync Status */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <RefreshCw className="w-4 h-4 text-white" />
-              <h2 className="text-sm font-semibold text-white">{t('app:settings.sync.title')}</h2>
-            </div>
-            <div className="bg-white/10 rounded-lg p-3 mb-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-white text-xs">{t('app:settings.sync.status')}</span>
-                <div className="flex items-center gap-1">
-                  {syncMeta?.lastSyncStatus === 'success' && (
-                    <CheckCircle className="h-3 w-3 text-green-400" />
-                  )}
-                  {syncMeta?.lastSyncStatus === 'failure' && (
-                    <AlertCircle className="h-3 w-3 text-red-400" />
-                  )}
-                  <span className="text-white text-xs">
-                    {syncMeta?.lastSyncAt ? formatTimeAgo(syncMeta.lastSyncAt) : t('app:sync.never')}
-                  </span>
-                </div>
-              </div>
-              {pendingMutationsCount !== undefined && pendingMutationsCount > 0 && (
-                <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30 text-xs">
-                  {t('app:sync.pending', { count: pendingMutationsCount })}
-                </Badge>
-              )}
-            </div>
-            <Button
-              onClick={handleSyncNow}
-              disabled={syncing || syncMeta?.lastSyncStatus === 'running'}
-              className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7] text-sm py-2"
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="bg-white/20 text-white text-sm rounded-lg px-3 py-1 border border-white/30 focus:outline-none focus:ring-2 focus:ring-[#00BFA6] focus:border-transparent"
             >
-              {syncing ? t('app:sync.syncing') : t('app:settings.sync.syncNow')}
-            </Button>
+              <option value="en" className="bg-slate-800 text-white">{t('common:languages.en')}</option>
+              <option value="pt-BR" className="bg-slate-800 text-white">{t('common:languages.pt-BR')}</option>
+            </select>
           </div>
+        </div>
 
-          {/* Actions */}
-          <div className="space-y-3">
-            <Button
-              onClick={handleSaveSettings}
-              disabled={saving}
-              className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7] text-sm py-2"
-            >
-              {saving ? t('app:settings.saving') : t('app:settings.save')}
-            </Button>
-            
-            <Button
-              onClick={handleSignOut}
-              variant="ghost"
-              className="w-full text-red-300 hover:bg-red-500/20 text-sm py-2"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              {t('app:auth.signOut')}
-            </Button>
+        {/* Units */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex items-center gap-2 mb-3">
+            <Database className="w-4 h-4 text-white" />
+            <h2 className="text-sm font-semibold text-white">{t('app:settings.units')}</h2>
           </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setUnits('imperial')}
+              className={`p-2 rounded-lg text-xs transition-all duration-200 ${
+                units === 'imperial' 
+                  ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
+                  : 'bg-white/20 text-white hover:bg-white/30'
+              }`}
+            >
+              {t('app:settings.imperial')}
+            </button>
+            <button
+              onClick={() => setUnits('metric')}
+              className={`p-2 rounded-lg text-xs transition-all duration-200 ${
+                units === 'metric' 
+                  ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
+                  : 'bg-white/20 text-white hover:bg-white/30'
+              }`}
+            >
+              {t('app:settings.metric')}
+            </button>
+          </div>
+        </div>
+
+        {/* Notifications */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Bell className="w-4 h-4 text-white" />
+              <span className="text-white text-sm">{t('app:settings.notifications')}</span>
+            </div>
+            <Switch
+              checked={notifications}
+              onCheckedChange={setNotifications}
+              className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00BFA6] data-[state=checked]:to-[#64FFDA]"
+            />
+          </div>
+        </div>
+
+        {/* Sync Status */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex items-center gap-2 mb-3">
+            <RefreshCw className="w-4 h-4 text-white" />
+            <h2 className="text-sm font-semibold text-white">{t('app:settings.sync.title')}</h2>
+          </div>
+          <div className="bg-white/10 rounded-lg p-3 mb-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-white text-xs">{t('app:settings.sync.status')}</span>
+              <div className="flex items-center gap-1">
+                {syncMeta?.lastSyncStatus === 'success' && (
+                  <CheckCircle className="h-3 w-3 text-green-400" />
+                )}
+                {syncMeta?.lastSyncStatus === 'failure' && (
+                  <AlertCircle className="h-3 w-3 text-red-400" />
+                )}
+                <span className="text-white text-xs">
+                  {syncMeta?.lastSyncAt ? formatTimeAgo(syncMeta.lastSyncAt) : t('app:sync.never')}
+                </span>
+              </div>
+            </div>
+            {pendingMutationsCount !== undefined && pendingMutationsCount > 0 && (
+              <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30 text-xs">
+                {t('app:sync.pending', { count: pendingMutationsCount })}
+              </Badge>
+            )}
+          </div>
+          <Button
+            onClick={handleSyncNow}
+            disabled={syncing || syncMeta?.lastSyncStatus === 'running'}
+            className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7] text-sm py-2"
+          >
+            {syncing ? t('app:sync.syncing') : t('app:settings.sync.syncNow')}
+          </Button>
+        </div>
+
+        {/* Actions */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20 space-y-3">
+          <Button
+            onClick={handleSaveSettings}
+            disabled={saving}
+            className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7] text-sm py-2"
+          >
+            {saving ? t('app:settings.saving') : t('app:settings.save')}
+          </Button>
+          
+          <Button
+            onClick={handleSignOut}
+            variant="ghost"
+            className="w-full text-red-300 hover:bg-red-500/20 text-sm py-2"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            {t('app:auth.signOut')}
+          </Button>
         </div>
       </div>
       
