@@ -66,10 +66,12 @@ serve(async (req) => {
 
   try {
     // Fetch sessions updated since last pull
+    // Uses idx_sessions_user_updated_at with user_id as left-most column
     const { data: sessions, error: sessionsError } = await supabase
       .schema("app2")
       .from("sessions")
       .select("*")
+      .eq("user_id", userData.user.id)
       .gt("updated_at", since)
       .order("updated_at", { ascending: true });
 
@@ -81,10 +83,15 @@ serve(async (req) => {
     }
 
     // Fetch session_exercises updated since last pull
+    // Uses idx_session_exercises_session_updated_at via JOIN to sessions
     const { data: sessionExercises, error: sessionExercisesError } = await supabase
       .schema("app2")
       .from("session_exercises")
-      .select("*")
+      .select(`
+        *,
+        sessions!inner(user_id)
+      `)
+      .eq("sessions.user_id", userData.user.id)
       .gt("updated_at", since)
       .order("updated_at", { ascending: true });
 
@@ -95,13 +102,20 @@ serve(async (req) => {
       });
     }
 
-    // Fetch logged_sets updated since last pull
+    // Fetch logged_sets created since last pull (insert-only, use created_at)
+    // Uses idx_logged_sets_sx_updated_at and cascade join to user
     const { data: loggedSets, error: loggedSetsError } = await supabase
       .schema("app2")
       .from("logged_sets")
-      .select("*")
-      .gt("updated_at", since)
-      .order("updated_at", { ascending: true });
+      .select(`
+        *,
+        session_exercises!inner(
+          sessions!inner(user_id)
+        )
+      `)
+      .eq("session_exercises.sessions.user_id", userData.user.id)
+      .gt("created_at", since)
+      .order("created_at", { ascending: true });
 
     if (loggedSetsError) {
       return new Response(JSON.stringify({ error: "db_error", detail: loggedSetsError.message }), {
@@ -121,8 +135,16 @@ serve(async (req) => {
       },
       data: {
         sessions: sessions || [],
-        session_exercises: sessionExercises || [],
-        logged_sets: loggedSets || [],
+        session_exercises: sessionExercises?.map(se => {
+          // Remove nested sessions object from response
+          const { sessions: _, ...cleanSe } = se;
+          return cleanSe;
+        }) || [],
+        logged_sets: loggedSets?.map(ls => {
+          // Remove nested session_exercises object from response
+          const { session_exercises: _, ...cleanLs } = ls;
+          return cleanLs;
+        }) || [],
       },
     };
 
