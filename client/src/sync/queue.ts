@@ -1,7 +1,8 @@
-import { db, type QueueMutation, type QueueOp } from '@/db/gymbud-db'
+import { db, type QueueMutation, type QueueOp, type SyncEventRow } from '@/db/gymbud-db'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 import i18n from '@/i18n'
+import { mapEdgeError, type ErrorCode } from '@/lib/errors/mapEdgeError'
 
 let flushLock = false
 const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('gymbud-sync') : null
@@ -64,9 +65,28 @@ function backoffDelay(retries: number) {
   return base * 1000
 }
 
+// Helper function to cap sync events to last 50
+async function addSyncEvent(event: Omit<SyncEventRow, 'id'>): Promise<void> {
+  await db.sync_events.add(event)
+  
+  // Cap to last 50 events
+  const count = await db.sync_events.count()
+  if (count > 50) {
+    const oldestEvents = await db.sync_events.orderBy('ts').limit(count - 50).toArray()
+    const idsToDelete = oldestEvents.map(e => e.id!).filter(Boolean)
+    await db.sync_events.bulkDelete(idsToDelete)
+  }
+}
+
+// Helper function to update meta
+async function updateMeta(key: string, value: any): Promise<void> {
+  await db.meta.put({ key, value, updated_at: Date.now() })
+}
+
 export async function flush(maxBatch = 50): Promise<void> {
   if (flushLock) return
   flushLock = true
+  
   try {
     const now = Date.now()
     const batch = await db.queue_mutations
@@ -77,8 +97,13 @@ export async function flush(maxBatch = 50): Promise<void> {
 
     if (batch.length === 0) return
 
+    // Update meta: sync started
+    await updateMeta('last_sync_at', new Date().toISOString())
+    await updateMeta('last_sync_status', 'running')
+
     let successCount = 0
     let failureCount = 0
+    let lastErrorCode: ErrorCode | null = null
 
     for (const m of batch) {
       // optimistic "processing" mark
@@ -88,6 +113,9 @@ export async function flush(maxBatch = 50): Promise<void> {
         await db.queue_mutations.update(m.id, { status: 'done', updated_at: Date.now() })
         successCount++
       } catch (err) {
+        const mappedError = mapEdgeError(err)
+        lastErrorCode = mappedError.code
+        
         const retries = (m.retries ?? 0) + 1
         const next = Date.now() + backoffDelay(retries)
         await db.queue_mutations.update(m.id, {
@@ -98,16 +126,24 @@ export async function flush(maxBatch = 50): Promise<void> {
         })
         failureCount++
         // Don't spam; console is fine in dev
-        console.warn('[sync] retry scheduled', { id: m.id, retries })
+        console.warn('[sync] retry scheduled', { id: m.id, retries, error: mappedError.code })
       }
     }
 
-    // Show toast based on results
+    // Update meta and add sync event based on results
     if (successCount > 0 && failureCount === 0) {
+      await updateMeta('last_sync_status', 'success')
+      await updateMeta('last_sync_error_code', null)
+      await addSyncEvent({ ts: now, kind: 'success', items: successCount })
+      
       toast.success(i18n.t('app.sync.success'), {
         description: i18n.t('app.sync.success_detail'),
       })
     } else if (failureCount > 0) {
+      await updateMeta('last_sync_status', 'failure')
+      await updateMeta('last_sync_error_code', lastErrorCode)
+      await addSyncEvent({ ts: now, kind: 'failure', code: lastErrorCode || 'unknown' })
+      
       toast.error(i18n.t('app.sync.failure'), {
         description: i18n.t('app.sync.failure_detail'),
       })

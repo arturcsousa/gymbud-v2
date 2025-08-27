@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## August 26, 2025 20:25 ET
+**Implemented** Phase A Step 5 - Error mapping and Settings sync card with persistent sync telemetry
+- **Error Mapper**: Created `lib/errors/mapEdgeError.ts` utility standardizing error codes (auth_missing, rls_denied, invalid_payload, network_offline, rate_limited, server_unavailable, timeout, unknown)
+- **Dexie Schema Update**: Added sync_events table (version 2) with event capping to last 50 entries for sync history tracking
+- **Queue Integration**: Enhanced queue flush with error mapping, meta tracking (last_sync_at, last_sync_status, last_sync_error_code), and event logging
+- **Settings Sync Card**: Added comprehensive sync section to SettingsPage with live pending count, sync status badges, timeline, and manual sync trigger
+- **i18n Support**: Added settings.sync.* and errors.* translation keys for EN and PT-BR with user-friendly error messages
+- **Cross-tab Sync**: Implemented live queries with useLiveQuery for real-time sync status updates across browser tabs
+- Context: Users now have persistent sync visibility with error tracking and manual sync control in Settings
+- Migrations: Dexie will auto-upgrade to version 2 with sync_events table on next app load
+
+## August 26, 2025 20:24 ET
+**Implemented** global toast notification system with PWA updates and sync feedback
+- **Toast Infrastructure**: Added sonner package and created Toasts.tsx provider with custom styling (rounded-2xl, top-center, 4s duration)
+- **PWA Update Notifications**: Created usePWAUpdate hook using virtual:pwa-register for update prompts and offline ready alerts
+- **Sync Status Toasts**: Enhanced queue flush with success/failure notifications showing batch results and user-friendly messages
+- **i18n Integration**: Added app.update.* and app.sync.* translation keys for EN and PT-BR with consistent messaging
+- **PWA Config Update**: Changed registerType from 'prompt' to 'autoUpdate' with clientsClaim and skipWaiting for immediate updates
+- **Global Integration**: Wired toast provider in main.tsx and PWA hook in App.tsx for app-wide coverage
+- Context: Users now receive clear feedback on app updates, offline readiness, and data synchronization status
+- Migrations: Run `pnpm add sonner` to install toast dependency
+
 ## August 26, 2025 20:18 ET
 **Fixed** PWA manifest link and mobile viewport issues
 - **PWA Manifest Link**: Added missing `<link rel="manifest" href="/manifest.webmanifest" />` to index.html head section

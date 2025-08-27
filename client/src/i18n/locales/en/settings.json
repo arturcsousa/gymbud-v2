@@ -1,43 +1,23 @@
 {
-  "title": "Settings",
-  "subtitle": "Manage your account and preferences",
-  "account": {
-    "title": "Account Information",
-    "email": "Email Address",
-    "memberSince": "Member Since",
-    "notAvailable": "Not available"
-  },
-  "language": {
-    "title": "Language & Region",
-    "current": "Current Language",
-    "description": "Choose your preferred language"
-  },
-  "data": {
-    "title": "Data Management",
-    "export": {
-      "title": "Export Data",
-      "description": "Download all your workout data",
-      "button": "Export Data",
-      "loading": "Exporting...",
-      "success": "Data exported successfully",
-      "error": "Failed to export data"
-    }
-  },
-  "danger": {
-    "title": "Danger Zone",
-    "signOut": {
-      "title": "Sign Out",
-      "description": "Sign out of your account",
-      "button": "Sign Out"
+  "sync": {
+    "title": "Sync",
+    "description": "Manage offline data and synchronization with the cloud.",
+    "sync_now": "Sync Now",
+    "pending": "Pending",
+    "pending_count": "{{count}} pending",
+    "last_sync": "Last Sync",
+    "status": {
+      "running": "Running",
+      "success": "Success",
+      "failure": "Failure"
     },
-    "delete": {
-      "title": "Delete Account",
-      "description": "Permanently delete your account and all data",
-      "button": "Delete Account",
-      "loading": "Deleting...",
-      "confirmation": "Are you sure you want to delete your account? This action cannot be undone.",
-      "success": "Account deletion initiated",
-      "error": "Failed to delete account"
+    "timeline": {
+      "title": "Recent Sync Activity",
+      "empty": "No recent sync activity yet."
+    },
+    "event": {
+      "success": "Success ({{items}} items)",
+      "failure": "Failure ({{code}})"
     }
   }
 }

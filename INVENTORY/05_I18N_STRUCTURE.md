@@ -7,7 +7,7 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Library**: `react-i18next` + `i18next-browser-languagedetector`
 - **Languages**: EN (default), PT-BR
 - **Detection**: localStorage → navigator → htmlTag fallback
-- **Namespaces**: 16 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, library)
+- **Namespaces**: 17 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, library, sync)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
 ## File Structure
@@ -25,6 +25,7 @@ client/src/i18n/
 │   │   ├── history.json       # Workout history and detail views
 │   │   ├── library.json       # Exercise database browsing
 │   │   ├── settings.json      # Account management, data export
+│   │   ├── errors.json        # Error messages
 │   │   └── [5 other namespaces].json
 │   └── pt-BR/                  # Portuguese Brazil translations
 │       ├── common.json
@@ -94,54 +95,18 @@ client/src/i18n/
     "darkMode": "Dark Mode",
     "darkModeDesc": "Switch between light and dark themes",
     "exportData": "Export Data",
-    "syncData": "Sync Data",
     "deleteAccount": "Delete Account",
-    "save": "Save Settings"
-  },
-  "library": {
-    "searchPlaceholder": "Search exercises...",
-    "categories": "Categories",
-    "category": {
-      "all": "All",
-      "chest": "Chest",
-      "back": "Back", 
-      "shoulders": "Shoulders",
-      "arms": "Arms",
-      "legs": "Legs",
-      "core": "Core",
-      "cardio": "Cardio"
-    },
-    "difficulty": {
-      "beginner": "Beginner",
-      "intermediate": "Intermediate", 
-      "advanced": "Advanced"
-    },
-    "muscle": {
-      "chest": "Chest",
-      "triceps": "Triceps",
-      "shoulders": "Shoulders",
-      "lats": "Lats",
-      "rhomboids": "Rhomboids",
-      "biceps": "Biceps",
-      "quadriceps": "Quadriceps",
-      "glutes": "Glutes",
-      "hamstrings": "Hamstrings",
-      "deltoids": "Deltoids",
-      "abs": "Abs",
-      "core": "Core",
-      "erector spinae": "Erector Spinae"
-    },
-    "equipment": {
-      "barbell": "Barbell",
-      "bench": "Bench",
-      "pull-up bar": "Pull-up Bar",
-      "squat rack": "Squat Rack",
-      "dumbbells": "Dumbbells"
-    },
-    "bodyweight": "Bodyweight",
-    "exercisesFound": "exercises found",
-    "noResults": "No exercises found matching your criteria",
-    "clearFilters": "Clear Filters"
+    "save": "Save Settings",
+    "sync": {
+      "title": "Sync",
+      "status": "Status",
+      "syncNow": "Sync Now",
+      "recentEvents": "Recent Events",
+      "success": "success",
+      "failure": "failure",
+      "items": "items",
+      "noEvents": "No sync events yet"
+    }
   },
   "sync": {
     "offline": "You're offline",
@@ -149,22 +114,32 @@ client/src/i18n/
     "syncing": "Syncing...",
     "syncNow": "Sync Now",
     "pendingChanges": "pending changes",
-    "conflicts": "Data conflicts detected"
+    "conflicts": "Data conflicts detected",
+    "success": "Sync complete",
+    "success_detail": "Your latest changes are safely in the cloud.",
+    "failure": "Sync failed",
+    "failure_detail": "We'll retry automatically when you're back online."
   },
-  "auth": {
-    "signOut": "Sign Out"
-  },
-  "offline": {
-    "title": "You're Offline",
-    "message": "Changes will sync when you're back online",
-    "indicator": "Offline"
-  },
-  "session": {
-    "workout": "Workout",
-    "completed": "Completed",
-    "inProgress": "In Progress", 
-    "planned": "Planned"
+  "update": {
+    "available": "Update available",
+    "description": "A new version of GymBud is ready.",
+    "action": "Update now",
+    "offline_ready": "Ready to use offline"
   }
+}
+```
+
+### Errors Namespace (`errors.json`)
+```json
+{
+  "auth_missing": "Authentication required",
+  "rls_denied": "Access denied",
+  "invalid_payload": "Invalid data",
+  "network_offline": "No connection",
+  "rate_limited": "Too many requests",
+  "server_unavailable": "Server error",
+  "timeout": "Request timeout",
+  "unknown": "Unknown error"
 }
 ```
 

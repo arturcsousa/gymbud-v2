@@ -1,38 +1,32 @@
 {
-  "auth": {
-    "redirecting": "Redirecting to sign in...",
-    "user": "User",
-    "signOut": "Sign Out"
-  },
   "nav": {
     "home": "Home",
+    "session": "Session",
     "history": "History",
     "library": "Library",
     "settings": "Settings"
   },
-  "status": {
-    "online": "Online",
-    "offline": "Offline",
-    "offlineMessage": "Changes will sync when back online"
-  },
   "sync": {
-    "never": "Never",
-    "justNow": "Just now",
-    "minutesAgo": "{{count}} min ago",
-    "minutesAgo_plural": "{{count}} mins ago",
-    "hoursAgo": "{{count}} hour ago",
-    "hoursAgo_plural": "{{count}} hours ago",
-    "daysAgo": "{{count}} day ago",
-    "daysAgo_plural": "{{count}} days ago",
-    "lastSync": "Last sync",
-    "pending": "{{count}} change pending",
-    "pending_plural": "{{count}} changes pending",
+    "offline": "You're offline",
+    "online": "Back online",
     "syncing": "Syncing...",
-    "sync": "Sync",
-    "success": "Sync complete",
-    "success_detail": "Your latest changes are safely in the cloud.",
-    "failure": "Sync failed",
-    "failure_detail": "We'll retry automatically when you're back online."
+    "syncNow": "Sync Now",
+    "pendingChanges": "pending changes",
+    "conflicts": "Data conflicts detected"
+  },
+  "auth": {
+    "signOut": "Sign Out"
+  },
+  "offline": {
+    "title": "You're Offline",
+    "message": "Changes will sync when you're back online",
+    "indicator": "Offline"
+  },
+  "session": {
+    "workout": "Workout",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "planned": "Planned"
   },
   "update": {
     "available": "Update available",
@@ -40,36 +34,10 @@
     "action": "Update now",
     "offline_ready": "Ready to use offline"
   },
-  "conflicts": {
-    "detected": "Data conflict detected for {{entity}}",
-    "keepMine": "Keep Mine",
-    "useServer": "Use Server",
-    "merge": "Merge"
-  },
-  "session": {
-    "status": {
-      "planned": "Planned",
-      "in_progress": "In Progress",
-      "completed": "Completed",
-      "skipped": "Skipped"
-    },
-    "workout": "Workout",
-    "exercises": "exercises",
-    "view": "View",
-    "continue": "Continue"
-  },
-  "home": {
-    "welcome": "Welcome back!",
-    "subtitle": "Ready for today's workout?",
-    "todaySession": "Today's Session",
-    "noSessionToday": "No session planned for today",
-    "readyToStart": "Ready to start your workout?",
-    "startSession": "Start Session",
-    "recentSessions": "Recent Sessions",
-    "viewAll": "View All"
-  },
-  "notFound": {
-    "title": "Page Not Found",
-    "message": "The page you're looking for doesn't exist."
+  "sync_toasts": {
+    "success": "Sync complete",
+    "success_detail": "Your latest changes are safely in the cloud.",
+    "failure": "Sync failed",
+    "failure_detail": "We'll retry automatically when you're back online."
   }
 }

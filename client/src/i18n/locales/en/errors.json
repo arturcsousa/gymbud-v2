@@ -1,3 +1,10 @@
 {
-  "placeholder": "Toasts, validations, HTTP errors"
+  "auth_missing": "You need to sign in to continue.",
+  "rls_denied": "You don't have permission to perform this action.",
+  "invalid_payload": "Some information looks invalid. Please review and try again.",
+  "network_offline": "You're offline. We'll sync automatically when you're back online.",
+  "rate_limited": "Too many requests. Please wait a moment and try again.",
+  "server_unavailable": "Server is unavailable. Try again in a moment.",
+  "timeout": "Request timed out. Please try again.",
+  "unknown": "Something went wrong. Please try again."
 }

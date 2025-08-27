@@ -1,18 +1,24 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { ContentLayout } from '@/app/components/GradientLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
 import { supabase } from '@/lib/supabase'
+import { db } from '@/db/gymbud-db'
+import { pendingCount, requestFlush } from '@/sync/queue'
+import { RefreshCw, Clock, CheckCircle, AlertCircle } from 'lucide-react'
 
 function SettingsPage() {
-  const { t, i18n } = useTranslation(['app', 'common'])
+  const { t, i18n } = useTranslation(['app', 'common', 'errors'])
   const [, setLocation] = useLocation()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [syncing, setSyncing] = useState(false)
   
   // Settings state
   const [email, setEmail] = useState('')
@@ -20,6 +26,25 @@ function SettingsPage() {
   const [darkMode, setDarkMode] = useState(false)
   const [units, setUnits] = useState<'metric' | 'imperial'>('imperial')
   const [language, setLanguage] = useState('en')
+
+  // Live sync data
+  const pendingMutationsCount = useLiveQuery(() => pendingCount(), [])
+  const syncMeta = useLiveQuery(async () => {
+    const lastSyncAt = await db.meta.get('last_sync_at')
+    const lastSyncStatus = await db.meta.get('last_sync_status')
+    const lastSyncErrorCode = await db.meta.get('last_sync_error_code')
+    
+    return {
+      lastSyncAt: lastSyncAt?.value,
+      lastSyncStatus: lastSyncStatus?.value,
+      lastSyncErrorCode: lastSyncErrorCode?.value
+    }
+  }, [])
+  
+  const recentSyncEvents = useLiveQuery(
+    () => db.sync_events.orderBy('ts').reverse().limit(10).toArray(),
+    []
+  )
 
   useEffect(() => {
     loadUserData()
@@ -77,6 +102,36 @@ function SettingsPage() {
 
   const handleBackToHome = () => {
     setLocation('/')
+  }
+
+  const handleSyncNow = async () => {
+    setSyncing(true)
+    try {
+      await requestFlush()
+    } finally {
+      setSyncing(false)
+    }
+  }
+
+  const formatTimeAgo = (isoString: string) => {
+    const date = new Date(isoString)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / (1000 * 60))
+    
+    if (diffMins < 1) return t('app:sync.justNow')
+    if (diffMins < 60) return t('app:sync.minutesAgo', { count: diffMins })
+    
+    const diffHours = Math.floor(diffMins / 60)
+    if (diffHours < 24) return t('app:sync.hoursAgo', { count: diffHours })
+    
+    const diffDays = Math.floor(diffHours / 24)
+    return t('app:sync.daysAgo', { count: diffDays })
+  }
+
+  const formatEventTime = (ts: number) => {
+    const date = new Date(ts)
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
   if (loading) {
@@ -229,6 +284,116 @@ function SettingsPage() {
           </div>
         </div>
 
+        {/* Sync Section */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+          <h2 className="text-lg font-bold text-white mb-4">
+            {t('app:settings.sync.title')}
+          </h2>
+          
+          <div className="space-y-4">
+            {/* Sync Status */}
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-white text-sm font-medium">
+                    {t('app:settings.sync.status')}
+                  </span>
+                  {syncMeta?.lastSyncStatus === 'running' && (
+                    <RefreshCw className="h-4 w-4 text-blue-400 animate-spin" />
+                  )}
+                  {syncMeta?.lastSyncStatus === 'success' && (
+                    <CheckCircle className="h-4 w-4 text-green-400" />
+                  )}
+                  {syncMeta?.lastSyncStatus === 'failure' && (
+                    <AlertCircle className="h-4 w-4 text-red-400" />
+                  )}
+                </div>
+                <div className="flex items-center gap-2 text-white/70 text-xs">
+                  <Clock className="h-3 w-3" />
+                  {syncMeta?.lastSyncAt ? (
+                    <span>
+                      {t('app:sync.lastSync')}: {formatTimeAgo(syncMeta.lastSyncAt)}
+                    </span>
+                  ) : (
+                    <span>{t('app:sync.never')}</span>
+                  )}
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                {pendingMutationsCount !== undefined && pendingMutationsCount > 0 && (
+                  <Badge variant="secondary" className="bg-orange-500/20 text-orange-300 border-orange-500/30">
+                    {t('app:sync.pending', { count: pendingMutationsCount })}
+                  </Badge>
+                )}
+                
+                {syncMeta?.lastSyncStatus === 'failure' && syncMeta?.lastSyncErrorCode && (
+                  <Badge variant="destructive" className="bg-red-500/20 text-red-300 border-red-500/30">
+                    {t(`errors:${syncMeta.lastSyncErrorCode}`)}
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            {/* Sync Now Button */}
+            <Button
+              onClick={handleSyncNow}
+              disabled={syncing || syncMeta?.lastSyncStatus === 'running'}
+              className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7] rounded-xl font-medium"
+            >
+              {syncing || syncMeta?.lastSyncStatus === 'running' ? (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  {t('app:sync.syncing')}
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  {t('app:settings.sync.syncNow')}
+                </>
+              )}
+            </Button>
+
+            {/* Recent Events Timeline */}
+            {recentSyncEvents && recentSyncEvents.length > 0 && (
+              <div>
+                <h3 className="text-white text-sm font-medium mb-2">
+                  {t('app:settings.sync.recentEvents')}
+                </h3>
+                <div className="space-y-1 max-h-32 overflow-y-auto">
+                  {recentSyncEvents.map((event) => (
+                    <div key={event.id} className="flex items-center gap-2 text-xs text-white/70">
+                      <span className="text-white/40">•</span>
+                      <span className="font-mono">{formatEventTime(event.ts)}</span>
+                      <span>—</span>
+                      {event.kind === 'success' ? (
+                        <span className="text-green-400">
+                          {t('app:settings.sync.success')} 
+                          {event.items && ` (${event.items} ${t('app:settings.sync.items')})`}
+                        </span>
+                      ) : (
+                        <span className="text-red-400">
+                          {t('app:settings.sync.failure')}
+                          {event.code && ` (${t(`errors:${event.code}`)})`}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {(!recentSyncEvents || recentSyncEvents.length === 0) && (
+              <div className="text-center py-4">
+                <p className="text-white/60 text-sm">
+                  {t('app:settings.sync.noEvents')}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Data Section */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
           <h2 className="text-lg font-bold text-white mb-4">
@@ -241,13 +406,6 @@ function SettingsPage() {
               className="w-full justify-start text-white hover:bg-white/20 rounded-xl"
             >
               {t('app:settings.exportData')}
-            </Button>
-            
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-white hover:bg-white/20 rounded-xl"
-            >
-              {t('app:settings.syncData')}
             </Button>
           </div>
         </div>

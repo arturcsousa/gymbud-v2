@@ -1,22 +1,12 @@
 {
-  "placeholder": "Runner UI: sets, reps, RPE, timers",
   "workout": "Workout",
-  "notFound": {
-    "title": "Session Not Found",
-    "message": "The workout session you're looking for doesn't exist."
-  },
-  "timer": {
-    "title": "Workout Timer"
+  "timer": { 
+    "title": "Workout Timer" 
   },
   "exercises": {
     "title": "Exercises",
     "add": "Add Exercise",
     "empty": "No exercises added yet. Add your first exercise to get started!"
-  },
-  "exercise": {
-    "newExercise": "New Exercise",
-    "namePlaceholder": "Exercise name",
-    "unnamed": "Unnamed Exercise"
   },
   "set": {
     "add": "Add Set",
@@ -24,8 +14,7 @@
     "reps": "Reps",
     "weight": "Weight",
     "rpe": "RPE",
-    "notes": "Notes",
-    "notesPlaceholder": "Add notes..."
+    "notes": "Notes"
   },
   "actions": {
     "save": "Save Progress",

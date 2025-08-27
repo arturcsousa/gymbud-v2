@@ -5,6 +5,14 @@ export type QueueStatus = 'queued' | 'processing' | 'done' | 'error'
 
 export interface MetaRow { key: string; value: any; updated_at: number }
 
+export interface SyncEventRow {
+  id?: number
+  ts: number
+  kind: 'success' | 'failure'
+  code?: string
+  items?: number
+}
+
 export interface QueueMutation {
   id: string
   entity: string                // e.g., 'app2.logged_sets'
@@ -51,6 +59,7 @@ export interface LoggedSetRow {
 
 export class GymBudDB extends Dexie {
   meta!: Table<MetaRow, string>
+  sync_events!: Table<SyncEventRow, number>
   queue_mutations!: Table<QueueMutation, string>
   sessions!: Table<SessionRow, string>
   session_exercises!: Table<SessionExerciseRow, string>
@@ -61,6 +70,20 @@ export class GymBudDB extends Dexie {
     this.version(1).stores({
       // primary key first, then indexes/compounds
       meta: 'key, updated_at',
+      queue_mutations:
+        'id, status, next_attempt_at, created_at, entity, [status+next_attempt_at]',
+      sessions:
+        'id, user_id, plan_id, status, started_at, completed_at, updated_at, [user_id+started_at]',
+      session_exercises:
+        'id, session_id, order_index, updated_at, [session_id+order_index]',
+      logged_sets:
+        'id, session_exercise_id, set_number, updated_at, [session_exercise_id+set_number]'
+    })
+    
+    // Add sync_events table in version 2
+    this.version(2).stores({
+      meta: 'key, updated_at',
+      sync_events: '++id, ts',
       queue_mutations:
         'id, status, next_attempt_at, created_at, entity, [status+next_attempt_at]',
       sessions:

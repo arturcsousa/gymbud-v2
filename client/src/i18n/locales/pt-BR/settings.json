@@ -1,0 +1,23 @@
+{
+  "sync": {
+    "title": "Sincronização",
+    "description": "Gerencie os dados offline e a sincronização com a nuvem.",
+    "sync_now": "Sincronizar agora",
+    "pending": "Pendentes",
+    "pending_count": "{{count}} pendentes",
+    "last_sync": "Última sincronização",
+    "status": {
+      "running": "Em andamento",
+      "success": "Sucesso",
+      "failure": "Falha"
+    },
+    "timeline": {
+      "title": "Atividade recente de sincronização",
+      "empty": "Ainda não há atividade de sincronização."
+    },
+    "event": {
+      "success": "Sucesso ({{items}} itens)",
+      "failure": "Falha ({{code}})"
+    }
+  }
+}

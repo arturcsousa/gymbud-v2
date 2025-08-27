@@ -71,12 +71,13 @@ export { ComponentName }             // Named export for AppShell
 - **Interactive Elements**: Toggle switches, category buttons, search inputs with consistent styling
 
 ### PWA Infrastructure
-- **Service Worker**: VitePWA plugin with Workbox caching strategies (currently disabled for build compatibility)
+- **Service Worker**: VitePWA plugin with Workbox caching strategies and autoUpdate registration
 - **Manifest**: `/public/manifest.webmanifest` with app metadata and shortcuts, properly linked in index.html
 - **Mobile Viewport**: Fixed with `100dvh` height constraints and proper CSS rules to prevent scrolling and background bleeding
 - **IndexedDB**: Dexie-based offline data layer with versioned schema
-- **Sync Engine**: Queue-based mutation replay with conflict resolution
-- **Update Handling**: Service worker update prompts (currently disabled)
+- **Sync Engine**: Queue-based mutation replay with conflict resolution and toast notifications
+- **Update Handling**: PWA update prompts with toast notifications using sonner library
+- **Toast System**: Global toast notifications for PWA updates, offline status, and sync feedback
 
 ### Offline-First Data Flow
 ```
@@ -166,8 +167,9 @@ const isAppDomain = window.location.hostname === 'app.gymbud.ai' ||
 
 ### IndexedDB Schema (Dexie)
 ```typescript
-// Database tables with versioned schema
+// Database tables with versioned schema (v2)
 meta: { key, value, updated_at }
+sync_events: { id?, ts, kind: 'success'|'failure', code?, items? }
 queue_mutations: { id, entity, op, payload, user_id, idempotency_key, status, retries, next_attempt_at, created_at, updated_at }
 sessions: { id, user_id, plan_id, status, started_at, completed_at, notes, updated_at }
 session_exercises: { id, session_id, exercise_name, order_index, updated_at }
@@ -177,12 +179,14 @@ logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, up
 ### Sync Engine Features
 - **Queue Management**: FIFO mutation replay with retry logic and exponential backoff
 - **Server Integration**: Real Supabase Edge Function calls for app2.logged_sets inserts
+- **Error Mapping**: Standardized error codes (auth_missing, rls_denied, invalid_payload, network_offline, rate_limited, server_unavailable, timeout, unknown)
+- **Sync Telemetry**: Persistent sync status tracking in meta table with event history capped to last 50
 - **Idempotency**: Conflict-free upserts using queue mutation ID as primary key
 - **RLS Compliance**: End-user JWT authentication for proper Row Level Security
 - **Network Awareness**: Automatic sync on connectivity changes and manual triggers
 - **Background Sync**: Service worker background sync registration
-- **Error Handling**: Structured response validation with proper error codes
-- **Cross-tab Coordination**: BroadcastChannel for single-flight sync processing
+- **Error Handling**: Structured response validation with proper error codes and user-friendly messages
+- **Cross-tab Coordination**: BroadcastChannel for single-flight sync processing with live query updates
 
 ## UX Components
 

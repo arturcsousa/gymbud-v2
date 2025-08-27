@@ -6,6 +6,7 @@
   },
   "nav": {
     "home": "Início",
+    "session": "Sessão",
     "history": "Histórico",
     "library": "Biblioteca",
     "settings": "Configurações"
@@ -32,7 +33,12 @@
     "success": "Sincronização concluída",
     "success_detail": "Suas alterações mais recentes estão salvas na nuvem.",
     "failure": "Falha na sincronização",
-    "failure_detail": "Vamos tentar novamente automaticamente quando você estiver online."
+    "failure_detail": "Vamos tentar novamente automaticamente quando você estiver online.",
+    "offline": "Você está offline",
+    "online": "De volta online",
+    "syncNow": "Sincronizar Agora",
+    "pendingChanges": "alterações pendentes",
+    "conflicts": "Conflitos de dados detectados"
   },
   "update": {
     "available": "Atualização disponível",
@@ -56,7 +62,11 @@
     "workout": "Treino",
     "exercises": "exercícios",
     "view": "Ver",
-    "continue": "Continuar"
+    "continue": "Continuar",
+    "workout": "Treino",
+    "completed": "Concluído",
+    "inProgress": "Em Andamento",
+    "planned": "Planejado"
   },
   "home": {
     "welcome": "Bem-vindo de volta!",
@@ -71,5 +81,45 @@
   "notFound": {
     "title": "Página Não Encontrada",
     "message": "A página que você está procurando não existe."
+  },
+  "settings": {
+    "account": "Conta",
+    "preferences": "Preferências",
+    "data": "Dados",
+    "dangerZone": "Zona de Perigo",
+    "email": "Email",
+    "emailReadonly": "Email não pode ser alterado",
+    "language": "Idioma",
+    "units": "Unidades",
+    "imperial": "Imperial",
+    "metric": "Métrico",
+    "notifications": "Notificações",
+    "notificationsDesc": "Receber lembretes de treino e atualizações de progresso",
+    "darkMode": "Modo Escuro",
+    "darkModeDesc": "Alternar entre temas claro e escuro",
+    "exportData": "Exportar Dados",
+    "deleteAccount": "Excluir Conta",
+    "save": "Salvar Configurações",
+    "sync": {
+      "title": "Sincronização",
+      "status": "Status",
+      "syncNow": "Sincronizar Agora",
+      "recentEvents": "Eventos Recentes",
+      "success": "sucesso",
+      "failure": "falha",
+      "items": "itens",
+      "noEvents": "Nenhum evento de sincronização ainda"
+    }
+  },
+  "offline": {
+    "title": "Você Está Offline",
+    "message": "As alterações serão sincronizadas quando você voltar online",
+    "indicator": "Offline"
+  },
+  "sync_toasts": {
+    "success": "Sincronização concluída",
+    "success_detail": "Suas últimas alterações estão seguras na nuvem.",
+    "failure": "Falha na sincronização",
+    "failure_detail": "Tentaremos novamente automaticamente quando você voltar online."
   }
 }

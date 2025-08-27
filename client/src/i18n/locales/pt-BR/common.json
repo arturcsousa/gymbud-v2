@@ -1,21 +1,29 @@
 {
-  "logo_aria": "Logo GymBud",
   "nav": {
-    "how_it_works": "Como Funciona",
-    "why_different": "Por que é Diferente",
+    "home": "Início",
+    "howItWorks": "Como Funciona",
     "programs": "Programas",
     "pricing": "Planos",
     "faq": "Perguntas Frequentes",
-    "sign_in": "Entrar"
+    "signIn": "Entrar",
+    "getStarted": "Começar"
   },
   "cta": {
-    "start_free": "Comece Grátis",
-    "see_how": "Veja Como Funciona",
-    "see_pricing": "Ver Planos",
-    "learn_more": "Saiba Mais"
+    "primary": "Comece Sua Jornada",
+    "secondary": "Saiba Mais",
+    "getStarted": "Começar",
+    "signUp": "Cadastre-se Grátis",
+    "tryFree": "Experimente Grátis"
   },
-  "lang": {
+  "languages": {
     "en": "English",
-    "ptbr": "Português (BR)"
-  }
+    "pt-BR": "Português (Brasil)"
+  },
+  "loading": "Carregando...",
+  "error": "Erro",
+  "success": "Sucesso",
+  "cancel": "Cancelar",
+  "save": "Salvar",
+  "delete": "Excluir",
+  "edit": "Editar"
 }

@@ -1,3 +1,21 @@
 {
-  "placeholder": "Runner UI: sets, reps, RPE, timers"
+  "workout": "Treino",
+  "timer": { "title": "Cronômetro do Treino" },
+  "exercises": {
+    "title": "Exercícios",
+    "add": "Adicionar Exercício",
+    "empty": "Nenhum exercício adicionado ainda. Adicione seu primeiro exercício para começar!"
+  },
+  "set": {
+    "add": "Adicionar Série",
+    "setNumber": "Série",
+    "reps": "Reps",
+    "weight": "Peso",
+    "rpe": "RPE",
+    "notes": "Notas"
+  },
+  "actions": {
+    "save": "Salvar Progresso",
+    "complete": "Concluir Sessão"
+  }
 }
