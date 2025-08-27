@@ -1,5 +1,18 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 14:03 - Additional TypeScript Build Fixes
+**Fixed**: Resolved remaining TypeScript compilation errors from Phase E2 implementation
+- **Progress Component**: Created missing `@/components/ui/progress` component using Radix UI primitives
+- **Type Declarations**: Added comprehensive type definitions for `dom-to-image-more` module in `src/types/dom-to-image.d.ts`
+- **SessionPage**: Fixed timer state interface and removed unused imports (CheckCircle, Play)
+- **useSessionData Hook**: Fixed type mismatches in session update mutations and telemetry functions
+  - Corrected `duration_sec` null assignment to `undefined`
+  - Fixed status mapping for database enum compatibility
+  - Simplified telemetry helper function signatures
+- **StatsShareCard**: Updated to use proper dynamic import for dom-to-image-more
+
+**Technical**: All TypeScript errors resolved, build now compiles successfully with Phase E2 durable undo functionality
+
 ## 2025-08-27 13:52 - Phase E2: Durable Undo Implementation
 **Implemented**: Durable undo functionality for logged sets with offline-first support
 - **Queue System**: Added `logged_sets/void` mutation type with de-duplication logic

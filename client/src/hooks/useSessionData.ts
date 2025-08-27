@@ -84,7 +84,7 @@ function convertLoggedSetRows(rows: LoggedSetRow[]): LoggedSet[] {
   return rows.map(row => ({
     ...row,
     voided: row.voided || false,
-    duration_sec: null,
+    duration_sec: undefined,
     meta: null,
     created_at: new Date(row.updated_at).toISOString(),
     updated_at: new Date(row.updated_at).toISOString()
@@ -333,90 +333,84 @@ export function useSessionData(sessionId?: string) {
 
   // Update session status mutation
   const updateSessionMutation = useMutation({
-    mutationFn: async (params: {
-      status: 'pending' | 'active' | 'completed' | 'cancelled';
-      startedAt?: string;
-      completedAt?: string;
-      notes?: string;
+    mutationFn: async (updates: {
+      status?: 'pending' | 'active' | 'completed' | 'cancelled'
+      started_at?: string | null
+      completed_at?: string | null
+      notes?: string | null
     }) => {
-      if (!sessionId) throw new Error('No session ID');
+      if (!sessionId) throw new Error('Session ID required')
 
-      const updates = {
-        status: params.status === 'pending' ? 'draft' : params.status,
-        started_at: params.startedAt || null,
-        completed_at: params.completedAt || null,
-        notes: params.notes || null,
-        updated_at: new Date().toISOString(),
-      };
+      // Map status to database enum
+      const dbStatus = updates.status === 'pending' ? 'draft' : 
+                      updates.status === 'cancelled' ? 'completed' :
+                      updates.status as 'active' | 'completed'
 
-      // Update offline first
-      await db.sessions.update(sessionId, updates);
-      
+      const sessionUpdate = {
+        status: dbStatus,
+        started_at: updates.started_at,
+        completed_at: updates.completed_at,
+        notes: updates.notes,
+        updated_at: new Date().toISOString()
+      }
+
+      // Update in IndexedDB
+      await db.sessions.update(sessionId, sessionUpdate)
+
       // Enqueue for sync
       await enqueueSessionUpdate({
         id: sessionId,
-        ...updates,
-      });
+        status: updates.status,
+        started_at: updates.started_at,
+        completed_at: updates.completed_at,
+        notes: updates.notes,
+        updated_at: sessionUpdate.updated_at
+      })
 
-      // Add telemetry event
-      const eventCode = params.status === 'active' ? 'session_started' :
-                       params.status === 'completed' ? 'session_completed' :
-                       params.status === 'cancelled' ? 'session_cancelled' : 'session_updated';
+      // Log telemetry event
+      const eventCode = updates.status === 'active' ? 'session_started' :
+                       updates.status === 'completed' ? 'session_completed' :
+                       updates.status === 'cancelled' ? 'session_cancelled' : 'session_updated'
 
       const telemetryEvent: SyncEventRow = {
         ts: Date.now(),
         kind: 'success',
         code: eventCode,
         items: 1
-      };
-      await db.sync_events.add(telemetryEvent);
+      }
+      await db.sync_events.add(telemetryEvent)
 
-      return updates;
+      return sessionUpdate
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['session-data', sessionId] });
-      // Reload offline session data
-      if (sessionId) {
-        const loadOfflineData = async () => {
-          const session = await db.sessions.get(sessionId);
-          if (session) {
-            setOfflineData(prev => ({ ...prev, session: convertSessionRow(session as SessionRow) }));
-          }
-        };
-        loadOfflineData();
-      }
+      queryClient.invalidateQueries({ queryKey: ['session', sessionId] })
     },
-  });
+    onError: (error) => {
+      console.error('Failed to update session:', error)
+      toast.error('Failed to update session')
+    }
+  })
 
   // Helper function to log rest timer events
-  const logRestEvent = async (eventType: 'rest_started' | 'rest_completed' | 'rest_skipped', data: {
-    prescribed_sec: number;
-    actual_sec?: number;
-    exercise_id: string;
-  }) => {
+  const logRestEvent = async (eventType: 'rest_started' | 'rest_completed' | 'rest_skipped', duration?: number) => {
     const telemetryEvent: SyncEventRow = {
       ts: Date.now(),
       kind: 'success',
       code: eventType,
-      items: data.actual_sec || 1
-    };
-    await db.sync_events.add(telemetryEvent);
-  };
+      items: duration || 1
+    }
+    await db.sync_events.add(telemetryEvent)
+  }
 
-  // Helper function to log exercise navigation events
-  const logExerciseEvent = async (eventType: 'exercise_advanced' | 'exercise_previous', data: {
-    from_exercise_id?: string;
-    to_exercise_id: string;
-    exercise_index: number;
-  }) => {
+  const logExerciseNavigation = async (direction: 'exercise_advanced' | 'exercise_previous') => {
     const telemetryEvent: SyncEventRow = {
       ts: Date.now(),
       kind: 'success',
-      code: eventType,
+      code: direction,
       items: 1
-    };
-    await db.sync_events.add(telemetryEvent);
-  };
+    }
+    await db.sync_events.add(telemetryEvent)
+  }
 
   // Computed data
   const data = useMemo(() => {
@@ -471,7 +465,7 @@ export function useSessionData(sessionId?: string) {
     
     // Telemetry helpers
     logRestEvent,
-    logExerciseEvent,
+    logExerciseNavigation,
     
     // Loading states
     isLoggingSet: logSetMutation.isPending,

@@ -83,6 +83,7 @@ StatsShareCard.displayName = 'StatsShareCard';
 
 export async function exportStatsCard(el: HTMLElement, fileName = "gymbud-stats.png") {
   try {
+    const domtoimage = await import('dom-to-image-more');
     const blob = await domtoimage.toBlob(el, { 
       width: 1080, 
       height: 1350, 
