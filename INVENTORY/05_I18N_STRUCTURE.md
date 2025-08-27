@@ -285,6 +285,7 @@ VITE_SUPABASE_ANON_KEY=eyJ...           # Supabase anonymous key
 ### Deployment Requirements
 - **Vercel Environment Variables**: Must configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in project settings
 - **PWA Manifest**: Updated to use existing icons and GymBud color scheme (#005870)
+- **PWA Manifest Link**: Added proper `<link rel="manifest" href="/manifest.webmanifest" />` to index.html for browser recognition
 - **Domain Separation**: Clear distinction between marketing (gymbud.ai) and application (app.gymbud.ai)
 
 ### Domain Routing Implementation

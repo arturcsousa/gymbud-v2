@@ -28,7 +28,17 @@
     "pending": "{{count}} change pending",
     "pending_plural": "{{count}} changes pending",
     "syncing": "Syncing...",
-    "sync": "Sync"
+    "sync": "Sync",
+    "success": "Sync complete",
+    "success_detail": "Your latest changes are safely in the cloud.",
+    "failure": "Sync failed",
+    "failure_detail": "We'll retry automatically when you're back online."
+  },
+  "update": {
+    "available": "Update available",
+    "description": "A new version of GymBud is ready.",
+    "action": "Update now",
+    "offline_ready": "Ready to use offline"
   },
   "conflicts": {
     "detected": "Data conflict detected for {{entity}}",

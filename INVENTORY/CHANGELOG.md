@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 20:18 ET
+**Fixed** PWA manifest link and mobile viewport issues
+- **PWA Manifest Link**: Added missing `<link rel="manifest" href="/manifest.webmanifest" />` to index.html head section
+- **Mobile Viewport**: Fixed unwanted scrolling by using `height: 100%` and `100dvh` for proper mobile viewport handling
+- **Background Bleeding**: Eliminated corner gaps by removing outer padding from GradientLayout and using `h-full` constraints
+- **CSS Fixes**: Added global CSS rules for `html, body` height and `overflow-x: hidden` to prevent horizontal scrolling
+- **Layout Optimization**: Moved padding inside container to `px-2 sm:px-4` and removed nested `min-h-screen` conflicts
+- Context: PWA now properly loads manifest and displays full-screen without scrolling or background gaps on mobile
+- Migrations: N/A (UI and manifest fixes only)
+
 ## August 26, 2025 19:52 ET
 **Restored** custom AuthPage design and fixed React hooks error
 - **React Error Fix**: Removed `useLocation` hook from async `finalizeOnboarding` function (React error #321)
@@ -187,7 +197,7 @@
 - **Dexie Fix**: Removed non-existent orderBy() method call from indexeddb.ts getSessions function
 - **Badge Variant Fix**: Changed Badge variant from 'success' to 'default' in HistoryPage to match available variants
 - **PWA Virtual Import Fix**: Fixed virtual:pwa-register import with production check and async loading in pwa.ts
-- Context: All 18 TypeScript build errors from Vercel resolved at root cause level
+- Context: All TypeScript compilation errors resolved, build ready for deployment
 - Migrations: Build should now succeed without errors
 
 ## January 26, 2025 14:56 ET

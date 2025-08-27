@@ -1,5 +1,7 @@
 import { db, type QueueMutation, type QueueOp } from '@/db/gymbud-db'
 import { supabase } from '@/lib/supabase'
+import { toast } from 'sonner'
+import i18n from '@/i18n'
 
 let flushLock = false
 const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('gymbud-sync') : null
@@ -73,12 +75,18 @@ export async function flush(maxBatch = 50): Promise<void> {
       .limit(maxBatch)
       .toArray()
 
+    if (batch.length === 0) return
+
+    let successCount = 0
+    let failureCount = 0
+
     for (const m of batch) {
       // optimistic "processing" mark
       await db.queue_mutations.update(m.id, { status: 'processing', updated_at: Date.now() })
       try {
         await sendToServer(m) // will throw for now
         await db.queue_mutations.update(m.id, { status: 'done', updated_at: Date.now() })
+        successCount++
       } catch (err) {
         const retries = (m.retries ?? 0) + 1
         const next = Date.now() + backoffDelay(retries)
@@ -88,9 +96,21 @@ export async function flush(maxBatch = 50): Promise<void> {
           next_attempt_at: next,
           updated_at: Date.now(),
         })
+        failureCount++
         // Don't spam; console is fine in dev
         console.warn('[sync] retry scheduled', { id: m.id, retries })
       }
+    }
+
+    // Show toast based on results
+    if (successCount > 0 && failureCount === 0) {
+      toast.success(i18n.t('app.sync.success'), {
+        description: i18n.t('app.sync.success_detail'),
+      })
+    } else if (failureCount > 0) {
+      toast.error(i18n.t('app.sync.failure'), {
+        description: i18n.t('app.sync.failure_detail'),
+      })
     }
 
     // Nudge other tabs

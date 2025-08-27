@@ -72,7 +72,8 @@ export { ComponentName }             // Named export for AppShell
 
 ### PWA Infrastructure
 - **Service Worker**: VitePWA plugin with Workbox caching strategies (currently disabled for build compatibility)
-- **Manifest**: `/public/manifest.webmanifest` with app metadata and shortcuts
+- **Manifest**: `/public/manifest.webmanifest` with app metadata and shortcuts, properly linked in index.html
+- **Mobile Viewport**: Fixed with `100dvh` height constraints and proper CSS rules to prevent scrolling and background bleeding
 - **IndexedDB**: Dexie-based offline data layer with versioned schema
 - **Sync Engine**: Queue-based mutation replay with conflict resolution
 - **Update Handling**: Service worker update prompts (currently disabled)

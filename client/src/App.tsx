@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Landing from '@/marketing/Landing';
 import { AppShell } from '@/app/AppShell';
 import { OfflineBanner } from '@/app/components/OfflineBanner';
+import { usePWAUpdate } from '@/app/hooks/usePWAUpdate';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -14,6 +15,9 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  // Initialize PWA update notifications
+  usePWAUpdate();
+
   // Debug logging
   console.log('App.tsx - Domain Check:', {
     hostname: window.location.hostname,

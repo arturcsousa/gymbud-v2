@@ -5,6 +5,7 @@ import './index.css'
 import './i18n'
 import { initPWA } from './pwa'
 import { initSync } from './sync/init'
+import Toasts from '@/app/providers/Toasts'
 
 // Initialize PWA
 initPWA().catch(console.error)
@@ -14,6 +15,7 @@ initSync()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
+    <Toasts />
     <App />
   </React.StrictMode>,
 )

@@ -1,3 +1,75 @@
 {
-  "placeholder": "Future app UI shared strings"
+  "auth": {
+    "redirecting": "Redirecionando para login...",
+    "user": "Usuário",
+    "signOut": "Sair"
+  },
+  "nav": {
+    "home": "Início",
+    "history": "Histórico",
+    "library": "Biblioteca",
+    "settings": "Configurações"
+  },
+  "status": {
+    "online": "Online",
+    "offline": "Offline",
+    "offlineMessage": "As alterações serão sincronizadas quando voltar online"
+  },
+  "sync": {
+    "never": "Nunca",
+    "justNow": "Agora mesmo",
+    "minutesAgo": "{{count}} min atrás",
+    "minutesAgo_plural": "{{count}} mins atrás",
+    "hoursAgo": "{{count}} hora atrás",
+    "hoursAgo_plural": "{{count}} horas atrás",
+    "daysAgo": "{{count}} dia atrás",
+    "daysAgo_plural": "{{count}} dias atrás",
+    "lastSync": "Última sincronização",
+    "pending": "{{count}} alteração pendente",
+    "pending_plural": "{{count}} alterações pendentes",
+    "syncing": "Sincronizando...",
+    "sync": "Sincronizar",
+    "success": "Sincronização concluída",
+    "success_detail": "Suas alterações mais recentes estão salvas na nuvem.",
+    "failure": "Falha na sincronização",
+    "failure_detail": "Vamos tentar novamente automaticamente quando você estiver online."
+  },
+  "update": {
+    "available": "Atualização disponível",
+    "description": "Uma nova versão do GymBud está pronta.",
+    "action": "Atualizar agora",
+    "offline_ready": "Pronto para usar offline"
+  },
+  "conflicts": {
+    "detected": "Conflito de dados detectado para {{entity}}",
+    "keepMine": "Manter Meu",
+    "useServer": "Usar Servidor",
+    "merge": "Mesclar"
+  },
+  "session": {
+    "status": {
+      "planned": "Planejado",
+      "in_progress": "Em Progresso",
+      "completed": "Concluído",
+      "skipped": "Pulado"
+    },
+    "workout": "Treino",
+    "exercises": "exercícios",
+    "view": "Ver",
+    "continue": "Continuar"
+  },
+  "home": {
+    "welcome": "Bem-vindo de volta!",
+    "subtitle": "Pronto para o treino de hoje?",
+    "todaySession": "Sessão de Hoje",
+    "noSessionToday": "Nenhuma sessão planejada para hoje",
+    "readyToStart": "Pronto para começar seu treino?",
+    "startSession": "Iniciar Sessão",
+    "recentSessions": "Sessões Recentes",
+    "viewAll": "Ver Todas"
+  },
+  "notFound": {
+    "title": "Página Não Encontrada",
+    "message": "A página que você está procurando não existe."
+  }
 }
