@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## August 27, 2025 12:48 ET
+**Added** Progress/Stats page specification document
+- **New Specification**: Created `INVENTORY/07_PROGRESS_STATS_SPEC.md` with comprehensive Progress/Stats page requirements
+- **Route Planning**: Defined `/app/progress` (primary) and `/app/stats` (alias) routes to replace Exercise Library
+- **Feature Scope**: 8 charts/cards including adherence heatmap, training volume, RPE trends, weight progression, and highlights
+- **Social Sharing**: Detailed spec for branded 1080×1350 progress cards with privacy controls and native sharing
+- **Badges System**: Local streak awards (3-100 days) with toast notifications and highlights strip
+- **Offline-First**: Renders from Dexie mirrors with server refinement via v_session_metrics view
+- **i18n Coverage**: Complete EN/PT-BR translation keys for all progress features and badge awards
+- **Data Sources**: Uses existing indexes and tables, no new DB objects required for v1 implementation
+- Context: Replaces Exercise Library with motivational progress tracking and social sharing capabilities
+- Migrations: N/A (specification document only)
+
 ## August 26, 2025 22:51 ET
 **Added** language persistence system and fixed TypeScript errors
 - **Language Selection**: Added dropdown in Settings page with proper i18n integration
