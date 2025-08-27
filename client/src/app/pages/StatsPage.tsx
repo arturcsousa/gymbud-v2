@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Share2, TrendingUp, Activity } from 'lucide-react';
 import { toast } from 'sonner';
@@ -8,16 +8,18 @@ import { TrainingDaysBar } from '@/components/charts/TrainingDaysBar';
 import { VolumeSetsCombo } from '@/components/charts/VolumeSetsCombo';
 import { WeightProgression } from '@/components/charts/WeightProgression';
 import { AppHeader } from '@/app/components/AppHeader';
-import { BottomNav } from '@/app/components/BottomNav';
+import BottomNav from '@/components/BottomNav';
 import { useStreakBadges } from '@/hooks/useStreakBadges';
 import { useSessionMetrics } from '@/hooks/useSessionMetrics';
 import { useProfileData } from '@/hooks/useProfileData';
+import { supabase } from '@/lib/supabase';
 import domtoimage from 'dom-to-image-more';
 
 export default function StatsPage() {
   const { t } = useTranslation(['stats', 'badges']);
   const shareRef = useRef<HTMLDivElement>(null);
   const { checkAndAwardBadges } = useStreakBadges();
+  const [user, setUser] = useState<any>(null);
   
   // Real data hooks
   const { metrics, isLoading: metricsLoading, isOffline: metricsOffline } = useSessionMetrics();
@@ -25,6 +27,14 @@ export default function StatsPage() {
 
   const isLoading = metricsLoading || profileLoading;
   const isOffline = metricsOffline || profileOffline;
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
 
   const handleShare = async () => {
     if (!shareRef.current) return;
@@ -78,7 +88,7 @@ export default function StatsPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-900/20 to-slate-900">
-        <AppHeader />
+        <AppHeader user={user} />
         <div className="p-4 pb-20">
           <div className="max-w-2xl mx-auto">
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8">
@@ -96,7 +106,7 @@ export default function StatsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-900/20 to-slate-900 overflow-y-scroll">
-      <AppHeader />
+      <AppHeader user={user} />
       
       <div className="p-4 pb-20">
         <div className="max-w-2xl mx-auto">

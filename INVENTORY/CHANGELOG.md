@@ -1,5 +1,17 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 15:06 - StatsPage Navigation Fix
+**Fixed**: Added missing navigation components to StatsPage and enabled proper scrolling
+- **Navigation Components**: Added `AppHeader` and `BottomNav` imports and components to StatsPage
+- **Scrolling Support**: Enabled proper scrolling with `overflow-y-scroll` and `pb-20` padding for bottom navigation clearance
+- **Layout Structure**: Restructured page layout with proper container padding (`p-4 pb-20`) to prevent content overlap
+- **Loading State**: Added navigation components to loading state for consistent user experience
+- **Share Functionality**: Enhanced share function with proper success/failure toast messages
+- **Key Metrics Display**: Improved metrics cards with better styling (`bg-white/5 rounded-xl`)
+- **Consistent UX**: StatsPage now matches navigation patterns of other app pages
+
+**Technical**: Users can now navigate away from stats page and content scrolls properly when charts exceed viewport height
+
 ## 2025-08-27 14:49 - TypeScript Build Error Resolution (Final)
 **Fixed**: Resolved all remaining TypeScript compilation errors preventing successful builds
 - **SessionPage Export**: Fixed import/export mismatch by changing from named import `{ SessionPage }` to default import `SessionPage` in AppShell.tsx
