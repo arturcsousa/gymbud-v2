@@ -114,7 +114,7 @@ function SessionPage() {
     const rpe = parseInt(setInputs.rpe) || 0
 
     logSet({
-      session_exercise_id: currentExercise.session_exercise_id,
+      sessionExerciseId: currentExercise.session_exercise_id,
       set_number: nextSetNumber,
       reps,
       weight,

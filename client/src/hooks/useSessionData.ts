@@ -32,7 +32,6 @@ interface LoggedSet {
   rpe?: number | null;
   notes?: string | null;
   voided?: boolean;
-  duration_sec?: number | null;
   meta?: Record<string, any> | null;
   created_at: string;
   updated_at: string;
@@ -84,7 +83,6 @@ function convertLoggedSetRows(rows: LoggedSetRow[]): LoggedSet[] {
   return rows.map(row => ({
     ...row,
     voided: row.voided || false,
-    duration_sec: undefined,
     meta: null,
     created_at: new Date(row.updated_at).toISOString(),
     updated_at: new Date(row.updated_at).toISOString()
@@ -216,7 +214,6 @@ export function useSessionData(sessionId?: string) {
         reps: params.reps,
         weight: params.weight,
         rpe: params.rpe,
-        duration_sec: null,
         notes: params.notes,
       });
 
@@ -360,7 +357,7 @@ export function useSessionData(sessionId?: string) {
       // Enqueue for sync
       await enqueueSessionUpdate({
         id: sessionId,
-        status: updates.status,
+        status: dbStatus,
         started_at: updates.started_at,
         completed_at: updates.completed_at,
         notes: updates.notes,

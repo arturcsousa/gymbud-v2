@@ -13,7 +13,7 @@ import { InstallBanner } from '@/app/components/InstallBanner'
 // Pages
 import { AuthPage } from '@/app/pages/AuthPage'
 import { HomePage } from '@/app/pages/HomePage'
-import { SessionPage } from '@/app/pages/SessionPage'
+import SessionPage from '@/app/pages/SessionPage'
 import { HistoryPage } from '@/app/pages/HistoryPage'
 import { HistoryDetailPage } from '@/app/pages/HistoryDetailPage'
 import { StatsPage } from '@/app/pages/StatsPage'
