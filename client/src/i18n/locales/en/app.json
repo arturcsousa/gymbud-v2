@@ -31,8 +31,43 @@
   "update": {
     "available": "Update available",
     "description": "A new version of GymBud is ready.",
+    "description_with_version": "A new version of GymBud is ready ({{version}}).",
     "action": "Update now",
     "offline_ready": "Ready to use offline"
+  },
+  "install": {
+    "banner": {
+      "title": "Install GymBud",
+      "description": "Get the full app experience with offline access",
+      "install": "Install",
+      "dismiss": "Dismiss"
+    }
+  },
+  "settings": {
+    "about": "About",
+    "version": "Version",
+    "checkForUpdates": "Check for updates",
+    "checkingForUpdates": "Checking for updates...",
+    "installApp": "Install app",
+    "appInstalled": "App installed",
+    "installNotAvailable": "Install not available",
+    "save": "Save",
+    "account": "Account",
+    "email": "Email",
+    "emailReadonly": "Email cannot be changed",
+    "preferences": "Preferences",
+    "language": "Language",
+    "units": "Units",
+    "imperial": "Imperial",
+    "metric": "Metric",
+    "notifications": "Notifications",
+    "notificationsDesc": "Receive workout reminders and updates",
+    "darkMode": "Dark Mode",
+    "darkModeDesc": "Use dark theme (coming soon)",
+    "data": "Data",
+    "exportData": "Export Data",
+    "dangerZone": "Danger Zone",
+    "deleteAccount": "Delete Account"
   },
   "sync_toasts": {
     "success": "Sync complete",

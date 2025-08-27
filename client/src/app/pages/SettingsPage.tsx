@@ -11,7 +11,9 @@ import { Badge } from '@/components/ui/badge'
 import { supabase } from '@/lib/supabase'
 import { db } from '@/db/gymbud-db'
 import { pendingCount, requestFlush } from '@/sync/queue'
-import { RefreshCw, Clock, CheckCircle, AlertCircle } from 'lucide-react'
+import { usePWAUpdate } from '@/app/hooks/usePWAUpdate'
+import { usePWAInstall } from '@/app/hooks/usePWAInstall'
+import { RefreshCw, Clock, CheckCircle, AlertCircle, Download, Smartphone, Info } from 'lucide-react'
 
 function SettingsPage() {
   const { t, i18n } = useTranslation(['app', 'common', 'errors'])
@@ -19,6 +21,7 @@ function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [syncing, setSyncing] = useState(false)
+  const [checkingUpdates, setCheckingUpdates] = useState(false)
   
   // Settings state
   const [email, setEmail] = useState('')
@@ -26,6 +29,10 @@ function SettingsPage() {
   const [darkMode, setDarkMode] = useState(false)
   const [units, setUnits] = useState<'metric' | 'imperial'>('imperial')
   const [language, setLanguage] = useState('en')
+
+  // PWA hooks
+  const { checkForUpdates } = usePWAUpdate()
+  const { isInstallable, isInstalled, triggerInstall } = usePWAInstall()
 
   // Live sync data
   const pendingMutationsCount = useLiveQuery(() => pendingCount(), [])
@@ -132,6 +139,23 @@ function SettingsPage() {
   const formatEventTime = (ts: number) => {
     const date = new Date(ts)
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
+
+  const handleCheckForUpdates = async () => {
+    setCheckingUpdates(true)
+    try {
+      await checkForUpdates()
+    } finally {
+      setCheckingUpdates(false)
+    }
+  }
+
+  const handleInstallApp = async () => {
+    try {
+      await triggerInstall()
+    } catch (error) {
+      console.error('Error installing app:', error)
+    }
   }
 
   if (loading) {
@@ -406,6 +430,53 @@ function SettingsPage() {
               className="w-full justify-start text-white hover:bg-white/20 rounded-xl"
             >
               {t('app:settings.exportData')}
+            </Button>
+          </div>
+        </div>
+
+        {/* About/Version Section */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
+          <h2 className="text-lg font-bold text-white mb-4">
+            {t('app:settings.about')}
+          </h2>
+          
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Info className="h-4 w-4 text-white" />
+              <span className="text-white text-sm font-medium">
+                {t('app:settings.version')} 1.0.0
+              </span>
+            </div>
+            <Button
+              onClick={handleCheckForUpdates}
+              variant="ghost"
+              className="w-full justify-start text-white hover:bg-white/20 rounded-xl"
+            >
+              {checkingUpdates ? (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  {t('app:settings.checkingForUpdates')}
+                </>
+              ) : (
+                <>
+                  <Download className="mr-2 h-4 w-4" />
+                  {t('app:settings.checkForUpdates')}
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={handleInstallApp}
+              variant="ghost"
+              className="w-full justify-start text-white hover:bg-white/20 rounded-xl"
+            >
+              <Smartphone className="mr-2 h-4 w-4" />
+              {isInstalled ? (
+                t('app:settings.appInstalled')
+              ) : isInstallable ? (
+                t('app:settings.installApp')
+              ) : (
+                t('app:settings.installNotAvailable')
+              )}
             </Button>
           </div>
         </div>

@@ -1,10 +1,21 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
 export function usePWAUpdate() {
   const { t } = useTranslation();
   const updateTriggered = useRef(false);
+  const updateSW = useRef<((reloadPage?: boolean) => Promise<void>) | null>(null);
+
+  const checkForUpdates = useCallback(async () => {
+    if (updateSW.current) {
+      try {
+        await updateSW.current(false);
+      } catch (error) {
+        console.error('Manual update check failed:', error);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     // Check if PWA register is available (only in production builds)
@@ -13,7 +24,7 @@ export function usePWAUpdate() {
       import('virtual:pwa-register')
         .then((module) => {
           const { registerSW } = module;
-          registerSW({
+          const updateFunction = registerSW({
             immediate: true,
             onRegisteredSW(_swUrl: string, _registration: ServiceWorkerRegistration | undefined) {
               // Optional: expose for debugging
@@ -27,8 +38,13 @@ export function usePWAUpdate() {
               if (updateTriggered.current) return;
               updateTriggered.current = true;
 
+              const currentVersion = import.meta.env.VITE_APP_VERSION || 'unknown';
+              
               toast.info(t("app.update.available"), {
-                description: t("app.update.description"),
+                description: t("app.update.description_with_version", {
+                  defaultValue: "A new version of GymBud is ready ({{version}}).",
+                  version: currentVersion
+                }),
                 action: {
                   label: t("app.update.action"),
                   onClick: () => {
@@ -58,6 +74,9 @@ export function usePWAUpdate() {
               toast.success(t("app.update.offline_ready"));
             },
           });
+
+          // Store update function for manual checks
+          updateSW.current = updateFunction;
         })
         .catch(() => {
           // PWA register not available (development mode)
@@ -69,4 +88,8 @@ export function usePWAUpdate() {
       // no cleanup required
     };
   }, [t]);
+
+  return {
+    checkForUpdates
+  };
 }

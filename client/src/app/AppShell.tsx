@@ -8,6 +8,7 @@ import { GradientLayout } from '@/app/components/GradientLayout'
 import { AuthGuard } from '@/app/components/AuthGuard'
 import { OfflineIndicator } from '@/app/components/OfflineIndicator'
 import { ConflictBanner } from '@/app/components/ConflictBanner'
+import { InstallBanner } from '@/app/components/InstallBanner'
 
 // Pages
 import { AuthPage } from '@/app/pages/AuthPage'
@@ -91,7 +92,10 @@ export function AppShell({ children }: AppShellProps) {
         
         {/* Conflict resolution banner */}
         <ConflictBanner />
-
+        
+        {/* Install banner */}
+        <InstallBanner />
+        
         {/* Main content */}
         <div className="flex-1 flex flex-col">
           {children || (

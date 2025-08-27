@@ -43,8 +43,17 @@
   "update": {
     "available": "Atualização disponível",
     "description": "Uma nova versão do GymBud está pronta.",
+    "description_with_version": "Uma nova versão do GymBud está pronta ({{version}}).",
     "action": "Atualizar agora",
-    "offline_ready": "Pronto para usar offline"
+    "offline_ready": "Pronto para uso offline"
+  },
+  "install": {
+    "banner": {
+      "title": "Instalar GymBud",
+      "description": "Tenha a experiência completa do app com acesso offline",
+      "install": "Instalar",
+      "dismiss": "Dispensar"
+    }
   },
   "conflicts": {
     "detected": "Conflito de dados detectado para {{entity}}",
@@ -83,23 +92,30 @@
     "message": "A página que você está procurando não existe."
   },
   "settings": {
+    "about": "Sobre",
+    "version": "Versão",
+    "checkForUpdates": "Verificar atualizações",
+    "checkingForUpdates": "Verificando atualizações...",
+    "installApp": "Instalar app",
+    "appInstalled": "App instalado",
+    "installNotAvailable": "Instalação não disponível",
+    "save": "Salvar",
     "account": "Conta",
-    "preferences": "Preferências",
-    "data": "Dados",
-    "dangerZone": "Zona de Perigo",
     "email": "Email",
     "emailReadonly": "Email não pode ser alterado",
+    "preferences": "Preferências",
     "language": "Idioma",
     "units": "Unidades",
     "imperial": "Imperial",
     "metric": "Métrico",
     "notifications": "Notificações",
-    "notificationsDesc": "Receber lembretes de treino e atualizações de progresso",
+    "notificationsDesc": "Receber lembretes de treino e atualizações",
     "darkMode": "Modo Escuro",
-    "darkModeDesc": "Alternar entre temas claro e escuro",
+    "darkModeDesc": "Usar tema escuro (em breve)",
+    "data": "Dados",
     "exportData": "Exportar Dados",
+    "dangerZone": "Zona de Perigo",
     "deleteAccount": "Excluir Conta",
-    "save": "Salvar Configurações",
     "sync": {
       "title": "Sincronização",
       "status": "Status",

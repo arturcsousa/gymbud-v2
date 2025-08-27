@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## August 26, 2025 21:06 ET
+**Implemented** PWA install prompts and comprehensive version management system
+- **Install Prompts**: Created `usePWAInstall` hook managing `beforeinstallprompt` events with dismissal tracking in IndexedDB
+- **Install Banner**: Added dismissible `InstallBanner` component with smart display logic (only shows if not dismissed and app not installed)
+- **Version Management**: Enhanced Vite config to inject `VITE_APP_VERSION` from `VERCEL_GIT_COMMIT_SHA` or timestamp fallback
+- **Cache Discipline**: Added version-based cache busting for manifest icons (`?v=${APP_VERSION}`) to prevent stale PWA metadata
+- **Settings Enhancement**: Added About/Version section with current version display, manual update check, and context-aware install button
+- **Enhanced Update System**: Updated `usePWAUpdate` hook with version-aware toast messages and manual update check capability
+- **Translation Support**: Added complete EN/PT-BR localization for install banner, settings about section, and enhanced update messages
+- **Global Integration**: Wired InstallBanner into AppShell for app-wide PWA install prompt coverage
+- Context: Complete PWA native app experience with non-nagging install prompts, version visibility, and user-controlled updates
+- Migrations: N/A (PWA enhancement only)
+
 ## August 26, 2025 21:01 ET
 **Fixed** authentication redirect issue preventing users from accessing app after login/signup
 - **Root Cause**: `finalizeOnboarding()` was redirecting to non-existent `/app/session/today` route

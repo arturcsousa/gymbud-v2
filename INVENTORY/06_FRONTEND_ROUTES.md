@@ -72,8 +72,10 @@ export { ComponentName }             // Named export for AppShell
 
 ### PWA Infrastructure
 - **Service Worker**: Precaches app shell, stale-while-revalidate for API calls
-- **Manifest**: Installable PWA with shortcuts for session start and history
-- **Update System**: Toast notifications for app updates with auto-refresh capability
+- **Manifest**: Installable PWA with shortcuts for session start and history, version-based cache busting for icons
+- **Update System**: Toast notifications for app updates with version information and manual update checks
+- **Install Prompts**: `beforeinstallprompt` listener with dismissible banner and Settings integration
+- **Version Management**: Build-time version injection from git SHA or timestamp with display in Settings
 - **Offline Ready**: Toast notification when app is ready for offline use
 - **Dynamic Import**: PWA register module loaded conditionally to prevent development build errors
 - **Type Declarations**: Custom TypeScript definitions in `src/types/pwa.d.ts` for virtual:pwa-register module
