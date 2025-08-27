@@ -1,175 +1,111 @@
-import { useState, useEffect } from 'react'
 import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { Play, Calendar, TrendingUp, Dumbbell } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-
-interface Session {
-  id: string
-  status: 'draft' | 'active' | 'completed'
-  started_at?: string
-  completed_at?: string
-  notes?: string
-}
+import { Play, History, TrendingUp, Target } from 'lucide-react'
+import BottomNav from '@/components/BottomNav'
 
 function HomePage() {
   const { t } = useTranslation(['app', 'common'])
   const [, setLocation] = useLocation()
-  const [todaySession, setTodaySession] = useState<Session | null>(null)
-  const [recentSessions, setRecentSessions] = useState<Session[]>([])
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadData()
-  }, [])
-
-  const loadData = async () => {
-    try {
-      // Placeholder for loading today's session and recent sessions
-      // This would normally fetch from IndexedDB via dataManager
-      setTodaySession(null)
-      setRecentSessions([])
-    } catch (error) {
-      console.error('Error loading data:', error)
-    } finally {
-      setLoading(false)
-    }
+  const handleStartWorkout = () => {
+    setLocation('/session/new')
   }
 
-  const startNewSession = () => {
-    // Generate a new session ID and navigate to it
-    const sessionId = Date.now().toString()
-    setLocation(`/session/${sessionId}`)
-  }
-
-  const continueSession = (sessionId: string) => {
-    setLocation(`/session/${sessionId}`)
-  }
-
-  if (loading) {
-    return (
-      <div className="container mx-auto p-4">
-        <div className="text-center">Loading...</div>
-      </div>
-    )
+  const handleViewHistory = () => {
+    setLocation('/history')
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      {/* Welcome Header */}
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">{t('app:home.welcome')}</h1>
-        <p className="text-muted-foreground">{t('app:home.subtitle')}</p>
-      </div>
+    <div className="min-h-screen grid place-items-center bg-gradient-to-b from-teal-900 via-teal-950 to-black p-6">
+      <div className="w-full max-w-md rounded-2xl bg-white/10 backdrop-blur-xl p-6 shadow-xl ring-1 ring-white/10">
+        {/* Welcome Header */}
+        <div className="text-center mb-4">
+          <h1 className="text-xl font-semibold text-white mb-1">
+            {t('app:home.welcome')}
+          </h1>
+          <p className="text-white/70 text-sm">
+            {t('app:home.subtitle')}
+          </p>
+        </div>
 
-      {/* Today's Session */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Dumbbell className="h-5 w-5" />
-            <span>{t('app:home.todayWorkout')}</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {todaySession ? (
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">{t('app:home.continueWorkout')}</p>
-                <p className="text-sm text-muted-foreground">
-                  {todaySession.started_at && 
-                    `Started ${new Date(todaySession.started_at).toLocaleTimeString()}`
-                  }
-                </p>
+        {/* Today's Plan */}
+        <div className="bg-white/10 rounded-xl p-3 mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] flex items-center justify-center">
+              <Target className="w-3 h-3 text-slate-900" />
+            </div>
+            <h2 className="text-sm font-semibold text-white">
+              Today's Workout
+            </h2>
+          </div>
+          
+          <div className="flex justify-between text-xs text-white/70 mb-2">
+            <span>5 exercises</span>
+            <span>45 minutes</span>
+          </div>
+          <div className="text-white font-medium text-xs mb-3">Upper Body Strength</div>
+
+          <button
+            onClick={handleStartWorkout}
+            className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 font-semibold py-2 px-3 rounded-lg hover:from-[#00ACC1] hover:to-[#4DD0E1] transition-all duration-200 flex items-center justify-center gap-2 text-sm"
+          >
+            <Play className="w-3 h-3" />
+            Start Workout
+          </button>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="bg-white/10 rounded-xl p-3 mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+              <TrendingUp className="w-3 h-3 text-white" />
+            </div>
+            <h2 className="text-sm font-semibold text-white">
+              Quick Stats
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3">
+            <div className="text-center">
+              <div className="text-lg font-bold text-white">3</div>
+              <div className="text-white/70 text-xs">
+                This Week
               </div>
-              <Button onClick={() => continueSession(todaySession.id)}>
-                <Play className="h-4 w-4 mr-2" />
-                {t('app:home.continue')}
-              </Button>
             </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">{t('app:home.noWorkoutToday')}</p>
-              <Button onClick={startNewSession}>
-                <Play className="h-4 w-4 mr-2" />
-                {t('app:home.startWorkout')}
-              </Button>
+            <div className="text-center">
+              <div className="text-lg font-bold text-white">7</div>
+              <div className="text-white/70 text-xs">
+                Day Streak
+              </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center space-x-2">
-              <Calendar className="h-4 w-4" />
-              <span>{t('app:home.stats.thisWeek')}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">{t('app:home.stats.workouts')}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center space-x-2">
-              <TrendingUp className="h-4 w-4" />
-              <span>{t('app:home.stats.streak')}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">{t('app:home.stats.days')}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">{t('app:home.stats.total')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">{t('app:home.stats.workouts')}</p>
-          </CardContent>
-        </Card>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={handleViewHistory}
+            className="bg-white/10 rounded-lg p-2 hover:bg-white/20 transition-all duration-200 flex flex-col items-center gap-1"
+          >
+            <History className="w-4 h-4 text-white" />
+            <span className="text-white font-medium text-xs">
+              History
+            </span>
+          </button>
+          
+          <button
+            onClick={() => setLocation('/library')}
+            className="bg-white/10 rounded-lg p-2 hover:bg-white/20 transition-all duration-200 flex flex-col items-center gap-1"
+          >
+            <TrendingUp className="w-4 h-4 text-white" />
+            <span className="text-white font-medium text-xs">
+              Library
+            </span>
+          </button>
+        </div>
       </div>
-
-      {/* Recent Sessions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('app:home.recentSessions')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {recentSessions.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              {t('app:home.noRecentSessions')}
-            </p>
-          ) : (
-            <div className="space-y-3">
-              {recentSessions.map((session) => (
-                <div key={session.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div>
-                    <p className="font-medium">
-                      {session.completed_at && new Date(session.completed_at).toLocaleDateString()}
-                    </p>
-                    <Badge variant={session.status === 'completed' ? 'default' : 'secondary'}>
-                      {session.status}
-                    </Badge>
-                  </div>
-                  <Button variant="outline" size="sm" onClick={() => continueSession(session.id)}>
-                    {t('app:home.view')}
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      
+      <BottomNav />
     </div>
   )
 }
