@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 21:01 ET
+**Fixed** authentication redirect issue preventing users from accessing app after login/signup
+- **Root Cause**: `finalizeOnboarding()` was redirecting to non-existent `/app/session/today` route
+- **Redirect Fix**: Changed onboarding redirect from `/app/session/today` to `/` (home page) to match actual routing structure
+- **Navigation Enhancement**: Added wouter `useLocation` hook to `AuthPage.tsx` for reliable post-auth navigation
+- **Fallback Logic**: Added `setLocation("/")` calls after successful authentication with error handling fallback
+- **User Flow**: Users now properly redirect to home page after login/signup instead of staying stuck on auth page
+- Context: Complete auth-to-app transition now works reliably with both onboarding success and failure scenarios
+- Migrations: N/A (routing and navigation fixes only)
+
 ## August 26, 2025 20:55 ET
 **Implemented** Phase A Step 7 - Delta pulls for read-side synchronization
 - **Edge Function**: Created `pull-updates` for fetching fresh server state with RLS enforcement

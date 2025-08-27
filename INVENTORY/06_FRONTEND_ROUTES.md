@@ -119,14 +119,14 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
   2. Calls `finalizeOnboarding()` with default plan seed
   3. Creates/activates plan via `plan-get-or-create` Edge Function
   4. Sets `assessment_required = false` for instant access
-  5. Navigates to `/app/session/today` using `window.location.href`
+  5. Navigates to `/` (home page) using wouter `setLocation()` with fallback error handling
 
 ## Technical Implementation
 - **Auth State**: Uses `{ data: { subscription } } = supabase.auth.onAuthStateChange(...)`
 - **Cleanup**: Proper `subscription.unsubscribe()` in useEffect cleanup
 - **Mutex**: `ranRef` prevents duplicate `finalizeOnboarding` calls
 - **Error Handling**: Non-blocking profile updates with console logging
-- **Navigation**: `window.location.href` for reliable post-auth redirect (avoids React hooks violations)
+- **Navigation**: wouter `setLocation("/")` for reliable post-auth redirect with fallback error handling
 - **Custom Styling**: Inline CSS overrides for Supabase Auth UI components
 
 ## App Routes
@@ -136,9 +136,9 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - **State**: Can show "preparing..." until session data loads
 
 ## Navigation Patterns
-- **Auth → App**: Automatic redirect after successful authentication
-- **Error Recovery**: React hooks error #321 resolved by removing `useLocation` from async functions
-- **Reliable Navigation**: Direct `window.location.href` ensures navigation works regardless of React context
+- **Auth → App**: Automatic redirect after successful authentication to home page (`/`)
+- **Error Recovery**: Enhanced error handling with fallback navigation even if onboarding fails
+- **Reliable Navigation**: wouter `setLocation()` ensures navigation works within React context with proper cleanup
 
 ## URL Architecture
 
