@@ -1,6 +1,7 @@
 {
   "biometrics": {
     "title": "Fale sobre você",
+    "explain": "Usamos suas informações básicas para personalizar seu treino e acompanhar sua evolução de forma mais precisa.",
     "first_name": "Nome",
     "last_name": "Sobrenome",
     "height_cm": "Altura (cm)",
@@ -13,26 +14,32 @@
   },
   "goals": {
     "title": "Seu objetivo e rotina",
+    "explain": "Seus objetivos moldam seu programa. O coach vai ajustar seu estilo para te motivar do jeito que faz mais sentido para a sua jornada.",
     "goal_primary": "Objetivo principal",
     "days_per_week": "Dias por semana",
     "days_of_week": "Escolha os dias",
     "add_window": "Adicionar faixa de horário",
     "environment": "Onde você treina?",
     "equipment_basic": "Selecione o que você tem em casa",
+    "equipment_explain": "Adaptamos seus treinos ao equipamento que você realmente tem, para que você nunca veja exercícios impossíveis de realizar.",
+    "schedule_explain": "Sua agenda nos ajuda a criar um plano que se encaixa na sua semana, em vez de lutar contra ela.",
     "tone_auto": "Definiremos o tom do treinador com base no seu objetivo."
   },
   "profile": {
     "title": "Perfil de treino",
+    "explain": "Saber sobre lesões ou limitações mantém seus treinos seguros e eficazes.",
     "experience_level": "Nível de experiência",
     "confidence": "Confiança nos movimentos",
     "constraints": "Lesões e restrições",
     "warmup": "Estilo de aquecimento",
+    "warmup_explain": "Um bom aquecimento prepara seu corpo e sua mente, reduzindo o risco de lesão e aumentando seu desempenho.",
     "mobility": "Foco de mobilidade",
     "rest_pref": "Preferência de descanso",
     "intensity": "Orientação de intensidade"
   },
   "review": {
     "title": "Revisar e criar plano",
+    "explain": "Sua primeira sessão define o ponto de partida. Vamos usá-la para montar um plano que evolui junto com você.",
     "edit": "Editar",
     "confirm": "Criar meu plano",
     "creating": "Criando seu plano...",

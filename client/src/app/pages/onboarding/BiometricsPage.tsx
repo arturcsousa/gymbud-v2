@@ -94,6 +94,9 @@ export function BiometricsPage() {
           <CardTitle className="text-2xl text-center">
             {t('onboarding:biometrics.title')}
           </CardTitle>
+          <p className="text-sm text-gray-600 text-center mt-2">
+            {t('onboarding:biometrics.explain')}
+          </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

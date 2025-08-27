@@ -133,6 +133,9 @@ export function ReviewPage() {
           <CardTitle className="text-2xl text-center">
             {t('onboarding:review.title')}
           </CardTitle>
+          <p className="text-sm text-gray-600 text-center mt-2">
+            {t('onboarding:review.explain')}
+          </p>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Biometrics Summary */}

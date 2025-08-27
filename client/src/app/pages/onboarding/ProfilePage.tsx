@@ -159,6 +159,9 @@ export function ProfilePage() {
           <CardTitle className="text-2xl text-center">
             {t('onboarding:profile.title')}
           </CardTitle>
+          <p className="text-sm text-gray-600 text-center mt-2">
+            {t('onboarding:profile.explain')}
+          </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -254,6 +257,9 @@ export function ProfilePage() {
 
             <div className="space-y-2">
               <Label>{t('onboarding:profile.warmup')}</Label>
+              <p className="text-xs text-gray-500 mb-2">
+                {t('onboarding:profile.warmup_explain')}
+              </p>
               <Select onValueChange={(value) => form.setValue('warmup_style', value as any)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select warm-up style" />

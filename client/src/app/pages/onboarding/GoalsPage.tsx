@@ -147,6 +147,9 @@ export function GoalsPage() {
           <CardTitle className="text-2xl text-center">
             {t('onboarding:goals.title')}
           </CardTitle>
+          <p className="text-sm text-gray-600 text-center mt-2">
+            {t('onboarding:goals.explain')}
+          </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -185,6 +188,9 @@ export function GoalsPage() {
             {watchedDaysPerWeek && (
               <div className="space-y-2">
                 <Label>{t('onboarding:goals.days_of_week')}</Label>
+                <p className="text-xs text-gray-500 mb-2">
+                  {t('onboarding:goals.schedule_explain')}
+                </p>
                 <div className="grid grid-cols-2 gap-2">
                   {DAYS_OF_WEEK.map((day) => (
                     <div key={day.value} className="flex items-center space-x-2">
@@ -218,6 +224,9 @@ export function GoalsPage() {
             {watchedEnvironment === 'home_basic' && (
               <div className="space-y-2">
                 <Label>{t('onboarding:goals.equipment_basic')}</Label>
+                <p className="text-xs text-gray-500 mb-2">
+                  {t('onboarding:goals.equipment_explain')}
+                </p>
                 <div className="grid grid-cols-2 gap-2">
                   {HOME_BASIC_EQUIPMENT.map((equipment) => (
                     <div key={equipment} className="flex items-center space-x-2">

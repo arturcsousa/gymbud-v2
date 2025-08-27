@@ -4,6 +4,7 @@
   "steps": {
     "biometrics": {
       "title": "Tell us about you",
+      "explain": "We use your basic info to personalize your training and track your progress more accurately over time.",
       "first_name": "First name",
       "last_name": "Last name",
       "height_cm": "Height (cm)",
@@ -16,26 +17,32 @@
     },
     "goals": {
       "title": "Your goal & routine",
+      "explain": "Your goals shape your program. The coach will adjust its style to motivate you in the way that feels right for your journey.",
       "goal_primary": "Primary goal",
       "days_per_week": "Days per week",
       "days_of_week": "Pick your days",
       "add_window": "Add time window",
       "environment": "Where do you train?",
       "equipment_basic": "Select what you have at home",
+      "equipment_explain": "We adapt your workouts to the equipment you actually have, so you never see exercises you can't do.",
+      "schedule_explain": "Your schedule helps us design a plan that fits your week instead of fighting against it.",
       "tone_auto": "We'll set your coach tone based on your goal."
     },
     "profile": {
       "title": "Training profile",
+      "explain": "Knowing about injuries or limitations keeps your workouts safe and effective.",
       "experience_level": "Experience level",
       "confidence": "Movement confidence",
       "constraints": "Injuries & constraints",
       "warmup": "Warm-up style",
+      "warmup_explain": "A good warm-up prepares your body and mind, reducing the risk of injury and boosting performance.",
       "mobility": "Mobility focus",
       "rest_pref": "Rest preference",
       "intensity": "Intensity guidance"
     },
     "review": {
       "title": "Review & create your plan",
+      "explain": "Your first session sets your starting point. We'll use it to build a plan that grows with you.",
       "edit": "Edit",
       "confirm": "Create my plan",
       "creating": "Creating your plan...",
