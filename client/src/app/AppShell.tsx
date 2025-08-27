@@ -21,10 +21,10 @@ import { SettingsPage } from '@/app/pages/SettingsPage'
 import { NotFoundPage } from '@/app/pages/NotFoundPage'
 
 // Onboarding Pages
-import { BiometricsPage } from '@/app/pages/onboarding/BiometricsPage'
-import { GoalsPage } from '@/app/pages/onboarding/GoalsPage'
-import { ProfilePage } from '@/app/pages/onboarding/ProfilePage'
-import { ReviewPage } from '@/app/pages/onboarding/ReviewPage'
+import BiometricsPage from '@/app/pages/onboarding/BiometricsPage'
+import GoalsPage from '@/app/pages/onboarding/GoalsPage'
+import ProfilePage from '@/app/pages/onboarding/ProfilePage'
+import ReviewPage from '@/app/pages/onboarding/ReviewPage'
 
 // Create query client
 const queryClient = new QueryClient({

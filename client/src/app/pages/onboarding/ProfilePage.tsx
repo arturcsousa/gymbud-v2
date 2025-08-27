@@ -142,7 +142,7 @@ function ProfilePage() {
   const handleMobilityToggle = (area: string, checked: boolean) => {
     const current = form.getValues('mobility_focus') || []
     if (checked) {
-      form.setValue('mobility_focus', [...current, area])
+      form.setValue('mobility_focus', [...current, area as any])
     } else {
       form.setValue('mobility_focus', current.filter((a: string) => a !== area))
     }
@@ -290,7 +290,7 @@ function ProfilePage() {
                   <div key={area.value} className="flex items-center space-x-2">
                     <Checkbox
                       id={area.value}
-                      checked={form.getValues('mobility_focus')?.includes(area.value)}
+                      checked={form.getValues('mobility_focus')?.includes(area.value as any)}
                       onCheckedChange={(checked: boolean) => handleMobilityToggle(area.value, checked)}
                     />
                     <Label htmlFor={area.value}>{area.label}</Label>

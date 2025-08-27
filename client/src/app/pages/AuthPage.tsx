@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
-import { finalizeOnboarding } from "@/onboarding/actions";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
@@ -19,24 +18,26 @@ export function AuthPage() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session && !ranRef.current) {
         ranRef.current = true;
+        
+        // Check if user has an active plan to determine routing
         try {
-          const defaultSeed = {
-            goals: ["general_fitness"],
-            experience_level: "new",
-            frequency_days_per_week: 3,
-            schedule_days: ["monday", "wednesday", "friday"],
-            session_duration_min: 45,
-            environment: "professional_gym",
-            coaching_tone: "supportive"
-          };
+          const { data: activePlan } = await supabase
+            .from("app2_plans")
+            .select("id, status")
+            .eq("status", "active")
+            .maybeSingle();
           
-          await finalizeOnboarding(defaultSeed);
-          // Navigate to home page after successful onboarding
-          setLocation("/");
+          if (activePlan) {
+            // Returning user with active plan - go to app
+            setLocation("/");
+          } else {
+            // New user without plan - start onboarding
+            setLocation("/app/onboarding/biometrics");
+          }
         } catch (error) {
-          console.error('Onboarding failed:', error);
-          // Even if onboarding fails, redirect to home page
-          setLocation("/");
+          console.error('Failed to check plan status:', error);
+          // On error, default to onboarding (safer for new users)
+          setLocation("/app/onboarding/biometrics");
         }
       }
     });
@@ -45,24 +46,26 @@ export function AuthPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session && !ranRef.current) {
         ranRef.current = true;
+        
+        // Check if user has an active plan to determine routing
         try {
-          const defaultSeed = {
-            goals: ["general_fitness"],
-            experience_level: "new",
-            frequency_days_per_week: 3,
-            schedule_days: ["monday", "wednesday", "friday"],
-            session_duration_min: 45,
-            environment: "professional_gym",
-            coaching_tone: "supportive"
-          };
+          const { data: activePlan } = await supabase
+            .from("app2_plans")
+            .select("id, status")
+            .eq("status", "active")
+            .maybeSingle();
           
-          await finalizeOnboarding(defaultSeed);
-          // Navigate to home page after successful onboarding
-          setLocation("/");
+          if (activePlan) {
+            // Returning user with active plan - go to app
+            setLocation("/");
+          } else {
+            // New user without plan - start onboarding
+            setLocation("/app/onboarding/biometrics");
+          }
         } catch (error) {
-          console.error('Onboarding failed:', error);
-          // Even if onboarding fails, redirect to home page
-          setLocation("/");
+          console.error('Failed to check plan status:', error);
+          // On error, default to onboarding (safer for new users)
+          setLocation("/app/onboarding/biometrics");
         }
       }
     };

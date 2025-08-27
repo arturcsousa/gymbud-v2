@@ -38,7 +38,7 @@ const HOME_BASIC_EQUIPMENT = [
   'kettlebell', 'foam_roller', 'stability_ball', 'jump_rope'
 ]
 
-export function GoalsPage() {
+export default function GoalsPage() {
   const [, navigate] = useLocation()
   const { t, i18n } = useTranslation(['onboarding'])
   const [loading, setLoading] = useState(false)
@@ -82,11 +82,6 @@ export function GoalsPage() {
           environment: state.environment,
           equipment: state.equipment || []
         })
-      } else {
-        // Set defaults based on locale
-        const isMetric = i18n.language === 'pt-BR'
-        form.setValue('units', isMetric ? 'metric' : 'imperial')
-        form.setValue('date_format', isMetric ? 'dmy' : 'mdy')
       }
     }
 
@@ -124,7 +119,7 @@ export function GoalsPage() {
   const handleDayToggle = (day: string, checked: boolean) => {
     const currentDays = form.getValues('days_of_week') || []
     if (checked) {
-      form.setValue('days_of_week', [...currentDays, day])
+      form.setValue('days_of_week', [...currentDays, day as any])
     } else {
       form.setValue('days_of_week', currentDays.filter(d => d !== day))
     }
@@ -144,7 +139,10 @@ export function GoalsPage() {
   }
 
   const handleDaysPerWeekChange = (value: string) => {
-    form.setValue('days_per_week', Number(value) as GoalsFormData['days_per_week'])
+    const numValue = Number(value)
+    if (numValue >= 2 && numValue <= 6) {
+      form.setValue('days_per_week', numValue as GoalsFormData['days_per_week'])
+    }
   }
 
   const handleEnvironmentChange = (value: string) => {
@@ -207,7 +205,7 @@ export function GoalsPage() {
                     <div key={day.value} className="flex items-center space-x-2">
                       <Checkbox
                         id={day.value}
-                        checked={form.getValues('days_of_week')?.includes(day.value)}
+                        checked={form.getValues('days_of_week')?.includes(day.value as any)}
                         onCheckedChange={(checked: boolean) => handleDayToggle(day.value, checked)}
                       />
                       <Label htmlFor={day.value}>{day.label}</Label>
@@ -285,5 +283,3 @@ export function GoalsPage() {
     </div>
   )
 }
-
-export { GoalsPage }
