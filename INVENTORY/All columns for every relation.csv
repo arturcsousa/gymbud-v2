@@ -1,0 +1,1062 @@
+schema_name,table_name,column_name,data_type,not_null,default_value
+app,user_state,user_id,uuid,true,null
+app,user_state,assessment_required,boolean,true,true
+app,user_state,last_assessed_at,timestamp with time zone,false,null
+app,user_state_pkey,user_id,uuid,false,null
+app,v_user_state,user_id,uuid,false,null
+app,v_user_state,assessment_required,boolean,false,null
+app,v_user_state,last_assessed_at,timestamp with time zone,false,null
+app2,coach_audit,id,uuid,true,gen_random_uuid()
+app2,coach_audit,user_id,uuid,true,null
+app2,coach_audit,session_id,uuid,false,null
+app2,coach_audit,session_exercise_id,uuid,false,null
+app2,coach_audit,tool,text,true,null
+app2,coach_audit,args_json,jsonb,true,null
+app2,coach_audit,args_hash,text,true,null
+app2,coach_audit,explain,text,false,null
+app2,coach_audit,created_at,timestamp with time zone,true,now()
+app2,coach_audit_pkey,id,uuid,false,null
+app2,idx_coach_audit_user_time,user_id,uuid,false,null
+app2,idx_coach_audit_user_time,created_at,timestamp with time zone,false,null
+app2,idx_logged_sets_exercise_idx,session_exercise_id,uuid,false,null
+app2,idx_logged_sets_exercise_idx,set_number,integer,false,null
+app2,idx_logged_sets_order,session_exercise_id,uuid,false,null
+app2,idx_logged_sets_order,set_number,integer,false,null
+app2,idx_logged_sets_sx_created_at,session_exercise_id,uuid,false,null
+app2,idx_logged_sets_sx_created_at,created_at,timestamp with time zone,false,null
+app2,idx_logged_sets_sx_voided,session_exercise_id,uuid,false,null
+app2,idx_logged_sets_sx_voided,created_at,timestamp with time zone,false,null
+app2,idx_plans_user_active,user_id,uuid,false,null
+app2,idx_session_exercises_session_order,session_id,uuid,false,null
+app2,idx_session_exercises_session_order,order_index,integer,false,null
+app2,idx_session_exercises_session_updated_at,session_id,uuid,false,null
+app2,idx_session_exercises_session_updated_at,updated_at,timestamp with time zone,false,null
+app2,idx_sessions_user_date,user_id,uuid,false,null
+app2,idx_sessions_user_date,session_date,date,false,null
+app2,idx_sessions_user_updated_at,user_id,uuid,false,null
+app2,idx_sessions_user_updated_at,updated_at,timestamp with time zone,false,null
+app2,logged_sets,id,uuid,true,gen_random_uuid()
+app2,logged_sets,session_exercise_id,uuid,true,null
+app2,logged_sets,set_number,integer,true,null
+app2,logged_sets,reps,integer,false,null
+app2,logged_sets,weight,"numeric(6,2)",false,null
+app2,logged_sets,rpe,"numeric(3,1)",false,null
+app2,logged_sets,duration_sec,integer,false,null
+app2,logged_sets,notes,text,false,null
+app2,logged_sets,meta,jsonb,false,null
+app2,logged_sets,created_at,timestamp with time zone,true,now()
+app2,logged_sets,voided,boolean,true,false
+app2,logged_sets_pkey,id,uuid,false,null
+app2,plans,id,uuid,true,gen_random_uuid()
+app2,plans,user_id,uuid,true,null
+app2,plans,status,text,true,'draft'::text
+app2,plans,goals,text[],true,null
+app2,plans,experience_level,app2.experience_level,true,null
+app2,plans,years_away,integer,false,null
+app2,plans,frequency_days_per_week,integer,true,null
+app2,plans,schedule_days,text[],true,null
+app2,plans,session_duration_min,integer,true,null
+app2,plans,environment,app2.environment,true,null
+app2,plans,coaching_tone,app2.coaching_tone,true,null
+app2,plans,height_cm,"numeric(5,2)",true,null
+app2,plans,weight_kg,"numeric(6,2)",true,null
+app2,plans,resting_hr,integer,false,null
+app2,plans,body_fat_pct,"numeric(5,2)",false,null
+app2,plans,locale,text,false,'en'::text
+app2,plans,seed,jsonb,true,null
+app2,plans,started_on,date,false,null
+app2,plans,created_at,timestamp with time zone,true,now()
+app2,plans,updated_at,timestamp with time zone,true,now()
+app2,plans_pkey,id,uuid,false,null
+app2,profiles,user_id,uuid,true,null
+app2,profiles,first_name,text,true,null
+app2,profiles,last_name,text,true,null
+app2,profiles,date_of_birth,date,true,null
+app2,profiles,gender,text,false,null
+app2,profiles,locale,text,true,'en'::text
+app2,profiles,height_cm,"numeric(5,2)",true,null
+app2,profiles,weight_kg,"numeric(6,2)",true,null
+app2,profiles,resting_hr,integer,false,null
+app2,profiles,body_fat_pct,"numeric(5,2)",false,null
+app2,profiles,assessment_required,boolean,true,true
+app2,profiles,last_assessment_at,timestamp with time zone,false,null
+app2,profiles,injuries,text[],true,'{}'::text[]
+app2,profiles,equipment,text[],true,'{}'::text[]
+app2,profiles,created_at,timestamp with time zone,true,now()
+app2,profiles,updated_at,timestamp with time zone,true,now()
+app2,profiles_pkey,user_id,uuid,false,null
+app2,session_exercises,id,uuid,true,gen_random_uuid()
+app2,session_exercises,session_id,uuid,true,null
+app2,session_exercises,order_index,integer,true,null
+app2,session_exercises,exercise_name,text,false,null
+app2,session_exercises,variant_id,uuid,false,null
+app2,session_exercises,pattern,text,false,null
+app2,session_exercises,prescription,jsonb,true,null
+app2,session_exercises,created_at,timestamp with time zone,true,now()
+app2,session_exercises,updated_at,timestamp with time zone,true,now()
+app2,session_exercises_pkey,id,uuid,false,null
+app2,sessions,id,uuid,true,gen_random_uuid()
+app2,sessions,user_id,uuid,true,null
+app2,sessions,plan_id,uuid,false,null
+app2,sessions,session_date,date,true,null
+app2,sessions,status,app2.session_status,true,'pending'::app2.session_status
+app2,sessions,started_at,timestamp with time zone,false,null
+app2,sessions,completed_at,timestamp with time zone,false,null
+app2,sessions,notes,text,false,null
+app2,sessions,created_at,timestamp with time zone,true,now()
+app2,sessions,updated_at,timestamp with time zone,true,now()
+app2,sessions_pkey,id,uuid,false,null
+app2,uq_sessions_user_date,user_id,uuid,false,null
+app2,uq_sessions_user_date,session_date,date,false,null
+app2,v_exercise_catalog,exercise_id,uuid,false,null
+app2,v_exercise_catalog,name,text,false,null
+app2,v_exercise_catalog,instructions,text,false,null
+app2,v_exercise_catalog,form_tips,text,false,null
+app2,v_exercise_catalog,contraindications,text[],false,null
+app2,v_exercise_catalog,category,text,false,null
+app2,v_exercise_catalog,equipment,text[],false,null
+app2,v_exercise_catalog,video_url,text,false,null
+app2,v_exercise_catalog,patterns,text[],false,null
+app2,v_exercise_catalog,primary_muscles,text[],false,null
+app2,v_exercise_catalog,goal_effectiveness,jsonb,false,null
+app2,v_exercise_catalog,complexity_level,integer,false,null
+app2,v_exercise_catalog,name_lc,text,false,null
+app2,v_exercise_library_localized,exercise_id,uuid,false,null
+app2,v_exercise_library_localized,name,text,false,null
+app2,v_exercise_library_localized,description,text,false,null
+app2,v_exercise_library_localized,cues,text[],false,null
+app2,v_exercise_library_localized,contraindications,text[],false,null
+app2,v_exercise_library_localized,category,text,false,null
+app2,v_exercise_library_localized,equipment,text[],false,null
+app2,v_exercise_library_localized,video_url,text,false,null
+app2,v_exercise_library_localized,patterns,text[],false,null
+app2,v_exercise_library_localized,primary_muscles,text[],false,null
+app2,v_exercise_library_localized,goal_effectiveness,jsonb,false,null
+app2,v_exercise_library_localized,complexity_level,integer,false,null
+app2,v_exercise_library_localized,name_lc,text,false,null
+app2,v_exercise_variants_localized,variant_id,uuid,false,null
+app2,v_exercise_variants_localized,exercise_id,uuid,false,null
+app2,v_exercise_variants_localized,modality,modality_enum,false,null
+app2,v_exercise_variants_localized,environments,environment_enum[],false,null
+app2,v_exercise_variants_localized,equipment,text[],false,null
+app2,v_exercise_variants_localized,is_assessment_default,boolean,false,null
+app2,v_exercise_variants_localized,created_at,timestamp with time zone,false,null
+app2,v_exercise_variants_localized,tags,text[],false,null
+app2,v_exercise_variants_localized,exercise_name,text,false,null
+app2,v_exercise_variants_localized,category,text,false,null
+app2,v_exercise_variants_localized,variant_name_lc,text,false,null
+app2,v_exercise_variants_localized,name,text,false,null
+app2,v_exercise_variants_localized,notes,text,false,null
+app2,v_session_exercises_enriched,session_exercise_id,uuid,false,null
+app2,v_session_exercises_enriched,session_id,uuid,false,null
+app2,v_session_exercises_enriched,user_id,uuid,false,null
+app2,v_session_exercises_enriched,session_date,date,false,null
+app2,v_session_exercises_enriched,plan_id,uuid,false,null
+app2,v_session_exercises_enriched,order_index,integer,false,null
+app2,v_session_exercises_enriched,exercise_name,text,false,null
+app2,v_session_exercises_enriched,variant_id,uuid,false,null
+app2,v_session_exercises_enriched,pattern,text,false,null
+app2,v_session_exercises_enriched,prescription,jsonb,false,null
+app2,v_session_exercises_enriched,stage,text,false,null
+app2,v_session_exercises_enriched,ramp_json,jsonb,false,null
+app2,v_session_exercises_enriched,rest_sec,integer,false,null
+app2,v_session_exercises_enriched,sets,integer,false,null
+app2,v_session_exercises_enriched,reps_scalar,integer,false,null
+app2,v_session_exercises_enriched,reps_array_json,jsonb,false,null
+app2,v_session_exercises_enriched,tempo,text,false,null
+app2,v_session_exercises_enriched,rir,integer,false,null
+app2,v_session_exercises_enriched,percent_1rm,numeric,false,null
+app2,v_session_exercises_enriched,duration_sec,integer,false,null
+app2,v_session_exercises_enriched,is_warmup,boolean,false,null
+app2,v_session_exercises_enriched,session_status,app2.session_status,false,null
+app2,v_session_exercises_enriched,started_at,timestamp with time zone,false,null
+app2,v_session_exercises_enriched,completed_at,timestamp with time zone,false,null
+app2,v_session_metrics,session_id,uuid,false,null
+app2,v_session_metrics,user_id,uuid,false,null
+app2,v_session_metrics,session_date,date,false,null
+app2,v_session_metrics,total_sets,bigint,false,null
+app2,v_session_metrics,total_volume,numeric,false,null
+app2,v_session_metrics,warmup_exercise_count,bigint,false,null
+auth,amr_id_pk,id,uuid,false,null
+auth,audit_log_entries,instance_id,uuid,false,null
+auth,audit_log_entries,id,uuid,true,null
+auth,audit_log_entries,payload,json,false,null
+auth,audit_log_entries,created_at,timestamp with time zone,false,null
+auth,audit_log_entries,ip_address,character varying(64),true,''::character varying
+auth,audit_log_entries_pkey,id,uuid,false,null
+auth,audit_logs_instance_id_idx,instance_id,uuid,false,null
+auth,confirmation_token_idx,confirmation_token,character varying(255),false,null
+auth,email_change_token_current_idx,email_change_token_current,character varying(255),false,null
+auth,email_change_token_new_idx,email_change_token_new,character varying(255),false,null
+auth,factor_id_created_at_idx,user_id,uuid,false,null
+auth,factor_id_created_at_idx,created_at,timestamp with time zone,false,null
+auth,flow_state,id,uuid,true,null
+auth,flow_state,user_id,uuid,false,null
+auth,flow_state,auth_code,text,true,null
+auth,flow_state,code_challenge_method,auth.code_challenge_method,true,null
+auth,flow_state,code_challenge,text,true,null
+auth,flow_state,provider_type,text,true,null
+auth,flow_state,provider_access_token,text,false,null
+auth,flow_state,provider_refresh_token,text,false,null
+auth,flow_state,created_at,timestamp with time zone,false,null
+auth,flow_state,updated_at,timestamp with time zone,false,null
+auth,flow_state,authentication_method,text,true,null
+auth,flow_state,auth_code_issued_at,timestamp with time zone,false,null
+auth,flow_state_created_at_idx,created_at,timestamp with time zone,false,null
+auth,flow_state_pkey,id,uuid,false,null
+auth,identities,provider_id,text,true,null
+auth,identities,user_id,uuid,true,null
+auth,identities,identity_data,jsonb,true,null
+auth,identities,provider,text,true,null
+auth,identities,last_sign_in_at,timestamp with time zone,false,null
+auth,identities,created_at,timestamp with time zone,false,null
+auth,identities,updated_at,timestamp with time zone,false,null
+auth,identities,email,text,false,lower((identity_data ->> 'email'::text))
+auth,identities,id,uuid,true,gen_random_uuid()
+auth,identities_email_idx,email,text,false,null
+auth,identities_pkey,id,uuid,false,null
+auth,identities_provider_id_provider_unique,provider_id,text,false,null
+auth,identities_provider_id_provider_unique,provider,text,false,null
+auth,identities_user_id_idx,user_id,uuid,false,null
+auth,idx_auth_code,auth_code,text,false,null
+auth,idx_user_id_auth_method,user_id,uuid,false,null
+auth,idx_user_id_auth_method,authentication_method,text,false,null
+auth,instances,id,uuid,true,null
+auth,instances,uuid,uuid,false,null
+auth,instances,raw_base_config,text,false,null
+auth,instances,created_at,timestamp with time zone,false,null
+auth,instances,updated_at,timestamp with time zone,false,null
+auth,instances_pkey,id,uuid,false,null
+auth,mfa_amr_claims,session_id,uuid,true,null
+auth,mfa_amr_claims,created_at,timestamp with time zone,true,null
+auth,mfa_amr_claims,updated_at,timestamp with time zone,true,null
+auth,mfa_amr_claims,authentication_method,text,true,null
+auth,mfa_amr_claims,id,uuid,true,null
+auth,mfa_amr_claims_session_id_authentication_method_pkey,session_id,uuid,false,null
+auth,mfa_amr_claims_session_id_authentication_method_pkey,authentication_method,text,false,null
+auth,mfa_challenge_created_at_idx,created_at,timestamp with time zone,false,null
+auth,mfa_challenges,id,uuid,true,null
+auth,mfa_challenges,factor_id,uuid,true,null
+auth,mfa_challenges,created_at,timestamp with time zone,true,null
+auth,mfa_challenges,verified_at,timestamp with time zone,false,null
+auth,mfa_challenges,ip_address,inet,true,null
+auth,mfa_challenges,otp_code,text,false,null
+auth,mfa_challenges,web_authn_session_data,jsonb,false,null
+auth,mfa_challenges_pkey,id,uuid,false,null
+auth,mfa_factors,id,uuid,true,null
+auth,mfa_factors,user_id,uuid,true,null
+auth,mfa_factors,friendly_name,text,false,null
+auth,mfa_factors,factor_type,auth.factor_type,true,null
+auth,mfa_factors,status,auth.factor_status,true,null
+auth,mfa_factors,created_at,timestamp with time zone,true,null
+auth,mfa_factors,updated_at,timestamp with time zone,true,null
+auth,mfa_factors,secret,text,false,null
+auth,mfa_factors,phone,text,false,null
+auth,mfa_factors,last_challenged_at,timestamp with time zone,false,null
+auth,mfa_factors,web_authn_credential,jsonb,false,null
+auth,mfa_factors,web_authn_aaguid,uuid,false,null
+auth,mfa_factors_last_challenged_at_key,last_challenged_at,timestamp with time zone,false,null
+auth,mfa_factors_pkey,id,uuid,false,null
+auth,mfa_factors_user_friendly_name_unique,friendly_name,text,false,null
+auth,mfa_factors_user_friendly_name_unique,user_id,uuid,false,null
+auth,mfa_factors_user_id_idx,user_id,uuid,false,null
+auth,one_time_tokens,id,uuid,true,null
+auth,one_time_tokens,user_id,uuid,true,null
+auth,one_time_tokens,token_type,auth.one_time_token_type,true,null
+auth,one_time_tokens,token_hash,text,true,null
+auth,one_time_tokens,relates_to,text,true,null
+auth,one_time_tokens,created_at,timestamp without time zone,true,now()
+auth,one_time_tokens,updated_at,timestamp without time zone,true,now()
+auth,one_time_tokens_pkey,id,uuid,false,null
+auth,one_time_tokens_relates_to_hash_idx,relates_to,integer,false,null
+auth,one_time_tokens_token_hash_hash_idx,token_hash,integer,false,null
+auth,one_time_tokens_user_id_token_type_key,user_id,uuid,false,null
+auth,one_time_tokens_user_id_token_type_key,token_type,auth.one_time_token_type,false,null
+auth,reauthentication_token_idx,reauthentication_token,character varying(255),false,null
+auth,recovery_token_idx,recovery_token,character varying(255),false,null
+auth,refresh_tokens,instance_id,uuid,false,null
+auth,refresh_tokens,id,bigint,true,nextval('auth.refresh_tokens_id_seq'::regclass)
+auth,refresh_tokens,token,character varying(255),false,null
+auth,refresh_tokens,user_id,character varying(255),false,null
+auth,refresh_tokens,revoked,boolean,false,null
+auth,refresh_tokens,created_at,timestamp with time zone,false,null
+auth,refresh_tokens,updated_at,timestamp with time zone,false,null
+auth,refresh_tokens,parent,character varying(255),false,null
+auth,refresh_tokens,session_id,uuid,false,null
+auth,refresh_tokens_id_seq,last_value,bigint,true,null
+auth,refresh_tokens_id_seq,log_cnt,bigint,true,null
+auth,refresh_tokens_id_seq,is_called,boolean,true,null
+auth,refresh_tokens_instance_id_idx,instance_id,uuid,false,null
+auth,refresh_tokens_instance_id_user_id_idx,instance_id,uuid,false,null
+auth,refresh_tokens_instance_id_user_id_idx,user_id,character varying(255),false,null
+auth,refresh_tokens_parent_idx,parent,character varying(255),false,null
+auth,refresh_tokens_pkey,id,bigint,false,null
+auth,refresh_tokens_session_id_revoked_idx,session_id,uuid,false,null
+auth,refresh_tokens_session_id_revoked_idx,revoked,boolean,false,null
+auth,refresh_tokens_token_unique,token,character varying(255),false,null
+auth,refresh_tokens_updated_at_idx,updated_at,timestamp with time zone,false,null
+auth,saml_providers,id,uuid,true,null
+auth,saml_providers,sso_provider_id,uuid,true,null
+auth,saml_providers,entity_id,text,true,null
+auth,saml_providers,metadata_xml,text,true,null
+auth,saml_providers,metadata_url,text,false,null
+auth,saml_providers,attribute_mapping,jsonb,false,null
+auth,saml_providers,created_at,timestamp with time zone,false,null
+auth,saml_providers,updated_at,timestamp with time zone,false,null
+auth,saml_providers,name_id_format,text,false,null
+auth,saml_providers_entity_id_key,entity_id,text,false,null
+auth,saml_providers_pkey,id,uuid,false,null
+auth,saml_providers_sso_provider_id_idx,sso_provider_id,uuid,false,null
+auth,saml_relay_states,id,uuid,true,null
+auth,saml_relay_states,sso_provider_id,uuid,true,null
+auth,saml_relay_states,request_id,text,true,null
+auth,saml_relay_states,for_email,text,false,null
+auth,saml_relay_states,redirect_to,text,false,null
+auth,saml_relay_states,created_at,timestamp with time zone,false,null
+auth,saml_relay_states,updated_at,timestamp with time zone,false,null
+auth,saml_relay_states,flow_state_id,uuid,false,null
+auth,saml_relay_states_created_at_idx,created_at,timestamp with time zone,false,null
+auth,saml_relay_states_for_email_idx,for_email,text,false,null
+auth,saml_relay_states_pkey,id,uuid,false,null
+auth,saml_relay_states_sso_provider_id_idx,sso_provider_id,uuid,false,null
+auth,schema_migrations,version,character varying(255),true,null
+auth,schema_migrations_pkey,version,character varying(255),false,null
+auth,sessions,id,uuid,true,null
+auth,sessions,user_id,uuid,true,null
+auth,sessions,created_at,timestamp with time zone,false,null
+auth,sessions,updated_at,timestamp with time zone,false,null
+auth,sessions,factor_id,uuid,false,null
+auth,sessions,aal,auth.aal_level,false,null
+auth,sessions,not_after,timestamp with time zone,false,null
+auth,sessions,refreshed_at,timestamp without time zone,false,null
+auth,sessions,user_agent,text,false,null
+auth,sessions,ip,inet,false,null
+auth,sessions,tag,text,false,null
+auth,sessions_not_after_idx,not_after,timestamp with time zone,false,null
+auth,sessions_pkey,id,uuid,false,null
+auth,sessions_user_id_idx,user_id,uuid,false,null
+auth,sso_domains,id,uuid,true,null
+auth,sso_domains,sso_provider_id,uuid,true,null
+auth,sso_domains,domain,text,true,null
+auth,sso_domains,created_at,timestamp with time zone,false,null
+auth,sso_domains,updated_at,timestamp with time zone,false,null
+auth,sso_domains_domain_idx,lower,text,false,null
+auth,sso_domains_pkey,id,uuid,false,null
+auth,sso_domains_sso_provider_id_idx,sso_provider_id,uuid,false,null
+auth,sso_providers,id,uuid,true,null
+auth,sso_providers,resource_id,text,false,null
+auth,sso_providers,created_at,timestamp with time zone,false,null
+auth,sso_providers,updated_at,timestamp with time zone,false,null
+auth,sso_providers,disabled,boolean,false,null
+auth,sso_providers_pkey,id,uuid,false,null
+auth,sso_providers_resource_id_idx,lower,text,false,null
+auth,sso_providers_resource_id_pattern_idx,resource_id,text,false,null
+auth,unique_phone_factor_per_user,user_id,uuid,false,null
+auth,unique_phone_factor_per_user,phone,text,false,null
+auth,user_id_created_at_idx,user_id,uuid,false,null
+auth,user_id_created_at_idx,created_at,timestamp with time zone,false,null
+auth,users,instance_id,uuid,false,null
+auth,users,id,uuid,true,null
+auth,users,aud,character varying(255),false,null
+auth,users,role,character varying(255),false,null
+auth,users,email,character varying(255),false,null
+auth,users,encrypted_password,character varying(255),false,null
+auth,users,email_confirmed_at,timestamp with time zone,false,null
+auth,users,invited_at,timestamp with time zone,false,null
+auth,users,confirmation_token,character varying(255),false,null
+auth,users,confirmation_sent_at,timestamp with time zone,false,null
+auth,users,recovery_token,character varying(255),false,null
+auth,users,recovery_sent_at,timestamp with time zone,false,null
+auth,users,email_change_token_new,character varying(255),false,null
+auth,users,email_change,character varying(255),false,null
+auth,users,email_change_sent_at,timestamp with time zone,false,null
+auth,users,last_sign_in_at,timestamp with time zone,false,null
+auth,users,raw_app_meta_data,jsonb,false,null
+auth,users,raw_user_meta_data,jsonb,false,null
+auth,users,is_super_admin,boolean,false,null
+auth,users,created_at,timestamp with time zone,false,null
+auth,users,updated_at,timestamp with time zone,false,null
+auth,users,phone,text,false,NULL::character varying
+auth,users,phone_confirmed_at,timestamp with time zone,false,null
+auth,users,phone_change,text,false,''::character varying
+auth,users,phone_change_token,character varying(255),false,''::character varying
+auth,users,phone_change_sent_at,timestamp with time zone,false,null
+auth,users,confirmed_at,timestamp with time zone,false,"LEAST(email_confirmed_at, phone_confirmed_at)"
+auth,users,email_change_token_current,character varying(255),false,''::character varying
+auth,users,email_change_confirm_status,smallint,false,0
+auth,users,banned_until,timestamp with time zone,false,null
+auth,users,reauthentication_token,character varying(255),false,''::character varying
+auth,users,reauthentication_sent_at,timestamp with time zone,false,null
+auth,users,is_sso_user,boolean,true,false
+auth,users,deleted_at,timestamp with time zone,false,null
+auth,users,is_anonymous,boolean,true,false
+auth,users_email_partial_key,email,character varying(255),false,null
+auth,users_instance_id_email_idx,instance_id,uuid,false,null
+auth,users_instance_id_email_idx,lower,text,false,null
+auth,users_instance_id_idx,instance_id,uuid,false,null
+auth,users_is_anonymous_idx,is_anonymous,boolean,false,null
+auth,users_phone_key,phone,text,false,null
+auth,users_pkey,id,uuid,false,null
+extensions,pg_stat_statements,userid,oid,false,null
+extensions,pg_stat_statements,dbid,oid,false,null
+extensions,pg_stat_statements,toplevel,boolean,false,null
+extensions,pg_stat_statements,queryid,bigint,false,null
+extensions,pg_stat_statements,query,text,false,null
+extensions,pg_stat_statements,plans,bigint,false,null
+extensions,pg_stat_statements,total_plan_time,double precision,false,null
+extensions,pg_stat_statements,min_plan_time,double precision,false,null
+extensions,pg_stat_statements,max_plan_time,double precision,false,null
+extensions,pg_stat_statements,mean_plan_time,double precision,false,null
+extensions,pg_stat_statements,stddev_plan_time,double precision,false,null
+extensions,pg_stat_statements,calls,bigint,false,null
+extensions,pg_stat_statements,total_exec_time,double precision,false,null
+extensions,pg_stat_statements,min_exec_time,double precision,false,null
+extensions,pg_stat_statements,max_exec_time,double precision,false,null
+extensions,pg_stat_statements,mean_exec_time,double precision,false,null
+extensions,pg_stat_statements,stddev_exec_time,double precision,false,null
+extensions,pg_stat_statements,rows,bigint,false,null
+extensions,pg_stat_statements,shared_blks_hit,bigint,false,null
+extensions,pg_stat_statements,shared_blks_read,bigint,false,null
+extensions,pg_stat_statements,shared_blks_dirtied,bigint,false,null
+extensions,pg_stat_statements,shared_blks_written,bigint,false,null
+extensions,pg_stat_statements,local_blks_hit,bigint,false,null
+extensions,pg_stat_statements,local_blks_read,bigint,false,null
+extensions,pg_stat_statements,local_blks_dirtied,bigint,false,null
+extensions,pg_stat_statements,local_blks_written,bigint,false,null
+extensions,pg_stat_statements,temp_blks_read,bigint,false,null
+extensions,pg_stat_statements,temp_blks_written,bigint,false,null
+extensions,pg_stat_statements,shared_blk_read_time,double precision,false,null
+extensions,pg_stat_statements,shared_blk_write_time,double precision,false,null
+extensions,pg_stat_statements,local_blk_read_time,double precision,false,null
+extensions,pg_stat_statements,local_blk_write_time,double precision,false,null
+extensions,pg_stat_statements,temp_blk_read_time,double precision,false,null
+extensions,pg_stat_statements,temp_blk_write_time,double precision,false,null
+extensions,pg_stat_statements,wal_records,bigint,false,null
+extensions,pg_stat_statements,wal_fpi,bigint,false,null
+extensions,pg_stat_statements,wal_bytes,numeric,false,null
+extensions,pg_stat_statements,jit_functions,bigint,false,null
+extensions,pg_stat_statements,jit_generation_time,double precision,false,null
+extensions,pg_stat_statements,jit_inlining_count,bigint,false,null
+extensions,pg_stat_statements,jit_inlining_time,double precision,false,null
+extensions,pg_stat_statements,jit_optimization_count,bigint,false,null
+extensions,pg_stat_statements,jit_optimization_time,double precision,false,null
+extensions,pg_stat_statements,jit_emission_count,bigint,false,null
+extensions,pg_stat_statements,jit_emission_time,double precision,false,null
+extensions,pg_stat_statements,jit_deform_count,bigint,false,null
+extensions,pg_stat_statements,jit_deform_time,double precision,false,null
+extensions,pg_stat_statements,stats_since,timestamp with time zone,false,null
+extensions,pg_stat_statements,minmax_stats_since,timestamp with time zone,false,null
+extensions,pg_stat_statements_info,dealloc,bigint,false,null
+extensions,pg_stat_statements_info,stats_reset,timestamp with time zone,false,null
+graphql,seq_schema_version,last_value,bigint,true,null
+graphql,seq_schema_version,log_cnt,bigint,true,null
+graphql,seq_schema_version,is_called,boolean,true,null
+pg_toast,pg_toast_1213,chunk_id,oid,false,null
+pg_toast,pg_toast_1213,chunk_seq,integer,false,null
+pg_toast,pg_toast_1213,chunk_data,bytea,false,null
+pg_toast,pg_toast_1213_index,chunk_id,oid,false,null
+pg_toast,pg_toast_1213_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_1247,chunk_id,oid,false,null
+pg_toast,pg_toast_1247,chunk_seq,integer,false,null
+pg_toast,pg_toast_1247,chunk_data,bytea,false,null
+pg_toast,pg_toast_1247_index,chunk_id,oid,false,null
+pg_toast,pg_toast_1247_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_1255,chunk_id,oid,false,null
+pg_toast,pg_toast_1255,chunk_seq,integer,false,null
+pg_toast,pg_toast_1255,chunk_data,bytea,false,null
+pg_toast,pg_toast_1255_index,chunk_id,oid,false,null
+pg_toast,pg_toast_1255_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_1260,chunk_id,oid,false,null
+pg_toast,pg_toast_1260,chunk_seq,integer,false,null
+pg_toast,pg_toast_1260,chunk_data,bytea,false,null
+pg_toast,pg_toast_1260_index,chunk_id,oid,false,null
+pg_toast,pg_toast_1260_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_1262,chunk_id,oid,false,null
+pg_toast,pg_toast_1262,chunk_seq,integer,false,null
+pg_toast,pg_toast_1262,chunk_data,bytea,false,null
+pg_toast,pg_toast_1262_index,chunk_id,oid,false,null
+pg_toast,pg_toast_1262_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_13401,chunk_id,oid,false,null
+pg_toast,pg_toast_13401,chunk_seq,integer,false,null
+pg_toast,pg_toast_13401,chunk_data,bytea,false,null
+pg_toast,pg_toast_13401_index,chunk_id,oid,false,null
+pg_toast,pg_toast_13401_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_13406,chunk_id,oid,false,null
+pg_toast,pg_toast_13406,chunk_seq,integer,false,null
+pg_toast,pg_toast_13406,chunk_data,bytea,false,null
+pg_toast,pg_toast_13406_index,chunk_id,oid,false,null
+pg_toast,pg_toast_13406_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_13411,chunk_id,oid,false,null
+pg_toast,pg_toast_13411,chunk_seq,integer,false,null
+pg_toast,pg_toast_13411,chunk_data,bytea,false,null
+pg_toast,pg_toast_13411_index,chunk_id,oid,false,null
+pg_toast,pg_toast_13411_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_13416,chunk_id,oid,false,null
+pg_toast,pg_toast_13416,chunk_seq,integer,false,null
+pg_toast,pg_toast_13416,chunk_data,bytea,false,null
+pg_toast,pg_toast_13416_index,chunk_id,oid,false,null
+pg_toast,pg_toast_13416_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_1417,chunk_id,oid,false,null
+pg_toast,pg_toast_1417,chunk_seq,integer,false,null
+pg_toast,pg_toast_1417,chunk_data,bytea,false,null
+pg_toast,pg_toast_1417_index,chunk_id,oid,false,null
+pg_toast,pg_toast_1417_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_1418,chunk_id,oid,false,null
+pg_toast,pg_toast_1418,chunk_seq,integer,false,null
+pg_toast,pg_toast_1418,chunk_data,bytea,false,null
+pg_toast,pg_toast_1418_index,chunk_id,oid,false,null
+pg_toast,pg_toast_1418_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16495,chunk_id,oid,false,null
+pg_toast,pg_toast_16495,chunk_seq,integer,false,null
+pg_toast,pg_toast_16495,chunk_data,bytea,false,null
+pg_toast,pg_toast_16495_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16495_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16507,chunk_id,oid,false,null
+pg_toast,pg_toast_16507,chunk_seq,integer,false,null
+pg_toast,pg_toast_16507,chunk_data,bytea,false,null
+pg_toast,pg_toast_16507_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16507_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16518,chunk_id,oid,false,null
+pg_toast,pg_toast_16518,chunk_seq,integer,false,null
+pg_toast,pg_toast_16518,chunk_data,bytea,false,null
+pg_toast,pg_toast_16518_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16518_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16525,chunk_id,oid,false,null
+pg_toast,pg_toast_16525,chunk_seq,integer,false,null
+pg_toast,pg_toast_16525,chunk_data,bytea,false,null
+pg_toast,pg_toast_16525_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16525_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16546,chunk_id,oid,false,null
+pg_toast,pg_toast_16546,chunk_seq,integer,false,null
+pg_toast,pg_toast_16546,chunk_data,bytea,false,null
+pg_toast,pg_toast_16546_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16546_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16561,chunk_id,oid,false,null
+pg_toast,pg_toast_16561,chunk_seq,integer,false,null
+pg_toast,pg_toast_16561,chunk_data,bytea,false,null
+pg_toast,pg_toast_16561_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16561_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16658,chunk_id,oid,false,null
+pg_toast,pg_toast_16658,chunk_seq,integer,false,null
+pg_toast,pg_toast_16658,chunk_data,bytea,false,null
+pg_toast,pg_toast_16658_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16658_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16725,chunk_id,oid,false,null
+pg_toast,pg_toast_16725,chunk_seq,integer,false,null
+pg_toast,pg_toast_16725,chunk_data,bytea,false,null
+pg_toast,pg_toast_16725_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16725_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16755,chunk_id,oid,false,null
+pg_toast,pg_toast_16755,chunk_seq,integer,false,null
+pg_toast,pg_toast_16755,chunk_data,bytea,false,null
+pg_toast,pg_toast_16755_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16755_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16789,chunk_id,oid,false,null
+pg_toast,pg_toast_16789,chunk_seq,integer,false,null
+pg_toast,pg_toast_16789,chunk_data,bytea,false,null
+pg_toast,pg_toast_16789_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16789_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16802,chunk_id,oid,false,null
+pg_toast,pg_toast_16802,chunk_seq,integer,false,null
+pg_toast,pg_toast_16802,chunk_data,bytea,false,null
+pg_toast,pg_toast_16802_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16802_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16814,chunk_id,oid,false,null
+pg_toast,pg_toast_16814,chunk_seq,integer,false,null
+pg_toast,pg_toast_16814,chunk_data,bytea,false,null
+pg_toast,pg_toast_16814_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16814_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16832,chunk_id,oid,false,null
+pg_toast,pg_toast_16832,chunk_seq,integer,false,null
+pg_toast,pg_toast_16832,chunk_data,bytea,false,null
+pg_toast,pg_toast_16832_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16832_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16841,chunk_id,oid,false,null
+pg_toast,pg_toast_16841,chunk_seq,integer,false,null
+pg_toast,pg_toast_16841,chunk_data,bytea,false,null
+pg_toast,pg_toast_16841_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16841_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16856,chunk_id,oid,false,null
+pg_toast,pg_toast_16856,chunk_seq,integer,false,null
+pg_toast,pg_toast_16856,chunk_data,bytea,false,null
+pg_toast,pg_toast_16856_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16856_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16874,chunk_id,oid,false,null
+pg_toast,pg_toast_16874,chunk_seq,integer,false,null
+pg_toast,pg_toast_16874,chunk_data,bytea,false,null
+pg_toast,pg_toast_16874_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16874_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16927,chunk_id,oid,false,null
+pg_toast,pg_toast_16927,chunk_seq,integer,false,null
+pg_toast,pg_toast_16927,chunk_data,bytea,false,null
+pg_toast,pg_toast_16927_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16927_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_16977,chunk_id,oid,false,null
+pg_toast,pg_toast_16977,chunk_seq,integer,false,null
+pg_toast,pg_toast_16977,chunk_data,bytea,false,null
+pg_toast,pg_toast_16977_index,chunk_id,oid,false,null
+pg_toast,pg_toast_16977_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_17040,chunk_id,oid,false,null
+pg_toast,pg_toast_17040,chunk_seq,integer,false,null
+pg_toast,pg_toast_17040,chunk_data,bytea,false,null
+pg_toast,pg_toast_17040_index,chunk_id,oid,false,null
+pg_toast,pg_toast_17040_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_17054,chunk_id,oid,false,null
+pg_toast,pg_toast_17054,chunk_seq,integer,false,null
+pg_toast,pg_toast_17054,chunk_data,bytea,false,null
+pg_toast,pg_toast_17054_index,chunk_id,oid,false,null
+pg_toast,pg_toast_17054_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_17109,chunk_id,oid,false,null
+pg_toast,pg_toast_17109,chunk_seq,integer,false,null
+pg_toast,pg_toast_17109,chunk_data,bytea,false,null
+pg_toast,pg_toast_17109_index,chunk_id,oid,false,null
+pg_toast,pg_toast_17109_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_17272,chunk_id,oid,false,null
+pg_toast,pg_toast_17272,chunk_seq,integer,false,null
+pg_toast,pg_toast_17272,chunk_data,bytea,false,null
+pg_toast,pg_toast_17272_index,chunk_id,oid,false,null
+pg_toast,pg_toast_17272_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_17385,chunk_id,oid,false,null
+pg_toast,pg_toast_17385,chunk_seq,integer,false,null
+pg_toast,pg_toast_17385,chunk_data,bytea,false,null
+pg_toast,pg_toast_17385_index,chunk_id,oid,false,null
+pg_toast,pg_toast_17385_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_17540,chunk_id,oid,false,null
+pg_toast,pg_toast_17540,chunk_seq,integer,false,null
+pg_toast,pg_toast_17540,chunk_data,bytea,false,null
+pg_toast,pg_toast_17540_index,chunk_id,oid,false,null
+pg_toast,pg_toast_17540_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_17584,chunk_id,oid,false,null
+pg_toast,pg_toast_17584,chunk_seq,integer,false,null
+pg_toast,pg_toast_17584,chunk_data,bytea,false,null
+pg_toast,pg_toast_17584_index,chunk_id,oid,false,null
+pg_toast,pg_toast_17584_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_20416,chunk_id,oid,false,null
+pg_toast,pg_toast_20416,chunk_seq,integer,false,null
+pg_toast,pg_toast_20416,chunk_data,bytea,false,null
+pg_toast,pg_toast_20416_index,chunk_id,oid,false,null
+pg_toast,pg_toast_20416_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_20571,chunk_id,oid,false,null
+pg_toast,pg_toast_20571,chunk_seq,integer,false,null
+pg_toast,pg_toast_20571,chunk_data,bytea,false,null
+pg_toast,pg_toast_20571_index,chunk_id,oid,false,null
+pg_toast,pg_toast_20571_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2328,chunk_id,oid,false,null
+pg_toast,pg_toast_2328,chunk_seq,integer,false,null
+pg_toast,pg_toast_2328,chunk_data,bytea,false,null
+pg_toast,pg_toast_2328_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2328_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2396,chunk_id,oid,false,null
+pg_toast,pg_toast_2396,chunk_seq,integer,false,null
+pg_toast,pg_toast_2396,chunk_data,bytea,false,null
+pg_toast,pg_toast_2396_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2396_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_25410,chunk_id,oid,false,null
+pg_toast,pg_toast_25410,chunk_seq,integer,false,null
+pg_toast,pg_toast_25410,chunk_data,bytea,false,null
+pg_toast,pg_toast_25410_index,chunk_id,oid,false,null
+pg_toast,pg_toast_25410_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_25425,chunk_id,oid,false,null
+pg_toast,pg_toast_25425,chunk_seq,integer,false,null
+pg_toast,pg_toast_25425,chunk_data,bytea,false,null
+pg_toast,pg_toast_25425_index,chunk_id,oid,false,null
+pg_toast,pg_toast_25425_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2600,chunk_id,oid,false,null
+pg_toast,pg_toast_2600,chunk_seq,integer,false,null
+pg_toast,pg_toast_2600,chunk_data,bytea,false,null
+pg_toast,pg_toast_2600_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2600_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2604,chunk_id,oid,false,null
+pg_toast,pg_toast_2604,chunk_seq,integer,false,null
+pg_toast,pg_toast_2604,chunk_data,bytea,false,null
+pg_toast,pg_toast_2604_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2604_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2606,chunk_id,oid,false,null
+pg_toast,pg_toast_2606,chunk_seq,integer,false,null
+pg_toast,pg_toast_2606,chunk_data,bytea,false,null
+pg_toast,pg_toast_2606_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2606_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2609,chunk_id,oid,false,null
+pg_toast,pg_toast_2609,chunk_seq,integer,false,null
+pg_toast,pg_toast_2609,chunk_data,bytea,false,null
+pg_toast,pg_toast_2609_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2609_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2612,chunk_id,oid,false,null
+pg_toast,pg_toast_2612,chunk_seq,integer,false,null
+pg_toast,pg_toast_2612,chunk_data,bytea,false,null
+pg_toast,pg_toast_2612_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2612_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2615,chunk_id,oid,false,null
+pg_toast,pg_toast_2615,chunk_seq,integer,false,null
+pg_toast,pg_toast_2615,chunk_data,bytea,false,null
+pg_toast,pg_toast_2615_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2615_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2618,chunk_id,oid,false,null
+pg_toast,pg_toast_2618,chunk_seq,integer,false,null
+pg_toast,pg_toast_2618,chunk_data,bytea,false,null
+pg_toast,pg_toast_2618_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2618_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2619,chunk_id,oid,false,null
+pg_toast,pg_toast_2619,chunk_seq,integer,false,null
+pg_toast,pg_toast_2619,chunk_data,bytea,false,null
+pg_toast,pg_toast_2619_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2619_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2620,chunk_id,oid,false,null
+pg_toast,pg_toast_2620,chunk_seq,integer,false,null
+pg_toast,pg_toast_2620,chunk_data,bytea,false,null
+pg_toast,pg_toast_2620_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2620_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_2964,chunk_id,oid,false,null
+pg_toast,pg_toast_2964,chunk_seq,integer,false,null
+pg_toast,pg_toast_2964,chunk_data,bytea,false,null
+pg_toast,pg_toast_2964_index,chunk_id,oid,false,null
+pg_toast,pg_toast_2964_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_30765,chunk_id,oid,false,null
+pg_toast,pg_toast_30765,chunk_seq,integer,false,null
+pg_toast,pg_toast_30765,chunk_data,bytea,false,null
+pg_toast,pg_toast_30765_index,chunk_id,oid,false,null
+pg_toast,pg_toast_30765_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_30783,chunk_id,oid,false,null
+pg_toast,pg_toast_30783,chunk_seq,integer,false,null
+pg_toast,pg_toast_30783,chunk_data,bytea,false,null
+pg_toast,pg_toast_30783_index,chunk_id,oid,false,null
+pg_toast,pg_toast_30783_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3079,chunk_id,oid,false,null
+pg_toast,pg_toast_3079,chunk_seq,integer,false,null
+pg_toast,pg_toast_3079,chunk_data,bytea,false,null
+pg_toast,pg_toast_3079_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3079_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_30803,chunk_id,oid,false,null
+pg_toast,pg_toast_30803,chunk_seq,integer,false,null
+pg_toast,pg_toast_30803,chunk_data,bytea,false,null
+pg_toast,pg_toast_30803_index,chunk_id,oid,false,null
+pg_toast,pg_toast_30803_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_30827,chunk_id,oid,false,null
+pg_toast,pg_toast_30827,chunk_seq,integer,false,null
+pg_toast,pg_toast_30827,chunk_data,bytea,false,null
+pg_toast,pg_toast_30827_index,chunk_id,oid,false,null
+pg_toast,pg_toast_30827_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_30843,chunk_id,oid,false,null
+pg_toast,pg_toast_30843,chunk_seq,integer,false,null
+pg_toast,pg_toast_30843,chunk_data,bytea,false,null
+pg_toast,pg_toast_30843_index,chunk_id,oid,false,null
+pg_toast,pg_toast_30843_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_30858,chunk_id,oid,false,null
+pg_toast,pg_toast_30858,chunk_seq,integer,false,null
+pg_toast,pg_toast_30858,chunk_data,bytea,false,null
+pg_toast,pg_toast_30858_index,chunk_id,oid,false,null
+pg_toast,pg_toast_30858_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3118,chunk_id,oid,false,null
+pg_toast,pg_toast_3118,chunk_seq,integer,false,null
+pg_toast,pg_toast_3118,chunk_data,bytea,false,null
+pg_toast,pg_toast_3118_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3118_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3256,chunk_id,oid,false,null
+pg_toast,pg_toast_3256,chunk_seq,integer,false,null
+pg_toast,pg_toast_3256,chunk_data,bytea,false,null
+pg_toast,pg_toast_3256_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3256_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3350,chunk_id,oid,false,null
+pg_toast,pg_toast_3350,chunk_seq,integer,false,null
+pg_toast,pg_toast_3350,chunk_data,bytea,false,null
+pg_toast,pg_toast_3350_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3350_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3381,chunk_id,oid,false,null
+pg_toast,pg_toast_3381,chunk_seq,integer,false,null
+pg_toast,pg_toast_3381,chunk_data,bytea,false,null
+pg_toast,pg_toast_3381_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3381_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3394,chunk_id,oid,false,null
+pg_toast,pg_toast_3394,chunk_seq,integer,false,null
+pg_toast,pg_toast_3394,chunk_data,bytea,false,null
+pg_toast,pg_toast_3394_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3394_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3429,chunk_id,oid,false,null
+pg_toast,pg_toast_3429,chunk_seq,integer,false,null
+pg_toast,pg_toast_3429,chunk_data,bytea,false,null
+pg_toast,pg_toast_3429_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3429_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3456,chunk_id,oid,false,null
+pg_toast,pg_toast_3456,chunk_seq,integer,false,null
+pg_toast,pg_toast_3456,chunk_data,bytea,false,null
+pg_toast,pg_toast_3456_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3456_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3466,chunk_id,oid,false,null
+pg_toast,pg_toast_3466,chunk_seq,integer,false,null
+pg_toast,pg_toast_3466,chunk_data,bytea,false,null
+pg_toast,pg_toast_3466_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3466_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3592,chunk_id,oid,false,null
+pg_toast,pg_toast_3592,chunk_seq,integer,false,null
+pg_toast,pg_toast_3592,chunk_data,bytea,false,null
+pg_toast,pg_toast_3592_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3592_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3596,chunk_id,oid,false,null
+pg_toast,pg_toast_3596,chunk_seq,integer,false,null
+pg_toast,pg_toast_3596,chunk_data,bytea,false,null
+pg_toast,pg_toast_3596_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3596_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_3600,chunk_id,oid,false,null
+pg_toast,pg_toast_3600,chunk_seq,integer,false,null
+pg_toast,pg_toast_3600,chunk_data,bytea,false,null
+pg_toast,pg_toast_3600_index,chunk_id,oid,false,null
+pg_toast,pg_toast_3600_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_6000,chunk_id,oid,false,null
+pg_toast,pg_toast_6000,chunk_seq,integer,false,null
+pg_toast,pg_toast_6000,chunk_data,bytea,false,null
+pg_toast,pg_toast_6000_index,chunk_id,oid,false,null
+pg_toast,pg_toast_6000_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_6100,chunk_id,oid,false,null
+pg_toast,pg_toast_6100,chunk_seq,integer,false,null
+pg_toast,pg_toast_6100,chunk_data,bytea,false,null
+pg_toast,pg_toast_6100_index,chunk_id,oid,false,null
+pg_toast,pg_toast_6100_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_6106,chunk_id,oid,false,null
+pg_toast,pg_toast_6106,chunk_seq,integer,false,null
+pg_toast,pg_toast_6106,chunk_data,bytea,false,null
+pg_toast,pg_toast_6106_index,chunk_id,oid,false,null
+pg_toast,pg_toast_6106_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_6243,chunk_id,oid,false,null
+pg_toast,pg_toast_6243,chunk_seq,integer,false,null
+pg_toast,pg_toast_6243,chunk_data,bytea,false,null
+pg_toast,pg_toast_6243_index,chunk_id,oid,false,null
+pg_toast,pg_toast_6243_index,chunk_seq,integer,false,null
+pg_toast,pg_toast_826,chunk_id,oid,false,null
+pg_toast,pg_toast_826,chunk_seq,integer,false,null
+pg_toast,pg_toast_826,chunk_data,bytea,false,null
+pg_toast,pg_toast_826_index,chunk_id,oid,false,null
+pg_toast,pg_toast_826_index,chunk_seq,integer,false,null
+preserve,exercise_library,id,uuid,true,gen_random_uuid()
+preserve,exercise_library,name,text,true,null
+preserve,exercise_library,description,text,false,null
+preserve,exercise_library,category,text,false,null
+preserve,exercise_library,equipment,text[],false,null
+preserve,exercise_library,video_url,text,false,null
+preserve,exercise_library,patterns,text[],false,'{}'::text[]
+preserve,exercise_library,primary_muscles,text[],false,'{}'::text[]
+preserve,exercise_library,goal_effectiveness,jsonb,false,'{}'::jsonb
+preserve,exercise_library,complexity_level,integer,false,null
+preserve,exercise_library,name_lc,text,false,lower(name)
+preserve,exercise_library_i18n,exercise_id,uuid,true,null
+preserve,exercise_library_i18n,locale,text,true,null
+preserve,exercise_library_i18n,name,text,true,null
+preserve,exercise_library_i18n,description,text,false,null
+preserve,exercise_library_i18n,cues,text[],false,null
+preserve,exercise_library_i18n,contraindications,text[],false,null
+preserve,exercise_library_i18n,search_tsv,tsvector,false,"to_tsvector('simple'::regconfig, ((COALESCE(name, ''::text) || ' '::text) || COALESCE(description, ''::text)))"
+preserve,exercise_library_i18n_exercise_id_locale_key,exercise_id,uuid,false,null
+preserve,exercise_library_i18n_exercise_id_locale_key,locale,text,false,null
+preserve,exercise_library_i18n_locale_idx,locale,text,false,null
+preserve,exercise_library_i18n_name_trgm,name,integer,false,null
+preserve,exercise_library_i18n_pkey,exercise_id,uuid,false,null
+preserve,exercise_library_i18n_pkey,locale,text,false,null
+preserve,exercise_library_pkey,id,uuid,false,null
+preserve,exercise_variant_i18n,variant_id,uuid,false,null
+preserve,exercise_variant_i18n,locale,text,true,null
+preserve,exercise_variant_i18n,name,text,true,null
+preserve,exercise_variant_i18n,notes,text,false,null
+preserve,exercise_variant_i18n,search_tsv,tsvector,false,"to_tsvector('simple'::regconfig, ((COALESCE(name, ''::text) || ' '::text) || COALESCE(notes, ''::text)))"
+preserve,exercise_variant_i18n_locale_idx,locale,text,false,null
+preserve,exercise_variant_i18n_name_trgm,name,integer,false,null
+preserve,exercise_variant_i18n_variant_id_locale_key,variant_id,uuid,false,null
+preserve,exercise_variant_i18n_variant_id_locale_key,locale,text,false,null
+preserve,exercise_variants,id,uuid,true,gen_random_uuid()
+preserve,exercise_variants,exercise_id,uuid,true,null
+preserve,exercise_variants,modality,modality_enum,true,null
+preserve,exercise_variants,name,text,true,null
+preserve,exercise_variants,environments,environment_enum[],true,null
+preserve,exercise_variants,equipment,text[],false,'{}'::text[]
+preserve,exercise_variants,is_assessment_default,boolean,false,false
+preserve,exercise_variants,created_at,timestamp with time zone,false,now()
+preserve,exercise_variants,tags,text[],false,'{}'::text[]
+preserve,exercise_variants,exercise_name,text,false,null
+preserve,exercise_variants,category,text,false,null
+preserve,exercise_variants,variant_name_lc,text,false,lower(name)
+preserve,exercise_variants_pkey,id,uuid,false,null
+preserve,exercise_variants_unique_name_per_ex,exercise_id,uuid,false,null
+preserve,exercise_variants_unique_name_per_ex,name,text,false,null
+preserve,idx_ex_library_category,category,text,false,null
+preserve,idx_ex_variants_envs_gin,environments,environment_enum,false,null
+preserve,idx_ex_variants_exercise_id,exercise_id,uuid,false,null
+preserve,idx_exercise_library_i18n_exercise_locale,exercise_id,uuid,false,null
+preserve,idx_exercise_library_i18n_exercise_locale,locale,text,false,null
+preserve,idx_exercise_library_i18n_tsv,search_tsv,text,false,null
+preserve,idx_exercise_variant_i18n_tsv,search_tsv,text,false,null
+preserve,idx_exercise_variant_i18n_variant_locale,variant_id,uuid,false,null
+preserve,idx_exercise_variant_i18n_variant_locale,locale,text,false,null
+preserve,idx_exlib_category,category,text,false,null
+preserve,idx_exlib_equipment_gin,equipment,text,false,null
+preserve,idx_variants_env,environments,environment_enum,false,null
+preserve,idx_variants_exercise,exercise_id,uuid,false,null
+preserve,idx_variants_modality,modality,modality_enum,false,null
+preserve,ix_exlib_patterns_gin,patterns,text,false,null
+preserve,ix_variants_env_gin,environments,environment_enum,false,null
+preserve,ux_exlib_name_lc,name_lc,text,false,null
+preserve,ux_variants_unique,exercise_id,uuid,false,null
+preserve,ux_variants_unique,modality,modality_enum,false,null
+preserve,ux_variants_unique,name,text,false,null
+preserve,ux_variants_unique_mod,exercise_id,uuid,false,null
+preserve,ux_variants_unique_mod,modality,modality_enum,false,null
+preserve,ux_variants_unique_mod,variant_name_lc,text,false,null
+preserve,ux_variants_unique_nomod,exercise_id,uuid,false,null
+preserve,ux_variants_unique_nomod,variant_name_lc,text,false,null
+realtime,ix_realtime_subscription_entity,entity,regclass,false,null
+realtime,messages,topic,text,true,null
+realtime,messages,extension,text,true,null
+realtime,messages,payload,jsonb,false,null
+realtime,messages,event,text,false,null
+realtime,messages,private,boolean,false,false
+realtime,messages,updated_at,timestamp without time zone,true,now()
+realtime,messages,inserted_at,timestamp without time zone,true,now()
+realtime,messages,id,uuid,true,gen_random_uuid()
+realtime,messages_pkey,id,uuid,false,null
+realtime,messages_pkey,inserted_at,timestamp without time zone,false,null
+realtime,pk_subscription,id,bigint,false,null
+realtime,schema_migrations,version,bigint,true,null
+realtime,schema_migrations,inserted_at,timestamp(0) without time zone,false,null
+realtime,schema_migrations_pkey,version,bigint,false,null
+realtime,subscription,id,bigint,true,null
+realtime,subscription,subscription_id,uuid,true,null
+realtime,subscription,entity,regclass,true,null
+realtime,subscription,filters,realtime.user_defined_filter[],true,'{}'::realtime.user_defined_filter[]
+realtime,subscription,claims,jsonb,true,null
+realtime,subscription,claims_role,regrole,true,realtime.to_regrole((claims ->> 'role'::text))
+realtime,subscription,created_at,timestamp without time zone,true,"timezone('utc'::text, now())"
+realtime,subscription_id_seq,last_value,bigint,true,null
+realtime,subscription_id_seq,log_cnt,bigint,true,null
+realtime,subscription_id_seq,is_called,boolean,true,null
+realtime,subscription_subscription_id_entity_filters_key,subscription_id,uuid,false,null
+realtime,subscription_subscription_id_entity_filters_key,entity,regclass,false,null
+realtime,subscription_subscription_id_entity_filters_key,filters,realtime.user_defined_filter[],false,null
+realtime,user_defined_filter,column_name,text,false,null
+realtime,user_defined_filter,op,realtime.equality_op,false,null
+realtime,user_defined_filter,value,text,false,null
+realtime,wal_column,name,text,false,null
+realtime,wal_column,type_name,text,false,null
+realtime,wal_column,type_oid,oid,false,null
+realtime,wal_column,value,jsonb,false,null
+realtime,wal_column,is_pkey,boolean,false,null
+realtime,wal_column,is_selectable,boolean,false,null
+realtime,wal_rls,wal,jsonb,false,null
+realtime,wal_rls,is_rls_enabled,boolean,false,null
+realtime,wal_rls,subscription_ids,uuid[],false,null
+realtime,wal_rls,errors,text[],false,null
+storage,bname,name,text,false,null
+storage,bucketid_objname,bucket_id,text,false,null
+storage,bucketid_objname,name,text,false,null
+storage,buckets,id,text,true,null
+storage,buckets,name,text,true,null
+storage,buckets,owner,uuid,false,null
+storage,buckets,created_at,timestamp with time zone,false,now()
+storage,buckets,updated_at,timestamp with time zone,false,now()
+storage,buckets,public,boolean,false,false
+storage,buckets,avif_autodetection,boolean,false,false
+storage,buckets,file_size_limit,bigint,false,null
+storage,buckets,allowed_mime_types,text[],false,null
+storage,buckets,owner_id,text,false,null
+storage,buckets,type,storage.buckettype,true,'STANDARD'::storage.buckettype
+storage,buckets_analytics,id,text,true,null
+storage,buckets_analytics,type,storage.buckettype,true,'ANALYTICS'::storage.buckettype
+storage,buckets_analytics,format,text,true,'ICEBERG'::text
+storage,buckets_analytics,created_at,timestamp with time zone,true,now()
+storage,buckets_analytics,updated_at,timestamp with time zone,true,now()
+storage,buckets_analytics_pkey,id,text,false,null
+storage,buckets_pkey,id,text,false,null
+storage,idx_multipart_uploads_list,bucket_id,text,false,null
+storage,idx_multipart_uploads_list,key,text,false,null
+storage,idx_multipart_uploads_list,created_at,timestamp with time zone,false,null
+storage,idx_name_bucket_level_unique,name,text,false,null
+storage,idx_name_bucket_level_unique,bucket_id,text,false,null
+storage,idx_name_bucket_level_unique,level,integer,false,null
+storage,idx_objects_bucket_id_name,bucket_id,text,false,null
+storage,idx_objects_bucket_id_name,name,text,false,null
+storage,idx_objects_lower_name,path_tokens,text,false,null
+storage,idx_objects_lower_name,lower,text,false,null
+storage,idx_objects_lower_name,bucket_id,text,false,null
+storage,idx_objects_lower_name,level,integer,false,null
+storage,idx_prefixes_lower_name,bucket_id,text,false,null
+storage,idx_prefixes_lower_name,level,integer,false,null
+storage,idx_prefixes_lower_name,string_to_array,text,false,null
+storage,idx_prefixes_lower_name,lower,text,false,null
+storage,migrations,id,integer,true,null
+storage,migrations,name,character varying(100),true,null
+storage,migrations,hash,character varying(40),true,null
+storage,migrations,executed_at,timestamp without time zone,false,CURRENT_TIMESTAMP
+storage,migrations_name_key,name,character varying(100),false,null
+storage,migrations_pkey,id,integer,false,null
+storage,name_prefix_search,name,text,false,null
+storage,objects,id,uuid,true,gen_random_uuid()
+storage,objects,bucket_id,text,false,null
+storage,objects,name,text,false,null
+storage,objects,owner,uuid,false,null
+storage,objects,created_at,timestamp with time zone,false,now()
+storage,objects,updated_at,timestamp with time zone,false,now()
+storage,objects,last_accessed_at,timestamp with time zone,false,now()
+storage,objects,metadata,jsonb,false,null
+storage,objects,path_tokens,text[],false,"string_to_array(name, '/'::text)"
+storage,objects,version,text,false,null
+storage,objects,owner_id,text,false,null
+storage,objects,user_metadata,jsonb,false,null
+storage,objects,level,integer,false,null
+storage,objects_bucket_id_level_idx,bucket_id,text,false,null
+storage,objects_bucket_id_level_idx,level,integer,false,null
+storage,objects_bucket_id_level_idx,name,text,false,null
+storage,objects_pkey,id,uuid,false,null
+storage,prefixes,bucket_id,text,true,null
+storage,prefixes,name,text,true,null
+storage,prefixes,level,integer,true,storage.get_level(name)
+storage,prefixes,created_at,timestamp with time zone,false,now()
+storage,prefixes,updated_at,timestamp with time zone,false,now()
+storage,prefixes_pkey,bucket_id,text,false,null
+storage,prefixes_pkey,level,integer,false,null
+storage,prefixes_pkey,name,text,false,null
+storage,s3_multipart_uploads,id,text,true,null
+storage,s3_multipart_uploads,in_progress_size,bigint,true,0
+storage,s3_multipart_uploads,upload_signature,text,true,null
+storage,s3_multipart_uploads,bucket_id,text,true,null
+storage,s3_multipart_uploads,key,text,true,null
+storage,s3_multipart_uploads,version,text,true,null
+storage,s3_multipart_uploads,owner_id,text,false,null
+storage,s3_multipart_uploads,created_at,timestamp with time zone,true,now()
+storage,s3_multipart_uploads,user_metadata,jsonb,false,null
+storage,s3_multipart_uploads_parts,id,uuid,true,gen_random_uuid()
+storage,s3_multipart_uploads_parts,upload_id,text,true,null
+storage,s3_multipart_uploads_parts,size,bigint,true,0
+storage,s3_multipart_uploads_parts,part_number,integer,true,null
+storage,s3_multipart_uploads_parts,bucket_id,text,true,null
+storage,s3_multipart_uploads_parts,key,text,true,null
+storage,s3_multipart_uploads_parts,etag,text,true,null
+storage,s3_multipart_uploads_parts,owner_id,text,false,null
+storage,s3_multipart_uploads_parts,version,text,true,null
+storage,s3_multipart_uploads_parts,created_at,timestamp with time zone,true,now()
+storage,s3_multipart_uploads_parts_pkey,id,uuid,false,null
+storage,s3_multipart_uploads_pkey,id,text,false,null
+supabase_migrations,schema_migrations,version,text,true,null
+supabase_migrations,schema_migrations,statements,text[],false,null
+supabase_migrations,schema_migrations,name,text,false,null
+supabase_migrations,schema_migrations,created_by,text,false,null
+supabase_migrations,schema_migrations,idempotency_key,text,false,null
+supabase_migrations,schema_migrations_idempotency_key_key,idempotency_key,text,false,null
+supabase_migrations,schema_migrations_pkey,version,text,false,null
+supabase_migrations,seed_files,path,text,true,null
+supabase_migrations,seed_files,hash,text,true,null
+supabase_migrations,seed_files_pkey,path,text,false,null
+vault,decrypted_secrets,id,uuid,false,null
+vault,decrypted_secrets,name,text,false,null
+vault,decrypted_secrets,description,text,false,null
+vault,decrypted_secrets,secret,text,false,null
+vault,decrypted_secrets,decrypted_secret,text,false,null
+vault,decrypted_secrets,key_id,uuid,false,null
+vault,decrypted_secrets,nonce,bytea,false,null
+vault,decrypted_secrets,created_at,timestamp with time zone,false,null
+vault,decrypted_secrets,updated_at,timestamp with time zone,false,null
+vault,secrets,id,uuid,true,gen_random_uuid()
+vault,secrets,name,text,false,null
+vault,secrets,description,text,true,''::text
+vault,secrets,secret,text,true,null
+vault,secrets,key_id,uuid,false,null
+vault,secrets,nonce,bytea,false,vault._crypto_aead_det_noncegen()
+vault,secrets,created_at,timestamp with time zone,true,CURRENT_TIMESTAMP
+vault,secrets,updated_at,timestamp with time zone,true,CURRENT_TIMESTAMP
+vault,secrets_name_idx,name,text,false,null
+vault,secrets_pkey,id,uuid,false,null

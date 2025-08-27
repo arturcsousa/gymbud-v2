@@ -55,6 +55,7 @@ export interface LoggedSetRow {
   rpe?: number | null
   notes?: string | null
   voided?: boolean
+  meta?: Record<string, any> | null
   updated_at: number
 }
 

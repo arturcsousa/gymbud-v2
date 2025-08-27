@@ -1,5 +1,22 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 15:33 - Phase E2: Reconciliation & Merge Rules Implementation
+**Implemented**: Enhanced void mutation reconciliation with safe merge rules for offline-first sync
+- **Void Mutation Support**: Added `logged_sets/void` entity type with `void` operation in sync queue
+- **Enhanced Merge Rules**: Implemented comprehensive void reconciliation logic in `safeMergeRow()`
+  - Local void pending + server non-void: Keep local void optimistic (awaiting ack)
+  - Server void confirmed: Clear local pending, confirm voided state
+  - Local void + no pending + server non-void: Trust server, revert local void
+  - Deduplication by `(session_exercise_id, set_number)` with server canonical
+- **Pending State Tracking**: Added `meta.pendingVoidAck` field for UI state management
+- **Idempotency Protection**: Prevents duplicate void mutations with `void_{setId}` keys
+- **Enhanced UX**: Contextual toast messages ("Undo queued—will retry when online", "Undo already in progress")
+- **Data Integrity**: All selectors filter out `voided: true` sets from metrics and UI
+- **Telemetry Events**: `set_void_requested`, `set_void_confirmed`, `set_void_failed` tracking
+- **Helper Functions**: `hasPendingVoidMutation()`, `isSetPendingVoidAck()` for reconciliation logic
+
+**Technical**: Prevents double-counts, resurrection of voided sets, and ensures consistent offline-first behavior with server reconciliation
+
 ## 2025-08-27 15:06 - StatsPage Navigation Fix
 **Fixed**: Added missing navigation components to StatsPage and enabled proper scrolling
 - **Navigation Components**: Added `AppHeader` and `BottomNav` imports and components to StatsPage
@@ -600,42 +617,6 @@
 - **App Integration**: Wired OfflineBanner into App.tsx for global visibility across all routes
 - Context: Foundation for offline-first PWA with sync capabilities and user feedback
 - Migrations: **TODO** - Replace placeholder PWA icons with properly sized GymBud logo variants
-
-## January 26, 2025 14:05 ET
-**Completed** Database schema rebuild and documentation
-- **DB Schema**: Created complete `INVENTORY/03_DB_SCHEMA.sql` with app2 tables, views, RLS policies, and comments
-- **DB Documentation**: Added `INVENTORY/03_DB_NOTES.md` with table-by-table descriptions and architectural notes
-- **Schema Execution**: Core app2 schema rebuilt directly in Supabase production database
-- **RLS Security**: All tables secured with user-scoped Row Level Security policies
-- **Views Added**: `v_session_exercises_enriched` and `v_session_metrics` for UI data consumption
-- Context: Fresh database foundation ready for offline-first PWA with deterministic training engine
-- Migrations: **IMPORTANT** - Regenerate CSV catalog files from Supabase to sync inventory documentation
-
-## January 26, 2025 13:57 ET
-**Fixed** TypeScript build errors and completed shadcn/ui component library
-- **shadcn/ui Components**: Created missing UI components (Input, Badge, Card, Label, Textarea, Switch, Alert) with proper Radix UI integration
-- **Environment Variables**: Added `vite-env.d.ts` with TypeScript declarations for `import.meta.env` access
-- **Component Fixes**: Fixed LanguageSwitcher exports and translation key usage (`languages.en` vs `lang.en`)
-- **Page Components**: Updated SessionPage, SettingsPage, LibraryPage with proper TypeScript types and event handlers
-- **Sync Engine**: Fixed environment variable access and type assertions for service worker sync API
-- **Dependencies**: Added missing Radix UI packages (@radix-ui/react-label, @radix-ui/react-switch) to package.json
-- **Import Cleanup**: Removed unused imports and variables, added proper React.ChangeEvent type annotations
-- Context: All TypeScript compilation errors resolved, PWA ready for development and testing
-- Migrations: Run `npm install` to install new Radix UI dependencies
-
-## January 26, 2025 13:20 ET
-**Completed** GymBud Offline-First PWA Implementation
-- **PWA Infrastructure**: Added VitePWA plugin with manifest, service worker registration, and update handling
-- **IndexedDB Layer**: Implemented Dexie-based offline data layer with versioned schema for profiles, plans, sessions, exercises, and mutation queue
-- **Sync Engine**: Built comprehensive sync system with queue replay, conflict resolution, exponential backoff, and network status management
-- **Authentication**: Integrated Supabase auth with offline tolerance and session persistence
-- **App Shell**: Created routing wrapper with TanStack Query persistence and offline-aware network modes
-- **Core Pages**: Implemented Home, Session, History, Library, Settings, Auth, and NotFound pages with offline support
-- **UX Components**: Added OfflineIndicator, ConflictBanner, AppHeader, AuthGuard with sync status and conflict resolution
-- **i18n Integration**: Added complete app-specific translation keys for auth, session, history, library, settings namespaces
-- **Service Worker**: Added PWA service worker registration with update prompts in main.tsx
-- Context: Full offline-first PWA ready for production deployment with comprehensive sync capabilities
-- Migrations: Environment variables for Supabase URL/key, PWA version, and sync interval required
 
 ## August 26, 2025 12:00 ET
 **Redesigned** WhyDifferent and Programs sections to remove orange backgrounds.

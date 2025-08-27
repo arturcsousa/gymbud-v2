@@ -57,6 +57,23 @@ async function sendToServer(m: QueueMutation): Promise<void> {
     return
   }
 
+  if (m.entity === 'logged_sets/void' && m.op === 'void') {
+    // Handle void mutations for logged sets
+    const payload = { id: m.id, ...m.payload }
+
+    const { data, error } = await supabase.functions.invoke('sync-logged-sets', {
+      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+    })
+
+    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+
+    const res = data?.results?.[0]
+    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+    }
+    return
+  }
+
   if (m.entity === 'app2.sessions' && m.op === 'update') {
     // Ensure the row uses the queue id as the primary key for idempotency
     const payload = { id: m.id, ...m.payload }
@@ -144,12 +161,60 @@ async function hasPendingMutation(entity: string, rowId: string): Promise<boolea
   return count > 0
 }
 
-// Safe merge server data with local data
+// Check if row has pending void mutation
+async function hasPendingVoidMutation(setId: string): Promise<boolean> {
+  const count = await db.queue_mutations
+    .where('[entity+idempotency_key+status]')
+    .between(['logged_sets/void', `void_${setId}`, 'queued'], ['logged_sets/void', `void_${setId}`, 'queued'])
+    .count()
+  return count > 0
+}
+
+// Safe merge server data with local data - Enhanced for void reconciliation
 async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
   const tableName = entity.replace('app2.', '') as 'sessions' | 'session_exercises' | 'logged_sets'
   const table = db[tableName]
   
   if (!table) return
+  
+  // Special handling for logged_sets with void reconciliation
+  if (entity === 'app2.logged_sets') {
+    const localRow = await table.get(serverRow.id)
+    const hasPendingVoid = await hasPendingVoidMutation(serverRow.id)
+    
+    // Merge rules for void reconciliation
+    if (localRow?.voided && !serverRow.voided && hasPendingVoid) {
+      // Local void pending, server non-void: Keep local void optimistic
+      console.log(`[sync] Keeping local void for set ${serverRow.id} - pending void mutation`)
+      return
+    }
+    
+    if (serverRow.voided && localRow?.voided) {
+      // Server confirms void: Clear local pending and confirm voided
+      await table.put({ ...serverRow, voided: true })
+      console.log(`[sync] Confirmed void for set ${serverRow.id}`)
+      return
+    }
+    
+    if (!serverRow.voided && localRow?.voided && !hasPendingVoid) {
+      // Server says non-void, local has void but no pending: Trust server
+      console.log(`[sync] Reverting local void for set ${serverRow.id} - no pending mutation`)
+      await table.put({ ...serverRow, voided: false })
+      return
+    }
+    
+    // Deduplicate by (session_exercise_id, set_number) - server canonical
+    const existingBySetNumber = await table
+      .where('[session_exercise_id+set_number]')
+      .equals([serverRow.session_exercise_id, serverRow.set_number])
+      .first()
+    
+    if (existingBySetNumber && existingBySetNumber.id !== serverRow.id) {
+      // Duplicate detected - server row is canonical
+      await table.delete(existingBySetNumber.id)
+      console.log(`[sync] Deduplicated set ${existingBySetNumber.id} in favor of ${serverRow.id}`)
+    }
+  }
   
   // Check if we have pending mutations for this row
   const hasPending = await hasPendingMutation(entity, serverRow.id)
@@ -323,7 +388,6 @@ export async function flush(maxBatch = 50): Promise<void> {
   }
 }
 
-// Single-flight, cross-tab trigger
 export function requestFlush() {
   if (flushLock) return
   bc?.postMessage('flush') // other tabs too
@@ -360,7 +424,7 @@ export async function enqueueLoggedSetVoid(setId: string, userId: string) {
   // Check if a void mutation for this set is already queued
   const existingVoid = await db.queue_mutations
     .where(['entity', 'op'])
-    .equals(['app2.logged_sets', 'update'])
+    .equals(['logged_sets/void', 'void'])
     .and(mutation => 
       mutation.payload?.id === setId && 
       mutation.payload?.voided === true &&
@@ -375,8 +439,8 @@ export async function enqueueLoggedSetVoid(setId: string, userId: string) {
 
   const mutation: QueueMutation = {
     id: crypto.randomUUID(),
-    entity: 'app2.logged_sets',
-    op: 'update',
+    entity: 'logged_sets/void',
+    op: 'void',
     payload: { id: setId, voided: true },
     user_id: userId,
     idempotency_key: `void_${setId}`,

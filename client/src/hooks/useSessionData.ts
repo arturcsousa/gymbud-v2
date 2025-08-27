@@ -295,8 +295,22 @@ export function useSessionData(sessionId?: string) {
         const session = await db.sessions.get(sessionId);
         if (!session) throw new Error('Session not found');
 
-        // Optimistically mark as voided
-        await db.logged_sets.update(lastSet.id, { voided: true });
+        // Check if void mutation already exists for this set
+        const existingVoid = await db.queue_mutations
+          .where(['entity', 'idempotency_key'])
+          .equals(['logged_sets/void', `void_${lastSet.id}`])
+          .and(mutation => mutation.status === 'queued')
+          .first();
+
+        if (existingVoid) {
+          throw new Error('Undo already queued for this set');
+        }
+
+        // Optimistically mark as voided with pending state
+        await db.logged_sets.update(lastSet.id, { 
+          voided: true,
+          meta: { ...lastSet.meta, pendingVoidAck: true }
+        });
 
         // Enqueue void mutation
         await enqueueLoggedSetVoid(lastSet.id, session.user_id);
@@ -310,21 +324,28 @@ export function useSessionData(sessionId?: string) {
         };
         await db.sync_events.add(telemetryEvent);
 
-        return { type: 'durable_undo', setNumber: lastSet.set_number };
+        return { type: 'void_queued', setNumber: lastSet.set_number };
       }
     },
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ['session-data', sessionId] });
+      queryClient.invalidateQueries({ queryKey: ['session', sessionId] });
       
       if (result.type === 'pending_removed') {
         toast.success('Set removed');
-      } else {
+      } else if (result.type === 'void_queued') {
         toast.success('Undo queued—will retry when online');
       }
     },
     onError: (error) => {
       console.error('Failed to undo set:', error);
-      toast.error('Can\'t undo this set');
+      
+      if (error.message === 'Undo already queued for this set') {
+        toast.error('Undo already in progress');
+      } else if (error.message === 'No sets to undo') {
+        toast.error('No sets to undo');
+      } else {
+        toast.error('Can\'t undo this set');
+      }
     }
   });
 
@@ -435,7 +456,7 @@ export function useSessionData(sessionId?: string) {
 
   const getExerciseSets = (exerciseId: string) => {
     return data.loggedSets.filter(
-      set => set.session_exercise_id === exerciseId
+      set => set.session_exercise_id === exerciseId && !set.voided
     ).sort((a, b) => a.set_number - b.set_number);
   };
 
@@ -444,10 +465,16 @@ export function useSessionData(sessionId?: string) {
     return sets.length + 1;
   };
 
+  // Helper to check if a set has pending void acknowledgment
+  const isSetPendingVoidAck = (setId: string) => {
+    const set = data.loggedSets.find(s => s.id === setId);
+    return set?.voided && set?.meta?.pendingVoidAck === true;
+  };
+
   return {
     session: data.session,
     exercises: data.exercises,
-    loggedSets: data.loggedSets,
+    loggedSets: data.loggedSets.filter(set => !set.voided), // Filter out voided sets
     currentExercise,
     currentExerciseIndex,
     isLoading: isLoading && !offlineData.session,
@@ -460,6 +487,7 @@ export function useSessionData(sessionId?: string) {
     updateSession: updateSessionMutation.mutate,
     getExerciseSets,
     getNextSetNumber,
+    isSetPendingVoidAck,
     
     // Telemetry helpers
     logRestEvent,
