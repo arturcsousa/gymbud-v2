@@ -102,11 +102,11 @@ export function AuthPage() {
         }}
       />
       
-      {/* Orange curved section with diagonal clip */}
+      {/* Subtle lighter teal curved section with diagonal clip */}
       <div 
         className="absolute top-0 right-0 w-2/3 h-full"
         style={{
-          background: `linear-gradient(135deg, #18C7B6 0%, #FF9F1C 70%)`,
+          background: `linear-gradient(135deg, #18C7B6 0%, #2DD4BF 40%, #5EEAD4 100%)`,
           clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
         }}
       />
