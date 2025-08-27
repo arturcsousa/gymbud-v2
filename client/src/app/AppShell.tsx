@@ -16,7 +16,7 @@ import { HomePage } from '@/app/pages/HomePage'
 import { SessionPage } from '@/app/pages/SessionPage'
 import { HistoryPage } from '@/app/pages/HistoryPage'
 import { HistoryDetailPage } from '@/app/pages/HistoryDetailPage'
-import { LibraryPage } from '@/app/pages/LibraryPage'
+import { StatsPage } from '@/app/pages/StatsPage'
 import { SettingsPage } from '@/app/pages/SettingsPage'
 import { NotFoundPage } from '@/app/pages/NotFoundPage'
 
@@ -109,7 +109,7 @@ export function AppShell({ children }: AppShellProps) {
                 <Route path="/session/:id" component={SessionPage} />
                 <Route path="/history" component={HistoryPage} />
                 <Route path="/history/:id" component={HistoryDetailPage} />
-                <Route path="/library" component={LibraryPage} />
+                <Route path="/stats" component={StatsPage} />
                 <Route path="/settings" component={SettingsPage} />
               </AuthGuard>
               

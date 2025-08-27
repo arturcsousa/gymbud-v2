@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
-import { Home, Play, History, BookOpen, Settings } from 'lucide-react';
+import { Home, Play, History, BarChart3, Settings } from 'lucide-react';
 
 interface BottomNavProps {
   className?: string;
@@ -31,10 +31,10 @@ const BottomNav: React.FC<BottomNavProps> = ({ className = '' }) => {
       path: '/history',
     },
     {
-      id: 'library',
-      label: t('app:nav.library'),
-      icon: BookOpen,
-      path: '/library',
+      id: 'stats',
+      label: t('app:nav.stats'),
+      icon: BarChart3,
+      path: '/stats',
     },
     {
       id: 'settings',
