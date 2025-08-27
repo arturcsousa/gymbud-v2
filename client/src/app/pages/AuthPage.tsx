@@ -106,7 +106,7 @@ export function AuthPage() {
       <div 
         className="absolute top-0 right-0 w-2/3 h-full"
         style={{
-          background: `linear-gradient(135deg, #18C7B6 0%, #2DD4BF 40%, #5EEAD4 100%)`,
+          background: `linear-gradient(135deg, #0C8F93 0%, #14A085 50%, #18C7B6 100%)`,
           clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
         }}
       />
