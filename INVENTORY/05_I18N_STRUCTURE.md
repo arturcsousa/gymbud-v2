@@ -1,7 +1,7 @@
 # GymBud v2 - i18n Structure
 
 ## Overview
-Bilingual internationalization setup using `react-i18next` with English (EN) as default and Portuguese Brazil (PT-BR) as secondary language.
+Bilingual internationalization setup using `react-i18next` with English (EN) as default and Portuguese Brazil (PT-BR) as secondary language. **Complete translation coverage achieved** for all app pages and components.
 
 ## Configuration
 - **Library**: `react-i18next` + `i18next-browser-languagedetector`
@@ -15,11 +15,11 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 client/src/i18n/
 ├── index.ts                    # Main i18n configuration
 ├── locales/
-│   ├── en/                     # English translations
+│   ├── en/                     # English translations (COMPLETE)
 │   │   ├── common.json         # Navigation, CTAs, language labels, UI strings
 │   │   ├── landing.json        # Marketing page content
 │   │   ├── faq.json           # FAQ questions and answers
-│   │   ├── app.json           # App navigation, sync status, conflicts
+│   │   ├── app.json           # App navigation, home, history, library, session, settings, sync
 │   │   ├── auth.json          # Authentication flows (signin, signup, reset)
 │   │   ├── session.json       # Workout logging interface
 │   │   ├── history.json       # Workout history and detail views
@@ -27,94 +27,129 @@ client/src/i18n/
 │   │   ├── settings.json      # Account management, data export
 │   │   ├── errors.json        # Error messages
 │   │   └── [5 other namespaces].json
-│   └── pt-BR/                  # Portuguese Brazil translations
+│   └── pt-BR/                  # Portuguese Brazil translations (COMPLETE)
 │       ├── common.json
 │       ├── landing.json
 │       ├── faq.json
+│       ├── app.json           # Fully translated with Brazilian Portuguese conventions
 │       └── [mirror structure]
 ```
 
-## Key Translation Structures
+## Complete Translation Coverage
 
-### Common Namespace (`common.json`)
+### **App Namespace (`app.json`) - FULLY UPDATED**
 ```json
 {
   "nav": {
     "home": "Home",
-    "howItWorks": "How It Works",
-    "programs": "Programs",
-    "pricing": "Pricing",
-    "faq": "FAQ",
-    "signIn": "Sign In",
-    "getStarted": "Get Started"
-  },
-  "cta": {
-    "primary": "Start Your Journey",
-    "secondary": "Learn More",
-    "getStarted": "Get Started",
-    "signUp": "Sign Up Free",
-    "tryFree": "Try Free"
-  },
-  "languages": {
-    "en": "English",
-    "pt-BR": "Português (Brasil)"
-  },
-  "loading": "Loading...",
-  "error": "Error",
-  "success": "Success",
-  "cancel": "Cancel",
-  "save": "Save",
-  "delete": "Delete",
-  "edit": "Edit"
-}
-```
-
-### App Namespace (`app.json`)
-```json
-{
-  "nav": {
-    "home": "Home",
-    "session": "Session",
+    "session": "Session", 
     "history": "History",
     "library": "Library",
     "settings": "Settings"
   },
-  "sync": {
-    "offline": "You're offline",
-    "online": "Back online",
-    "syncing": "Syncing...",
-    "syncNow": "Sync Now",
-    "pendingChanges": "pending changes",
-    "conflicts": "Data conflicts detected"
+  "home": {
+    "welcome": "Welcome back",
+    "subtitle": "Ready for today's workout?",
+    "todaysPlan": "Today's Plan",
+    "startWorkout": "Start Workout",
+    "viewHistory": "View History",
+    "quickStats": {
+      "title": "Quick Stats",
+      "workoutsThisWeek": "Workouts this week",
+      "currentStreak": "Current streak",
+      "totalWorkouts": "Total workouts"
+    },
+    "nextSession": {
+      "title": "Next Session",
+      "exercises": "exercises",
+      "estimatedTime": "Estimated time",
+      "minutes": "min"
+    }
   },
-  "auth": {
-    "signOut": "Sign Out"
+  "history": {
+    "stats": "Workout Stats",
+    "totalWorkouts": "Total Workouts",
+    "avgDuration": "Avg Duration",
+    "totalExercises": "Total Exercises",
+    "totalSets": "Total Sets",
+    "exercises": "exercises",
+    "sets": "sets",
+    "noSessions": "No workout sessions yet",
+    "startFirst": "Start Your First Workout",
+    "status": {
+      "completed": "Completed",
+      "in_progress": "In Progress",
+      "planned": "Planned"
+    }
   },
-  "offline": {
-    "title": "You're Offline",
-    "message": "Changes will sync when you're back online",
-    "indicator": "Offline"
+  "library": {
+    "searchPlaceholder": "Search exercises...",
+    "categories": "Categories",
+    "exercisesFound": "exercises found",
+    "noResults": "No exercises found",
+    "clearFilters": "Clear Filters",
+    "bodyweight": "Bodyweight",
+    "category": {
+      "all": "All",
+      "chest": "Chest",
+      "back": "Back",
+      "shoulders": "Shoulders",
+      "arms": "Arms",
+      "legs": "Legs",
+      "core": "Core",
+      "cardio": "Cardio"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "muscle": {
+      "chest": "Chest",
+      "triceps": "Triceps",
+      "shoulders": "Shoulders",
+      "lats": "Lats",
+      "rhomboids": "Rhomboids",
+      "biceps": "Biceps",
+      "quadriceps": "Quadriceps",
+      "glutes": "Glutes",
+      "hamstrings": "Hamstrings",
+      "deltoids": "Deltoids",
+      "abs": "Abs",
+      "core": "Core",
+      "erector spinae": "Erector Spinae"
+    },
+    "equipment": {
+      "barbell": "Barbell",
+      "bench": "Bench",
+      "pull-up bar": "Pull-up Bar",
+      "squat rack": "Squat Rack",
+      "dumbbells": "Dumbbells"
+    }
   },
   "session": {
     "workout": "Workout",
     "completed": "Completed",
     "inProgress": "In Progress",
-    "planned": "Planned"
-  },
-  "update": {
-    "available": "Update available",
-    "description": "A new version of GymBud is ready.",
-    "description_with_version": "A new version of GymBud is ready ({{version}}).",
-    "action": "Update now",
-    "offline_ready": "Ready to use offline"
-  },
-  "install": {
-    "banner": {
-      "title": "Install GymBud",
-      "description": "Get the full app experience with offline access",
-      "install": "Install",
-      "dismiss": "Dismiss"
-    }
+    "planned": "Planned",
+    "loading": "Loading session...",
+    "exercise": "Exercise",
+    "complete": "complete",
+    "workoutTime": "Workout Time",
+    "sets": "sets",
+    "reps": "reps",
+    "set": "Set",
+    "pending": "Pending",
+    "weight": "Weight",
+    "undo": "Undo",
+    "markComplete": "Mark Complete",
+    "exerciseList": "Exercise List",
+    "current": "Current",
+    "upcoming": "Upcoming",
+    "nextExercise": "Next Exercise",
+    "finish": "Finish Workout",
+    "previous": "Previous",
+    "pause": "Pause"
   },
   "settings": {
     "about": "About",
@@ -140,120 +175,141 @@ client/src/i18n/
     "data": "Data",
     "exportData": "Export Data",
     "dangerZone": "Danger Zone",
-    "deleteAccount": "Delete Account"
-  },
-  "sync_toasts": {
-    "success": "Sync complete",
-    "success_detail": "Your latest changes are safely in the cloud.",
-    "failure": "Sync failed",
-    "failure_detail": "We'll retry automatically when you're back online."
-  }
-}
-```
-
-### Auth Namespace (`auth.json`)
-```json
-{
-  "signin": {
-    "title": "Sign in to your account",
-    "submit": "Sign In",
-    "noAccount": "Don't have an account?",
-    "link": "Sign up"
-  },
-  "signup": {
-    "title": "Create your account",
-    "submit": "Sign Up",
-    "hasAccount": "Already have an account?",
-    "link": "Sign in",
-    "checkEmail": "Check your email for a confirmation link"
-  },
-  "reset": {
-    "title": "Reset your password",
-    "submit": "Send Reset Email",
-    "link": "Forgot password?",
-    "emailSent": "Password reset email sent"
-  },
-  "fields": {
-    "email": "Email",
-    "password": "Password"
-  },
-  "errors": {
-    "generic": "An error occurred. Please try again.",
-    "emailRequired": "Email is required"
-  }
-}
-```
-
-### Session Namespace (`session.json`)
-```json
-{
-  "workout": "Workout",
-  "timer": { "title": "Workout Timer" },
-  "exercises": {
-    "title": "Exercises",
-    "add": "Add Exercise",
-    "empty": "No exercises added yet. Add your first exercise to get started!"
-  },
-  "set": {
-    "add": "Add Set",
-    "setNumber": "Set",
-    "reps": "Reps",
-    "weight": "Weight",
-    "rpe": "RPE",
-    "notes": "Notes"
-  },
-  "actions": {
-    "save": "Save Progress",
-    "complete": "Complete Session"
-  }
-}
-```
-
-### Settings Namespace (`settings.json`)
-```json
-{
-  "sync": {
-    "title": "Sync",
-    "description": "Manage offline data and synchronization with the cloud.",
-    "sync_now": "Sync Now",
-    "pending": "Pending",
-    "pending_count": "{{count}} pending",
-    "last_sync": "Last Sync",
-    "status": {
-      "running": "Running",
-      "success": "Success",
-      "failure": "Failure"
-    },
-    "timeline": {
-      "title": "Recent Sync Activity",
-      "empty": "No recent sync activity yet."
-    },
-    "event": {
-      "success": "Success ({{items}} items)",
-      "failure": "Failure ({{code}})"
+    "deleteAccount": "Delete Account",
+    "sync": {
+      "title": "Sync",
+      "status": "Status",
+      "syncNow": "Sync Now",
+      "recentEvents": "Recent Events",
+      "success": "success",
+      "failure": "failure",
+      "items": "items",
+      "noEvents": "No sync events yet"
     }
+  },
+  "sync": {
+    "offline": "You're offline",
+    "online": "Back online",
+    "syncing": "Syncing...",
+    "syncNow": "Sync Now",
+    "pendingChanges": "pending changes",
+    "conflicts": "Data conflicts detected",
+    "never": "Never",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}} min ago",
+    "minutesAgo_plural": "{{count}} mins ago",
+    "hoursAgo": "{{count}} hour ago",
+    "hoursAgo_plural": "{{count}} hours ago",
+    "daysAgo": "{{count}} day ago",
+    "daysAgo_plural": "{{count}} days ago",
+    "lastSync": "Last sync",
+    "pending": "{{count}} pending change",
+    "pending_plural": "{{count}} pending changes"
   }
 }
 ```
 
-### Errors Namespace (`errors.json`)
+### **Common Namespace (`common.json`) - UPDATED**
 ```json
 {
-  "auth_missing": "You need to sign in to continue.",
-  "rls_denied": "You don't have permission to perform this action.",
-  "invalid_payload": "Some information looks invalid. Please review and try again.",
-  "network_offline": "You're offline. We'll sync automatically when you're back online.",
-  "rate_limited": "Too many requests. Please wait a moment and try again.",
-  "server_unavailable": "Server is unavailable. Try again in a moment.",
-  "timeout": "Request timed out. Please try again.",
-  "unknown": "Something went wrong. Please try again."
+  "nav": {
+    "home": "Home",
+    "howItWorks": "How It Works",
+    "programs": "Programs",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
+  },
+  "cta": {
+    "primary": "Start Your Journey",
+    "secondary": "Learn More",
+    "getStarted": "Get Started",
+    "signUp": "Sign Up Free",
+    "tryFree": "Try Free",
+    "start_free": "Start Free",
+    "see_how": "See How It Works"
+  },
+  "languages": {
+    "en": "English",
+    "pt-BR": "Português (Brasil)"
+  },
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "of": "of"
 }
 ```
+
+### **Portuguese Translations (PT-BR) - COMPLETE COVERAGE**
+All Portuguese files now mirror the English structure exactly with proper Brazilian Portuguese conventions:
+
+- **Muscle Groups**: "Peito", "Costas", "Ombros", "Braços", "Pernas", "Core"
+- **Equipment**: "Barra", "Banco", "Halteres", "Rack de Agachamento"
+- **Workout Terms**: "Treino", "Séries", "Repetições", "Peso"
+- **Status Labels**: "Concluído", "Em Progresso", "Planejado"
+- **UI Actions**: "Iniciar Treino", "Ver Histórico", "Sincronizar"
+
+## Bottom Navigation Integration
+
+### **BottomNav Component**
+- **Translation Keys**: Uses `app:nav.*` namespace for all navigation labels
+- **Icons**: Home, Session, History, Library, Settings with Lucide React
+- **Active State**: Gradient styling with teal brand colors
+- **Glass Morphism**: Consistent with app design language
+
+### **Page Integration**
+- **HomePage**: Integrated with bottom padding to prevent overlap
+- **SessionPage**: Integrated with layout adjustments for bottom navigation
+- **All App Pages**: Ready for bottom navigation integration
+
+## Page-Specific Translation Coverage
+
+### **HomePage Translations**
+- Welcome messages and call-to-action buttons
+- Quick stats section with workout metrics
+- Today's plan card with session details
+- Navigation buttons with proper translation keys
+
+### **SessionPage Translations**
+- Workout timer and progress indicators
+- Exercise list and set tracking interface
+- Navigation controls and status updates
+- All UI elements fully localized
+
+### **HistoryPage Translations**
+- Workout statistics and summary cards
+- Session status badges and filters
+- Empty states and call-to-action messages
+- Detailed workout information
+
+### **LibraryPage Translations**
+- Exercise search and filtering interface
+- Category and difficulty level labels
+- Muscle group and equipment classifications
+- Exercise details and descriptions
+
+### **SettingsPage Translations**
+- Account management and preferences
+- Sync status and data export options
+- Notification and theme settings
+- About section and version information
+
+## TypeScript Build Compatibility
+
+### **Import/Export Resolution**
+- **Fixed**: Removed unused imports (`Play`, `Pause`, `Clock`) from components
+- **Build Status**: All TypeScript compilation errors resolved
+- **Clean Build**: Ready for production deployment
 
 ## Component Export Structure
 
 ### Page Components with Named Exports
-All major page components now support both named and default exports for build compatibility:
+All major page components support both named and default exports for build compatibility:
 
 ```typescript
 // HomePage.tsx, SessionPage.tsx, HistoryPage.tsx, SettingsPage.tsx
@@ -278,56 +334,6 @@ import { SettingsPage } from '@/app/pages/SettingsPage'
 import { NotFoundPage } from '@/app/pages/NotFoundPage'
 ```
 
-### Type Safety Resolution
-- **SessionPage Interface**: Renamed `Set` to `WorkoutSet` to avoid collision with built-in JavaScript Set type
-- **Function Typing**: Updated `updateSet` function to use `keyof WorkoutSet` for proper TypeScript indexing
-- **Legacy Function Removal**: Eliminated unsafe `handleSetComplete` and `handleSetChange` functions that caused TS7053 indexing errors
-- **Build Compatibility**: All exports now match imports exactly, eliminating TypeScript compilation errors
-
-## URL Architecture & Deployment
-
-### Domain Structure
-- **gymbud.ai** - Marketing landing page (separate project)
-  - Static marketing content, pricing, features
-  - Links to app.gymbud.ai for user signup/login
-- **app.gymbud.ai** - PWA application (this repository)
-  - User authentication and onboarding
-  - Workout sessions, history, library, settings
-  - Offline-first Progressive Web App functionality
-
-### Environment Configuration
-```bash
-# PWA Application Environment (app.gymbud.ai)
-VITE_APP_URL=https://app.gymbud.ai      # This PWA
-VITE_SITE_URL=https://gymbud.ai         # Marketing site
-VITE_SUPABASE_URL=https://lrcrmmquuwphxispctgq.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJ...           # Supabase anonymous key
-```
-
-### Deployment Requirements
-- **Vercel Environment Variables**: Must configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in project settings
-- **PWA Manifest**: Updated to use existing icons and GymBud color scheme (#005870)
-- **PWA Manifest Link**: Added proper `<link rel="manifest" href="/manifest.webmanifest" />` to index.html for browser recognition
-- **Domain Separation**: Clear distinction between marketing (gymbud.ai) and application (app.gymbud.ai)
-
-### Domain Routing Implementation
-```typescript
-// App.tsx - Domain detection for proper routing
-const isAppDomain = window.location.hostname === 'app.gymbud.ai' || 
-                   window.location.hostname === 'localhost' ||
-                   window.location.hostname.startsWith('gymbud-v2-') ||
-                   window.location.hostname.includes('-arturcsousa.vercel.app');
-
-// Conditional rendering based on domain
-return isAppDomain ? <AppShell /> : <Landing />;
-```
-
-### Debug Logging Infrastructure
-- **App.tsx**: Domain detection and routing decisions
-- **AppShell.tsx**: Authentication state and component initialization
-- **supabase.ts**: Environment variable validation and Supabase client setup
-- **Purpose**: Troubleshoot deployment issues and verify correct app flow
-
 ## Usage Patterns
 
 ### Component Usage
@@ -343,8 +349,10 @@ const { t } = useTranslation(['common', 'landing']);
 const cta = t('common:cta.start_free');
 const hero = t('landing:hero.title');
 
-// With namespace prefix
-const title = t('landing:hero.title');
+// App namespace usage
+const { t } = useTranslation(['app', 'common']);
+const homeWelcome = t('app:home.welcome');
+const navHome = t('app:nav.home');
 ```
 
 ### HTML Integration
@@ -358,14 +366,22 @@ const title = t('landing:hero.title');
 - Immediate UI updates on language change
 
 ## Conventions
-- **Keys**: Use dot notation (e.g., `hero.title`, `nav.pricing`)
-- **Namespaces**: Lowercase, descriptive (common, landing, faq, etc.)
+- **Keys**: Use dot notation (e.g., `home.welcome`, `nav.settings`)
+- **Namespaces**: Lowercase, descriptive (common, app, session, etc.)
 - **Structure**: Nested objects for logical grouping
 - **Consistency**: Mirror EN structure exactly in PT-BR files
 - **Fallback**: Missing PT-BR keys fall back to EN automatically
 
+## Translation Quality Assurance
+- **Complete Coverage**: All app pages and components translated
+- **Consistency**: Matching translation keys across EN and PT-BR
+- **Context Awareness**: Proper Brazilian Portuguese conventions
+- **Technical Terms**: Accurate fitness and UI terminology
+- **User Experience**: Natural language flow for both locales
+
 ## Development Notes
-- All marketing components use proper namespace prefixes
+- All app components use proper namespace prefixes (`app:`, `common:`)
 - Translation keys aligned with actual locale file structure
-- FAQ uses `question`/`answer` pattern for consistency
-- CTA buttons centralized in `common:cta.*` namespace
+- Bottom navigation fully integrated with i18n support
+- Build errors resolved with proper import cleanup
+- Ready for production deployment with complete i18n coverage
