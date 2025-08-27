@@ -13,7 +13,9 @@
     "secondary": "Learn More",
     "getStarted": "Get Started",
     "signUp": "Sign Up Free",
-    "tryFree": "Try Free"
+    "tryFree": "Try Free",
+    "start_free": "Start Free",
+    "see_how": "See How It Works"
   },
   "languages": {
     "en": "English",
@@ -25,5 +27,6 @@
   "cancel": "Cancel",
   "save": "Save",
   "delete": "Delete",
-  "edit": "Edit"
+  "edit": "Edit",
+  "of": "of"
 }

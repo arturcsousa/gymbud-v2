@@ -6,6 +6,25 @@
     "library": "Library",
     "settings": "Settings"
   },
+  "home": {
+    "welcome": "Welcome back",
+    "subtitle": "Ready for today's workout?",
+    "todaysPlan": "Today's Plan",
+    "startWorkout": "Start Workout",
+    "viewHistory": "View History",
+    "quickStats": {
+      "title": "Quick Stats",
+      "workoutsThisWeek": "Workouts this week",
+      "currentStreak": "Current streak",
+      "totalWorkouts": "Total workouts"
+    },
+    "nextSession": {
+      "title": "Next Session",
+      "exercises": "exercises",
+      "estimatedTime": "Estimated time",
+      "minutes": "min"
+    }
+  },
   "sync": {
     "offline": "You're offline",
     "online": "Back online",
@@ -26,7 +45,25 @@
     "workout": "Workout",
     "completed": "Completed",
     "inProgress": "In Progress",
-    "planned": "Planned"
+    "planned": "Planned",
+    "loading": "Loading session...",
+    "exercise": "Exercise",
+    "complete": "complete",
+    "workoutTime": "Workout Time",
+    "sets": "sets",
+    "reps": "reps",
+    "set": "Set",
+    "pending": "Pending",
+    "weight": "Weight",
+    "undo": "Undo",
+    "markComplete": "Mark Complete",
+    "exerciseList": "Exercise List",
+    "current": "Current",
+    "upcoming": "Upcoming",
+    "nextExercise": "Next Exercise",
+    "finish": "Finish Workout",
+    "previous": "Previous",
+    "pause": "Pause"
   },
   "update": {
     "available": "Update available",

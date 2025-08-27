@@ -97,7 +97,7 @@ serve(async (req) => {
     if (draftErr) return json(500, { error: "select_draft_failed", detail: draftErr.message });
 
     if (draft) {
-      const newSeed = typeof body.seed !== "undefined" ? body.seed : draft.seed ?? null;
+      const newSeed = typeof body.seed !== "undefined" ? body.seed : (draft.seed ?? {});
       const { data: promoted, error: promoteErr } = await supabase
         .schema("app2")
         .from("plans")

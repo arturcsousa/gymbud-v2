@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { ContentLayout } from '@/app/components/GradientLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { ArrowLeft, ArrowRight, Play, Pause, CheckCircle } from 'lucide-react'
 
 interface WorkoutSet {
   id: string
@@ -40,13 +40,11 @@ function SessionPage() {
 
   const loadSession = async () => {
     try {
-      // Initialize sets for current exercise
       const initialSets: WorkoutSet[] = [
         { id: '1', reps: '', weight: '', completed: false },
         { id: '2', reps: '', weight: '', completed: false },
         { id: '3', reps: '', weight: '', completed: false }
       ]
-
       setSets(initialSets)
     } catch (error) {
       console.error('Error loading session:', error)
@@ -76,7 +74,6 @@ function SessionPage() {
   const handleNextExercise = () => {
     if (currentExerciseIndex < 4) {
       setCurrentExerciseIndex(currentExerciseIndex + 1)
-      // Reset sets for next exercise
       setSets([
         { id: '1', reps: '', weight: '', completed: false },
         { id: '2', reps: '', weight: '', completed: false },
@@ -88,7 +85,6 @@ function SessionPage() {
   const handlePreviousExercise = () => {
     if (currentExerciseIndex > 0) {
       setCurrentExerciseIndex(currentExerciseIndex - 1)
-      // Reset sets for previous exercise
       setSets([
         { id: '1', reps: '', weight: '', completed: false },
         { id: '2', reps: '', weight: '', completed: false },
@@ -99,7 +95,6 @@ function SessionPage() {
 
   const handleFinishWorkout = () => {
     setIsTimerRunning(false)
-    // Save session and navigate to history
     setLocation('/history')
   }
 
@@ -109,11 +104,14 @@ function SessionPage() {
 
   if (loading) {
     return (
-      <ContentLayout title={t('app:session.loading')}>
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <div className="min-h-screen grid place-items-center bg-gradient-to-b from-teal-900 via-teal-950 to-black p-6">
+        <div className="w-full max-w-md rounded-2xl bg-white/10 backdrop-blur-xl p-6 shadow-xl ring-1 ring-white/10">
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+            <span className="ml-3 text-white">{t('app:session.loading')}</span>
+          </div>
         </div>
-      </ContentLayout>
+      </div>
     )
   }
 
@@ -127,23 +125,19 @@ function SessionPage() {
   const progress = ((currentExerciseIndex + 1) / 5) * 100
 
   return (
-    <ContentLayout
-      showNavigation={true}
-      onBack={currentExerciseIndex > 0 ? handlePreviousExercise : handlePauseWorkout}
-      onNext={currentExerciseIndex < 4 ? handleNextExercise : handleFinishWorkout}
-      nextLabel={currentExerciseIndex < 4 ? t('app:session.nextExercise') : t('app:session.finish')}
-      backLabel={currentExerciseIndex > 0 ? t('app:session.previous') : t('app:session.pause')}
-    >
-      <div className="space-y-6">
-        {/* Progress Header */}
-        <div className="mb-4 sm:mb-8 flex-shrink-0">
-          <div className="flex justify-between items-center mb-2">
+    <div className="min-h-screen bg-gradient-to-b from-teal-900 via-teal-950 to-black p-4">
+      <div className="max-w-md mx-auto space-y-4">
+        {/* Header with Progress */}
+        <div className="rounded-2xl bg-white/10 backdrop-blur-xl p-4 shadow-xl ring-1 ring-white/10">
+          <div className="flex justify-between items-center mb-3">
             <span className="text-white text-sm font-medium">
               {t('app:session.exercise')} {currentExerciseIndex + 1} {t('common:of')} 5
             </span>
-            <span className="text-white text-sm font-medium">
-              {Math.round(progress)}% {t('app:session.complete')}
-            </span>
+            <div className="flex items-center gap-2">
+              <div className="text-white text-lg font-bold">
+                {formatTime(timer)}
+              </div>
+            </div>
           </div>
           <div className="w-full bg-white/20 rounded-full h-2">
             <div 
@@ -153,81 +147,65 @@ function SessionPage() {
           </div>
         </div>
 
-        {/* Timer */}
-        <div className="text-center">
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 inline-block">
-            <div className="text-2xl font-bold text-white mb-1">
-              {formatTime(timer)}
-            </div>
-            <div className="text-white/70 text-sm">
-              {t('app:session.workoutTime')}
-            </div>
-          </div>
-        </div>
-
         {/* Current Exercise */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-bold text-white mb-2">
+        <div className="rounded-2xl bg-white/10 backdrop-blur-xl p-4 shadow-xl ring-1 ring-white/10">
+          <div className="text-center mb-4">
+            <h2 className="text-lg font-bold text-white mb-1">
               {currentExerciseData?.name}
             </h2>
             <div className="flex justify-center gap-4 text-sm text-white/80">
               <span>{currentExerciseData?.sets} {t('app:session.sets')}</span>
               <span>{currentExerciseData?.reps} {t('app:session.reps')}</span>
-              {currentExerciseData?.weight > 0 && (
-                <span>{currentExerciseData?.weight} lbs</span>
-              )}
+              <span>{currentExerciseData?.weight} lbs</span>
             </div>
           </div>
 
           {/* Sets */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {sets.map((set, index) => (
-              <div key={set.id} className="bg-white/10 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-white font-medium">
+              <div key={set.id} className="bg-white/10 rounded-xl p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">
                     {t('app:session.set')} {index + 1}
                   </span>
                   <Badge 
                     variant={set.completed ? "default" : "secondary"}
                     className={
                       set.completed 
-                        ? "bg-green-500/20 text-green-300 border-green-500/30"
-                        : "bg-white/20 text-white border-white/30"
+                        ? "bg-green-500/20 text-green-300 border-green-500/30 text-xs"
+                        : "bg-white/20 text-white border-white/30 text-xs"
                     }
                   >
                     {set.completed ? t('app:session.completed') : t('app:session.pending')}
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mb-3">
+                <div className="grid grid-cols-2 gap-2 mb-2">
                   <div>
-                    <Label className="text-white text-sm mb-1 block">
+                    <Label className="text-white text-xs mb-1 block">
                       {t('app:session.reps')}
                     </Label>
                     <Input
                       type="number"
                       value={set.reps}
                       onChange={(e) => updateSet(set.id, 'reps', e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/60 h-8 text-sm"
                       placeholder="0"
                     />
                   </div>
                   
-                  {currentExerciseData?.weight > 0 && (
-                    <div>
-                      <Label className="text-white text-sm mb-1 block">
-                        {t('app:session.weight')} (lbs)
-                      </Label>
-                      <Input
-                        type="number"
-                        value={set.weight}
-                        onChange={(e) => updateSet(set.id, 'weight', e.target.value)}
-                        className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
-                        placeholder="0"
-                      />
-                    </div>
-                  )}
+                  <div>
+                    <Label className="text-white text-xs mb-1 block">
+                      {t('app:session.weight')} (lbs)
+                    </Label>
+                    <Input
+                      type="number"
+                      value={set.weight}
+                      onChange={(e) => updateSet(set.id, 'weight', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/60 h-8 text-sm"
+                      placeholder="0"
+                    />
+                  </div>
                 </div>
 
                 <Button
@@ -235,67 +213,45 @@ function SessionPage() {
                   variant={set.completed ? "secondary" : "default"}
                   className={
                     set.completed 
-                      ? "w-full bg-white/20 text-white hover:bg-white/30"
-                      : "w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1]"
+                      ? "w-full bg-white/20 text-white hover:bg-white/30 h-8 text-xs"
+                      : "w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] h-8 text-xs"
                   }
                 >
-                  {set.completed ? t('app:session.undo') : t('app:session.markComplete')}
+                  {set.completed ? (
+                    <>
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      {t('app:session.completed')}
+                    </>
+                  ) : (
+                    t('app:session.markComplete')
+                  )}
                 </Button>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Exercise List */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-xl">
-          <h3 className="text-lg font-bold text-white mb-4">
-            {t('app:session.exerciseList')}
-          </h3>
-          
-          <div className="space-y-2">
-            {Array(5).fill(null).map((_, index) => (
-              <div
-                key={index}
-                className={`flex items-center justify-between p-3 rounded-xl transition-colors ${
-                  index === currentExerciseIndex 
-                    ? 'bg-white/20'
-                    : index < currentExerciseIndex 
-                      ? 'bg-green-500/20'
-                      : 'bg-white/10'
-                }`}
-              >
-                <div>
-                  <div className="text-white font-medium">
-                    Exercise {index + 1}
-                  </div>
-                  <div className="text-white/70 text-sm">
-                    3 × 8-10
-                  </div>
-                </div>
-                
-                <Badge 
-                  variant="secondary"
-                  className={
-                    index === currentExerciseIndex 
-                      ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
-                      : index < currentExerciseIndex 
-                        ? "bg-green-500/20 text-green-300 border-green-500/30"
-                        : "bg-white/20 text-white border-white/30"
-                  }
-                >
-                  {index === currentExerciseIndex 
-                    ? t('app:session.current')
-                    : index < currentExerciseIndex 
-                      ? t('app:session.completed')
-                      : t('app:session.upcoming')
-                  }
-                </Badge>
-              </div>
-            ))}
-          </div>
+        {/* Navigation */}
+        <div className="flex justify-between items-center">
+          <Button
+            onClick={currentExerciseIndex > 0 ? handlePreviousExercise : handlePauseWorkout}
+            variant="secondary"
+            className="bg-white/20 text-white hover:bg-white/30 flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {currentExerciseIndex > 0 ? t('app:session.previous') : t('app:session.pause')}
+          </Button>
+
+          <Button
+            onClick={currentExerciseIndex < 4 ? handleNextExercise : handleFinishWorkout}
+            className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] flex items-center gap-2"
+          >
+            {currentExerciseIndex < 4 ? t('app:session.nextExercise') : t('app:session.finish')}
+            <ArrowRight className="w-4 h-4" />
+          </Button>
         </div>
       </div>
-    </ContentLayout>
+    </div>
   )
 }
 
