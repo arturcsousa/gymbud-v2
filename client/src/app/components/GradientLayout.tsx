@@ -9,10 +9,10 @@ interface GradientLayoutProps {
 export function GradientLayout({ children, className = '' }: GradientLayoutProps) {
   return (
     <div 
-      className={`min-h-screen p-2 sm:p-4 ${className}`}
+      className={`h-full ${className}`}
       style={{ background: COLORS.gradients.primary }}
     >
-      <div className="max-w-2xl mx-auto pt-4 sm:pt-8 pb-4 sm:pb-8 min-h-screen flex flex-col">
+      <div className="max-w-2xl mx-auto h-full flex flex-col px-2 sm:px-4">
         {children}
       </div>
     </div>
