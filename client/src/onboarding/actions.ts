@@ -19,6 +19,6 @@ export async function finalizeOnboarding(planSeed: unknown) {
     // ignore small errors here; not critical for navigation
   }
 
-  // Navigate to session route using window.location for reliability
-  window.location.href = "/app/session/today";
+  // Navigate to home page using window.location for reliability
+  window.location.href = "/";
 }

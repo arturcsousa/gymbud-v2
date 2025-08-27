@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { finalizeOnboarding } from "@/onboarding/actions";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -12,6 +13,7 @@ export function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { t } = useTranslation();
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -29,8 +31,12 @@ export function AuthPage() {
           };
           
           await finalizeOnboarding(defaultSeed);
+          // Navigate to home page after successful onboarding
+          setLocation("/");
         } catch (error) {
           console.error('Onboarding failed:', error);
+          // Even if onboarding fails, redirect to home page
+          setLocation("/");
         }
       }
     });
@@ -51,8 +57,12 @@ export function AuthPage() {
           };
           
           await finalizeOnboarding(defaultSeed);
+          // Navigate to home page after successful onboarding
+          setLocation("/");
         } catch (error) {
           console.error('Onboarding failed:', error);
+          // Even if onboarding fails, redirect to home page
+          setLocation("/");
         }
       }
     };
