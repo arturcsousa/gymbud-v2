@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { db, SessionRow, SessionExerciseRow, LoggedSetRow, SyncEventRow } from '@/db/gymbud-db';
 import { supabase } from '@/lib/supabase';
-import { enqueueLoggedSet, enqueueSessionUpdate, enqueueLoggedSetVoid } from '@/sync/queue';
+import { enqueueLoggedSet, enqueueSessionUpdate, voidLoggedSet } from '@/sync/queue';
 import { toast } from 'sonner';
 
 interface SessionExercise {
@@ -313,7 +313,7 @@ export function useSessionData(sessionId?: string) {
         });
 
         // Enqueue void mutation
-        await enqueueLoggedSetVoid(lastSet.id, session.user_id);
+        await voidLoggedSet(lastSet.id, session.user_id);
 
         // Log telemetry
         const telemetryEvent: SyncEventRow = {

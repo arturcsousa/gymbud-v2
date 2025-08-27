@@ -11,7 +11,11 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Namespaces**: 21 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, stats, badges, sync)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
-## Recent Updates (2025-08-27 18:05)
+## Recent Updates (2025-08-27 18:35)
+- **Password Reset System**: Added comprehensive password reset i18n keys to auth namespace
+- **Reset Flow Coverage**: Complete EN/PT-BR translations for dual-state password reset (request + update modes)
+- **Security Features**: Localized error messages for invalid tokens, rate limiting, and validation failures
+- **Navigation Keys**: Added goToApp key to common namespace for post-reset routing
 - **TypeScript Compatibility**: Fixed all onboarding component TypeScript errors with proper type safety
 - **Component Integration**: Enhanced ProfilePage and ReviewPage with proper export declarations
 - **Form Validation**: Improved onboarding form type safety with proper Zod schema integration
@@ -310,7 +314,7 @@ client/src/i18n/
 }
 ```
 
-### **Auth Namespace (`auth.json`) - FULLY UPDATED WITH OTP VERIFICATION**
+### **Auth Namespace (`auth.json`) - FULLY UPDATED WITH OTP VERIFICATION AND PASSWORD RESET**
 ```json
 {
   "welcome": {
@@ -352,6 +356,18 @@ client/src/i18n/
     "resendIn": "Resend in {{seconds}}s",
     "tooManyResends": "Too many resend attempts. Please try again later.",
     "changeEmail": "Change email address"
+  },
+  "passwordReset": {
+    "title": "Reset your password",
+    "enterEmail": "Enter your email address to receive a password reset link",
+    "instruction": "Enter the email address associated with your account",
+    "sendLink": "Send Link",
+    "enterComplete": "Please enter the complete password reset link",
+    "invalidLink": "Invalid or expired link",
+    "reset": "Reset Password",
+    "resetIn": "Reset in {{seconds}}s",
+    "tooManyResets": "Too many reset attempts. Please try again later.",
+    "changePassword": "Change password"
   }
 }
 ```
@@ -381,6 +397,18 @@ client/src/i18n/
     "resendIn": "Reenviar em {{seconds}}s",
     "tooManyResends": "Muitas tentativas de reenvio. Tente novamente mais tarde.",
     "changeEmail": "Alterar endereço de email"
+  },
+  "passwordReset": {
+    "title": "Redefina sua senha",
+    "enterEmail": "Digite seu endereço de email para receber um link de redefinição de senha",
+    "instruction": "Digite o endereço de email associado à sua conta",
+    "sendLink": "Enviar Link",
+    "enterComplete": "Digite o link completo de redefinição de senha",
+    "invalidLink": "Link inválido ou expirado",
+    "reset": "Redefinir Senha",
+    "resetIn": "Redefinir em {{seconds}}s",
+    "tooManyResets": "Muitas tentativas de redefinição. Tente novamente mais tarde.",
+    "changePassword": "Alterar senha"
   }
 }
 ```

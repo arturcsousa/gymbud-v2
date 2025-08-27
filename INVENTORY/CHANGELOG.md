@@ -1,5 +1,29 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 18:35 - Password Reset Functionality Implementation
+**Implemented**: Complete password reset system with dual-state handling for request and update flows
+- **ResetPasswordPage Component**: Created `/app/auth/reset` page with intelligent state detection based on URL token presence
+  - **Request State**: Email input form with 60-second resend cooldown and 5-attempt rate limiting
+  - **Update State**: New password + confirm password inputs with client-side validation (8+ chars, matching passwords)
+  - **Token Detection**: Automatic mode switching based on `access_token` or `token` URL parameters from Supabase email links
+  - **Success Routing**: Plan-aware navigation (active plan → home, no plan → onboarding) after successful password update
+  - **Error Handling**: Invalid/expired token detection with "Request new link" recovery flow
+- **Routing Integration**: Added `/app/auth/reset` route to AppShell with proper component imports
+- **AuthPage Enhancement**: Updated "Forgot password?" link to navigate to reset page instead of TODO placeholder
+- **Telemetry System**: Added comprehensive password reset event tracking
+  - **Reset Events**: password_reset_requested, email_sent, resend_throttled, link_opened
+  - **Update Events**: update_attempted, update_succeeded, update_failed, invalid_token
+  - **Privacy-Safe**: No PII logging, domain-only tracking where applicable
+- **i18n Coverage**: Complete EN/PT-BR localization for all password reset flows
+  - **Reset Keys**: title.request/update, email.label/placeholder, new_password, confirm_password
+  - **Action Keys**: submit.request/update, sent, resend, resend_in, success, back_to_signin
+  - **Error Keys**: invalid_token, password_mismatch, password_requirements, too_many_attempts
+  - **Common Keys**: goToApp for post-reset navigation
+- **Security Features**: Resend cooldown (60s), attempt limiting (5 max), neutral success messages, token-only URL reading
+- **UX Enhancements**: Contextual success/error states, "Request new link" recovery, plan-aware post-reset routing
+
+**Technical**: Supabase `resetPasswordForEmail()` integration with proper redirect URL configuration and `updateUser()` for password changes
+
 ## 2025-08-27 18:26 - Email OTP Verification System Implementation
 **Implemented**: Complete email OTP verification system with 6-digit code input and comprehensive auth flow
 - **VerifyPage Component**: Created `/app/auth/verify` page with 6-digit OTP input UI
@@ -130,7 +154,7 @@
 **Impact**: Frontend can immediately consume localized exercise & variant data leveraging rich v1 library without duplicating tables
 
 ## 2025-08-27 14:30 - TypeScript Build Error Resolution (Final)
-**Fixed**: Resolved all remaining TypeScript compilation errors preventing successful builds
+**Fixed**: Resolved all TypeScript compilation errors preventing successful builds
 - **SessionPage Export**: Fixed import/export mismatch by changing from named import `{ SessionPage }` to default import `SessionPage` in AppShell.tsx
 - **Unused Imports**: Removed unused imports across multiple files
   - Removed `React` import from SessionPage.tsx (using destructured imports)
@@ -750,12 +774,14 @@
 - Migrations: N/A (documentation only)
 
 ## August 25, 2025 21:06 ET
-**Fixed** TypeScript build errors preventing Vercel deployment.
-- Fixed: Removed unused React import from `client/src/App.tsx`
-- Fixed: Created missing `client/src/i18n/locales/en/auth.json` file
-- Fixed: Replaced non-existent `Click` with `MousePointer` icon in `WhyDifferent.tsx`
-- Context: Resolved all TypeScript compilation errors for successful deployment
-- Migrations: N/A (build fixes only)
+**Fixed** translation key issues across all marketing components.
+- Fixed: `Progress.tsx` - replaced hardcoded English text with `landing:progress.metrics.*` keys
+- Fixed: `Pricing.tsx` - replaced hardcoded plan data with `landing:pricing.plans.*` keys and added `most_popular` key
+- Fixed: `WhyDifferent.tsx` - now displays all 6 features from locale files instead of just 3
+- Fixed: `HowItWorks.tsx` - added missing progress step, now shows all 4 steps with proper grid layout
+- Updated: Added `most_popular` translation key to both EN and PT-BR locale files
+- Context: All components now properly use translation keys, ensuring full EN/PT-BR language support
+- Migrations: N/A (translation fixes only)
 
 ## August 25, 2025 20:00 ET
 **Added** Vercel deployment configuration for production hosting.

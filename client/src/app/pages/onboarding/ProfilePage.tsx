@@ -120,6 +120,15 @@ function ProfilePage() {
 
     setLoading(true)
     try {
+      // Filter out constraints with empty areas and ensure proper typing
+      const validConstraints = constraints
+        .filter(c => c.area !== '')
+        .map(c => ({
+          area: c.area as 'shoulder' | 'elbow' | 'wrist' | 'hip' | 'knee' | 'ankle' | 'low_back' | 'cardio_limits',
+          severity: c.severity,
+          avoid_movements: c.avoid_movements
+        }))
+
       // Create extended state with constraints from local state
       const extendedState = {
         user_id: userId,
@@ -132,7 +141,8 @@ function ProfilePage() {
           pull: data.confidence.pull,
           carry: data.confidence.carry
         },
-        constraints: constraints.filter(c => c.area !== '') // Only save constraints with selected areas
+        constraints: validConstraints,
+        updated_at: Date.now()
       }
       
       await OnboardingStore.saveState(extendedState)

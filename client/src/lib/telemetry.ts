@@ -89,6 +89,39 @@ class TelemetryService {
     });
   }
 
+  // Password reset tracking methods
+  trackAuthPasswordResetRequested() {
+    this.track('auth_password_reset_requested');
+  }
+
+  trackAuthPasswordResetEmailSent() {
+    this.track('auth_password_reset_email_sent');
+  }
+
+  trackAuthPasswordResetResendThrottled() {
+    this.track('auth_password_reset_resend_throttled');
+  }
+
+  trackAuthPasswordResetLinkOpened() {
+    this.track('auth_password_reset_link_opened');
+  }
+
+  trackAuthPasswordResetUpdateAttempted() {
+    this.track('auth_password_reset_update_attempted');
+  }
+
+  trackAuthPasswordResetUpdateSucceeded() {
+    this.track('auth_password_reset_update_succeeded');
+  }
+
+  trackAuthPasswordResetUpdateFailed() {
+    this.track('auth_password_reset_update_failed');
+  }
+
+  trackAuthPasswordResetInvalidToken() {
+    this.track('auth_password_reset_invalid_token');
+  }
+
   // Utility methods
   private getEmailDomain(email: string): string {
     try {

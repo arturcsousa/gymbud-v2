@@ -266,7 +266,7 @@ export function AuthPage() {
             
             {!isSignUp && (
               <button
-                onClick={() => {/* TODO: Implement forgot password */}}
+                onClick={() => setLocation('/app/auth/reset')}
                 className="text-white/70 hover:text-white/90 transition-colors duration-200 text-sm"
               >
                 {t('auth.forgotPassword', 'Forgot password?')}

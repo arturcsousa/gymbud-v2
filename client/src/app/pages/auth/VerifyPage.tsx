@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { telemetry } from "@/lib/telemetry";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -10,7 +9,6 @@ interface VerifyPageProps {
 }
 
 export function VerifyPage({ params }: VerifyPageProps) {
-  const [, setLocation] = useLocation();
   const { t } = useTranslation(['auth', 'common']);
   
   // Get email from URL params, location state, or require manual entry

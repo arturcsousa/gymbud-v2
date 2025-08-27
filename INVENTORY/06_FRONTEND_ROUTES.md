@@ -3,7 +3,11 @@
 ## Overview
 Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
-## Recent Updates (2025-08-27 18:05)
+## Recent Updates (2025-08-27 18:35)
+- **Password Reset System**: Added `/app/auth/reset` route with dual-state handling for request and update flows
+- **Auth Flow Enhancement**: Updated AuthPage with functional "Forgot password?" link navigation
+- **Token Detection**: Automatic mode switching based on URL parameters from Supabase email links
+- **Security Integration**: Rate limiting, cooldown timers, and comprehensive error handling
 - **TypeScript Build Fixes**: Resolved all compilation errors preventing successful builds
 - **Onboarding Components**: Enhanced ProfilePage and ReviewPage with proper TypeScript types
 - **UI Components**: Added missing Radix UI Slider component for confidence ratings
@@ -29,6 +33,10 @@ Progressive Web Application (PWA) built with Vite + React using `wouter` for cli
   - **Auto-Resend**: Automatic OTP resend on page mount for fresh verification codes
   - **Telemetry**: Comprehensive tracking (otp_sent, verify_attempted, verify_succeeded/failed)
   - **i18n**: Complete EN/PT-BR localization including dynamic countdown messages
+- **`/app/auth/reset`** - **Password reset with request and update flows**
+  - **UI Components**: Request form with email input, update form with password and confirm password inputs
+  - **Token Detection**: Automatic mode switching based on URL parameters from Supabase email links
+  - **Security Integration**: Rate limiting, cooldown timers, and comprehensive error handling
 - **`/app/onboarding`** - 12-step onboarding wizard for profile setup and plan generation
 - **`/app/home`** - Dashboard with today's session and recent activity
 - **`/app/session/:id?`** - **Session runner with comprehensive set-by-set workout logging interface**

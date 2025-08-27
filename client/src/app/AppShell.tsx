@@ -13,6 +13,7 @@ import { InstallBanner } from '@/app/components/InstallBanner'
 // Pages
 import { AuthPage } from '@/app/pages/AuthPage'
 import { VerifyPage } from '@/app/pages/auth/VerifyPage'
+import { ResetPasswordPage } from '@/app/pages/auth/ResetPasswordPage'
 import { HomePage } from '@/app/pages/HomePage'
 import SessionPage from '@/app/pages/SessionPage'
 import { HistoryPage } from '@/app/pages/HistoryPage'
@@ -110,6 +111,7 @@ export function AppShell({ children }: AppShellProps) {
               {/* Auth routes */}
               <Route path="/auth/:action?" component={AuthPage} />
               <Route path="/app/auth/verify" component={VerifyPage} />
+              <Route path="/app/auth/reset" component={ResetPasswordPage} />
               
               {/* Protected app routes */}
               <AuthGuard user={user}>

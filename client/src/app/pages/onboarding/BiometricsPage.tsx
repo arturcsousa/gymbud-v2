@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BioSchema, type BioFormData } from '@/schemas/onboarding'
 import { OnboardingStore } from '@/db/onboarding-store'
 import { supabase } from '@/lib/supabase'
-import { Telemetry } from '@/lib/telemetry'
+import { telemetry } from '@/lib/telemetry'
 
 function BiometricsPage() {
   const [, navigate] = useLocation()
@@ -45,7 +45,7 @@ function BiometricsPage() {
       setUserId(user.id)
       
       // Track step viewed
-      Telemetry.track({ type: 'onb_step_viewed', step_id: 'biometrics' })
+      telemetry.track({ type: 'onb_step_viewed', step_id: 'biometrics' })
       
       // Load existing onboarding state
       const state = await OnboardingStore.getState(user.id)
@@ -76,7 +76,7 @@ function BiometricsPage() {
       })
       
       // Track step saved
-      Telemetry.track({ type: 'onb_saved', step_id: 'biometrics' })
+      telemetry.track({ type: 'onb_saved', step_id: 'biometrics' })
       
       // Navigate to next step
       navigate('/app/onboarding/goals')
