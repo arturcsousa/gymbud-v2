@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## August 26, 2025 20:34 ET
+**Fixed** TypeScript build errors and aligned i18n translation structure
+- **PWA Update Hook**: Fixed TypeScript errors in usePWAUpdate.ts with dynamic import and proper type annotations
+- **i18n Structure Alignment**: Restructured all translation files to match target specification
+- **Common/App/Auth/Session**: Simplified and standardized namespace structures across EN + PT-BR
+- **Settings Namespace**: Replaced with dedicated sync-only structure for Settings page sync card
+- **Errors Namespace**: Enhanced with user-friendly, contextual error messages instead of technical terms
+- **Build Status**: All TypeScript compilation errors resolved, ready for production deployment
+- Context: i18n now matches exact target structure with consistent bilingual support
+- Migrations: No database changes, only frontend translation file restructuring
+
 ## August 26, 2025 20:25 ET
 **Implemented** Phase A Step 5 - Error mapping and Settings sync card with persistent sync telemetry
 - **Error Mapper**: Created `lib/errors/mapEdgeError.ts` utility standardizing error codes (auth_missing, rls_denied, invalid_payload, network_offline, rate_limited, server_unavailable, timeout, unknown)

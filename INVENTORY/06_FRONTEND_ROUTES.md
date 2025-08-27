@@ -71,13 +71,19 @@ export { ComponentName }             // Named export for AppShell
 - **Interactive Elements**: Toggle switches, category buttons, search inputs with consistent styling
 
 ### PWA Infrastructure
-- **Service Worker**: VitePWA plugin with Workbox caching strategies and autoUpdate registration
-- **Manifest**: `/public/manifest.webmanifest` with app metadata and shortcuts, properly linked in index.html
-- **Mobile Viewport**: Fixed with `100dvh` height constraints and proper CSS rules to prevent scrolling and background bleeding
-- **IndexedDB**: Dexie-based offline data layer with versioned schema
-- **Sync Engine**: Queue-based mutation replay with conflict resolution and toast notifications
-- **Update Handling**: PWA update prompts with toast notifications using sonner library
-- **Toast System**: Global toast notifications for PWA updates, offline status, and sync feedback
+- **Service Worker**: Precaches app shell, stale-while-revalidate for API calls
+- **Manifest**: Installable PWA with shortcuts for session start and history
+- **Update System**: Toast notifications for app updates with auto-refresh capability
+- **Offline Ready**: Toast notification when app is ready for offline use
+- **Dynamic Import**: PWA register module loaded conditionally to prevent development build errors
+- **Cross-platform**: Works on desktop and mobile with native app-like experience
+
+### Toast Notification System
+- **Library**: Sonner with custom styling (rounded-2xl, top-center positioning, 4s duration)
+- **PWA Integration**: Update available, offline ready notifications
+- **Sync Feedback**: Success/failure toasts for data synchronization with detailed messages
+- **i18n Support**: All toast messages fully localized in EN + PT-BR
+- **Provider**: Global Toasts provider wrapping entire app for consistent styling
 
 ### Offline-First Data Flow
 ```

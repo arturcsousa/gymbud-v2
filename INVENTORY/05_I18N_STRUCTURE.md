@@ -75,38 +75,9 @@ client/src/i18n/
   "nav": {
     "home": "Home",
     "session": "Session",
-    "history": "History", 
+    "history": "History",
     "library": "Library",
     "settings": "Settings"
-  },
-  "settings": {
-    "account": "Account",
-    "preferences": "Preferences",
-    "data": "Data",
-    "dangerZone": "Danger Zone",
-    "email": "Email",
-    "emailReadonly": "Email cannot be changed",
-    "language": "Language",
-    "units": "Units",
-    "imperial": "Imperial",
-    "metric": "Metric",
-    "notifications": "Notifications",
-    "notificationsDesc": "Receive workout reminders and progress updates",
-    "darkMode": "Dark Mode",
-    "darkModeDesc": "Switch between light and dark themes",
-    "exportData": "Export Data",
-    "deleteAccount": "Delete Account",
-    "save": "Save Settings",
-    "sync": {
-      "title": "Sync",
-      "status": "Status",
-      "syncNow": "Sync Now",
-      "recentEvents": "Recent Events",
-      "success": "success",
-      "failure": "failure",
-      "items": "items",
-      "noEvents": "No sync events yet"
-    }
   },
   "sync": {
     "offline": "You're offline",
@@ -114,36 +85,38 @@ client/src/i18n/
     "syncing": "Syncing...",
     "syncNow": "Sync Now",
     "pendingChanges": "pending changes",
-    "conflicts": "Data conflicts detected",
-    "success": "Sync complete",
-    "success_detail": "Your latest changes are safely in the cloud.",
-    "failure": "Sync failed",
-    "failure_detail": "We'll retry automatically when you're back online."
+    "conflicts": "Data conflicts detected"
+  },
+  "auth": {
+    "signOut": "Sign Out"
+  },
+  "offline": {
+    "title": "You're Offline",
+    "message": "Changes will sync when you're back online",
+    "indicator": "Offline"
+  },
+  "session": {
+    "workout": "Workout",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "planned": "Planned"
   },
   "update": {
     "available": "Update available",
     "description": "A new version of GymBud is ready.",
     "action": "Update now",
     "offline_ready": "Ready to use offline"
+  },
+  "sync_toasts": {
+    "success": "Sync complete",
+    "success_detail": "Your latest changes are safely in the cloud.",
+    "failure": "Sync failed",
+    "failure_detail": "We'll retry automatically when you're back online."
   }
 }
 ```
 
-### Errors Namespace (`errors.json`)
-```json
-{
-  "auth_missing": "Authentication required",
-  "rls_denied": "Access denied",
-  "invalid_payload": "Invalid data",
-  "network_offline": "No connection",
-  "rate_limited": "Too many requests",
-  "server_unavailable": "Server error",
-  "timeout": "Request timeout",
-  "unknown": "Unknown error"
-}
-```
-
-### Authentication Namespace (`auth.json`)
+### Auth Namespace (`auth.json`)
 ```json
 {
   "signin": {
@@ -180,9 +153,7 @@ client/src/i18n/
 ```json
 {
   "workout": "Workout",
-  "timer": {
-    "title": "Workout Timer"
-  },
+  "timer": { "title": "Workout Timer" },
   "exercises": {
     "title": "Exercises",
     "add": "Add Exercise",
@@ -200,6 +171,47 @@ client/src/i18n/
     "save": "Save Progress",
     "complete": "Complete Session"
   }
+}
+```
+
+### Settings Namespace (`settings.json`)
+```json
+{
+  "sync": {
+    "title": "Sync",
+    "description": "Manage offline data and synchronization with the cloud.",
+    "sync_now": "Sync Now",
+    "pending": "Pending",
+    "pending_count": "{{count}} pending",
+    "last_sync": "Last Sync",
+    "status": {
+      "running": "Running",
+      "success": "Success",
+      "failure": "Failure"
+    },
+    "timeline": {
+      "title": "Recent Sync Activity",
+      "empty": "No recent sync activity yet."
+    },
+    "event": {
+      "success": "Success ({{items}} items)",
+      "failure": "Failure ({{code}})"
+    }
+  }
+}
+```
+
+### Errors Namespace (`errors.json`)
+```json
+{
+  "auth_missing": "You need to sign in to continue.",
+  "rls_denied": "You don't have permission to perform this action.",
+  "invalid_payload": "Some information looks invalid. Please review and try again.",
+  "network_offline": "You're offline. We'll sync automatically when you're back online.",
+  "rate_limited": "Too many requests. Please wait a moment and try again.",
+  "server_unavailable": "Server is unavailable. Try again in a moment.",
+  "timeout": "Request timed out. Please try again.",
+  "unknown": "Something went wrong. Please try again."
 }
 ```
 
