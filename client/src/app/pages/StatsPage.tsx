@@ -10,11 +10,7 @@ import { WeightProgression } from '@/components/charts/WeightProgression';
 import { useStreakBadges } from '@/hooks/useStreakBadges';
 import { useSessionMetrics } from '@/hooks/useSessionMetrics';
 import { useProfileData } from '@/hooks/useProfileData';
-
-// Type declaration for dom-to-image-more
-declare module 'dom-to-image-more' {
-  export function toPng(node: HTMLElement, options?: any): Promise<string>;
-}
+import domtoimage from 'dom-to-image-more';
 
 export default function StatsPage() {
   const { t } = useTranslation(['stats', 'badges']);
@@ -32,7 +28,6 @@ export default function StatsPage() {
     if (!shareRef.current) return;
 
     try {
-      const domtoimage = await import('dom-to-image-more');
       const dataUrl = await domtoimage.toPng(shareRef.current, {
         width: 1080,
         height: 1350,
