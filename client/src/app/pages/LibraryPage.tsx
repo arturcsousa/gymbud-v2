@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
-import { ContentLayout } from '@/app/components/GradientLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { ArrowLeft, Search } from 'lucide-react'
+import BottomNav from '@/components/BottomNav'
 
 interface Exercise {
   id: string
@@ -166,155 +167,192 @@ export function LibraryPage() {
     setLocation('/')
   }
 
-  const handleExerciseSelect = (exercise: Exercise) => {
-    // Placeholder for exercise selection
-    console.log('Selected exercise:', exercise)
-  }
-
   if (loading) {
     return (
-      <ContentLayout title={t('app:nav.library')}>
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <div 
+        className="min-h-screen relative overflow-hidden"
+        style={{
+          background: '#005870', // PALETTE.deepTeal
+        }}
+      >
+        {/* Main teal gradient background */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`,
+          }}
+        />
+        
+        {/* Subtle lighter teal curved section with diagonal clip */}
+        <div 
+          className="absolute top-0 right-0 w-2/3 h-full"
+          style={{
+            background: `linear-gradient(135deg, #0C8F93 0%, #14A085 50%, #18C7B6 100%)`,
+            clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
+          }}
+        />
+
+        {/* Main content */}
+        <div className="min-h-screen grid place-items-center py-4 relative z-10">
+          <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+              <span className="ml-3 text-white text-sm">Loading...</span>
+            </div>
+          </div>
         </div>
-      </ContentLayout>
+        <BottomNav />
+      </div>
     )
   }
 
   return (
-    <ContentLayout
-      title={t('app:nav.library')}
-      showNavigation={true}
-      onBack={handleBackToHome}
-      backLabel={t('app:nav.home')}
-      nextLabel=""
-      onNext={() => {}}
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: '#005870', // PALETTE.deepTeal
+      }}
     >
-      <div className="space-y-6">
-        {/* Search */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
-          <Input
-            type="text"
-            placeholder={t('app:library.searchPlaceholder')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50"
-          />
-        </div>
+      {/* Main teal gradient background */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`,
+        }}
+      />
+      
+      {/* Subtle lighter teal curved section with diagonal clip */}
+      <div 
+        className="absolute top-0 right-0 w-2/3 h-full"
+        style={{
+          background: `linear-gradient(135deg, #0C8F93 0%, #14A085 50%, #18C7B6 100%)`,
+          clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        }}
+      />
 
-        {/* Category Filter */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
-          <h3 className="text-white font-medium mb-3">
-            {t('app:library.categories')}
-          </h3>
-          
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  selectedCategory === category
-                    ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900'
-                    : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                {t(`app:library.category.${category}`)}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Results Count */}
-        <div className="text-center">
-          <p className="text-white/80 text-sm">
-            {filteredExercises.length} {t('app:library.exercisesFound')}
-          </p>
-        </div>
-
-        {/* Exercises List */}
-        <div className="space-y-3">
-          {filteredExercises.map((exercise) => (
-            <div
-              key={exercise.id}
-              onClick={() => handleExerciseSelect(exercise)}
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:bg-white/20 transition-all duration-200 transform hover:scale-105 cursor-pointer"
+      {/* Main content */}
+      <div className="min-h-screen grid place-items-center py-4 relative z-10">
+        <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-6">
+            <button
+              onClick={handleBackToHome}
+              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-white mb-1">
-                    {exercise.name}
-                  </h3>
-                  <p className="text-white/70 text-sm mb-2">
-                    {exercise.description}
-                  </p>
-                </div>
-                
-                <Badge className={getDifficultyColor(exercise.difficulty)}>
-                  {t(`app:library.difficulty.${exercise.difficulty}`)}
-                </Badge>
-              </div>
+              <ArrowLeft className="w-4 h-4 text-white" />
+            </button>
+            <h1 className="text-xl font-bold text-white">
+              Exercise Library
+            </h1>
+          </div>
 
-              {/* Muscle Groups */}
-              <div className="mb-3">
-                <div className="flex flex-wrap gap-1">
-                  {exercise.muscle_groups.map((muscle) => (
+          {/* Search */}
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/60" />
+            <Input
+              type="text"
+              placeholder="Search exercises..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-white/20 border-white/30 text-white placeholder:text-white/60 pl-10 h-10"
+            />
+          </div>
+
+          {/* Category Filter */}
+          <div className="mb-4">
+            <div className="flex flex-wrap gap-2">
+              {categories.slice(0, 4).map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
+                    selectedCategory === category
+                      ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900'
+                      : 'bg-white/20 text-white hover:bg-white/30'
+                  }`}
+                >
+                  {category === 'all' ? 'All' : category.charAt(0).toUpperCase() + category.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Results */}
+          <div className="space-y-3 max-h-64 overflow-y-auto">
+            {filteredExercises.slice(0, 4).map((exercise) => (
+              <div
+                key={exercise.id}
+                className="bg-white/10 rounded-lg p-3 hover:bg-white/20 transition-all duration-200 cursor-pointer"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h3 className="text-sm font-semibold text-white">
+                      {exercise.name}
+                    </h3>
+                    <p className="text-white/70 text-xs">
+                      {exercise.description}
+                    </p>
+                  </div>
+                  
+                  <Badge className={`${getDifficultyColor(exercise.difficulty)} text-xs px-2 py-0`}>
+                    {exercise.difficulty.charAt(0).toUpperCase()}
+                  </Badge>
+                </div>
+
+                {/* Muscle Groups */}
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {exercise.muscle_groups.slice(0, 2).map((muscle) => (
                     <Badge
                       key={muscle}
-                      variant="secondary"
-                      className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-xs"
+                      className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-xs px-2 py-0"
                     >
-                      {t(`app:library.muscle.${muscle}`)}
+                      {muscle}
                     </Badge>
                   ))}
                 </div>
+
+                {/* Equipment */}
+                {exercise.equipment.length > 0 ? (
+                  <Badge className="bg-white/10 text-white/80 border-white/30 text-xs px-2 py-0">
+                    {exercise.equipment[0]}
+                  </Badge>
+                ) : (
+                  <Badge className="bg-green-500/10 text-green-300 border-green-500/30 text-xs px-2 py-0">
+                    Bodyweight
+                  </Badge>
+                )}
               </div>
+            ))}
 
-              {/* Equipment */}
-              {exercise.equipment.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {exercise.equipment.map((equipment) => (
-                    <Badge
-                      key={equipment}
-                      variant="outline"
-                      className="bg-white/10 text-white/80 border-white/30 text-xs"
-                    >
-                      {t(`app:library.equipment.${equipment}`)}
-                    </Badge>
-                  ))}
+            {filteredExercises.length === 0 && (
+              <div className="bg-white/10 rounded-lg p-6 text-center">
+                <div className="text-white/70 text-sm mb-3">
+                  No exercises found
                 </div>
-              )}
-
-              {exercise.equipment.length === 0 && (
-                <Badge
-                  variant="outline"
-                  className="bg-green-500/10 text-green-300 border-green-500/30 text-xs"
+                <Button
+                  onClick={() => {
+                    setSearchQuery('')
+                    setSelectedCategory('all')
+                  }}
+                  className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] text-xs px-4 py-2"
                 >
-                  {t('app:library.bodyweight')}
-                </Badge>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {filteredExercises.length === 0 && (
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center">
-            <div className="text-white/70 mb-4">
-              {t('app:library.noResults')}
-            </div>
-            <Button
-              onClick={() => {
-                setSearchQuery('')
-                setSelectedCategory('all')
-              }}
-              variant="ghost"
-              className="text-white hover:bg-white/20 rounded-xl"
-            >
-              {t('app:library.clearFilters')}
-            </Button>
+                  Clear Filters
+                </Button>
+              </div>
+            )}
           </div>
-        )}
+
+          {filteredExercises.length > 4 && (
+            <div className="text-center mt-4">
+              <p className="text-white/70 text-xs">
+                +{filteredExercises.length - 4} more exercises
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </ContentLayout>
+      
+      <BottomNav />
+    </div>
   )
 }
