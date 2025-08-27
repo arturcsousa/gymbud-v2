@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Share2 } from 'lucide-react';
+import { Share2, TrendingUp, Activity } from 'lucide-react';
 import { toast } from 'sonner';
 import domtoimage from 'dom-to-image-more';
 import { Button } from '@/components/ui/button';
@@ -9,36 +9,20 @@ import { TrainingDaysBar } from '@/components/charts/TrainingDaysBar';
 import { VolumeSetsCombo } from '@/components/charts/VolumeSetsCombo';
 import { WeightProgression } from '@/components/charts/WeightProgression';
 import { useStreakBadges } from '@/hooks/useStreakBadges';
+import { useSessionMetrics } from '@/hooks/useSessionMetrics';
+import { useProfileData } from '@/hooks/useProfileData';
 
 export default function StatsPage() {
   const { t } = useTranslation(['stats', 'badges']);
   const shareRef = useRef<HTMLDivElement>(null);
   const { currentStreak, checkAndAwardBadges } = useStreakBadges();
+  
+  // Real data hooks
+  const { metrics, isLoading: metricsLoading, isOffline: metricsOffline } = useSessionMetrics();
+  const { profileData, isLoading: profileLoading, isOffline: profileOffline } = useProfileData();
 
-  // Mock data - will be replaced with real data hooks
-  const mockData = {
-    totalSessions: 42,
-    totalVolume: 15680,
-    avgRPE: 7.2,
-    currentWeight: 75.5,
-    weeklyData: [
-      { day: 'Mon', sessions: 1, volume: 2400, sets: 12 },
-      { day: 'Tue', sessions: 0, volume: 0, sets: 0 },
-      { day: 'Wed', sessions: 1, volume: 2800, sets: 14 },
-      { day: 'Thu', sessions: 0, volume: 0, sets: 0 },
-      { day: 'Fri', sessions: 1, volume: 3200, sets: 16 },
-      { day: 'Sat', sessions: 1, volume: 2600, sets: 13 },
-      { day: 'Sun', sessions: 0, volume: 0, sets: 0 },
-    ],
-    weightHistory: [
-      { date: '2024-01-01', weight: 78.2 },
-      { date: '2024-01-15', weight: 77.8 },
-      { date: '2024-02-01', weight: 77.1 },
-      { date: '2024-02-15', weight: 76.5 },
-      { date: '2024-03-01', weight: 75.9 },
-      { date: '2024-03-15', weight: 75.5 },
-    ],
-  };
+  const isLoading = metricsLoading || profileLoading;
+  const isOffline = metricsOffline || profileOffline;
 
   const handleShare = async () => {
     if (!shareRef.current) return;
@@ -85,9 +69,35 @@ export default function StatsPage() {
     checkAndAwardBadges();
   }, [checkAndAwardBadges]);
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-900/20 to-slate-900 p-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8">
+            <div className="flex items-center justify-center space-x-3">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-300"></div>
+              <span className="text-white">Loading your progress...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-900/20 to-slate-900 p-4">
       <div className="max-w-2xl mx-auto">
+        {/* Offline indicator */}
+        {isOffline && (
+          <div className="mb-4 bg-orange-500/20 backdrop-blur-sm rounded-lg border border-orange-500/30 p-3">
+            <div className="flex items-center space-x-2 text-orange-200">
+              <Activity className="w-4 h-4" />
+              <span className="text-sm">Showing offline data - will sync when online</span>
+            </div>
+          </div>
+        )}
+
         {/* Share Container */}
         <div
           ref={shareRef}
@@ -102,19 +112,19 @@ export default function StatsPage() {
           {/* Highlights Strip */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-teal-300">{mockData.totalSessions}</div>
+              <div className="text-2xl font-bold text-teal-300">{metrics.totalSessions}</div>
               <div className="text-sm text-gray-300">{t('stats:totalSessions')}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-teal-300">{currentStreak}</div>
+              <div className="text-2xl font-bold text-teal-300">{metrics.currentStreak}</div>
               <div className="text-sm text-gray-300">{t('stats:currentStreak')}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-teal-300">{mockData.totalVolume.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-teal-300">{metrics.totalVolume.toLocaleString()}</div>
               <div className="text-sm text-gray-300">{t('stats:totalVolume')}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-teal-300">{mockData.avgRPE}</div>
+              <div className="text-2xl font-bold text-teal-300">{metrics.avgRPE || '--'}</div>
               <div className="text-sm text-gray-300">{t('stats:avgRPE')}</div>
             </div>
           </div>
@@ -122,15 +132,42 @@ export default function StatsPage() {
           {/* Charts Grid */}
           <div className="grid gap-6">
             <ChartCard title={t('stats:weeklyActivity')}>
-              <TrainingDaysBar data={mockData.weeklyData} />
+              {metrics.weeklyData.length > 0 ? (
+                <TrainingDaysBar data={metrics.weeklyData} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  <div className="text-center">
+                    <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No training data yet</p>
+                  </div>
+                </div>
+              )}
             </ChartCard>
 
             <ChartCard title={t('stats:volumeAndSets')}>
-              <VolumeSetsCombo data={mockData.weeklyData} />
+              {metrics.weeklyData.length > 0 ? (
+                <VolumeSetsCombo data={metrics.weeklyData} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  <div className="text-center">
+                    <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No volume data yet</p>
+                  </div>
+                </div>
+              )}
             </ChartCard>
 
             <ChartCard title={t('stats:weightProgress')}>
-              <WeightProgression data={mockData.weightHistory} />
+              {profileData.weightHistory.length > 0 ? (
+                <WeightProgression data={profileData.weightHistory} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  <div className="text-center">
+                    <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No weight data yet</p>
+                  </div>
+                </div>
+              )}
             </ChartCard>
           </div>
 
@@ -146,6 +183,7 @@ export default function StatsPage() {
           <Button
             onClick={handleShare}
             className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-xl font-semibold"
+            disabled={metrics.totalSessions === 0}
           >
             <Share2 className="w-5 h-5 mr-2" />
             {t('stats:shareProgress')}

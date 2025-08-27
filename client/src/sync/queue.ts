@@ -337,6 +337,41 @@ export function requestPull() {
   void pullUpdates().catch(console.error)
 }
 
+// Helper functions for common operations
+export async function enqueueLoggedSet(payload: {
+  id: string;
+  session_exercise_id: string;
+  set_number: number;
+  reps?: number;
+  weight?: number;
+  rpe?: number;
+  duration_sec?: number;
+  notes?: string;
+}): Promise<string> {
+  return enqueue({
+    entity: 'app2.logged_sets',
+    op: 'insert',
+    payload,
+    idempotency_key: payload.id,
+  });
+}
+
+export async function enqueueSessionUpdate(payload: {
+  id: string;
+  status?: 'pending' | 'active' | 'completed' | 'cancelled';
+  started_at?: string | null;
+  completed_at?: string | null;
+  notes?: string | null;
+  updated_at?: string;
+}): Promise<string> {
+  return enqueue({
+    entity: 'app2.sessions',
+    op: 'update',
+    payload,
+    idempotency_key: `session-${payload.id}-${Date.now()}`,
+  });
+}
+
 // Broadcast listeners
 bc?.addEventListener('message', (ev) => {
   if (ev.data === 'flush') void flush()

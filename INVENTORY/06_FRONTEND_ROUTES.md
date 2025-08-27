@@ -16,7 +16,15 @@ Progressive Web Application (PWA) built with Vite + React using `wouter` for cli
 - **`/app/auth/:mode?`** - Authentication (signin, signup, reset)
 - **`/app/onboarding`** - 12-step onboarding wizard for profile setup and plan generation
 - **`/app/home`** - Dashboard with today's session and recent activity
-- **`/app/session/:id?`** - Session runner with workout logging interface and timer
+- **`/app/session/:id?`** - **Session runner with comprehensive set-by-set workout logging interface**
+  - **UI Components**: Header progress bar, exercise focus card, set logging strip, hero rest timer
+  - **Data Integration**: useSessionData hook with offline-first session management via v_session_exercises_enriched
+  - **Set Logging**: Real-time logging with reps, weight, RPE (1-10 scale), automatic queue sync via sync-logged-sets
+  - **Rest Timer**: Prescribed vs actual time tracking, skip/add 30s controls, visual countdown with completion alerts
+  - **Exercise Navigation**: Previous/Next exercise flow with upcoming exercise preview, finish workout functionality
+  - **Session Management**: Automatic status transitions (pending→active→completed) with timestamps
+  - **Telemetry**: Comprehensive event logging (set_logged, session_started, rest_started, exercise_advanced)
+  - **Offline-First**: Immediate IndexedDB storage with background sync to Supabase via mutation queue
 - **`/app/history`** - Workout history listing with search/filters
 - **`/app/history/:id`** - Detailed view of completed session
 - **`/app/*`** - Catch-all 404 page
@@ -55,13 +63,24 @@ export { ComponentName as default }  // Default export
 export { ComponentName }             // Named export for AppShell
 ```
 
-### Type Safety Improvements
+### Session Runner Implementation (Phase E1)
+- **SessionPage**: Complete rebuild with comprehensive workout logging interface
+  - **Header**: Exercise progress (X of Y) with workout timer and progress bar
+  - **Exercise Card**: Exercise name, prescription details (sets, reps, rest), warmup/work badges, instructions modal
+  - **Set Logging Strip**: Single active set with reps/weight/RPE inputs, "Log Set" button, set completion tracking
+  - **Rest Timer**: Hero timer with prescribed time countdown, skip/add time controls, actual vs prescribed tracking
+  - **Navigation**: Previous/Next exercise, finish workout, pause functionality
+  - **Data Flow**: useSessionData hook → IndexedDB → mutation queue → sync-logged-sets Edge Function
+  - **Error Handling**: Toast notifications for failures with offline fallbacks
+  - **i18n**: Complete EN/PT-BR translation coverage including effort levels and accessibility
+
+## Type Safety Improvements
 - **SessionPage**: Renamed `Set` interface to `WorkoutSet` to avoid collision with built-in JavaScript Set type
 - **Type Indexing**: Fixed `updateSet` function to use `keyof WorkoutSet` for proper type safety
 - **Legacy Function Removal**: Eliminated `handleSetComplete` and `handleSetChange` functions that used unsafe string indexing
 - **Import Alignment**: All AppShell imports now match component exports exactly
 
-### Design System Components
+## Design System Components
 - **Geometric Teal Gradient Background**: Consistent across all app pages using `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`
 - **Diagonal Clipped Sections**: Subtle lighter teal curved sections with `clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)'`
 - **Single Centered Card Layout**: All pages use `max-w-md` centered cards that fit on one screen without scrolling
@@ -70,7 +89,7 @@ export { ComponentName }             // Named export for AppShell
 - **Compact UI Elements**: Streamlined components designed to fit single-screen constraint with efficient space usage
 - **Interactive Elements**: Toggle switches, category buttons, search inputs with consistent teal gradient active states
 
-### PWA Infrastructure
+## PWA Infrastructure
 - **Service Worker**: Precaches app shell, stale-while-revalidate for API calls
 - **Manifest**: Installable PWA with shortcuts for session start and history, version-based cache busting for icons
 - **Update System**: Toast notifications for app updates with version information and manual update checks
@@ -81,19 +100,19 @@ export { ComponentName }             // Named export for AppShell
 - **Type Declarations**: Custom TypeScript definitions in `src/types/pwa.d.ts` for virtual:pwa-register module
 - **Cross-platform**: Works on desktop and mobile with native app-like experience
 
-### Toast Notification System
+## Toast Notification System
 - **Library**: Sonner with custom styling (rounded-2xl, top-center positioning, 4s duration)
 - **PWA Integration**: Update available, offline ready notifications
 - **Sync Feedback**: Success/failure toasts for data synchronization with detailed messages
 - **i18n Support**: All toast messages fully localized in EN + PT-BR
 - **Provider**: Global Toasts provider wrapping entire app for consistent styling
 
-### Offline-First Data Flow
+## Offline-First Data Flow
 User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Supabase
                      ↓                                      ↓
               UI Updates (optimistic)              Delta Pulls (bidirectional)
 
-### Sync Engine Architecture (Phase A Complete)
+## Sync Engine Architecture (Phase A Complete)
 - **Push Mutations**: Queue-based replay system with idempotency and backoff
   - Entities: logged_sets, sessions, session_exercises, coach_audit
   - Push: sync-logged-sets, sync-sessions, sync-session-exercises, sync-coach-audit
@@ -106,113 +125,6 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - **Cross-tab Coordination**: BroadcastChannel for sync events
 - **Error Handling**: Structured error codes with user-friendly messages
 - **Telemetry**: sync_events logging for debugging and analytics
-
-### PWA Install & Version
-- **Install Prompts**: `usePWAInstall` hook with dismissal tracking persisted in IndexedDB; `InstallBanner` component shown from `AppShell`
-- **Version Management**: `VITE_APP_VERSION` injected at build time from git SHA or timestamp; surfaced in Settings page; included in update toast notifications
-- **Update System**: Toast notifications for app updates with version information and manual update checks
-
-### Authentication Flow
-- **Route**: `/auth`
-- **Component**: `AuthPage`
-- **UI**: Supabase Auth UI component (`@supabase/auth-ui-react`) with custom styling
-- **Features**:
-  - Email/password signup and signin
-  - Magic link support
-  - Internationalization (EN/PT-BR) with LanguageSwitcher in header
-  - Glassmorphic design with gradient background and decorative blobs
-  - Custom brand colors (#18C7B6) overriding default Supabase styling
-  - Auth state subscription with proper cleanup
-- **Post-Auth Flow**:
-  1. `onAuthStateChange` detects `SIGNED_IN` event
-  2. Calls `finalizeOnboarding()` with default plan seed
-  3. Creates/activates plan via `plan-get-or-create` Edge Function
-  4. Sets `assessment_required = false` for instant access
-  5. Navigates to `/` (home page) using wouter `setLocation()` with fallback error handling
-
-## Technical Implementation
-- **Auth State**: Uses `{ data: { subscription } } = supabase.auth.onAuthStateChange(...)`
-- **Cleanup**: Proper `subscription.unsubscribe()` in useEffect cleanup
-- **Mutex**: `ranRef` prevents duplicate `finalizeOnboarding` calls
-- **Error Handling**: Non-blocking profile updates with console logging
-- **Navigation**: wouter `setLocation("/")` for reliable post-auth redirect with fallback error handling
-- **Custom Styling**: Inline CSS overrides for Supabase Auth UI components
-
-## App Routes
-- **Route**: `/app/session/today`
-- **Purpose**: Main workout session interface
-- **Access**: Requires authenticated user with active plan
-- **State**: Can show "preparing..." until session data loads
-
-## Navigation Patterns
-- **Auth → App**: Automatic redirect after successful authentication to home page (`/`)
-- **Error Recovery**: Enhanced error handling with fallback navigation even if onboarding fails
-- **Reliable Navigation**: wouter `setLocation()` ensures navigation works within React context with proper cleanup
-
-## URL Architecture
-
-### Domain Separation
-- **gymbud.ai** - Marketing landing page (separate Vercel project)
-  - Landing page, pricing, features, blog
-  - CTA buttons link to app.gymbud.ai for signup/login
-- **app.gymbud.ai** - PWA application (this project)
-  - Authentication, onboarding, workout sessions
-  - Offline-first Progressive Web App
-  - All user data and functionality
-
-### Environment Variables
-```bash
-# Current project (app.gymbud.ai)
-VITE_APP_URL=https://app.gymbud.ai      # This PWA application
-VITE_SITE_URL=https://gymbud.ai         # Marketing site (external)
-VITE_SUPABASE_URL=https://lrcrmmquuwphxispctgq.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJ...           # Full key in .env.local
-```
-
-### Deployment Strategy
-- **Marketing Site**: Separate repository deployed to gymbud.ai
-- **PWA Application**: This repository deployed to app.gymbud.ai
-- **Cross-linking**: Marketing CTAs → app.gymbud.ai, App settings → gymbud.ai
-
-### Domain Detection Logic
-```typescript
-// App.tsx - Fixed domain routing for Vercel deployments
-const isAppDomain = window.location.hostname === 'app.gymbud.ai' || 
-                   window.location.hostname === 'localhost' ||
-                   window.location.hostname.startsWith('gymbud-v2-') ||
-                   window.location.hostname.includes('-arturcsousa.vercel.app');
-```
-
-### PWA Manifest Configuration
-- **Icon Paths**: Fixed to use absolute paths (`/icons/icon-192.png`)
-- **Theme Colors**: Updated to GymBud brand colors (#005870)
-- **Shortcuts**: Configured for session start and history access
-- **Display Mode**: Standalone PWA with portrait orientation
-
-## Data Layer Architecture
-
-### IndexedDB Schema (Dexie)
-```typescript
-// Database tables with versioned schema (v2)
-meta: { key, value, updated_at }                    // Includes last_pull_at watermark for delta sync
-sync_events: { id?, ts, kind: 'success'|'failure', code?, items? }
-queue_mutations: { id, entity, op, payload, user_id, idempotency_key, status, retries, next_attempt_at, created_at, updated_at }
-sessions: { id, user_id, plan_id, status, started_at, completed_at, notes, updated_at }
-session_exercises: { id, session_id, exercise_name, order_index, updated_at }
-logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, updated_at }
-```
-
-### Sync Engine Features
-- **Queue Management**: FIFO mutation replay with retry logic and exponential backoff
-- **Server Integration**: Edge Functions for all entity synchronization (push: sync-logged-sets, sync-sessions, sync-session-exercises, sync-coach-audit; pull: pull-updates)
-- **Error Mapping**: Standardized error codes (auth_missing, rls_denied, invalid_payload, network_offline, rate_limited, server_unavailable, timeout, unknown)
-- **Sync Telemetry**: Persistent sync status tracking in meta table with event history capped to last 50
-- **Idempotency**: Conflict-free upserts using queue mutation ID as primary key
-- **RLS Compliance**: End-user JWT authentication for proper Row Level Security
-- **Network Awareness**: Automatic sync on connectivity changes and manual triggers
-- **Background Sync**: Service worker background sync registration
-- **Error Handling**: Structured response validation with proper error codes and user-friendly messages
-- **Cross-tab Coordination**: BroadcastChannel for single-flight sync processing with live query updates
 
 ## UX Components
 
@@ -311,6 +223,41 @@ logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, up
 - **A/B Testing**: Component-level testing capabilities
 - **CMS Integration**: Content management for marketing copy
 
+## App Routes (`/app/*`)
+
+### Main Navigation
+- **`/`** - HomePage (dashboard with today's plan, quick stats, next session preview)
+- **`/session/:id`** - SessionPage (workout execution with timer, set logging, exercise progression)
+- **`/history`** - HistoryPage (past sessions list with filters and search)
+- **`/history/:id`** - HistoryDetailPage (individual session review with metrics)
+- **`/stats`** - StatsPage (progress analytics with charts, social sharing, streak badges)
+  - **Data Sources**: useSessionMetrics (Dexie + v_session_metrics), useProfileData (profiles + weight_logs)
+  - **Offline-First**: Immediate IndexedDB data with background Supabase sync
+  - **Features**: Real-time charts, social sharing, streak calculation, empty states
+- **`/settings`** - SettingsPage (account, preferences, sync status, data management)
+
+### Data Integration Architecture
+
+#### StatsPage Real Data Flow
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Dexie (Local) │    │  Supabase Views  │    │   StatsPage     │
+│                 │    │                  │    │                 │
+│ • sessions      │◄──►│ • v_session_     │◄──►│ • Real metrics  │
+│ • logged_sets   │    │   metrics        │    │ • Live charts   │
+│ • profiles      │    │ • profiles       │    │ • Offline ready │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+#### Data Hooks
+- **useSessionMetrics**: Session analytics with offline-first architecture
+  - Queries: `sessions`, `session_exercises`, `logged_sets` from Dexie
+  - Server: `v_session_metrics` view from Supabase
+  - Calculations: Total sessions, volume, RPE, weekly data, streak
+- **useProfileData**: Weight progression with localStorage caching
+  - Queries: `profiles.weight_kg`, optional `weight_logs` table
+  - Fallback: Single data point from current weight if no history
+
 ### `/settings` - SettingsPage
 - **Layout**: AuthPage-style geometric teal gradient background with single centered card
 - **Sections**: Account (email), Preferences (notifications, language, units), Sync status, About
@@ -320,12 +267,3 @@ logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, up
 - **Glass Morphism**: Semi-transparent card with backdrop blur effect
 - **Bottom Padding**: `pb-20` to prevent BottomNav overlap
 - **BottomNav**: Integrated with Settings tab active state
-
-## App Routes (`/app/*`)
-### Main Navigation
-- **`/`** - HomePage (dashboard with today's plan, quick stats, next session preview)
-- **`/session/:id`** - SessionPage (workout execution with timer, set logging, exercise progression)
-- **`/history`** - HistoryPage (past sessions list with filters and search)
-- **`/history/:id`** - HistoryDetailPage (individual session review with metrics)
-- **`/stats`** - StatsPage (progress analytics with charts, social sharing, streak badges)
-- **`/settings`** - SettingsPage (account, preferences, sync status, data management)

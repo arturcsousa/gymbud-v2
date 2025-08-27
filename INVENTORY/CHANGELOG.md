@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## August 27, 2025 13:32 ET
+**Implemented** Phase E1 - Session Runner with comprehensive set-by-set workout logging
+- **Session Runner UI**: Complete rebuild of SessionPage with header progress bar, exercise focus card, set logging strip, and rest timer
+- **Data Integration**: Created useSessionData hook with offline-first session management, exercise loading from v_session_exercises_enriched view
+- **Set Logging**: Real-time set logging with reps, weight, RPE (1-10 scale), automatic queue integration via sync-logged-sets Edge Function
+- **Rest Timer**: Hero rest timer with prescribed vs actual time tracking, skip/add 30s controls, visual countdown with completion alerts
+- **Exercise Navigation**: Previous/Next exercise flow with upcoming exercise preview, finish workout with session status updates
+- **Queue Integration**: Enhanced sync/queue.ts with enqueueLoggedSet and enqueueSessionUpdate helper functions for offline-first mutations
+- **Session Management**: Automatic session status transitions (pending→active→completed) with started_at/completed_at timestamps
+- **Telemetry Events**: Comprehensive event logging (set_logged, session_started, session_completed, rest_started, exercise_advanced) to sync_events
+- **i18n Support**: Complete session runner translation keys for EN + PT-BR including effort levels, rest timer, navigation, and accessibility
+- **Error Handling**: Toast notifications for set logging failures, session update errors, with graceful offline fallbacks
+- **Accessibility**: ARIA live regions for rest timer announcements, screen reader support for set logging and exercise transitions
+- Context: Live workout logging now functional - users can log sets in real-time, data flows to stats via logged_sets table
+- Migrations: Session runner ready for immediate use with existing database schema and sync infrastructure
+
+## August 27, 2025 13:24 ET
+**Implemented** Real data hooks integration for Stats page with offline-first architecture
+- **useSessionMetrics Hook**: Created comprehensive session data hook with Dexie + Supabase v_session_metrics integration
+- **useProfileData Hook**: Added profile weight progression hook with localStorage caching and weight_logs fallback
+- **Data Integration**: Replaced all mock data with real database queries from sessions, logged_sets, and profiles tables
+- **Offline-First**: Immediate data loading from IndexedDB with background server sync and graceful fallbacks
+- **Loading States**: Added elegant loading spinner and "Loading your progress..." messaging
+- **Offline Indicators**: Orange banner notification when displaying cached data without server connection
+- **Empty State Handling**: TrendingUp icons with contextual "No data yet" messages for each chart type
+- **Smart Features**: Share button disabled when no sessions exist, streak calculation from actual workout dates
+- **Performance**: React Query with 5-minute stale time, memoized data transformations, efficient database queries
+- **Error Handling**: Comprehensive try-catch blocks with localStorage fallbacks and graceful degradation
+- Context: Production-ready analytics with real workout data, works completely offline while syncing online
+- Migrations: Ready for immediate use - connects to existing Dexie schema and Supabase tables
+
 ## August 27, 2025 13:18 ET
 **Implemented** Complete Stats page with charts, social sharing, and streak badges system
 - **StatsPage Component**: Created full-featured analytics page with glassmorphic design and teal gradient background

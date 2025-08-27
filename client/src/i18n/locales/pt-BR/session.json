@@ -17,5 +17,118 @@
   "actions": {
     "save": "Salvar Progresso",
     "complete": "Concluir Sessão"
+  },
+  "session_runner": {
+    "title": "Sessão de Treino",
+    "description": "Execute sua sessão de treino passo a passo",
+    "status": {
+      "pending": "Pendente",
+      "active": "Ativo",
+      "completed": "Concluído",
+      "cancelled": "Cancelado"
+    },
+    "exercise": {
+      "current": "Exercício Atual",
+      "next": "Próximo Exercício",
+      "previous": "Exercício Anterior",
+      "completed": "Exercício Concluído"
+    },
+    "set": {
+      "current": "Série Atual",
+      "completed": "Série Concluída",
+      "remaining": "Séries Restantes"
+    },
+    "metrics": {
+      "reps": "Repetições",
+      "weight": "Peso",
+      "rest": "Descanso",
+      "duration": "Duração"
+    },
+    "actions": {
+      "save": "Salvar Progresso",
+      "complete": "Concluir Sessão"
+    },
+    "loading": "Carregando sessão...",
+    "exercise": "Exercício",
+    "of": "de",
+    "sets": "séries",
+    "reps": "reps",
+    "set": "Série",
+    "weight": "Peso",
+    "previous": "Anterior",
+    "nextExercise": "Próximo Exercício",
+    "finish": "Finalizar Treino",
+    "pause": "Pausar",
+    "header": {
+      "exercise_progress": "Exercício {{current}} de {{total}}",
+      "workout_time": "Tempo de Treino"
+    },
+    "exercise_card": {
+      "instructions": "Instruções",
+      "tips": "Dicas",
+      "warmup": "Aquecimento",
+      "work_set": "Série de Trabalho",
+      "target_reps": "{{min}}-{{max}} reps",
+      "target_reps_exact": "{{reps}} reps",
+      "rest_time": "{{seconds}}s descanso"
+    },
+    "set_logging": {
+      "reps": "Reps",
+      "weight": "Peso (lbs)",
+      "effort": "Esforço",
+      "log_set": "Registrar Série",
+      "undo_last": "Desfazer Última",
+      "set_number": "Série {{number}}",
+      "completed": "Concluída",
+      "pending": "Pendente"
+    },
+    "effort_levels": {
+      "1": "Muito Fácil",
+      "2": "Fácil", 
+      "3": "Leve",
+      "4": "Moderado",
+      "5": "Um Pouco Difícil",
+      "6": "Difícil",
+      "7": "Muito Difícil",
+      "8": "Extremamente Difícil",
+      "9": "Máximo",
+      "10": "Máximo Absoluto"
+    },
+    "rest_timer": {
+      "rest_time": "Tempo de Descanso",
+      "time_remaining": "{{minutes}}:{{seconds}}",
+      "rest_complete": "Descanso Completo!",
+      "skip_rest": "Pular Descanso",
+      "add_30s": "+30s",
+      "actual_rest": "Real: {{minutes}}:{{seconds}}"
+    },
+    "upcoming": {
+      "next_exercise": "Próximo: {{exercise}}",
+      "sets_remaining": "{{sets}} séries"
+    },
+    "navigation": {
+      "previous_exercise": "Exercício Anterior",
+      "next_exercise": "Próximo Exercício", 
+      "finish_workout": "Finalizar Treino",
+      "pause_workout": "Pausar Treino"
+    },
+    "completion": {
+      "workout_complete": "Treino Completo!",
+      "great_job": "Parabéns por finalizar seu treino!",
+      "total_time": "Tempo Total: {{time}}",
+      "sets_completed": "Séries Concluídas: {{sets}}",
+      "view_summary": "Ver Resumo"
+    },
+    "errors": {
+      "session_not_found": "Sessão não encontrada",
+      "failed_to_load": "Falha ao carregar sessão",
+      "failed_to_log_set": "Falha ao registrar série",
+      "failed_to_update_session": "Falha ao atualizar sessão"
+    },
+    "accessibility": {
+      "rest_timer_announcement": "{{seconds}} segundos restantes",
+      "set_logged_announcement": "Série {{number}} registrada com {{reps}} reps",
+      "exercise_changed_announcement": "Agora em {{exercise}}, exercício {{current}} de {{total}}"
+    }
   }
 }

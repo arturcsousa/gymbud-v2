@@ -19,5 +19,87 @@
   "actions": {
     "save": "Save Progress",
     "complete": "Complete Session"
+  },
+  "loading": "Loading session...",
+  "exercise": "Exercise",
+  "of": "of",
+  "sets": "sets",
+  "reps": "reps",
+  "set": "Set",
+  "weight": "Weight",
+  "previous": "Previous",
+  "nextExercise": "Next Exercise",
+  "finish": "Finish Workout",
+  "pause": "Pause",
+  "header": {
+    "exercise_progress": "Exercise {{current}} of {{total}}",
+    "workout_time": "Workout Time"
+  },
+  "exercise_card": {
+    "instructions": "Instructions",
+    "tips": "Tips",
+    "warmup": "Warm-up",
+    "work_set": "Work Set",
+    "target_reps": "{{min}}-{{max}} reps",
+    "target_reps_exact": "{{reps}} reps",
+    "rest_time": "{{seconds}}s rest"
+  },
+  "set_logging": {
+    "reps": "Reps",
+    "weight": "Weight (lbs)",
+    "effort": "Effort",
+    "log_set": "Log Set",
+    "undo_last": "Undo Last",
+    "set_number": "Set {{number}}",
+    "completed": "Completed",
+    "pending": "Pending"
+  },
+  "effort_levels": {
+    "1": "Very Easy",
+    "2": "Easy", 
+    "3": "Light",
+    "4": "Moderate",
+    "5": "Somewhat Hard",
+    "6": "Hard",
+    "7": "Very Hard",
+    "8": "Extremely Hard",
+    "9": "Maximum",
+    "10": "Absolute Max"
+  },
+  "rest_timer": {
+    "rest_time": "Rest Time",
+    "time_remaining": "{{minutes}}:{{seconds}}",
+    "rest_complete": "Rest Complete!",
+    "skip_rest": "Skip Rest",
+    "add_30s": "+30s",
+    "actual_rest": "Actual: {{minutes}}:{{seconds}}"
+  },
+  "upcoming": {
+    "next_exercise": "Next: {{exercise}}",
+    "sets_remaining": "{{sets}} sets"
+  },
+  "navigation": {
+    "previous_exercise": "Previous Exercise",
+    "next_exercise": "Next Exercise", 
+    "finish_workout": "Finish Workout",
+    "pause_workout": "Pause Workout"
+  },
+  "completion": {
+    "workout_complete": "Workout Complete!",
+    "great_job": "Great job finishing your workout!",
+    "total_time": "Total Time: {{time}}",
+    "sets_completed": "Sets Completed: {{sets}}",
+    "view_summary": "View Summary"
+  },
+  "errors": {
+    "session_not_found": "Session not found",
+    "failed_to_load": "Failed to load session",
+    "failed_to_log_set": "Failed to log set",
+    "failed_to_update_session": "Failed to update session"
+  },
+  "accessibility": {
+    "rest_timer_announcement": "{{seconds}} seconds remaining",
+    "set_logged_announcement": "Set {{number}} logged with {{reps}} reps",
+    "exercise_changed_announcement": "Now on {{exercise}}, exercise {{current}} of {{total}}"
   }
 }

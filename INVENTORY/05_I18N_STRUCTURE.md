@@ -152,7 +152,82 @@ client/src/i18n/
     "nextExercise": "Next Exercise",
     "finish": "Finish Workout",
     "previous": "Previous",
-    "pause": "Pause"
+    "pause": "Pause",
+    "header": {
+      "exercise_progress": "Exercise Progress",
+      "workout_time": "Workout Time"
+    },
+    "exercise_card": {
+      "instructions": "Instructions",
+      "tips": "Tips",
+      "warmup": "Warmup",
+      "work_set": "Work Set"
+    },
+    "exercise_card_target": {
+      "reps": "Target Reps",
+      "reps_exact": "Target Reps (Exact)",
+      "rest_time": "Rest Time"
+    },
+    "set_logging": {
+      "reps": "Reps",
+      "weight": "Weight",
+      "effort": "Effort",
+      "log_set": "Log Set",
+      "undo_last": "Undo Last Set"
+    },
+    "set_logging_status": {
+      "set_number": "Set Number",
+      "completed": "Completed",
+      "pending": "Pending"
+    },
+    "effort_levels": {
+      "1": "Very Easy",
+      "2": "Easy",
+      "3": "Leve",
+      "4": "Moderate",
+      "5": "Um Pouco Difícil",
+      "6": "Difícil",
+      "7": "Muito Difícil",
+      "8": "Extremamente Difícil",
+      "9": "Máximo",
+      "10": "Máximo Absoluto"
+    },
+    "rest_timer": {
+      "rest_time": "Rest Time",
+      "time_remaining": "Time Remaining",
+      "rest_complete": "Rest Complete",
+      "skip_rest": "Skip Rest",
+      "add_30s": "Add 30s",
+      "actual_rest": "Actual Rest"
+    },
+    "upcoming": {
+      "next_exercise": "Next Exercise",
+      "sets_remaining": "Sets Remaining"
+    },
+    "navigation": {
+      "previous_exercise": "Previous Exercise",
+      "next_exercise": "Next Exercise",
+      "finish_workout": "Finish Workout",
+      "pause_workout": "Pause Workout"
+    },
+    "completion": {
+      "workout_complete": "Workout Complete",
+      "great_job": "Great Job!",
+      "total_time": "Total Time",
+      "sets_completed": "Sets Completed",
+      "view_summary": "View Summary"
+    },
+    "errors": {
+      "session_not_found": "Session Not Found",
+      "failed_to_load": "Failed to Load",
+      "failed_to_log_set": "Failed to Log Set",
+      "failed_to_update_session": "Failed to Update Session"
+    },
+    "accessibility": {
+      "rest_timer_announcement": "Rest Timer Announcement",
+      "set_logged_announcement": "Set Logged Announcement",
+      "exercise_changed_announcement": "Exercise Changed Announcement"
+    }
   },
   "settings": {
     "about": "About",
@@ -271,6 +346,8 @@ All Portuguese files now mirror the English structure exactly with proper Brazil
 - **Workout Terms**: "Treino", "Séries", "Repetições", "Peso"
 - **Status Labels**: "Concluído", "Em Progresso", "Planejado"
 - **UI Actions**: "Iniciar Treino", "Ver Histórico", "Sincronizar"
+- **Session Runner**: "Registrar Série", "Tempo de Descanso", "Finalizar Treino", "Exercício Anterior"
+- **Effort Levels**: "Muito Fácil", "Fácil", "Leve", "Moderado", "Um Pouco Difícil", "Difícil", "Muito Difícil", "Extremamente Difícil", "Máximo", "Máximo Absoluto"
 
 ## Bottom Navigation Integration
 
