@@ -1,0 +1,58 @@
+{
+  "title": "Estatísticas",
+  "updated": "Atualizado",
+  "cards": {
+    "streak": {
+      "title": "Sequência Atual"
+    },
+    "longest_streak": "Maior Sequência"
+  },
+  "highlights": {
+    "title": "Destaques",
+    "new_badge": "Nova Conquista!"
+  },
+  "share": {
+    "button": "Compartilhar Stats",
+    "preview": {
+      "title": "Prévia das Stats"
+    },
+    "privacy": {
+      "title": "Configurações de Privacidade",
+      "hide_name": "Ocultar nome",
+      "hide_weights": "Ocultar pesos",
+      "hide_highlight": "Ocultar destaque"
+    }
+  },
+  "charts": {
+    "days": "Dias de Treino / Semana",
+    "volume_sets": "Volume & Séries",
+    "intensity": "RPE Médio",
+    "minutes": "Minutos/Semana",
+    "top_movements": "Exercícios Principais",
+    "weight_progression": "Progressão de Peso"
+  },
+  "select": {
+    "movement": "Selecionar exercício"
+  },
+  "empty": {
+    "title": "Ainda não há dados de treino",
+    "cta": "Comece Seu Primeiro Treino"
+  },
+  "stats": {
+    "title": "Seu Progresso",
+    "subtitle": "Acompanhe sua jornada fitness",
+    "totalSessions": "Total de Sessões",
+    "currentStreak": "Sequência Atual",
+    "totalVolume": "Volume Total",
+    "avgRPE": "RPE Médio",
+    "weeklyActivity": "Atividade Semanal",
+    "volumeAndSets": "Volume e Séries",
+    "weightProgress": "Progresso do Peso",
+    "shareTitle": "Meu Progresso no GymBud",
+    "shareText": "Confira meu progresso fitness com o GymBud!",
+    "shareProgress": "Compartilhar Progresso",
+    "downloadSuccess": "Cartão de progresso baixado com sucesso",
+    "shareError": "Falha ao compartilhar cartão de progresso",
+    "brandTagline": "Treinamento Pessoal com IA"
+  }
+}

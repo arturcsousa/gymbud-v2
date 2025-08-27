@@ -47,6 +47,9 @@ export function AppHeader({ user }: AppHeaderProps) {
           <Button variant="ghost" onClick={() => handleNavigation('/')}>
             {t('app:nav.home')}
           </Button>
+          <Button variant="ghost" onClick={() => handleNavigation('/stats')}>
+            {t('app:nav.stats')}
+          </Button>
           <Button variant="ghost" onClick={() => handleNavigation('/history')}>
             {t('app:nav.history')}
           </Button>

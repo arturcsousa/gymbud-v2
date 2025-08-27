@@ -1,0 +1,19 @@
+{
+  "streak_3": "3-Day Streak",
+  "streak_5": "5-Day Streak",
+  "streak_7": "Week Warrior",
+  "streak_14": "Two Week Champion",
+  "streak_21": "Three Week Hero",
+  "streak_30": "Monthly Master",
+  "streak_50": "Consistency King",
+  "streak_100": "Century Legend",
+  "streakAchievement": "{{days}} day streak achieved!",
+  "streak_3_awarded": "First Steps!",
+  "streak_5_awarded": "Getting Started!",
+  "streak_7_awarded": "One Week Strong!",
+  "streak_14_awarded": "Two Week Warrior!",
+  "streak_30_awarded": "Monthly Master!",
+  "streak_50_awarded": "Consistency Champion!",
+  "streak_75_awarded": "Dedication Diamond!",
+  "streak_100_awarded": "Century Crusher!"
+}

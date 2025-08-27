@@ -1,0 +1,19 @@
+{
+  "streak_3": "Sequência de 3 Dias",
+  "streak_5": "Sequência de 5 Dias",
+  "streak_7": "Guerreiro da Semana",
+  "streak_14": "Campeão de Duas Semanas",
+  "streak_21": "Herói de Três Semanas",
+  "streak_30": "Mestre Mensal",
+  "streak_50": "Rei da Consistência",
+  "streak_100": "Lenda do Século",
+  "streakAchievement": "{{days}} dias de sequência alcançados!",
+  "streak_3_awarded": "Primeiros Passos!",
+  "streak_5_awarded": "Começando Bem!",
+  "streak_7_awarded": "Uma Semana Forte!",
+  "streak_14_awarded": "Guerreiro de Duas Semanas!",
+  "streak_30_awarded": "Mestre Mensal!",
+  "streak_50_awarded": "Campeão da Consistência!",
+  "streak_75_awarded": "Diamante da Dedicação!",
+  "streak_100_awarded": "Destruidor do Século!"
+}

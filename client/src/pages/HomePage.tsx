@@ -95,12 +95,12 @@ const HomePage: React.FC = () => {
           </button>
           
           <button
-            onClick={() => setLocation('/library')}
+            onClick={() => setLocation('/stats')}
             className="bg-white/10 rounded-lg p-2 hover:bg-white/20 transition-all duration-200 flex flex-col items-center gap-1"
           >
             <TrendingUp className="w-4 h-4 text-white" />
             <span className="text-white font-medium text-xs">
-              {t('app:nav.library')}
+              {t('app:nav.stats')}
             </span>
           </button>
         </div>

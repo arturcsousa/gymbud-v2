@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## August 27, 2025 13:18 ET
+**Implemented** Complete Stats page with charts, social sharing, and streak badges system
+- **StatsPage Component**: Created full-featured analytics page with glassmorphic design and teal gradient background
+- **Chart Components**: Built 4 reusable chart components using recharts - ChartCard, TrainingDaysBar, VolumeSetsCombo, WeightProgression
+- **Social Sharing**: Implemented 1080×1350 PNG export with dom-to-image-more and native share API with fallback download
+- **Streak Badge System**: Added useStreakBadges hook with 8 thresholds (3-100 days), local persistence, and sonner toast notifications
+- **Navigation Updates**: Replaced all /library references with /stats in HomePage, AppHeader, and BottomNav components
+- **Routing**: Updated AppShell to use /stats route with StatsPage component import
+- **i18n Support**: Added complete stats and badges namespaces for EN + PT-BR with all required translation keys
+- **Mock Data Integration**: Charts display sample data for immediate testing, ready for v_session_metrics connection
+- **Dependencies**: recharts@^2.8.0 and dom-to-image-more@^3.3.0 already installed in package.json
+- Context: Replaces Exercise Library with motivational progress tracking, streak gamification, and social sharing
+- Migrations: Ready for development - `pnpm dev` to test, connect real data when database views available
+
+## August 27, 2025 13:01 ET
+**Implemented** Stats page replacement for Library with comprehensive analytics and social sharing
+- **Route Change**: Replaced `/app/library` with `/app/stats` in routing and bottom navigation
+- **Navigation Update**: Changed BottomNav icon from BookOpen to BarChart3, updated translation keys from library to stats
+- **StatsPage Component**: Created comprehensive training analytics page with charts, highlights, and social sharing capabilities
+- **Chart Components**: Built reusable chart library (ChartCard, TrainingDaysBar, VolumeSetsCombo, WeightProgression) using recharts
+- **Social Sharing**: Implemented 1080×1350 PNG export with dom-to-image-more and native share API with privacy controls
+- **Streak Badge System**: Added local persistence badge system with thresholds (3-100 days) and toast notifications using sonner
+- **Data Sources**: Designed for v_session_metrics view with Dexie mirror support for offline-first analytics
+- **i18n Support**: Added complete stats and badges namespaces for EN + PT-BR with all required translation keys
+- **Dependencies**: Added recharts@^2.8.0 and dom-to-image-more@^3.3.0 for charts and image export functionality
+- **Visual Design**: Glassmorphic cards with teal gradients, consistent with app design language and PWA aesthetic
+- Context: Replaces exercise library with motivational progress tracking, streak gamification, and social sharing capabilities
+- Migrations: Run `pnpm install` to install new chart and image export dependencies
+
 ## August 27, 2025 12:48 ET
 **Added** Progress/Stats page specification document
 - **New Specification**: Created `INVENTORY/07_PROGRESS_STATS_SPEC.md` with comprehensive Progress/Stats page requirements
@@ -478,15 +507,14 @@
 - Migrations: Environment variable VITE_APP_URL for app subdomain targeting
 
 ## August 26, 2025 10:44 ET
-**Redesigned** WhyDifferent section with dark-teal glassmorphic styling and neon accents.
-- Updated: `client/src/marketing/sections/WhyDifferent.tsx` with cohesive dark-teal gradient backdrop
-- Added: Glass cards with subtle blur, semi-transparent backgrounds, and neon accent borders
-- Added: Color palette constants (deepTeal, teal, aqua, orange, paleOrange)
-- Added: Decorative gradient blobs and enhanced animations
-- Added: Interactive CTA buttons with UTM tracking to app subdomain
-- Added: `client/src/index.css` neon-icon utility for hover effects
-- Context: Modern glassmorphic design maintains existing i18n keys, improves visual hierarchy
-- Migrations: N/A (styling enhancement only)
+**Implemented** complete GymBud marketing landing page with animations and i18n.
+- New: `client/src/marketing/` directory with Landing.tsx and all components/sections
+- New: UspTicker, NavBar, Footer components with sticky header and mobile CTA
+- New: Hero, HowItWorks, WhyDifferent, Programs, Progress, Pricing, Faq, FinalCta sections
+- Added: framer-motion dependency for smooth animations
+- Updated: App.tsx routing to use new Landing component
+- Context: Modern, animated single-page marketing site using existing i18n keys
+- Migrations: N/A (frontend-only)
 
 ## August 26, 2025 10:06 ET
 **Updated** inventory documentation with current implementation details.

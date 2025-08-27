@@ -8,7 +8,7 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Languages**: EN (default), PT-BR
 - **Detection**: localStorage → navigator → htmlTag fallback
 - **Persistence**: Automatic localStorage caching with immediate HTML attribute updates
-- **Namespaces**: 17 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, library, sync)
+- **Namespaces**: 20 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, stats, badges, sync)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
 ## File Structure
@@ -27,6 +27,8 @@ client/src/i18n/
 │   │   ├── library.json       # Exercise database browsing
 │   │   ├── settings.json      # Account management, data export
 │   │   ├── errors.json        # Error messages
+│   │   ├── stats.json         # Progress tracking and analytics interface
+│   │   ├── badges.json        # Streak achievement system
 │   │   └── [5 other namespaces].json
 │   └── pt-BR/                  # Portuguese Brazil translations (COMPLETE)
 │       ├── common.json
@@ -245,6 +247,21 @@ client/src/i18n/
   "of": "of"
 }
 ```
+
+### **stats.json**
+Progress tracking and analytics interface:
+- `title`, `subtitle` - Page header
+- `totalSessions`, `currentStreak`, `totalVolume`, `avgRPE` - Key metrics
+- `weeklyActivity`, `volumeAndSets`, `weightProgress` - Chart titles
+- `shareTitle`, `shareText`, `shareProgress` - Social sharing
+- `downloadSuccess`, `shareError` - User feedback
+- `brandTagline` - GymBud branding
+
+### **badges.json**
+Streak achievement system:
+- `streakAchievement` - Generic achievement message with interpolation
+- `streak_3_awarded` through `streak_100_awarded` - Milestone badge names
+- Thresholds: 3, 5, 7, 14, 30, 50, 75, 100 days
 
 ### **Portuguese Translations (PT-BR) - COMPLETE COVERAGE**
 All Portuguese files now mirror the English structure exactly with proper Brazilian Portuguese conventions:

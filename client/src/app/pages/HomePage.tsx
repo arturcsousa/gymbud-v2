@@ -117,12 +117,12 @@ function HomePage() {
           </button>
           
           <button
-            onClick={() => setLocation('/library')}
+            onClick={() => setLocation('/stats')}
             className="bg-white/10 backdrop-blur-xl rounded-lg p-3 shadow-xl ring-1 ring-white/20 hover:bg-white/20 transition-all duration-200 flex flex-col items-center gap-2"
           >
             <TrendingUp className="w-4 h-4 text-white" />
             <span className="text-white font-medium text-xs">
-              Library
+              {t('app:nav.stats')}
             </span>
           </button>
         </div>

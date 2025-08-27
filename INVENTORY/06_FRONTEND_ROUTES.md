@@ -19,8 +19,6 @@ Progressive Web Application (PWA) built with Vite + React using `wouter` for cli
 - **`/app/session/:id?`** - Session runner with workout logging interface and timer
 - **`/app/history`** - Workout history listing with search/filters
 - **`/app/history/:id`** - Detailed view of completed session
-- **`/app/library`** - Exercise database with search and categories
-- **`/app/settings`** - Account management and preferences
 - **`/app/*`** - Catch-all 404 page
 
 ## Component Architecture
@@ -41,7 +39,7 @@ AppShell.tsx (Main app wrapper with GradientLayout)
     ├── SessionPage.tsx (single card session runner with timer, fits one screen) - named export ✓
     ├── HistoryPage.tsx (single card workout history with stats, no scrolling) - named export ✓
     ├── HistoryDetailPage.tsx (session detail view) - named export
-    ├── LibraryPage.tsx (single card exercise database with condensed list, no scrolling) - named export ✓
+    ├── StatsPage.tsx (training analytics with charts, streaks, and social sharing) - named export
     ├── SettingsPage.tsx (single card streamlined settings, fits one screen) - named export ✓
     └── NotFoundPage.tsx (404 fallback) - named export
 ```
@@ -322,3 +320,12 @@ logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, up
 - **Glass Morphism**: Semi-transparent card with backdrop blur effect
 - **Bottom Padding**: `pb-20` to prevent BottomNav overlap
 - **BottomNav**: Integrated with Settings tab active state
+
+## App Routes (`/app/*`)
+### Main Navigation
+- **`/`** - HomePage (dashboard with today's plan, quick stats, next session preview)
+- **`/session/:id`** - SessionPage (workout execution with timer, set logging, exercise progression)
+- **`/history`** - HistoryPage (past sessions list with filters and search)
+- **`/history/:id`** - HistoryDetailPage (individual session review with metrics)
+- **`/stats`** - StatsPage (progress analytics with charts, social sharing, streak badges)
+- **`/settings`** - SettingsPage (account, preferences, sync status, data management)

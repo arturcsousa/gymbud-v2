@@ -1,0 +1,55 @@
+{
+  "title": "Your Progress",
+  "subtitle": "Track your fitness journey",
+  "totalSessions": "Total Sessions",
+  "currentStreak": "Current Streak",
+  "totalVolume": "Total Volume",
+  "avgRPE": "Avg RPE",
+  "weeklyActivity": "Weekly Activity",
+  "volumeAndSets": "Volume & Sets",
+  "weightProgress": "Weight Progress",
+  "shareTitle": "My GymBud Progress",
+  "shareText": "Check out my fitness progress with GymBud!",
+  "shareProgress": "Share Progress",
+  "downloadSuccess": "Progress card downloaded successfully",
+  "shareError": "Failed to share progress card",
+  "brandTagline": "AI-Powered Personal Training",
+  "updated": "Updated",
+  "cards": {
+    "streak": {
+      "title": "Current Streak"
+    },
+    "longest_streak": "Longest Streak"
+  },
+  "highlights": {
+    "title": "Highlights",
+    "new_badge": "New Badge Earned!"
+  },
+  "share": {
+    "button": "Share Stats",
+    "preview": {
+      "title": "Stats Preview"
+    },
+    "privacy": {
+      "title": "Privacy Settings",
+      "hide_name": "Hide name",
+      "hide_weights": "Hide weights",
+      "hide_highlight": "Hide highlight"
+    }
+  },
+  "charts": {
+    "days": "Training Days / Week",
+    "volume_sets": "Volume & Sets",
+    "intensity": "Average RPE",
+    "minutes": "Minutes/Week",
+    "top_movements": "Top Movements",
+    "weight_progression": "Weight Progression"
+  },
+  "select": {
+    "movement": "Select movement"
+  },
+  "empty": {
+    "title": "No workout data yet",
+    "cta": "Start Your First Workout"
+  }
+}
