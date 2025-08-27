@@ -227,6 +227,21 @@ client/src/i18n/
       "rest_timer_announcement": "Rest Timer Announcement",
       "set_logged_announcement": "Set Logged Announcement",
       "exercise_changed_announcement": "Exercise Changed Announcement"
+    },
+    "set": {
+      "undoDurable": "Undo (after sync)",
+      "undone": "Undone"
+    },
+    "toasts": {
+      "undoQueued": "Undo queued—will retry when online.",
+      "undoFailed": "Can't undo this set."
+    },
+    "accessibility": {
+      "setLogged": "Set logged successfully",
+      "restStarted": "Rest timer started for {{seconds}} seconds", 
+      "restCompleted": "Rest time completed",
+      "exerciseChanged": "Now on {{exerciseName}}",
+      "undoReturnToSet": "Undo: returning to set {{setNumber}}"
     }
   },
   "settings": {
@@ -485,3 +500,68 @@ const navHome = t('app:nav.home');
 - Bottom navigation fully integrated with i18n support
 - Build errors resolved with proper import cleanup
 - Ready for production deployment with complete i18n coverage
+
+## Session Runner Keys (Phase E1 + E2)
+Complete translation coverage for workout session interface including durable undo functionality:
+
+**English (`en/session.json`)**:
+```json
+{
+  "set_logging": {
+    "reps": "Reps",
+    "weight": "Weight", 
+    "effort": "Effort",
+    "log_set": "Log Set",
+    "undo_last": "Undo Last Set"
+  },
+  "set": {
+    "undoDurable": "Undo (after sync)",
+    "undone": "Undone"
+  },
+  "toasts": {
+    "undoQueued": "Undo queued—will retry when online.",
+    "undoFailed": "Can't undo this set."
+  },
+  "accessibility": {
+    "setLogged": "Set logged successfully",
+    "restStarted": "Rest timer started for {{seconds}} seconds", 
+    "restCompleted": "Rest time completed",
+    "exerciseChanged": "Now on {{exerciseName}}",
+    "undoReturnToSet": "Undo: returning to set {{setNumber}}"
+  }
+}
+```
+
+**Portuguese Brazil (`pt-BR/session.json`)**:
+```json
+{
+  "set_logging": {
+    "reps": "Repetições",
+    "weight": "Peso",
+    "effort": "Esforço", 
+    "log_set": "Registrar Série",
+    "undo_last": "Desfazer Última Série"
+  },
+  "set": {
+    "undoDurable": "Desfazer (após sincronização)",
+    "undone": "Desfeito"
+  },
+  "toasts": {
+    "undoQueued": "Desfazer enfileirado—vai tentar quando online.",
+    "undoFailed": "Não foi possível desfazer esta série."
+  },
+  "accessibility": {
+    "setLogged": "Série registrada com sucesso",
+    "restStarted": "Timer de descanso iniciado por {{seconds}} segundos",
+    "restCompleted": "Tempo de descanso concluído", 
+    "exerciseChanged": "Agora em {{exerciseName}}",
+    "undoReturnToSet": "Desfazer: retornando à série {{setNumber}}"
+  }
+}
+```
+
+**Key Features**:
+- **Durable Undo**: Contextual messages for pending vs synced set undo behavior
+- **Offline Support**: Toast messages for queued operations and retry scenarios  
+- **Accessibility**: Screen reader announcements for undo operations and timer interactions
+- **Error Handling**: User-friendly messages for server rejections and network issues

@@ -14,7 +14,9 @@
     "reps": "Reps",
     "weight": "Weight",
     "rpe": "RPE",
-    "notes": "Notes"
+    "notes": "Notes",
+    "undoDurable": "Undo (after sync)",
+    "undone": "Undone"
   },
   "actions": {
     "save": "Save Progress",
@@ -46,13 +48,10 @@
   },
   "set_logging": {
     "reps": "Reps",
-    "weight": "Weight (lbs)",
+    "weight": "Weight",
     "effort": "Effort",
     "log_set": "Log Set",
-    "undo_last": "Undo Last",
-    "set_number": "Set {{number}}",
-    "completed": "Completed",
-    "pending": "Pending"
+    "undo_last": "Undo Last Set"
   },
   "effort_levels": {
     "1": "Very Easy",
@@ -100,6 +99,15 @@
   "accessibility": {
     "rest_timer_announcement": "{{seconds}} seconds remaining",
     "set_logged_announcement": "Set {{number}} logged with {{reps}} reps",
-    "exercise_changed_announcement": "Now on {{exercise}}, exercise {{current}} of {{total}}"
+    "exercise_changed_announcement": "Now on {{exercise}}, exercise {{current}} of {{total}}",
+    "setLogged": "Set logged successfully",
+    "restStarted": "Rest timer started for {{seconds}} seconds",
+    "restCompleted": "Rest time completed",
+    "exerciseChanged": "Now on {{exerciseName}}",
+    "undoReturnToSet": "Undo: returning to set {{setNumber}}"
+  },
+  "toasts": {
+    "undoQueued": "Undo queued—will retry when online.",
+    "undoFailed": "Can't undo this set."
   }
 }

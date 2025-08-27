@@ -1,6 +1,34 @@
-# CHANGELOG
+# GymBud v2 - Changelog
 
-## August 27, 2025 13:45 ET
+## 2025-08-27 13:52 - Phase E2: Durable Undo Implementation
+**Implemented**: Durable undo functionality for logged sets with offline-first support
+- **Queue System**: Added `logged_sets/void` mutation type with de-duplication logic
+  - `enqueueLoggedSetVoid()` helper function with idempotency key `void_{setId}`
+  - Prevents duplicate void mutations for same set ID
+- **Session Runner**: Enhanced undo logic with dual behavior
+  - **Pending sets**: Remove from queue immediately (E1 behavior)
+  - **Synced sets**: Enqueue void mutation, optimistically mark as voided
+  - Cancels active rest timer when undoing, returns UI to same set number
+- **Data Layer**: Added `voided` field support throughout data pipeline
+  - Updated `LoggedSetRow` interface with optional `voided` boolean
+  - All selectors filter out `voided: true` sets from totals and metrics
+  - Optimistic updates with server reconciliation on sync confirmation
+- **Telemetry**: Added void operation events
+  - `set_void_requested`: When undo is initiated
+  - `set_void_confirmed`: On successful server acknowledgment
+  - `set_void_failed`: On terminal server rejection
+- **i18n**: Added undo-specific translation keys (EN + PT-BR)
+  - `session.set.undoDurable`, `session.set.undone`
+  - `session.toasts.undoQueued`, `session.toasts.undoFailed`
+  - `session.accessibility.undoReturnToSet`
+- **UX**: Contextual toast messages and accessibility announcements
+  - "Undo queued—will retry when online" for offline scenarios
+  - "Can't undo this set" for server rejections
+  - Screen reader announcements when returning to set after undo
+
+**Technical**: Maintains E1 single-screen layout, preserves all existing functionality
+
+## 2025-08-27 13:45 - TypeScript Build Fixes
 **Fixed**: Resolved all TypeScript compilation errors preventing successful builds
 - **SessionPage**: Removed unused `Pause` import (TS6133)
 - **useSessionData Hook**: Fixed type mismatches between database schemas and app types

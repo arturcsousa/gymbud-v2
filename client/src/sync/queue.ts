@@ -356,6 +356,41 @@ export async function enqueueLoggedSet(payload: {
   });
 }
 
+export async function enqueueLoggedSetVoid(setId: string, userId: string) {
+  // Check if a void mutation for this set is already queued
+  const existingVoid = await db.queue_mutations
+    .where(['entity', 'op'])
+    .equals(['app2.logged_sets', 'update'])
+    .and(mutation => 
+      mutation.payload?.id === setId && 
+      mutation.payload?.voided === true &&
+      mutation.status === 'queued'
+    )
+    .first()
+
+  if (existingVoid) {
+    // Already queued, skip duplicate
+    return existingVoid
+  }
+
+  const mutation: QueueMutation = {
+    id: crypto.randomUUID(),
+    entity: 'app2.logged_sets',
+    op: 'update',
+    payload: { id: setId, voided: true },
+    user_id: userId,
+    idempotency_key: `void_${setId}`,
+    status: 'queued',
+    retries: 0,
+    next_attempt_at: Date.now(),
+    created_at: Date.now(),
+    updated_at: Date.now()
+  }
+  
+  await db.queue_mutations.add(mutation)
+  return mutation
+}
+
 export async function enqueueSessionUpdate(payload: {
   id: string;
   status?: 'pending' | 'active' | 'completed' | 'cancelled';

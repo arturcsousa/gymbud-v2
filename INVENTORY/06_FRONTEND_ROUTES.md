@@ -63,16 +63,24 @@ export { ComponentName as default }  // Default export
 export { ComponentName }             // Named export for AppShell
 ```
 
-### Session Runner Implementation (Phase E1)
-- **SessionPage**: Complete rebuild with comprehensive workout logging interface
+### Session Runner Implementation (Phase E1 + E2)
+- **SessionPage**: Complete rebuild with comprehensive workout logging interface and durable undo
   - **Header**: Exercise progress (X of Y) with workout timer and progress bar
   - **Exercise Card**: Exercise name, prescription details (sets, reps, rest), warmup/work badges, instructions modal
   - **Set Logging Strip**: Single active set with reps/weight/RPE inputs, "Log Set" button, set completion tracking
+  - **Durable Undo**: Enhanced "Undo Last Set" functionality with dual behavior
+    - **Pending sets**: Remove from queue immediately (E1 behavior)
+    - **Synced sets**: Enqueue void mutation, optimistically mark as voided (E2 behavior)
+    - Cancels active rest timer when undoing, returns UI to same set number
   - **Rest Timer**: Hero timer with prescribed time countdown, skip/add time controls, actual vs prescribed tracking
   - **Navigation**: Previous/Next exercise, finish workout, pause functionality
   - **Data Flow**: useSessionData hook → IndexedDB → mutation queue → sync-logged-sets Edge Function
+  - **Void Support**: All selectors filter out `voided: true` sets from totals and metrics
   - **Error Handling**: Toast notifications for failures with offline fallbacks
-  - **i18n**: Complete EN/PT-BR translation coverage including effort levels and accessibility
+  - **i18n**: Complete EN/PT-BR translation coverage including effort levels, accessibility, and undo operations
+- **`/app/history`** - Workout history listing with search/filters
+- **`/app/history/:id`** - Detailed view of completed session
+- **`/app/*`** - Catch-all 404 page
 
 ## Type Safety Improvements
 - **SessionPage**: Renamed `Set` interface to `WorkoutSet` to avoid collision with built-in JavaScript Set type

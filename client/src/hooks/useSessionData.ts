@@ -2,61 +2,52 @@ import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { db, SessionRow, SessionExerciseRow, LoggedSetRow, SyncEventRow } from '@/db/gymbud-db';
 import { supabase } from '@/lib/supabase';
-import { enqueueLoggedSet, enqueueSessionUpdate } from '@/sync/queue';
+import { enqueueLoggedSet, enqueueSessionUpdate, enqueueLoggedSetVoid } from '@/sync/queue';
+import { toast } from 'sonner';
 
 interface SessionExercise {
   session_exercise_id: string;
-  session_id: string;
   user_id: string;
+  session_id: string;
   session_date: string;
   plan_id: string | null;
-  order_index: number;
   exercise_name: string;
-  variant_id: string | null;
-  pattern: string | null;
-  prescription: {
-    stage: 'warmup' | 'work';
-    sets: number;
-    reps?: number | number[];
-    rest_sec: number;
-    weight?: number;
-    tempo?: string;
-    rir?: number;
-    percent_1rm?: number;
-    duration_sec?: number;
-    ramp?: any;
-  };
-  stage: 'warmup' | 'work';
-  rest_sec: number;
+  order_index: number;
   sets: number;
-  reps_scalar: number | null;
-  reps_array_json: number[] | null;
+  reps: number | null;
+  rest_sec: number;
+  weight: number | null;
+  rpe: number | null;
+  notes: string | null;
   is_warmup: boolean;
-  session_status: 'pending' | 'active' | 'completed' | 'cancelled';
+  updated_at: string;
 }
 
 interface LoggedSet {
   id: string;
   session_exercise_id: string;
   set_number: number;
-  reps: number | null;
-  weight: number | null;
-  rpe: number | null;
-  duration_sec: number | null;
-  notes: string | null;
-  meta: any;
+  reps?: number | null;
+  weight?: number | null;
+  rpe?: number | null;
+  notes?: string | null;
+  voided?: boolean;
+  duration_sec?: number | null;
+  meta?: Record<string, any> | null;
   created_at: string;
+  updated_at: string;
 }
 
 interface SessionData {
   id: string;
   user_id: string;
   plan_id: string | null;
-  session_date: string;
   status: 'pending' | 'active' | 'completed' | 'cancelled';
   started_at: string | null;
   completed_at: string | null;
-  notes: string | null;
+  notes?: string | null;
+  session_date: string;
+  updated_at: string;
 }
 
 // Helper function to convert database rows to app types
@@ -92,6 +83,7 @@ function convertSessionExerciseRows(rows: SessionExerciseRow[]): SessionExercise
 function convertLoggedSetRows(rows: LoggedSetRow[]): LoggedSet[] {
   return rows.map(row => ({
     ...row,
+    voided: row.voided || false,
     duration_sec: null,
     meta: null,
     created_at: new Date(row.updated_at).toISOString(),
@@ -129,6 +121,7 @@ export function useSessionData(sessionId?: string) {
         const loggedSets = await db.logged_sets
           .where('session_exercise_id')
           .anyOf(exerciseIds)
+          .and(set => !set.voided) // Filter out voided sets
           .toArray();
 
         setOfflineData({
@@ -197,7 +190,6 @@ export function useSessionData(sessionId?: string) {
       reps?: number;
       weight?: number;
       rpe?: number;
-      durationSec?: number;
       notes?: string;
     }) => {
       const setId = crypto.randomUUID();
@@ -209,6 +201,7 @@ export function useSessionData(sessionId?: string) {
         weight: params.weight || null,
         rpe: params.rpe || null,
         notes: params.notes || null,
+        voided: false,
         updated_at: Date.now()
       };
 
@@ -223,7 +216,7 @@ export function useSessionData(sessionId?: string) {
         reps: params.reps,
         weight: params.weight,
         rpe: params.rpe,
-        duration_sec: params.durationSec,
+        duration_sec: null,
         notes: params.notes,
       });
 
@@ -248,12 +241,94 @@ export function useSessionData(sessionId?: string) {
           const loggedSets = await db.logged_sets
             .where('session_exercise_id')
             .anyOf(exerciseIds)
+            .and(set => !set.voided) // Filter out voided sets
             .toArray();
           setOfflineData(prev => ({ ...prev, loggedSets: convertLoggedSetRows(loggedSets as LoggedSetRow[]) }));
         };
         loadOfflineData();
       }
     },
+  });
+
+  // Undo last set mutation (durable undo)
+  const undoLastSetMutation = useMutation({
+    mutationFn: async (exerciseId: string) => {
+      if (!sessionId) throw new Error('Session ID required');
+
+      // Get the last logged set for this exercise (non-voided)
+      const lastSet = await db.logged_sets
+        .where('session_exercise_id')
+        .equals(exerciseId)
+        .and(set => !set.voided)
+        .reverse()
+        .sortBy('set_number')
+        .then(sets => sets[0]);
+
+      if (!lastSet) {
+        throw new Error('No sets to undo');
+      }
+
+      // Check if this set is still pending in queue (not yet synced)
+      const pendingInsert = await db.queue_mutations
+        .where(['entity', 'op'])
+        .equals(['app2.logged_sets', 'insert'])
+        .and(mutation => 
+          mutation.payload?.id === lastSet.id && 
+          mutation.status === 'queued'
+        )
+        .first();
+
+      if (pendingInsert) {
+        // E1 behavior: Remove pending insert from queue
+        await db.queue_mutations.delete(pendingInsert.id);
+        await db.logged_sets.delete(lastSet.id);
+
+        // Log telemetry
+        const telemetryEvent: SyncEventRow = {
+          ts: Date.now(),
+          kind: 'success',
+          code: 'set_void_requested',
+          items: 1
+        };
+        await db.sync_events.add(telemetryEvent);
+
+        return { type: 'pending_removed', setNumber: lastSet.set_number };
+      } else {
+        // E2 behavior: Durable undo - enqueue void mutation
+        const session = await db.sessions.get(sessionId);
+        if (!session) throw new Error('Session not found');
+
+        // Optimistically mark as voided
+        await db.logged_sets.update(lastSet.id, { voided: true });
+
+        // Enqueue void mutation
+        await enqueueLoggedSetVoid(lastSet.id, session.user_id);
+
+        // Log telemetry
+        const telemetryEvent: SyncEventRow = {
+          ts: Date.now(),
+          kind: 'success',
+          code: 'set_void_requested',
+          items: 1
+        };
+        await db.sync_events.add(telemetryEvent);
+
+        return { type: 'durable_undo', setNumber: lastSet.set_number };
+      }
+    },
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['session-data', sessionId] });
+      
+      if (result.type === 'pending_removed') {
+        toast.success('Set removed');
+      } else {
+        toast.success('Undo queued—will retry when online');
+      }
+    },
+    onError: (error) => {
+      console.error('Failed to undo set:', error);
+      toast.error('Can\'t undo this set');
+    }
   });
 
   // Update session status mutation
@@ -389,6 +464,7 @@ export function useSessionData(sessionId?: string) {
     
     // Actions
     logSet: logSetMutation.mutate,
+    undoLastSet: undoLastSetMutation.mutate,
     updateSession: updateSessionMutation.mutate,
     getExerciseSets,
     getNextSetNumber,
@@ -399,6 +475,7 @@ export function useSessionData(sessionId?: string) {
     
     // Loading states
     isLoggingSet: logSetMutation.isPending,
+    isUndoingSet: undoLastSetMutation.isPending,
     isUpdatingSession: updateSessionMutation.isPending,
   };
 }

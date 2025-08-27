@@ -47,7 +47,8 @@ function SessionPage() {
     getExerciseSets,
     getNextSetNumber,
     isLoggingSet,
-    isUpdatingSession
+    isUpdatingSession,
+    undoLastSet
   } = useSessionData(sessionId)
 
   // UI state
@@ -202,6 +203,17 @@ function SessionPage() {
     } catch (error) {
       toast.error(t('session:errors.failed_to_update_session'))
     }
+  }
+
+  const handleUndoLastSet = () => {
+    if (!currentExercise || currentExerciseIndex === 0) return
+
+    // Cancel rest timer if active
+    if (restTimer.isActive) {
+      setRestTimer({ isActive: false, timeLeft: 0, prescribedTime: 0, actualStartTime: 0 })
+    }
+
+    undoLastSet(currentExercise.session_exercise_id)
   }
 
   if (isLoading) {
@@ -417,7 +429,7 @@ function SessionPage() {
               variant="ghost"
               size="sm"
               className="text-white/60 hover:text-white hover:bg-white/10 text-xs"
-              onClick={() => toast.info('Undo functionality coming in Phase E2')}
+              onClick={handleUndoLastSet}
             >
               <Undo2 className="w-3 h-3 mr-1" />
               {t('session:set_logging.undo_last')}

@@ -54,6 +54,7 @@ export interface LoggedSetRow {
   weight?: number | null
   rpe?: number | null
   notes?: string | null
+  voided?: boolean
   updated_at: number
 }
 

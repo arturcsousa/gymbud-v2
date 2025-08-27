@@ -12,7 +12,9 @@
     "reps": "Reps",
     "weight": "Peso",
     "rpe": "RPE",
-    "notes": "Notas"
+    "notes": "Notas",
+    "undoDurable": "Desfazer (após sincronização)",
+    "undone": "Desfeito"
   },
   "actions": {
     "save": "Salvar Progresso",
@@ -73,14 +75,11 @@
       "rest_time": "{{seconds}}s descanso"
     },
     "set_logging": {
-      "reps": "Reps",
-      "weight": "Peso (lbs)",
+      "reps": "Repetições",
+      "weight": "Peso",
       "effort": "Esforço",
       "log_set": "Registrar Série",
-      "undo_last": "Desfazer Última",
-      "set_number": "Série {{number}}",
-      "completed": "Concluída",
-      "pending": "Pendente"
+      "undo_last": "Desfazer Última Série"
     },
     "effort_levels": {
       "1": "Muito Fácil",
@@ -128,7 +127,16 @@
     "accessibility": {
       "rest_timer_announcement": "{{seconds}} segundos restantes",
       "set_logged_announcement": "Série {{number}} registrada com {{reps}} reps",
-      "exercise_changed_announcement": "Agora em {{exercise}}, exercício {{current}} de {{total}}"
+      "exercise_changed_announcement": "Agora em {{exercise}}, exercício {{current}} de {{total}}",
+      "setLogged": "Série registrada com sucesso",
+      "restStarted": "Timer de descanso iniciado por {{seconds}} segundos",
+      "restCompleted": "Tempo de descanso concluído",
+      "exerciseChanged": "Agora em {{exerciseName}}",
+      "undoReturnToSet": "Desfazer: retornando à série {{setNumber}}"
+    },
+    "toasts": {
+      "undoQueued": "Desfazer enfileirado—vai tentar quando online.",
+      "undoFailed": "Não foi possível desfazer esta série."
     }
   }
 }
