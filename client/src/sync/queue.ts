@@ -56,6 +56,57 @@ async function sendToServer(m: QueueMutation): Promise<void> {
     return
   }
 
+  if (m.entity === 'app2.sessions' && m.op === 'update') {
+    // Ensure the row uses the queue id as the primary key for idempotency
+    const payload = { id: m.id, ...m.payload }
+
+    const { data, error } = await supabase.functions.invoke('sync-sessions', {
+      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+    })
+
+    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+
+    const res = data?.results?.[0]
+    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+    }
+    return
+  }
+
+  if (m.entity === 'app2.session_exercises' && (m.op === 'insert' || m.op === 'update')) {
+    // Ensure the row uses the queue id as the primary key for idempotency
+    const payload = { id: m.id, ...m.payload }
+
+    const { data, error } = await supabase.functions.invoke('sync-session-exercises', {
+      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+    })
+
+    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+
+    const res = data?.results?.[0]
+    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+    }
+    return
+  }
+
+  if (m.entity === 'app2.coach_audit' && m.op === 'insert') {
+    // Ensure the row uses the queue id as the primary key for idempotency
+    const payload = { id: m.id, ...m.payload }
+
+    const { data, error } = await supabase.functions.invoke('sync-coach-audit', {
+      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+    })
+
+    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+
+    const res = data?.results?.[0]
+    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+    }
+    return
+  }
+
   // keep others queued until we add server support
   throw new Error('UNSUPPORTED_MUTATION')
 }

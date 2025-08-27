@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## August 26, 2025 20:45 ET
+**Implemented** Phase A Step 6 - Expanded queue coverage for sessions, session_exercises, and coach_audit
+- **Edge Functions**: Created three new sync endpoints mirroring sync-logged-sets pattern:
+  - `sync-sessions` - Update-only with status transition validation (pending→active→completed/cancelled)
+  - `sync-session-exercises` - Upsert capability with foreign key validation via RLS
+  - `sync-coach-audit` - Insert-only with idempotency for immutable audit trail
+- **Queue Router Extension**: Extended `client/src/sync/queue.ts` sendToServer function to handle new entities
+  - Sessions: update operations only with allowed fields (status, started_at, completed_at, notes)
+  - Session Exercises: insert/update operations with session ownership validation
+  - Coach Audit: insert operations with optional session_exercise_id linking
+- **RLS Enforcement**: All Edge Functions use end-user JWT for proper Row Level Security compliance
+- **Error Handling**: Consistent error mapping with existing Step 5 infrastructure (auth_missing, rls_denied, invalid_payload, etc.)
+- **Idempotency**: Uses queue mutation ID as primary key for conflict-free operations across all endpoints
+- **Test Infrastructure**: Created `test-sync-endpoints.js` for validation of happy paths and error scenarios
+- Context: Multi-entity sync now supports complete session workflow - status updates, exercise modifications, and AI coach audit logging
+- Migrations: Deploy new Edge Functions with `supabase functions deploy sync-sessions sync-session-exercises sync-coach-audit`
+
 ## August 26, 2025 20:37 ET
 **Fixed** TypeScript build errors with PWA virtual module declarations
 - **PWA Type Declarations**: Created `src/types/pwa.d.ts` with proper TypeScript definitions for virtual:pwa-register module

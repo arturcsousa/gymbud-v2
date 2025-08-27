@@ -7,7 +7,8 @@
 
 // Run with user-context (RLS enforced) by forwarding Authorization header.
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 type Json = Record<string, unknown> | unknown[] | string | number | boolean | null;
 
@@ -27,7 +28,7 @@ function json(status: number, body: unknown) {
   });
 }
 
-Deno.serve(async (req) => {
+serve(async (req) => {
   // Handle CORS preflight if this ever gets called cross-origin
   if (req.method === "OPTIONS") {
     return new Response(null, {
@@ -69,57 +70,63 @@ Deno.serve(async (req) => {
     // allow empty body for promote-from-draft path
   }
 
-  // 1) If ACTIVE exists, return it
-  const { data: active, error: activeErr } = await supabase
-    .schema("app2")
-    .from("plans")
-    .select("id, status")
-    .eq("user_id", userId)
-    .eq("status", "active")
-    .maybeSingle();
-
-  if (activeErr) return json(500, { error: "select_active_failed", detail: activeErr.message });
-  if (active) return json(200, { plan_id: active.id, status: "active" });
-
-  // 2) Try to find a DRAFT to promote
-  const { data: draft, error: draftErr } = await supabase
-    .schema("app2")
-    .from("plans")
-    .select("id, status, seed")
-    .eq("user_id", userId)
-    .eq("status", "draft")
-    .order("updated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (draftErr) return json(500, { error: "select_draft_failed", detail: draftErr.message });
-
-  if (draft) {
-    const newSeed = typeof body.seed !== "undefined" ? body.seed : draft.seed ?? null;
-    const { data: promoted, error: promoteErr } = await supabase
+  try {
+    // 1) If ACTIVE exists, return it
+    const { data: active, error: activeErr } = await supabase
       .schema("app2")
       .from("plans")
-      .update({ status: "active", seed: newSeed, updated_at: new Date().toISOString() })
-      .eq("id", draft.id)
+      .select("id, status")
+      .eq("user_id", userId)
+      .eq("status", "active")
+      .maybeSingle();
+
+    if (activeErr) return json(500, { error: "select_active_failed", detail: activeErr.message });
+    if (active) return json(200, { plan_id: active.id, status: "active" });
+
+    // 2) Try to find a DRAFT to promote
+    const { data: draft, error: draftErr } = await supabase
+      .schema("app2")
+      .from("plans")
+      .select("id, status, seed")
+      .eq("user_id", userId)
+      .eq("status", "draft")
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (draftErr) return json(500, { error: "select_draft_failed", detail: draftErr.message });
+
+    if (draft) {
+      const newSeed = typeof body.seed !== "undefined" ? body.seed : draft.seed ?? null;
+      const { data: promoted, error: promoteErr } = await supabase
+        .schema("app2")
+        .from("plans")
+        .update({ status: "active", seed: newSeed, updated_at: new Date().toISOString() })
+        .eq("id", draft.id)
+        .select("id")
+        .single();
+
+      if (promoteErr) return json(409, { error: "conflict_promote_failed", detail: promoteErr.message });
+      return json(200, { plan_id: promoted.id, status: "active" });
+    }
+
+    // 3) No ACTIVE or DRAFT — must INSERT using provided seed
+    if (typeof body.seed === "undefined" || body.seed === null) {
+      return json(400, { error: "invalid_seed", detail: "Seed is required when no draft exists." });
+    }
+
+    const { data: inserted, error: insertErr } = await supabase
+      .schema("app2")
+      .from("plans")
+      .insert({ user_id: userId, status: "active", seed: body.seed as Json })
       .select("id")
       .single();
 
-    if (promoteErr) return json(409, { error: "conflict_promote_failed", detail: promoteErr.message });
-    return json(200, { plan_id: promoted.id, status: "active" });
+    if (insertErr) return json(409, { error: "conflict_insert_failed", detail: insertErr.message });
+    return json(200, { plan_id: inserted.id, status: "active" });
+
+  } catch (error) {
+    console.error("Unexpected error in plan-get-or-create:", error);
+    return json(500, { error: "internal_server_error", detail: error.message });
   }
-
-  // 3) No ACTIVE or DRAFT — must INSERT using provided seed
-  if (typeof body.seed === "undefined" || body.seed === null) {
-    return json(400, { error: "invalid_seed", detail: "Seed is required when no draft exists." });
-  }
-
-  const { data: inserted, error: insertErr } = await supabase
-    .schema("app2")
-    .from("plans")
-    .insert({ user_id: userId, status: "active", seed: body.seed as Json })
-    .select("id")
-    .single();
-
-  if (insertErr) return json(409, { error: "conflict_insert_failed", detail: insertErr.message });
-  return json(200, { plan_id: inserted.id, status: "active" });
 });
