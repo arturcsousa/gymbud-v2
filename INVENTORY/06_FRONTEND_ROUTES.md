@@ -21,6 +21,14 @@ Progressive Web Application (PWA) built with Vite + React using `wouter` for cli
 
 ### App Routes (/app/*)
 - **`/app/auth/:mode?`** - Authentication (signin, signup, reset)
+- **`/app/auth/verify`** - **Email OTP verification with 6-digit code input, resend functionality, and 60s cooldown**
+  - **UI Components**: Six individual digit inputs with auto-focus progression, resend button with countdown timer
+  - **Flow Integration**: Auto-redirect from signup success and unconfirmed signin attempts
+  - **Rate Limiting**: Maximum 5 resend attempts per session with 60-second cooldown between requests
+  - **Email Management**: Change email functionality and email validation with query parameter support
+  - **Auto-Resend**: Automatic OTP resend on page mount for fresh verification codes
+  - **Telemetry**: Comprehensive tracking (otp_sent, verify_attempted, verify_succeeded/failed)
+  - **i18n**: Complete EN/PT-BR localization including dynamic countdown messages
 - **`/app/onboarding`** - 12-step onboarding wizard for profile setup and plan generation
 - **`/app/home`** - Dashboard with today's session and recent activity
 - **`/app/session/:id?`** - **Session runner with comprehensive set-by-set workout logging interface**
@@ -76,24 +84,20 @@ export { ComponentName as default }  // Default export
 export { ComponentName }             // Named export for AppShell
 ```
 
-### Session Runner Implementation (Phase E1 + E2)
-- **SessionPage**: Complete rebuild with comprehensive workout logging interface and durable undo
-  - **Header**: Exercise progress (X of Y) with workout timer and progress bar
-  - **Exercise Card**: Exercise name, prescription details (sets, reps, rest), warmup/work badges, instructions modal
-  - **Set Logging Strip**: Single active set with reps/weight/RPE inputs, "Log Set" button, set completion tracking
-  - **Durable Undo**: Enhanced "Undo Last Set" functionality with dual behavior
-    - **Pending sets**: Remove from queue immediately (E1 behavior)
-    - **Synced sets**: Enqueue void mutation, optimistically mark as voided (E2 behavior)
-    - Cancels active rest timer when undoing, returns UI to same set number
-  - **Rest Timer**: Hero timer with prescribed time countdown, skip/add time controls, actual vs prescribed tracking
-  - **Navigation**: Previous/Next exercise, finish workout, pause functionality
-  - **Data Flow**: useSessionData hook → IndexedDB → mutation queue → sync-logged-sets Edge Function
-  - **Void Support**: All selectors filter out `voided: true` sets from totals and metrics
-  - **Error Handling**: Toast notifications for failures with offline fallbacks
-  - **i18n**: Complete EN/PT-BR translation coverage including effort levels, accessibility, and undo operations
-- **`/app/history`** - Workout history listing with search/filters
-- **`/app/history/:id`** - Detailed view of completed session
-- **`/app/*`** - Catch-all 404 page
+### Auth Flow Implementation (Email OTP)
+- **AuthPage**: Enhanced with password confirmation for signup mode and unconfirmed user detection
+  - **Signup Flow**: Email + password + confirm password → redirect to /app/auth/verify with email parameter
+  - **Signin Flow**: Detects unconfirmed users (email_confirmed_at missing) → redirect to verify page
+  - **Password Validation**: Real-time password matching with disabled submit until passwords match
+  - **Mode Switching**: Clear form state when switching between signin/signup modes
+  - **Telemetry**: Track signup attempts, successes, failures, and unconfirmed redirects
+- **VerifyPage**: Complete OTP verification interface with comprehensive UX
+  - **6-Digit Input**: Individual digit inputs with paste support, auto-focus, and backspace navigation
+  - **Resend Logic**: 60-second cooldown with visual countdown, maximum 5 attempts per session
+  - **Auto-Submit**: Automatic verification when all 6 digits are entered
+  - **Email Flexibility**: Support for email parameter, query string, or manual entry
+  - **Error Handling**: Clear invalid/expired code messages with input reset and focus
+  - **Success Routing**: Automatic redirect based on user plan status (home vs onboarding)
 
 ## Type Safety Improvements
 - **SessionPage**: Renamed `Set` interface to `WorkoutSet` to avoid collision with built-in JavaScript Set type

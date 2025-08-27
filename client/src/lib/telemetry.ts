@@ -1,49 +1,138 @@
-// Telemetry events for onboarding tracking
-export type TelemetryEvent = 
-  | { type: 'onb_step_viewed'; step_id: string }
-  | { type: 'onb_saved'; step_id: string }
-  | { type: 'onb_completed' }
-  | { type: 'plan_created'; plan_id: string }
-  | { type: 'baseline_session_seen'; session_id: string }
+// Basic telemetry system for GymBud
+// This can be extended with PostHog, Sentry, or other analytics services
 
-export class Telemetry {
-  static track(event: TelemetryEvent) {
-    // Log to console for development
-    console.log('Telemetry:', event)
-    
-    // In production, this would send to analytics service
-    // Example: PostHog, Mixpanel, or custom analytics endpoint
-    
-    // For now, store in localStorage for debugging
-    try {
-      const events = JSON.parse(localStorage.getItem('gymbud_telemetry') || '[]')
-      events.push({
-        ...event,
-        timestamp: Date.now(),
-        user_agent: navigator.userAgent,
-        url: window.location.href
-      })
-      
-      // Keep only last 100 events
-      if (events.length > 100) {
-        events.splice(0, events.length - 100)
-      }
-      
-      localStorage.setItem('gymbud_telemetry', JSON.stringify(events))
-    } catch (error) {
-      console.warn('Failed to store telemetry event:', error)
+interface TelemetryEvent {
+  event: string;
+  properties?: Record<string, any>;
+  timestamp?: Date;
+}
+
+class TelemetryService {
+  private events: TelemetryEvent[] = [];
+  private isEnabled = true;
+
+  constructor() {
+    // In development, log events to console
+    if (import.meta.env.DEV) {
+      this.isEnabled = true;
     }
   }
 
-  static getEvents(): any[] {
+  track(event: string, properties?: Record<string, any>) {
+    if (!this.isEnabled) return;
+
+    const telemetryEvent: TelemetryEvent = {
+      event,
+      properties,
+      timestamp: new Date(),
+    };
+
+    this.events.push(telemetryEvent);
+
+    // In development, log to console
+    if (import.meta.env.DEV) {
+      console.log('📊 Telemetry:', telemetryEvent);
+    }
+
+    // TODO: Send to analytics service (PostHog, Sentry, etc.)
+    // this.sendToAnalytics(telemetryEvent);
+  }
+
+  // Auth-specific tracking methods
+  trackAuthSignUpStarted(email: string) {
+    this.track('auth_sign_up_started', { email_domain: this.getEmailDomain(email) });
+  }
+
+  trackAuthSignUpSucceeded(email: string) {
+    this.track('auth_sign_up_succeeded', { email_domain: this.getEmailDomain(email) });
+  }
+
+  trackAuthSignUpFailed(email: string, error: string) {
+    this.track('auth_sign_up_failed', { 
+      email_domain: this.getEmailDomain(email),
+      error_type: this.categorizeError(error)
+    });
+  }
+
+  trackAuthOtpSent(email: string, isAutoResend: boolean) {
+    this.track('auth_otp_sent', { 
+      email_domain: this.getEmailDomain(email),
+      is_auto_resend: isAutoResend
+    });
+  }
+
+  trackAuthOtpVerifyAttempted(email: string) {
+    this.track('auth_otp_verify_attempted', { email_domain: this.getEmailDomain(email) });
+  }
+
+  trackAuthOtpVerifySucceeded(email: string) {
+    this.track('auth_otp_verify_succeeded', { email_domain: this.getEmailDomain(email) });
+  }
+
+  trackAuthOtpVerifyFailed(email: string, error: string) {
+    this.track('auth_otp_verify_failed', { 
+      email_domain: this.getEmailDomain(email),
+      error_type: this.categorizeError(error)
+    });
+  }
+
+  trackAuthUnconfirmedRedirectedToVerify(email: string) {
+    this.track('auth_unconfirmed_redirected_to_verify', { 
+      email_domain: this.getEmailDomain(email)
+    });
+  }
+
+  trackOnboardingRedirected(destination: string, hasActivePlan: boolean) {
+    this.track('onboarding_redirected', { 
+      destination,
+      has_active_plan: hasActivePlan
+    });
+  }
+
+  // Utility methods
+  private getEmailDomain(email: string): string {
     try {
-      return JSON.parse(localStorage.getItem('gymbud_telemetry') || '[]')
+      return email.split('@')[1] || 'unknown';
     } catch {
-      return []
+      return 'unknown';
     }
   }
 
-  static clearEvents() {
-    localStorage.removeItem('gymbud_telemetry')
+  private categorizeError(error: string): string {
+    const errorLower = error.toLowerCase();
+    
+    if (errorLower.includes('email') && errorLower.includes('confirm')) {
+      return 'email_not_confirmed';
+    }
+    if (errorLower.includes('invalid') && errorLower.includes('password')) {
+      return 'invalid_password';
+    }
+    if (errorLower.includes('user') && errorLower.includes('not found')) {
+      return 'user_not_found';
+    }
+    if (errorLower.includes('invalid') && errorLower.includes('token')) {
+      return 'invalid_token';
+    }
+    if (errorLower.includes('expired')) {
+      return 'expired_token';
+    }
+    if (errorLower.includes('rate limit')) {
+      return 'rate_limited';
+    }
+    
+    return 'unknown';
+  }
+
+  // Get events for debugging
+  getEvents(): TelemetryEvent[] {
+    return [...this.events];
+  }
+
+  // Clear events (useful for testing)
+  clearEvents() {
+    this.events = [];
   }
 }
+
+export const telemetry = new TelemetryService();
+export type { TelemetryEvent };

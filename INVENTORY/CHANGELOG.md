@@ -1,5 +1,33 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 18:26 - Email OTP Verification System Implementation
+**Implemented**: Complete email OTP verification system with 6-digit code input and comprehensive auth flow
+- **VerifyPage Component**: Created `/app/auth/verify` page with 6-digit OTP input UI
+  - **6-Digit Input**: Individual digit inputs with auto-focus progression, paste support, and backspace navigation
+  - **Resend Logic**: 60-second cooldown with visual countdown timer and rate limiting (max 5 attempts per session)
+  - **Email Management**: Change email functionality and query parameter support for flexible email handling
+  - **Auto-Submit**: Automatic verification when all 6 digits are entered for seamless UX
+  - **Auto-Resend**: Automatic OTP resend on page mount for fresh verification codes
+- **AuthPage Enhancement**: Updated signup/signin flow with password confirmation and unconfirmed user detection
+  - **Signup Flow**: Email + password + confirm password → redirect to verify page with email parameter
+  - **Signin Flow**: Detects unconfirmed users (email_confirmed_at missing) → redirect to verify page
+  - **Password Validation**: Real-time password matching with disabled submit until passwords match
+  - **Mode Switching**: Clear form state when switching between signin/signup modes
+  - **Dynamic Titles**: Context-aware titles ("Sign in to GymBud" vs "Create your GymBud account")
+- **Routing Integration**: Added `/app/auth/verify` route to AppShell with proper component imports
+- **Telemetry System**: Enhanced telemetry with comprehensive auth event tracking
+  - **Auth Events**: signup_started/succeeded/failed, otp_sent, verify_attempted/succeeded/failed
+  - **Unconfirmed Flow**: unconfirmed_redirected_to_verify, onboarding_redirected tracking
+  - **Privacy-Safe**: Email domains only, error categorization, no PII logging
+- **i18n Coverage**: Complete EN/PT-BR localization for all OTP verification content
+  - **Auth Keys**: signInTitle, createAccountTitle, passwordMismatch, verify.* namespace
+  - **Dynamic Messages**: Countdown timers, error states, email instructions with interpolation
+  - **Portuguese Translations**: Proper Brazilian Portuguese conventions and terminology
+- **Error Handling**: Clear invalid/expired code messages with input reset and focus management
+- **Success Routing**: Automatic redirect based on user plan status (home vs onboarding)
+
+**Technical**: Supabase email confirmations enabled, OTP type=signup, comprehensive offline-first telemetry integration
+
 ## 2025-08-27 18:05 - TypeScript Compilation Error Resolution
 **Fixed**: Resolved all TypeScript compilation errors preventing successful builds
 - **Missing Slider Component**: Created `client/src/components/ui/slider.tsx` using Radix UI primitives with proper TypeScript types
@@ -773,39 +801,3 @@
 - New: `INVENTORY/06_FRONTEND_ROUTES.md`
 - Context: Fresh slate marketing → app split, EN/PT-BR namespaces seeded for landing + future app.
 - Migrations: N/A (frontend-only)
-
-## August 26, 2025 11:00 ET
-**Completed** marketing component updates.
-### Added
-- **Theme System**: Created centralized `client/src/marketing/theme.ts` with color palette constants and CTA utility function
-- **MobileCTA Component**: Added sticky mobile call-to-action button with consistent styling
-- **Landing Component**: Main orchestrator with anchor scrolling functionality for SPA routes
-- **Translation Keys**: Added missing keys in `landing.json`, `common.json`, and `faq.json` for component alignment
-
-### Changed
-- **All Marketing Sections**: Complete redesign with dark-teal glassmorphic styling and neon accents:
-  - `Hero.tsx`: Gradient backgrounds, orange visual elements, proper CTA buttons
-  - `HowItWorks.tsx`: Glass cards with backdrop blur and icon styling
-  - `WhyDifferent.tsx`: Neon-bordered feature cards with interactive CTAs
-  - `Programs.tsx`: Themed program cards with color-coded icons
-  - `Progress.tsx`: Mock phone frame with progress visualization
-  - `Pricing.tsx`: Glass pricing cards with popular plan highlighting
-  - `Faq.tsx`: Accordion-style FAQ with smooth animations
-  - `FinalCta.tsx`: Gradient CTA section with dual action buttons
-- **Navigation Components**:
-  - `NavBar.tsx`: Updated with theme colors and proper navigation links
-  - `Footer.tsx`: Simplified footer with consistent styling
-  - `UspTicker.tsx`: Theme-aligned ticker component
-- **CSS Utilities**: Added `.neon-icon`, `.glass`, and `.ring-faint` classes for glassmorphic effects
-
-### Fixed
-- **Translation Alignment**: All components now use correct i18n keys from locale files
-- **Icon Imports**: Fixed lucide-react icon import errors across components
-- **Type Safety**: Proper TypeScript types for all component props and theme utilities
-
-### Technical
-- Consistent use of `PALETTE` constants from theme file
-- UTM parameter generation via `ctaHref()` utility
-- Responsive design with mobile-first approach
-- Smooth anchor scrolling for SPA navigation
-- Environment variable integration for app URLs

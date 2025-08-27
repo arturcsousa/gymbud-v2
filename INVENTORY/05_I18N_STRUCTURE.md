@@ -16,6 +16,7 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Component Integration**: Enhanced ProfilePage and ReviewPage with proper export declarations
 - **Form Validation**: Improved onboarding form type safety with proper Zod schema integration
 - **UI Components**: Added Radix UI Slider component with full i18n support for confidence ratings
+- **Auth OTP Flow**: Added comprehensive email verification keys for 6-digit OTP system with resend functionality
 
 ## File Structure
 ```
@@ -309,273 +310,87 @@ client/src/i18n/
 }
 ```
 
-### **Common Namespace (`common.json`) - UPDATED**
+### **Auth Namespace (`auth.json`) - FULLY UPDATED WITH OTP VERIFICATION**
 ```json
 {
-  "nav": {
-    "home": "Home",
-    "howItWorks": "How It Works",
-    "programs": "Programs",
-    "pricing": "Pricing",
-    "faq": "FAQ",
-    "signIn": "Sign In",
-    "getStarted": "Get Started"
+  "welcome": {
+    "title": "Welcome to GymBud",
+    "subtitle": "Create your account or sign in to continue."
   },
-  "cta": {
-    "primary": "Start Your Journey",
-    "secondary": "Learn More",
-    "getStarted": "Get Started",
-    "signUp": "Sign Up Free",
-    "tryFree": "Try Free",
-    "start_free": "Start Free",
-    "see_how": "See How It Works"
+  "signin": {
+    "title": "Sign in to your account",
+    "submit": "Sign In",
+    "noAccount": "Don't have an account?",
+    "link": "Sign up"
   },
-  "languages": {
-    "en": "English",
-    "pt-BR": "Português (Brasil)"
+  "signup": {
+    "title": "Create your account",
+    "submit": "Sign Up",
+    "hasAccount": "Already have an account?",
+    "link": "Sign in",
+    "checkEmail": "Check your email for a confirmation link"
   },
-  "loading": "Loading...",
-  "error": "Error",
-  "success": "Success",
-  "cancel": "Cancel",
-  "save": "Save",
-  "delete": "Delete",
-  "edit": "Edit",
-  "of": "of"
-}
-```
-
-### **stats.json**
-Progress tracking and analytics interface:
-- `title`, `subtitle` - Page header
-- `totalSessions`, `currentStreak`, `totalVolume`, `avgRPE` - Key metrics
-- `weeklyActivity`, `volumeAndSets`, `weightProgress` - Chart titles
-- `shareTitle`, `shareText`, `shareProgress` - Social sharing
-- `downloadSuccess`, `shareError` - User feedback
-- `brandTagline` - GymBud branding
-
-### **badges.json**
-Streak achievement system:
-- `streakAchievement` - Generic achievement message with interpolation
-- `streak_3_awarded` through `streak_100_awarded` - Milestone badge names
-- Thresholds: 3, 5, 7, 14, 30, 50, 75, 100 days
-
-### **onboarding.json**
-Onboarding process:
-- `biometrics`: { title, explain, first_name, last_name, height_cm, weight_kg, body_fat_pct, rhr_bpm, birthdate, next, back }
-- `goals`: { title, explain, goal_primary, days_per_week, days_of_week, add_window, environment, equipment_basic, equipment_explain, schedule_explain, tone_auto }
-- `profile`: { title, explain, experience_level, confidence, constraints, warmup, warmup_explain, mobility, rest_pref, intensity }
-- `review`: { title, explain, edit, confirm, creating, done }
-
-### **Portuguese Translations (PT-BR) - COMPLETE COVERAGE**
-All Portuguese files now mirror the English structure exactly with proper Brazilian Portuguese conventions:
-
-- **Muscle Groups**: "Peito", "Costas", "Ombros", "Braços", "Pernas", "Core"
-- **Equipment**: "Barra", "Banco", "Halteres", "Rack de Agachamento"
-- **Workout Terms**: "Treino", "Séries", "Repetições", "Peso"
-- **Status Labels**: "Concluído", "Em Progresso", "Planejado"
-- **UI Actions**: "Iniciar Treino", "Ver Histórico", "Sincronizar"
-- **Session Runner**: "Registrar Série", "Tempo de Descanso", "Finalizar Treino", "Exercício Anterior"
-- **Effort Levels**: "Muito Fácil", "Fácil", "Leve", "Moderado", "Um Pouco Difícil", "Difícil", "Muito Difícil", "Extremamente Difícil", "Máximo", "Máximo Absoluto"
-
-## Bottom Navigation Integration
-
-### **BottomNav Component**
-- **Translation Keys**: Uses `app:nav.*` namespace for all navigation labels
-- **Icons**: Home, Session, History, Library, Settings with Lucide React
-- **Active State**: Gradient styling with teal brand colors
-- **Glass Morphism**: Consistent with app design language
-
-### **Page Integration**
-- **HomePage**: Integrated with bottom padding to prevent overlap
-- **SessionPage**: Integrated with layout adjustments for bottom navigation
-- **All App Pages**: Ready for bottom navigation integration
-
-## Page-Specific Translation Coverage
-
-### **HomePage Translations**
-- Welcome messages and call-to-action buttons
-- Quick stats section with workout metrics
-- Today's plan card with session details
-- Navigation buttons with proper translation keys
-
-### **SessionPage Translations**
-- Workout timer and progress indicators
-- Exercise list and set tracking interface
-- Navigation controls and status updates
-- All UI elements fully localized
-
-### **HistoryPage Translations**
-- Workout statistics and summary cards
-- Session status badges and filters
-- Empty states and call-to-action messages
-- Detailed workout information
-
-### **LibraryPage Translations**
-- Exercise search and filtering interface
-- Category and difficulty level labels
-- Muscle group and equipment classifications
-- Exercise details and descriptions
-
-### **SettingsPage Translations**
-- Account management and preferences
-- Sync status and data export options
-- Notification and theme settings
-- About section and version information
-- **Language Selection**: Dropdown interface with `common:languages.*` keys
-- **Language Persistence**: Immediate application via `i18n.changeLanguage()` on save
-
-## TypeScript Build Compatibility
-
-### **Import/Export Resolution**
-- **Fixed**: Removed unused imports (`Play`, `Pause`, `Clock`) from components
-- **Build Status**: All TypeScript compilation errors resolved
-- **Clean Build**: Ready for production deployment
-
-## Component Export Structure
-
-### Page Components with Named Exports
-All major page components support both named and default exports for build compatibility:
-
-```typescript
-// HomePage.tsx, SessionPage.tsx, HistoryPage.tsx, SettingsPage.tsx
-function ComponentName() {
-  // Component implementation
-}
-
-export { ComponentName as default }  // Default export
-export { ComponentName }             // Named export for AppShell imports
-```
-
-### Import Pattern in AppShell
-```typescript
-// AppShell.tsx uses named imports for all page components
-import { AuthPage } from '@/app/pages/AuthPage'
-import { HomePage } from '@/app/pages/HomePage'
-import { SessionPage } from '@/app/pages/SessionPage'
-import { HistoryPage } from '@/app/pages/HistoryPage'
-import { HistoryDetailPage } from '@/app/pages/HistoryDetailPage'
-import { LibraryPage } from '@/app/pages/LibraryPage'
-import { SettingsPage } from '@/app/pages/SettingsPage'
-import { NotFoundPage } from '@/app/pages/NotFoundPage'
-```
-
-## Usage Patterns
-
-### Component Usage
-```tsx
-import { useTranslation } from 'react-i18next';
-
-// Single namespace
-const { t } = useTranslation('common');
-const title = t('nav.pricing');
-
-// Multiple namespaces
-const { t } = useTranslation(['common', 'landing']);
-const cta = t('common:cta.start_free');
-const hero = t('landing:hero.title');
-
-// App namespace usage
-const { t } = useTranslation(['app', 'common']);
-const homeWelcome = t('app:home.welcome');
-const navHome = t('app:nav.home');
-```
-
-### HTML Integration
-- Automatic `lang` and `dir` attribute synchronization
-- RTL language detection for Arabic, Farsi, Hebrew, Urdu
-- Language change event listener updates document attributes
-
-### Language Switching
-- `LanguageSwitcher` component with Globe icon dropdown
-- **Settings Page**: Language selection dropdown with `common:languages.*` keys
-- **Implementation**: `<select>` element with EN/PT-BR options
-- **Integration**: Connected to `handleSaveSettings()` function for immediate application
-- Persistence via localStorage
-- Immediate UI updates on language change
-
-## Conventions
-- **Keys**: Use dot notation (e.g., `home.welcome`, `nav.settings`)
-- **Namespaces**: Lowercase, descriptive (common, app, session, etc.)
-- **Structure**: Nested objects for logical grouping
-- **Consistency**: Mirror EN structure exactly in PT-BR files
-- **Fallback**: Missing PT-BR keys fall back to EN automatically
-
-## Translation Quality Assurance
-- **Complete Coverage**: All app pages and components translated
-- **Consistency**: Matching translation keys across EN and PT-BR
-- **Context Awareness**: Proper Brazilian Portuguese conventions
-- **Technical Terms**: Accurate fitness and UI terminology
-- **User Experience**: Natural language flow for both locales
-
-## Development Notes
-- All app components use proper namespace prefixes (`app:`, `common:`)
-- Translation keys aligned with actual locale file structure
-- Bottom navigation fully integrated with i18n support
-- Build errors resolved with proper import cleanup
-- Ready for production deployment with complete i18n coverage
-
-## Session Runner Keys (Phase E1 + E2)
-Complete translation coverage for workout session interface including durable undo functionality:
-
-**English (`en/session.json`)**:
-```json
-{
-  "set_logging": {
-    "reps": "Reps",
-    "weight": "Weight", 
-    "effort": "Effort",
-    "log_set": "Log Set",
-    "undo_last": "Undo Last Set"
-  },
-  "set": {
-    "undoDurable": "Undo (after sync)",
-    "undone": "Undone"
-  },
-  "toasts": {
-    "undoQueued": "Undo queued—will retry when online.",
-    "undoFailed": "Can't undo this set."
-  },
-  "accessibility": {
-    "setLogged": "Set logged successfully",
-    "restStarted": "Rest timer started for {{seconds}} seconds", 
-    "restCompleted": "Rest time completed",
-    "exerciseChanged": "Now on {{exerciseName}}",
-    "undoReturnToSet": "Undo: returning to set {{setNumber}}"
+  "signInTitle": "Sign in to GymBud",
+  "createAccountTitle": "Create your GymBud account",
+  "email": "Email address",
+  "password": "Password",
+  "confirmPassword": "Confirm password",
+  "createAccount": "Create Account",
+  "signIn": "Sign In",
+  "haveAccount": "Already have an account? Sign in",
+  "needAccount": "Don't have an account? Sign up",
+  "forgotPassword": "Forgot password?",
+  "passwordMismatch": "Passwords do not match",
+  "verify": {
+    "title": "Verify your email",
+    "enterEmail": "Enter your email address to receive a verification code",
+    "instruction": "Enter the 6-digit code sent to",
+    "sendCode": "Send Code",
+    "enterComplete": "Please enter the complete 6-digit code",
+    "invalidCode": "Invalid or expired code",
+    "resend": "Resend code",
+    "resendIn": "Resend in {{seconds}}s",
+    "tooManyResends": "Too many resend attempts. Please try again later.",
+    "changeEmail": "Change email address"
   }
 }
 ```
 
-**Portuguese Brazil (`pt-BR/session.json`)**:
+**Portuguese Brazil (`pt-BR/auth.json`)**:
 ```json
 {
-  "set_logging": {
-    "reps": "Repetições",
-    "weight": "Peso",
-    "effort": "Esforço", 
-    "log_set": "Registrar Série",
-    "undo_last": "Desfazer Última Série"
-  },
-  "set": {
-    "undoDurable": "Desfazer (após sincronização)",
-    "undone": "Desfeito"
-  },
-  "toasts": {
-    "undoQueued": "Desfazer enfileirado—vai tentar quando online.",
-    "undoFailed": "Não foi possível desfazer esta série."
-  },
-  "accessibility": {
-    "setLogged": "Série registrada com sucesso",
-    "restStarted": "Timer de descanso iniciado por {{seconds}} segundos",
-    "restCompleted": "Tempo de descanso concluído", 
-    "exerciseChanged": "Agora em {{exerciseName}}",
-    "undoReturnToSet": "Desfazer: retornando à série {{setNumber}}"
+  "signInTitle": "Entre no GymBud",
+  "createAccountTitle": "Crie sua conta GymBud",
+  "email": "Endereço de email",
+  "password": "Senha",
+  "confirmPassword": "Confirmar senha",
+  "createAccount": "Criar Conta",
+  "signIn": "Entrar",
+  "haveAccount": "Já tem uma conta? Entre",
+  "needAccount": "Não tem uma conta? Cadastre-se",
+  "forgotPassword": "Esqueceu a senha?",
+  "passwordMismatch": "As senhas não coincidem",
+  "verify": {
+    "title": "Verifique seu email",
+    "enterEmail": "Digite seu endereço de email para receber um código de verificação",
+    "instruction": "Digite o código de 6 dígitos enviado para",
+    "sendCode": "Enviar Código",
+    "enterComplete": "Digite o código completo de 6 dígitos",
+    "invalidCode": "Código inválido ou expirado",
+    "resend": "Reenviar código",
+    "resendIn": "Reenviar em {{seconds}}s",
+    "tooManyResends": "Muitas tentativas de reenvio. Tente novamente mais tarde.",
+    "changeEmail": "Alterar endereço de email"
   }
 }
 ```
 
-**Key Features**:
-- **Durable Undo**: Contextual messages for pending vs synced set undo behavior
-- **Offline Support**: Toast messages for queued operations and retry scenarios  
-- **Accessibility**: Screen reader announcements for undo operations and timer interactions
-- **Error Handling**: User-friendly messages for server rejections and network issues
+### **OTP Verification Features**:
+- **6-Digit Input**: Individual digit inputs with auto-focus progression and paste support
+- **Resend Logic**: 60-second cooldown with visual countdown timer and rate limiting (max 5 attempts)
+- **Email Management**: Change email functionality and query parameter support
+- **Auto-Submit**: Automatic verification when all digits are entered
+- **Error Handling**: Clear invalid/expired code messages with input reset
+- **Telemetry Integration**: Comprehensive tracking for OTP events (sent, attempted, succeeded, failed)
+
+{{ ... }}
