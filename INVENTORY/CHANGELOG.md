@@ -1,5 +1,20 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 14:19 - TypeScript Build Error Resolution
+**Fixed**: Resolved all 6 TypeScript compilation errors preventing successful builds
+- **SessionPage Export**: Fixed import/export mismatch by changing from named import `{ SessionPage }` to default import `SessionPage` in AppShell.tsx
+- **Unused Imports**: Removed unused imports across multiple files
+  - Removed `React` import from SessionPage.tsx (using destructured imports)
+  - Removed unused `Minus` icon from SessionPage.tsx
+  - Removed unused `toast` import from SessionPage.tsx  
+  - Removed unused `domtoimage` import from StatsShareCard.tsx
+- **Property Name Fix**: Corrected `session_exercise_id` to `sessionExerciseId` in logSet function call to match expected parameter type
+- **Missing Dependency**: Added `@radix-ui/react-progress@^1.0.3` to package.json for Progress component
+- **Type Compatibility**: Fixed session status type by using `dbStatus` (properly typed) instead of `updates.status` (generic string) in enqueueSessionUpdate call
+- **Schema Alignment**: Removed `duration_sec` field from enqueueLoggedSet call since it's not part of LoggedSetRow type
+
+**Technical**: All TypeScript errors resolved, build now compiles successfully. Run `npm install` to install new dependency.
+
 ## 2025-08-27 14:03 - Additional TypeScript Build Fixes
 **Fixed**: Resolved remaining TypeScript compilation errors from Phase E2 implementation
 - **Progress Component**: Created missing `@/components/ui/progress` component using Radix UI primitives
@@ -111,7 +126,7 @@
 - **Social Sharing**: Implemented 1080×1350 PNG export with dom-to-image-more and native share API with privacy controls
 - **Streak Badge System**: Added local persistence badge system with thresholds (3-100 days) and toast notifications using sonner
 - **Data Sources**: Designed for v_session_metrics view with Dexie mirror support for offline-first analytics
-- **i18n Support**: Added complete stats and badges namespaces for EN + PT-BR with all required translation keys
+- **i18n Support**: Added complete stats and badges namespaces for EN and PT-BR with all required translation keys
 - **Dependencies**: Added recharts@^2.8.0 and dom-to-image-more@^3.3.0 for charts and image export functionality
 - **Visual Design**: Glassmorphic cards with teal gradients, consistent with app design language and PWA aesthetic
 - Context: Replaces exercise library with motivational progress tracking, streak gamification, and social sharing capabilities
