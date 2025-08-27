@@ -1,5 +1,25 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 14:30 - TypeScript Build Error Resolution (Complete)
+**Fixed**: Resolved all 7 TypeScript compilation errors preventing successful builds
+- **SessionPage Export**: Fixed import/export mismatch by changing from named import `{ SessionPage }` to default import `SessionPage` in AppShell.tsx
+- **Unused Imports**: Removed unused imports across multiple files
+  - Removed `React` import from SessionPage.tsx (using destructured imports)
+  - Removed unused `Minus` icon from SessionPage.tsx
+  - Removed unused `toast` import from SessionPage.tsx  
+  - Removed unused `domtoimage` import from StatsShareCard.tsx
+- **Property Name Fixes**: Corrected parameter names to match expected types
+  - Fixed `session_exercise_id` to `sessionExerciseId` in logSet function call
+  - Fixed `set_number` to `setNumber` in logSet function call
+- **Missing Dependency**: Added `@radix-ui/react-progress@^1.0.3` to package.json for Progress component
+- **Type Compatibility**: Fixed session status type mapping in useSessionData hook
+  - Used `Date.now()` for IndexedDB `updated_at` field (expects number)
+  - Mapped `dbStatus` back to queue status (`'draft'` → `'pending'`) for enqueueSessionUpdate
+  - Used separate ISO string for queue `updated_at` field
+- **Schema Alignment**: Removed `duration_sec` field from enqueueLoggedSet call since it's not part of LoggedSetRow type
+
+**Technical**: All TypeScript errors resolved, build now compiles successfully. Run `npm install` to install new dependency.
+
 ## 2025-08-27 14:19 - TypeScript Build Error Resolution
 **Fixed**: Resolved all 6 TypeScript compilation errors preventing successful builds
 - **SessionPage Export**: Fixed import/export mismatch by changing from named import `{ SessionPage }` to default import `SessionPage` in AppShell.tsx

@@ -113,7 +113,7 @@ function SessionPage() {
 
     logSet({
       sessionExerciseId: currentExercise.session_exercise_id,
-      set_number: nextSetNumber,
+      setNumber: nextSetNumber,
       reps,
       weight,
       rpe

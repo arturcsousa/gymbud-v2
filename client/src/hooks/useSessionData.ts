@@ -339,11 +339,11 @@ export function useSessionData(sessionId?: string) {
       if (!sessionId) throw new Error('Session ID required')
 
       // Map status to database enum
-      const dbStatus = updates.status === 'pending' ? 'draft' : 
+      const dbStatus: 'draft' | 'active' | 'completed' = updates.status === 'pending' ? 'draft' : 
                       updates.status === 'cancelled' ? 'completed' :
                       updates.status as 'active' | 'completed'
 
-      const sessionUpdate = {
+      const sessionUpdate: Partial<SessionRow> = {
         status: dbStatus,
         started_at: updates.started_at,
         completed_at: updates.completed_at,
