@@ -170,7 +170,7 @@ export function LibraryPage() {
   if (loading) {
     return (
       <div 
-        className="min-h-screen relative overflow-hidden"
+        className="min-h-screen relative overflow-hidden pb-20"
         style={{
           background: '#005870', // PALETTE.deepTeal
         }}
@@ -208,7 +208,7 @@ export function LibraryPage() {
 
   return (
     <div 
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen relative overflow-hidden pb-20"
       style={{
         background: '#005870', // PALETTE.deepTeal
       }}

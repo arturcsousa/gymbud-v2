@@ -141,7 +141,7 @@ function HistoryPage() {
 
   return (
     <div 
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen relative overflow-hidden pb-20"
       style={{
         background: '#005870', // PALETTE.deepTeal
       }}
@@ -257,7 +257,7 @@ function HistoryPage() {
         </div>
       </div>
       
-      <BottomNav />
+      <BottomNav className="z-20" />
     </div>
   )
 }

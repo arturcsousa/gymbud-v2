@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## August 26, 2025 22:26 ET
+**Redesigned** all app pages with consistent AuthPage-style layout and geometric teal gradient backgrounds
+- **HomePage**: Applied AuthPage-style geometric teal gradient background with single centered card layout, removed scrolling, integrated BottomNav
+- **SessionPage**: Updated to use AuthPage-style background with diagonal clipped section, single card layout fits on one screen
+- **HistoryPage**: Replaced ContentLayout with AuthPage-style geometric teal gradient, single centered card with glass morphism styling
+- **LibraryPage**: Applied consistent teal gradient background, condensed exercise list to 4 items with compact styling, integrated search and filtering
+- **SettingsPage**: Streamlined to single-screen layout with AuthPage-style background, simplified settings sections with icons and compact design
+- **Design Consistency**: All pages now feature geometric teal gradient (`#005870` → `#0C8F93` → `#18C7B6`), diagonal clipped lighter sections, glass morphism cards (`bg-white/10 backdrop-blur-xl`), and consistent BottomNav integration
+- **UX Improvements**: Eliminated scrolling across all pages, maintained single-screen constraint, consistent visual hierarchy and navigation patterns
+- Context: Complete UI/UX unification across the app with professional, cohesive design language matching AuthPage aesthetic
+- Migrations: N/A (UI redesign only)
+
 ## August 26, 2025 21:24 ET
 **Enhanced** pull-updates Edge Function with performance-optimized database queries
 - **Index Alignment**: Updated queries to use proper database indexes for optimal performance

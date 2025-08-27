@@ -34,15 +34,15 @@ AppShell.tsx (Main app wrapper with GradientLayout)
 ├── Offline Indicator
 ├── Conflict Banner
 ├── AuthGuard (route protection)
-└── Route Components (all using onboarding-style design)
+└── Route Components (all using AuthPage-style design with geometric teal gradients)
     ├── AuthPage.tsx (glassmorphic form with gradient background) - named export ✓
     ├── OnboardingPage.tsx (12-step wizard for profile setup)
-    ├── HomePage.tsx (dashboard with glassmorphic cards and session summary) - named export ✓
-    ├── SessionPage.tsx (session runner with progress bar, timer, and exercise cards) - named export ✓
-    ├── HistoryPage.tsx (workout history with stats summary and session cards) - named export ✓
+    ├── HomePage.tsx (single centered card with session summary, no scrolling) - named export ✓
+    ├── SessionPage.tsx (single card session runner with timer, fits one screen) - named export ✓
+    ├── HistoryPage.tsx (single card workout history with stats, no scrolling) - named export ✓
     ├── HistoryDetailPage.tsx (session detail view) - named export
-    ├── LibraryPage.tsx (exercise database with search, filters, and interactive cards) - named export ✓
-    ├── SettingsPage.tsx (organized sections with toggle switches and preferences) - named export ✓
+    ├── LibraryPage.tsx (single card exercise database with condensed list, no scrolling) - named export ✓
+    ├── SettingsPage.tsx (single card streamlined settings, fits one screen) - named export ✓
     └── NotFoundPage.tsx (404 fallback) - named export
 ```
 
