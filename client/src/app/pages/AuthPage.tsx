@@ -88,7 +88,7 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-900 via-teal-950 to-black relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 relative overflow-hidden">
       {/* Header with Language Switcher */}
       <header className="absolute top-0 left-0 right-0 z-20 p-4 pt-6">
         <div className="flex justify-end">
