@@ -108,17 +108,18 @@ export function AuthPage() {
       
       {/* Main content */}
       <div className="min-h-screen grid place-items-center p-6">
-        <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
+        <div className="w-full max-w-sm rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
           {/* Centered Logo */}
-          <div className="flex flex-col items-center mb-8">
+          <div className="flex flex-col items-center mb-6">
             <img 
               src="/images/gymbud-wh.png" 
               alt="GymBud" 
-              className="w-32 h-32 mb-2"
+              className="w-20 h-20 mb-2"
             />
+            <h2 className="text-white text-xl font-bold">GymBud</h2>
           </div>
           
-          <h1 className="text-4xl font-extrabold text-white mb-8 text-center tracking-tight">
+          <h1 className="text-3xl font-bold text-white mb-8 text-center">
             {t('auth.title', 'Join GymBud')}
           </h1>
           
@@ -128,7 +129,7 @@ export function AuthPage() {
               placeholder={t('auth.email', 'Email address')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-2xl bg-white/90 backdrop-blur-sm border-0 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-4 rounded-2xl bg-white/80 backdrop-blur-sm border-0 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-400 text-base"
               required
             />
             
@@ -137,7 +138,7 @@ export function AuthPage() {
               placeholder={t('auth.password', 'Password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-2xl bg-white/90 backdrop-blur-sm border-0 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-4 rounded-2xl bg-white/80 backdrop-blur-sm border-0 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-400 text-base"
               required
             />
             
@@ -148,7 +149,7 @@ export function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-6 rounded-2xl bg-teal-500 hover:bg-teal-600 text-white font-semibold text-lg transition-colors duration-200 disabled:opacity-50"
+              className="w-full py-4 px-6 rounded-2xl bg-teal-500 hover:bg-teal-600 text-white font-semibold text-lg transition-colors duration-200 disabled:opacity-50 mt-6"
             >
               {loading 
                 ? t('auth.loading', 'Loading...') 
@@ -162,7 +163,7 @@ export function AuthPage() {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-white/70 hover:text-white transition-colors duration-200"
+              className="text-white/80 hover:text-white transition-colors duration-200 text-base"
             >
               {isSignUp 
                 ? t('auth.haveAccount', 'Already have an account? Sign in')
