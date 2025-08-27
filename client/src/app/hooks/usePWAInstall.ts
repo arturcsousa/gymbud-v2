@@ -33,7 +33,7 @@ export function usePWAInstall() {
       await db.meta.put({
         key: 'install_banner_dismissed',
         value: 'true',
-        updated_at: new Date().toISOString()
+        updated_at: Date.now()
       });
       setShowInstallBanner(false);
     } catch (error) {
