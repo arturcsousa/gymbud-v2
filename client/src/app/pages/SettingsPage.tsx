@@ -215,33 +215,21 @@ function SettingsPage() {
             </div>
           </div>
 
-          {/* Language */}
+          {/* Language Selection */}
           <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Globe className="w-4 h-4 text-white" />
-              <h2 className="text-sm font-semibold text-white">{t('app:settings.language')}</h2>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => setLanguage('en')}
-                className={`p-2 rounded-lg text-xs transition-all duration-200 ${
-                  language === 'en' 
-                    ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
-                    : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
+            <div className="flex items-center justify-between bg-white/10 rounded-lg p-3">
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-white" />
+                <span className="text-white text-sm">{t('app:settings.language')}</span>
+              </div>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="bg-white/20 text-white text-sm rounded-lg px-3 py-1 border border-white/30 focus:outline-none focus:ring-2 focus:ring-[#00BFA6] focus:border-transparent"
               >
-                English
-              </button>
-              <button
-                onClick={() => setLanguage('pt-BR')}
-                className={`p-2 rounded-lg text-xs transition-all duration-200 ${
-                  language === 'pt-BR' 
-                    ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
-                    : 'bg-white/20 text-white hover:bg-white/30'
-                }`}
-              >
-                Português
-              </button>
+                <option value="en" className="bg-slate-800 text-white">{t('common:languages.en')}</option>
+                <option value="pt-BR" className="bg-slate-800 text-white">{t('common:languages.pt-BR')}</option>
+              </select>
             </div>
           </div>
 

@@ -312,3 +312,13 @@ logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, up
 - **Analytics**: User behavior tracking integration
 - **A/B Testing**: Component-level testing capabilities
 - **CMS Integration**: Content management for marketing copy
+
+### `/settings` - SettingsPage
+- **Layout**: AuthPage-style geometric teal gradient background with single centered card
+- **Sections**: Account (email), Preferences (notifications, language, units), Sync status, About
+- **Language Selection**: Dropdown interface using `common:languages.*` keys (English/Português)
+- **Language Persistence**: Immediate application via `i18n.changeLanguage()` on settings save
+- **Sync Integration**: Live pending mutations count and sync status display
+- **Glass Morphism**: Semi-transparent card with backdrop blur effect
+- **Bottom Padding**: `pb-20` to prevent BottomNav overlap
+- **BottomNav**: Integrated with Settings tab active state

@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## August 26, 2025 22:51 ET
+**Added** language persistence system and fixed TypeScript errors
+- **Language Selection**: Added dropdown in Settings page with proper i18n integration
+- **Language Persistence**: Implemented comprehensive language persistence system using localStorage
+- **Language Detection**: Language detection order: localStorage → browser language → English fallback
+- **TypeScript Fixes**: Resolved TypeScript build errors in LibraryPage.tsx and SettingsPage.tsx
+- **Settings Page Update**: Changed language selection to dropdown and applied immediate language changes
+- **HTML Lang Attributes**: Auto-update HTML lang attributes on language change
+- Context: Complete language persistence system with proper TypeScript error handling
+- Migrations: N/A (language persistence and TypeScript fixes)
+
 ## August 26, 2025 22:46 ET
 **Fixed** BottomNav visibility issue on History, Library, and Settings pages
 - **Root Cause**: Page containers with `min-h-screen` were overlapping the `fixed bottom-0` positioned BottomNav component

@@ -7,6 +7,7 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Library**: `react-i18next` + `i18next-browser-languagedetector`
 - **Languages**: EN (default), PT-BR
 - **Detection**: localStorage → navigator → htmlTag fallback
+- **Persistence**: Automatic localStorage caching with immediate HTML attribute updates
 - **Namespaces**: 17 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, library, sync)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
@@ -298,6 +299,8 @@ All Portuguese files now mirror the English structure exactly with proper Brazil
 - Sync status and data export options
 - Notification and theme settings
 - About section and version information
+- **Language Selection**: Dropdown interface with `common:languages.*` keys
+- **Language Persistence**: Immediate application via `i18n.changeLanguage()` on save
 
 ## TypeScript Build Compatibility
 
@@ -362,6 +365,9 @@ const navHome = t('app:nav.home');
 
 ### Language Switching
 - `LanguageSwitcher` component with Globe icon dropdown
+- **Settings Page**: Language selection dropdown with `common:languages.*` keys
+- **Implementation**: `<select>` element with EN/PT-BR options
+- **Integration**: Connected to `handleSaveSettings()` function for immediate application
 - Persistence via localStorage
 - Immediate UI updates on language change
 
