@@ -25,13 +25,85 @@
       "minutes": "min"
     }
   },
+  "history": {
+    "stats": "Workout Stats",
+    "totalWorkouts": "Total Workouts",
+    "avgDuration": "Avg Duration",
+    "totalExercises": "Total Exercises",
+    "totalSets": "Total Sets",
+    "exercises": "exercises",
+    "sets": "sets",
+    "noSessions": "No workout sessions yet",
+    "startFirst": "Start Your First Workout",
+    "status": {
+      "completed": "Completed",
+      "in_progress": "In Progress",
+      "planned": "Planned"
+    }
+  },
+  "library": {
+    "searchPlaceholder": "Search exercises...",
+    "categories": "Categories",
+    "exercisesFound": "exercises found",
+    "noResults": "No exercises found",
+    "clearFilters": "Clear Filters",
+    "bodyweight": "Bodyweight",
+    "category": {
+      "all": "All",
+      "chest": "Chest",
+      "back": "Back",
+      "shoulders": "Shoulders",
+      "arms": "Arms",
+      "legs": "Legs",
+      "core": "Core",
+      "cardio": "Cardio"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "muscle": {
+      "chest": "Chest",
+      "triceps": "Triceps",
+      "shoulders": "Shoulders",
+      "lats": "Lats",
+      "rhomboids": "Rhomboids",
+      "biceps": "Biceps",
+      "quadriceps": "Quadriceps",
+      "glutes": "Glutes",
+      "hamstrings": "Hamstrings",
+      "deltoids": "Deltoids",
+      "abs": "Abs",
+      "core": "Core",
+      "erector spinae": "Erector Spinae"
+    },
+    "equipment": {
+      "barbell": "Barbell",
+      "bench": "Bench",
+      "pull-up bar": "Pull-up Bar",
+      "squat rack": "Squat Rack",
+      "dumbbells": "Dumbbells"
+    }
+  },
   "sync": {
     "offline": "You're offline",
     "online": "Back online",
     "syncing": "Syncing...",
     "syncNow": "Sync Now",
     "pendingChanges": "pending changes",
-    "conflicts": "Data conflicts detected"
+    "conflicts": "Data conflicts detected",
+    "never": "Never",
+    "justNow": "Just now",
+    "minutesAgo": "{{count}} min ago",
+    "minutesAgo_plural": "{{count}} mins ago",
+    "hoursAgo": "{{count}} hour ago",
+    "hoursAgo_plural": "{{count}} hours ago",
+    "daysAgo": "{{count}} day ago",
+    "daysAgo_plural": "{{count}} days ago",
+    "lastSync": "Last sync",
+    "pending": "{{count}} pending change",
+    "pending_plural": "{{count}} pending changes"
   },
   "auth": {
     "signOut": "Sign Out"
@@ -104,7 +176,17 @@
     "data": "Data",
     "exportData": "Export Data",
     "dangerZone": "Danger Zone",
-    "deleteAccount": "Delete Account"
+    "deleteAccount": "Delete Account",
+    "sync": {
+      "title": "Sync",
+      "status": "Status",
+      "syncNow": "Sync Now",
+      "recentEvents": "Recent Events",
+      "success": "success",
+      "failure": "failure",
+      "items": "items",
+      "noEvents": "No sync events yet"
+    }
   },
   "sync_toasts": {
     "success": "Sync complete",

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, ArrowRight, Play, Pause, CheckCircle } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
 interface WorkoutSet {

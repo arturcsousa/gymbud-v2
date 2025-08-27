@@ -11,6 +11,86 @@
     "library": "Biblioteca",
     "settings": "Configurações"
   },
+  "home": {
+    "welcome": "Bem-vindo de volta",
+    "subtitle": "Pronto para o treino de hoje?",
+    "todaysPlan": "Plano de Hoje",
+    "startWorkout": "Iniciar Treino",
+    "viewHistory": "Ver Histórico",
+    "quickStats": {
+      "title": "Estatísticas Rápidas",
+      "workoutsThisWeek": "Treinos esta semana",
+      "currentStreak": "Sequência atual",
+      "totalWorkouts": "Total de treinos"
+    },
+    "nextSession": {
+      "title": "Próxima Sessão",
+      "exercises": "exercícios",
+      "estimatedTime": "Tempo estimado",
+      "minutes": "min"
+    }
+  },
+  "history": {
+    "stats": "Estatísticas de Treino",
+    "totalWorkouts": "Total de Treinos",
+    "avgDuration": "Duração Média",
+    "totalExercises": "Total de Exercícios",
+    "totalSets": "Total de Séries",
+    "exercises": "exercícios",
+    "sets": "séries",
+    "noSessions": "Nenhuma sessão de treino ainda",
+    "startFirst": "Comece Seu Primeiro Treino",
+    "status": {
+      "completed": "Concluído",
+      "in_progress": "Em Progresso",
+      "planned": "Planejado"
+    }
+  },
+  "library": {
+    "searchPlaceholder": "Buscar exercícios...",
+    "categories": "Categorias",
+    "exercisesFound": "exercícios encontrados",
+    "noResults": "Nenhum exercício encontrado",
+    "clearFilters": "Limpar Filtros",
+    "bodyweight": "Peso Corporal",
+    "category": {
+      "all": "Todos",
+      "chest": "Peito",
+      "back": "Costas",
+      "shoulders": "Ombros",
+      "arms": "Braços",
+      "legs": "Pernas",
+      "core": "Core",
+      "cardio": "Cardio"
+    },
+    "difficulty": {
+      "beginner": "Iniciante",
+      "intermediate": "Intermediário",
+      "advanced": "Avançado"
+    },
+    "muscle": {
+      "chest": "Peito",
+      "triceps": "Tríceps",
+      "shoulders": "Ombros",
+      "lats": "Dorsais",
+      "rhomboids": "Romboides",
+      "biceps": "Bíceps",
+      "quadriceps": "Quadríceps",
+      "glutes": "Glúteos",
+      "hamstrings": "Posteriores",
+      "deltoids": "Deltoides",
+      "abs": "Abdominais",
+      "core": "Core",
+      "erector spinae": "Eretores da Espinha"
+    },
+    "equipment": {
+      "barbell": "Barra",
+      "bench": "Banco",
+      "pull-up bar": "Barra de Apoio",
+      "squat rack": "Rack de Agachamento",
+      "dumbbells": "Halteres"
+    }
+  },
   "status": {
     "online": "Online",
     "offline": "Offline",
@@ -72,20 +152,27 @@
     "exercises": "exercícios",
     "view": "Ver",
     "continue": "Continuar",
-    "workout": "Treino",
     "completed": "Concluído",
     "inProgress": "Em Andamento",
-    "planned": "Planejado"
-  },
-  "home": {
-    "welcome": "Bem-vindo de volta!",
-    "subtitle": "Pronto para o treino de hoje?",
-    "todaySession": "Sessão de Hoje",
-    "noSessionToday": "Nenhuma sessão planejada para hoje",
-    "readyToStart": "Pronto para começar seu treino?",
-    "startSession": "Iniciar Sessão",
-    "recentSessions": "Sessões Recentes",
-    "viewAll": "Ver Todas"
+    "planned": "Planejado",
+    "loading": "Carregando sessão...",
+    "exercise": "Exercício",
+    "complete": "completo",
+    "workoutTime": "Tempo de Treino",
+    "sets": "séries",
+    "reps": "reps",
+    "set": "Série",
+    "pending": "Pendente",
+    "weight": "Peso",
+    "undo": "Desfazer",
+    "markComplete": "Marcar como Completo",
+    "exerciseList": "Lista de Exercícios",
+    "current": "Atual",
+    "upcoming": "Próximos",
+    "nextExercise": "Próximo Exercício",
+    "finish": "Finalizar Treino",
+    "previous": "Anterior",
+    "pause": "Pausar"
   },
   "notFound": {
     "title": "Página Não Encontrada",

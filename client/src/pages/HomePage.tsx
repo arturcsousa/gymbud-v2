@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'wouter';
-import { Play, History, TrendingUp, Calendar, Target, Clock } from 'lucide-react';
+import { Play, History, TrendingUp, Calendar, Target } from 'lucide-react';
 import BottomNav from '@/components/BottomNav';
 
 const HomePage: React.FC = () => {
