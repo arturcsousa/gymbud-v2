@@ -3,16 +3,13 @@ import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { supabase } from '@/lib/supabase'
 import { db } from '@/db/gymbud-db'
 import { pendingCount, requestFlush } from '@/sync/queue'
-import { usePWAUpdate } from '@/app/hooks/usePWAUpdate'
-import { usePWAInstall } from '@/app/hooks/usePWAInstall'
-import { RefreshCw, Clock, CheckCircle, AlertCircle, Download, Smartphone, Info, ArrowLeft, User, Bell, Globe, Database, LogOut } from 'lucide-react'
+import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Bell, Globe, Database, LogOut } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
 function SettingsPage() {
@@ -21,18 +18,12 @@ function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [syncing, setSyncing] = useState(false)
-  const [checkingUpdates, setCheckingUpdates] = useState(false)
   
   // Settings state
   const [email, setEmail] = useState('')
   const [notifications, setNotifications] = useState(true)
-  const [darkMode, setDarkMode] = useState(false)
   const [units, setUnits] = useState<'metric' | 'imperial'>('imperial')
   const [language, setLanguage] = useState('en')
-
-  // PWA hooks
-  const { checkForUpdates } = usePWAUpdate()
-  const { isInstallable, isInstalled, triggerInstall } = usePWAInstall()
 
   // Live sync data
   const pendingMutationsCount = useLiveQuery(() => pendingCount(), [])
@@ -61,7 +52,6 @@ function SettingsPage() {
       
       // Load user preferences (placeholder)
       setNotifications(true)
-      setDarkMode(false)
       setUnits('imperial')
       setLanguage(i18n.language)
     } catch (error) {
@@ -77,7 +67,6 @@ function SettingsPage() {
       // Save settings (placeholder)
       console.log('Saving settings:', {
         notifications,
-        darkMode,
         units,
         language
       })
@@ -296,21 +285,6 @@ function SettingsPage() {
               <Switch
                 checked={notifications}
                 onCheckedChange={setNotifications}
-                className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00BFA6] data-[state=checked]:to-[#64FFDA]"
-              />
-            </div>
-          </div>
-
-          {/* Dark Mode */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between bg-white/10 rounded-lg p-3">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 text-white rounded-full bg-gray-400"></div>
-                <span className="text-white text-sm">{t('app:settings.darkMode')}</span>
-              </div>
-              <Switch
-                checked={darkMode}
-                onCheckedChange={setDarkMode}
                 className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00BFA6] data-[state=checked]:to-[#64FFDA]"
               />
             </div>
