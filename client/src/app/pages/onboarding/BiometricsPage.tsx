@@ -14,7 +14,7 @@ import { OnboardingStore } from '@/db/onboarding-store'
 import { supabase } from '@/lib/supabase'
 import { Telemetry } from '@/lib/telemetry'
 
-export function BiometricsPage() {
+function BiometricsPage() {
   const [, navigate] = useLocation()
   const { t } = useTranslation(['onboarding'])
   const [loading, setLoading] = useState(false)
@@ -210,4 +210,4 @@ export function BiometricsPage() {
   )
 }
 
-export { BiometricsPage }
+export default BiometricsPage

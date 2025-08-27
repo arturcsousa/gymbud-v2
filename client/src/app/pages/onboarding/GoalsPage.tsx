@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -125,7 +124,7 @@ export function GoalsPage() {
   const handleDayToggle = (day: string, checked: boolean) => {
     const currentDays = form.getValues('days_of_week') || []
     if (checked) {
-      form.setValue('days_of_week', [...currentDays, day as any])
+      form.setValue('days_of_week', [...currentDays, day])
     } else {
       form.setValue('days_of_week', currentDays.filter(d => d !== day))
     }
@@ -138,6 +137,18 @@ export function GoalsPage() {
     } else {
       form.setValue('equipment', currentEquipment.filter(e => e !== equipment))
     }
+  }
+
+  const handleGoalChange = (value: string) => {
+    form.setValue('goal_primary', value as GoalsFormData['goal_primary'])
+  }
+
+  const handleDaysPerWeekChange = (value: string) => {
+    form.setValue('days_per_week', Number(value) as GoalsFormData['days_per_week'])
+  }
+
+  const handleEnvironmentChange = (value: string) => {
+    form.setValue('environment', value as GoalsFormData['environment'])
   }
 
   return (
@@ -155,7 +166,7 @@ export function GoalsPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-2">
               <Label>{t('onboarding:goals.goal_primary')}</Label>
-              <Select onValueChange={(value) => form.setValue('goal_primary', value as any)}>
+              <Select onValueChange={handleGoalChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your primary goal" />
                 </SelectTrigger>
@@ -171,7 +182,7 @@ export function GoalsPage() {
 
             <div className="space-y-2">
               <Label>{t('onboarding:goals.days_per_week')}</Label>
-              <Select onValueChange={(value) => form.setValue('days_per_week', Number(value) as any)}>
+              <Select onValueChange={handleDaysPerWeekChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="How many days per week?" />
                 </SelectTrigger>
@@ -196,8 +207,8 @@ export function GoalsPage() {
                     <div key={day.value} className="flex items-center space-x-2">
                       <Checkbox
                         id={day.value}
-                        checked={form.getValues('days_of_week')?.includes(day.value as any)}
-                        onCheckedChange={(checked) => handleDayToggle(day.value, checked as boolean)}
+                        checked={form.getValues('days_of_week')?.includes(day.value)}
+                        onCheckedChange={(checked: boolean) => handleDayToggle(day.value, checked)}
                       />
                       <Label htmlFor={day.value}>{day.label}</Label>
                     </div>
@@ -208,7 +219,7 @@ export function GoalsPage() {
 
             <div className="space-y-2">
               <Label>{t('onboarding:goals.environment')}</Label>
-              <Select onValueChange={(value) => form.setValue('environment', value as any)}>
+              <Select onValueChange={handleEnvironmentChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Where do you train?" />
                 </SelectTrigger>
@@ -233,7 +244,7 @@ export function GoalsPage() {
                       <Checkbox
                         id={equipment}
                         checked={form.getValues('equipment')?.includes(equipment)}
-                        onCheckedChange={(checked) => handleEquipmentToggle(equipment, checked as boolean)}
+                        onCheckedChange={(checked: boolean) => handleEquipmentToggle(equipment, checked)}
                       />
                       <Label htmlFor={equipment} className="capitalize">
                         {equipment.replace('_', ' ')}
