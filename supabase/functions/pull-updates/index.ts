@@ -103,7 +103,7 @@ serve(async (req) => {
     }
 
     // Fetch logged_sets created since last pull (insert-only, use created_at)
-    // Uses idx_logged_sets_sx_updated_at and cascade join to user
+    // Uses idx_logged_sets_sx_created_at and cascade join to user
     const { data: loggedSets, error: loggedSetsError } = await supabase
       .schema("app2")
       .from("logged_sets")

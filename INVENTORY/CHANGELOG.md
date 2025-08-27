@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## August 26, 2025 21:24 ET
+**Enhanced** pull-updates Edge Function with performance-optimized database queries
+- **Index Alignment**: Updated queries to use proper database indexes for optimal performance
+  - Sessions: `idx_sessions_user_updated_at` with user_id as left-most column
+  - Session Exercises: `idx_session_exercises_session_updated_at` via JOIN to sessions
+  - Logged Sets: `idx_logged_sets_sx_created_at` with cascade JOIN through session_exercises → sessions
+- **Query Optimization**: Added explicit user scoping and proper ORDER BY clauses for deterministic paging
+- **Watermark Strategy**: logged_sets uses `created_at` as delta watermark (append-only pattern) while sessions/session_exercises use `updated_at`
+- **Response Cleanup**: Strip nested JOIN objects from API responses for clean entity data
+- Context: Database query performance improvements for sync system delta pulls
+- Migrations: N/A (query optimization only)
+
 ## August 26, 2025 21:06 ET
 **Implemented** PWA install prompts and comprehensive version management system
 - **Install Prompts**: Created `usePWAInstall` hook managing `beforeinstallprompt` events with dismissal tracking in IndexedDB

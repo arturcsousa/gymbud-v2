@@ -100,6 +100,7 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
   - Pull: pull-updates (delta reads)
 - **Pull Updates**: Delta reads with watermark tracking and safe merge
   - Edge Function: pull-updates with RLS enforcement
+  - Watermark: logged_sets uses created_at as the delta watermark (append-only)
   - Triggers: app start, post-flush, manual sync
   - Conflict Resolution: Skip merge if local mutations pending
 - **Cross-tab Coordination**: BroadcastChannel for sync events
