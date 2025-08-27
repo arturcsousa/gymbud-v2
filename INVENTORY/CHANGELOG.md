@@ -12,7 +12,36 @@
 
 **Technical**: Users can now navigate away from stats page and content scrolls properly when charts exceed viewport height
 
-## 2025-08-27 14:49 - TypeScript Build Error Resolution (Final)
+## 2025-08-27 15:05 - updated_at Trigger Policy Finalized
+**Enhanced**: Safe trigger function implementation with selective table attachment
+- **Safe Function**: `_bu_set_updated_at` that only sets `updated_at` on UPDATE when column exists
+- **Attached Tables**: `app2.sessions`, `app2.session_exercises`, `app2.exercise_instructions`, `app2.profiles`, `app2.plans`
+- **Excluded Tables**: `app2.logged_sets` (append-only, watermark = `created_at`), all `preserve.*` catalog tables
+- **Smoke Tests**: Confirmed UPDATE operations bump `updated_at` where expected
+
+**Technical**: Ensures proper watermark handling for pull-updates Edge Function while preserving append-only patterns
+
+## 2025-08-27 14:30 - Locale RPCs Expansion
+**Added**: Comprehensive RPC suite for localized exercise catalog access
+- **Individual Exercise**: `app2.rpc_get_exercise_by_id(p_exercise_id uuid, lang text default 'en')`
+- **Exercise Variants**: `app2.rpc_get_variants_for_exercise(p_exercise_id uuid, lang text default 'en')`
+- **Exercise Search**: `app2.rpc_search_exercises(q text, lang text default 'en', p_category text default null, p_equipment text[] default null)`
+- **Search Features**: Uses i18n `search_tsv` + trigram `name` matching with optional category/equipment filters
+- **Performance**: Leverages existing GIN indexes on tsvector and trigram fields
+
+**Technical**: Simple, locale-safe read paths without client GUC handling; preserves v1 content with EN→base fallback
+
+## 2025-08-27 14:10 - Preserve Integration & i18n Seed
+**Implemented**: Complete localization foundation for exercise catalog
+- **i18n Seeding**: Added missing EN/pt-BR rows for `preserve.exercise_library_i18n` and `preserve.exercise_variant_i18n`
+- **Locale Views**: Created `app2.v_exercise_library_localized` and `app2.v_exercise_variants_localized` with fallback chain
+- **Base RPCs**: Added `app2.rpc_get_exercise_library(lang)` and `app2.rpc_get_exercise_variants(lang)`
+- **Fallback Strategy**: Requested locale → EN → base table for comprehensive coverage
+- **Rich Fields**: Exposes equipment, patterns, primary_muscles, goal_effectiveness for Session Runner
+
+**Impact**: Frontend can immediately consume localized exercise & variant data leveraging rich v1 library without duplicating tables
+
+## 2025-08-27 14:30 - TypeScript Build Error Resolution (Final)
 **Fixed**: Resolved all remaining TypeScript compilation errors preventing successful builds
 - **SessionPage Export**: Fixed import/export mismatch by changing from named import `{ SessionPage }` to default import `SessionPage` in AppShell.tsx
 - **Unused Imports**: Removed unused imports across multiple files
@@ -661,14 +690,14 @@
 - Context: Modern, animated single-page marketing site using existing i18n keys
 - Migrations: N/A (frontend-only)
 
-## August 26, 2025 10:06 ET
+## August 25, 2025 21:20 ET
 **Updated** inventory documentation with current implementation details.
 - Updated: `INVENTORY/05_I18N_STRUCTURE.md` with HTML lang/dir sync, usage patterns, content status
 - Updated: `INVENTORY/06_FRONTEND_ROUTES.md` with SPA structure, deployment config, SEO details
 - Context: Documentation now reflects complete i18n setup, routing implementation, and Vercel deployment
 - Migrations: N/A (documentation only)
 
-## August 26, 2025 09:13 ET
+## August 25, 2025 21:06 ET
 **Fixed** TypeScript build errors preventing Vercel deployment.
 - Fixed: Removed unused React import from `client/src/App.tsx`
 - Fixed: Created missing `client/src/i18n/locales/en/auth.json` file
@@ -676,7 +705,7 @@
 - Context: Resolved all TypeScript compilation errors for successful deployment
 - Migrations: N/A (build fixes only)
 
-## August 25, 2025 21:20 ET
+## August 25, 2025 20:00 ET
 **Added** Vercel deployment configuration for production hosting.
 - New: `vercel.json` with SPA routing, security headers, and build configuration
 - Updated: `client/package.json` with vercel-build script and typecheck
@@ -776,39 +805,3 @@
 - Translation keys follow consistent naming convention across all components
 - Both EN and PT-BR locale files have complete coverage for all sections
 - Language switching persists correctly via localStorage
-
-## [2025-01-26 12:40] - Image Assets Integration & Progress Section Redesign
-### Added
-- **Image Assets Integration**: Added three image files to `public/images/` directory
-  - `gymbud-wh.png`: White logo for branding (169KB)
-  - `gymbud.png`: Standard logo variant (1.3MB) 
-  - `hero-image.png`: Hero section app preview image (717KB)
-
-### Enhanced
-- **Hero Section**: Complete visual upgrade with image integration
-  - Added GymBud white logo above main content (h-16 size, responsive positioning)
-  - Integrated hero image on right side with Framer Motion animations
-  - Added decorative glow effects and proper two-column grid layout
-  - Enhanced visual hierarchy: logo → title → subtitle → CTAs
-  - Improved responsive design with proper spacing and alignment
-
-- **Footer Component**: Added branding consistency
-  - Integrated GymBud white logo next to copyright text (h-8 size)
-  - Improved layout with better spacing between logo, copyright, and navigation
-  - Added transition effects for navigation link hover states
-
-- **Progress Section**: Complete redesign matching WhyDifferent section quality
-  - **Enhanced Phone Mockup**: Improved styling with shadow, glow effects, and realistic screen content
-  - **Glassmorphic Metric Cards**: Replaced plain bullet points with 2x3 grid of interactive cards
-  - **Better Horizontal Space Usage**: Full utilization of available width with proper content distribution
-  - **Color-Coded Icons**: Each metric card features themed icon backgrounds (orange, aqua, teal)
-  - **Smooth Animations**: Staggered entrance animations and hover interactions using Framer Motion
-  - **CTA Integration**: Added prominent call-to-action card with Zap icon and engaging copy
-  - **Decorative Elements**: Background gradient blobs and consistent deep teal styling
-
-### Technical Details
-- All images served from `/images/` path for optimal Vite static asset handling
-- Responsive image sizing with proper alt attributes for accessibility
-- Consistent color palette usage across all enhanced components
-- Motion animations with proper viewport detection and performance optimization
-- Glassmorphic design patterns with backdrop-blur and semi-transparent backgrounds

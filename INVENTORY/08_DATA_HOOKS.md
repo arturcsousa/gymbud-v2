@@ -98,6 +98,23 @@ interface ProfileData {
 
 **Why:** Reuses preserved v1 content, adds locale fallback (requested → EN → base), and exposes rich fields (equipment, patterns, primary_muscles, etc.) needed by E1/E2 and the Session Runner.
 
+## Exercise & Variant Hooks
+
+**Hooks → RPC mapping**
+- `useExercise(exerciseId, lang)` → `app2.rpc_get_exercise_by_id(exerciseId, lang)`
+  - Key: `['exercise', exerciseId, lang]`
+- `useExerciseVariants(exerciseId, lang)` → `app2.rpc_get_variants_for_exercise(exerciseId, lang)`
+  - Key: `['exercise-variants', exerciseId, lang]`
+- `useExerciseSearch({ q, lang, category, equipment })` → `app2.rpc_search_exercises(q, lang, category, equipment)`
+  - Key: `['exercise-search', { q, lang, category, equipment }]`
+
+**Display guidance**
+- Prefer `description` + up to 3 `cues` in E1 UI; include `contraindications` on detail modals.
+- Variant lists use localized `name` and `notes`.
+
+**RLS**
+- Reads occur via invoker RPCs; `preserve.*` stays read-only to app roles.
+
 ## Hooks → RPC mapping (Exercises)
 
 - `useExercise(exerciseId, lang)` → `app2.rpc_get_exercise_by_id(exerciseId, lang)`

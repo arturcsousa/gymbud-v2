@@ -1,4 +1,4 @@
-# DB Notes — app2 schema (GymBud v2)
+# DB Notes — Exercise Catalog, Localization & Triggers (August 27, 2025)
 
 ## Profiles (`app2.profiles`)
 One row per user (FK to `auth.users`). Stores identity + anthropometrics + flags.
@@ -27,56 +27,40 @@ Captures per-set data (offline first; queue replays to insert here).
 Audit trail for AI tool calls (`tool`, `args_json`, `args_hash`, `explain`).
 
 ## Preserve Catalog (source of truth)
-We are reusing the preserved library:
-- preserve.exercise_library (PK id uuid; name, description, category, equipment[], video_url, patterns[], primary_muscles[], goal_effectiveness jsonb, complexity_level int, name_lc generated)
-- preserve.exercise_library_i18n (PK (exercise_id, locale); name, description, cues[], contraindications[], search_tsv generated)
-- preserve.exercise_variants (PK id uuid; exercise_id → exercise_library(id); modality modality_enum; environments environment_enum[]; equipment[]; is_assessment_default bool; created_at; tags[]; exercise_name; category; variant_name_lc generated)
-- preserve.exercise_variant_i18n (PK (variant_id, locale); name, notes, search_tsv generated)
+Reused as-is:
+- **preserve.exercise_library** (uuid id, name, description, category, equipment[], video_url, patterns[], primary_muscles[], goal_effectiveness jsonb, complexity_level, name_lc generated)
+- **preserve.exercise_library_i18n** (PK: exercise_id + locale; name, description, cues[], contraindications[]; search_tsv generated)
+- **preserve.exercise_variants** (uuid id; exercise_id → exercise_library(id); modality enum; environments enum[]; equipment[]; is_assessment_default; tags[]; etc.)
+- **preserve.exercise_variant_i18n** (PK: variant_id + locale; name, notes; search_tsv generated)
 
-RLS is enabled on preserve.* (read-only for app roles; editor via content/admin as configured).
+## Localization Seeds
+- Inserted **en** and **pt-BR** rows where missing in both i18n tables, using base columns as fallback.
+- Neutral safety copy used where base/i18n values were null.
 
-## Enrichment (August 27, 2025)
-We seeded missing locales:
-- EN + pt-BR for all rows in exercise_library_i18n and exercise_variant_i18n.
-- EN defaults leverage base table where possible; neutral safe copy otherwise.
-- pt-BR defaults mirror EN where available, else base, else neutral.
-
-## Locale-aware Views (app2)
+## Locale-aware Views (app2.*)
 - **app2.v_exercise_library_localized**  
-  Locale via GUC `app.locale` (supports 'en', 'pt-BR'; default 'en').  
-  Columns: exercise_id, name, description, cues[], contraindications[], plus passthrough fields (category, equipment[], video_url, patterns[], primary_muscles[], goal_effectiveness, complexity_level, name_lc).
-
+  - Uses GUC `app.locale` (handled inside RPCs)  
+  - Fallback chain: requested locale → `en` → base
 - **app2.v_exercise_variants_localized**  
-  Locale via `app.locale` with same fallback chain.  
-  Columns: variant_id, exercise_id, modality, environments[], equipment[], is_assessment_default, created_at, tags[], exercise_name, category, variant_name_lc, name, notes.
+  - Same locale handling and fallback
 
-## Locale RPCs for Exercise Catalog (August 27, 2025)
+## RPCs (client-simple)
+- **app2.rpc_get_exercise_library(lang text default 'en') → setof v_exercise_library_localized**
+- **app2.rpc_get_exercise_variants(lang text default 'en') → setof v_exercise_variants_localized**
+- **app2.rpc_get_exercise_by_id(p_exercise_id uuid, lang text default 'en') → v_exercise_library_localized row**
+- **app2.rpc_get_variants_for_exercise(p_exercise_id uuid, lang text default 'en') → setof v_exercise_variants_localized**
+- **app2.rpc_search_exercises(q text, lang text default 'en', p_category text default null, p_equipment text[] default null) → setof v_exercise_library_localized**  
+  - Uses i18n `search_tsv` + trigram on `name` with optional category/equipment filters.
 
-**Views (pre-existing in app2):**
-- `v_exercise_library_localized`
-- `v_exercise_variants_localized`
+## Index posture
+- Present: GIN(trgm) on i18n.name; GIN on i18n.search_tsv.  
+- Optional (added if needed): btree on `exercise_library.category`; GIN on `exercise_library.equipment`.
 
-**New RPCs:**
-- `app2.rpc_get_exercise_by_id(p_exercise_id uuid, lang text default 'en')`
-  - Returns a single row from `v_exercise_library_localized`.
-  - Sets `app.locale` internally; RLS remains enforced.
+## updated_at Trigger Policy
+- Safe function `_bu_set_updated_at` that only sets `updated_at` on UPDATE when column exists.
+- **Attached on**: `app2.sessions`, `app2.session_exercises`, `app2.exercise_instructions`, `app2.profiles`, `app2.plans`.
+- **Not attached on**: `app2.logged_sets` (append-only, watermark = `created_at`), all `preserve.*` catalog tables.
 
-- `app2.rpc_get_variants_for_exercise(p_exercise_id uuid, lang text default 'en')`
-  - Returns `setof v_exercise_variants_localized` for the given exercise.
-  - Ordered by localized `name`.
-
-- `app2.rpc_search_exercises(q text, lang text default 'en', p_category text default null, p_equipment text[] default null)`
-  - Locale-aware search across i18n `search_tsv` + trigram `name`.
-  - Optional filters: `category`, `equipment[]` (overlaps).
-  - Returns `setof v_exercise_library_localized`.
-
-**Indexes (optional but recommended for filters):**
-- `idx_exlib_category` on `preserve.exercise_library(category)`
-- `idx_exlib_equipment_gin` on `preserve.exercise_library using gin (equipment)`
-
-## Views
-- `v_session_exercises_enriched`: flattens `prescription` into typed fields and marks `is_warmup`.
-- `v_session_metrics`: per-session totals (sets & volume) and warm-up counts.
-
-## RLS
-All tables are user-owned (scoped by `auth.uid()`); child tables derive access from parent via EXISTS joins.
+## Client/EF expectations
+- EF pull-updates watermark uses `updated_at` on `sessions` & `session_exercises`.
+- FE reads must go through the RPCs above to get locale-aware fields with fallback.
