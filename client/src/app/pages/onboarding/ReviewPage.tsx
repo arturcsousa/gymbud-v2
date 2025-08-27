@@ -281,3 +281,4 @@ function ReviewPage() {
 }
 
 export default ReviewPage
+export { ReviewPage }

@@ -163,14 +163,29 @@ async function hasPendingMutation(entity: string, rowId: string): Promise<boolea
 
 // Check if row has pending void mutation
 async function hasPendingVoidMutation(setId: string): Promise<boolean> {
-  const count = await db.queue_mutations
-    .where('[entity+idempotency_key+status]')
-    .between(['logged_sets/void', `void_${setId}`, 'queued'], ['logged_sets/void', `void_${setId}`, 'queued'])
-    .count()
-  return count > 0
+  const mutation = await db.queue_mutations
+    .where('[entity+op]')
+    .equals(['logged_sets/void', 'void'])
+    .and(mutation => {
+      const payload = mutation.payload as { id?: string; voided?: boolean } | undefined
+      return payload?.id === setId && 
+             payload?.voided === true &&
+             mutation.status === 'queued'
+    })
+    .first()
+  
+  return !!mutation
 }
 
 // Safe merge server data with local data - Enhanced for void reconciliation
+interface LoggedSetWithVoided {
+  id: string
+  voided?: boolean
+  session_exercise_id?: string
+  set_number?: number
+  updated_at?: string | number
+}
+
 async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
   const tableName = entity.replace('app2.', '') as 'sessions' | 'session_exercises' | 'logged_sets'
   const table = db[tableName]
@@ -179,7 +194,7 @@ async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
   
   // Special handling for logged_sets with void reconciliation
   if (entity === 'app2.logged_sets') {
-    const localRow = await table.get(serverRow.id) as { voided: boolean } | undefined
+    const localRow = await table.get(serverRow.id) as LoggedSetWithVoided | undefined
     const hasPendingVoid = await hasPendingVoidMutation(serverRow.id)
     
     // Merge rules for void reconciliation
@@ -207,7 +222,7 @@ async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
     const existingBySetNumber = await table
       .where('[session_exercise_id+set_number]')
       .equals([serverRow.session_exercise_id, serverRow.set_number])
-      .first() as { id: string; voided: boolean } | undefined
+      .first() as LoggedSetWithVoided | undefined
     
     if (existingBySetNumber && existingBySetNumber.id !== serverRow.id) {
       // Duplicate detected - server row is canonical
@@ -420,39 +435,30 @@ export async function enqueueLoggedSet(payload: {
   });
 }
 
-export async function enqueueLoggedSetVoid(setId: string, userId: string) {
+export async function voidLoggedSet(setId: string, userId: string): Promise<string> {
   // Check if a void mutation for this set is already queued
   const existingVoid = await db.queue_mutations
-    .where(['entity', 'op'])
+    .where('[entity+op]')
     .equals(['logged_sets/void', 'void'])
-    .and(mutation => 
-      mutation.payload?.id === setId && 
-      mutation.payload?.voided === true &&
-      mutation.status === 'queued'
-    )
+    .and(mutation => {
+      const payload = mutation.payload as { id?: string; voided?: boolean } | undefined
+      return payload?.id === setId && 
+             payload?.voided === true &&
+             mutation.status === 'queued'
+    })
     .first()
 
   if (existingVoid) {
-    // Already queued, skip duplicate
-    return existingVoid
+    throw new Error('Void mutation already queued for this set')
   }
 
-  const mutation: QueueMutation = {
-    id: crypto.randomUUID(),
+  return enqueue({
     entity: 'logged_sets/void',
     op: 'void',
     payload: { id: setId, voided: true },
     user_id: userId,
-    idempotency_key: `void_${setId}`,
-    status: 'queued',
-    retries: 0,
-    next_attempt_at: Date.now(),
-    created_at: Date.now(),
-    updated_at: Date.now()
-  }
-  
-  await db.queue_mutations.add(mutation)
-  return mutation
+    idempotency_key: `void_${setId}`
+  })
 }
 
 export async function enqueueSessionUpdate(payload: {

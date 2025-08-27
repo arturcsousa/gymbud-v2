@@ -211,3 +211,4 @@ function BiometricsPage() {
 }
 
 export default BiometricsPage
+export { BiometricsPage }
