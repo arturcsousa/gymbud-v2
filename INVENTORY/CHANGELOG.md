@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## August 26, 2025 20:37 ET
+**Fixed** TypeScript build errors with PWA virtual module declarations
+- **PWA Type Declarations**: Created `src/types/pwa.d.ts` with proper TypeScript definitions for virtual:pwa-register module
+- **Hook Type Safety**: Updated usePWAUpdate.ts with proper type annotations and removed any types
+- **Build Resolution**: Resolved TS2307 module resolution errors for VitePWA virtual modules
+- **Development Safety**: Maintained graceful fallback for development builds without PWA features
+- Context: TypeScript compilation now passes cleanly for production builds with full type safety
+- Migrations: No runtime changes, only TypeScript declaration additions
+
 ## August 26, 2025 20:34 ET
 **Fixed** TypeScript build errors and aligned i18n translation structure
 - **PWA Update Hook**: Fixed TypeScript errors in usePWAUpdate.ts with dynamic import and proper type annotations

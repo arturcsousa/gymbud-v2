@@ -76,6 +76,7 @@ export { ComponentName }             // Named export for AppShell
 - **Update System**: Toast notifications for app updates with auto-refresh capability
 - **Offline Ready**: Toast notification when app is ready for offline use
 - **Dynamic Import**: PWA register module loaded conditionally to prevent development build errors
+- **Type Declarations**: Custom TypeScript definitions in `src/types/pwa.d.ts` for virtual:pwa-register module
 - **Cross-platform**: Works on desktop and mobile with native app-like experience
 
 ### Toast Notification System
