@@ -20,6 +20,12 @@ import { StatsPage } from '@/app/pages/StatsPage'
 import { SettingsPage } from '@/app/pages/SettingsPage'
 import { NotFoundPage } from '@/app/pages/NotFoundPage'
 
+// Onboarding Pages
+import { BiometricsPage } from '@/app/pages/onboarding/BiometricsPage'
+import { GoalsPage } from '@/app/pages/onboarding/GoalsPage'
+import { ProfilePage } from '@/app/pages/onboarding/ProfilePage'
+import { ReviewPage } from '@/app/pages/onboarding/ReviewPage'
+
 // Create query client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -106,6 +112,13 @@ export function AppShell({ children }: AppShellProps) {
               {/* Protected app routes */}
               <AuthGuard user={user}>
                 <Route path="/" component={HomePage} />
+                
+                {/* Onboarding routes */}
+                <Route path="/app/onboarding/biometrics" component={BiometricsPage} />
+                <Route path="/app/onboarding/goals" component={GoalsPage} />
+                <Route path="/app/onboarding/profile" component={ProfilePage} />
+                <Route path="/app/onboarding/review" component={ReviewPage} />
+                
                 <Route path="/session/:id" component={SessionPage} />
                 <Route path="/history" component={HistoryPage} />
                 <Route path="/history/:id" component={HistoryDetailPage} />

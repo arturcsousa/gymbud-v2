@@ -1,66 +1,41 @@
 {
-  "title": "Bem-vindo ao GymBud",
-  "subtitle": "Vamos configurar seu plano de treino personalizado",
-  "steps": {
-    "profile": {
-      "title": "Informações Pessoais",
-      "description": "Conte-nos sobre você"
-    },
-    "goals": {
-      "title": "Objetivos de Treino",
-      "description": "O que você quer alcançar?"
-    },
-    "experience": {
-      "title": "Nível de Experiência",
-      "description": "Há quanto tempo você treina?"
-    },
-    "schedule": {
-      "title": "Cronograma de Treino",
-      "description": "Quando você pode treinar?"
-    },
-    "equipment": {
-      "title": "Equipamentos Disponíveis",
-      "description": "Quais equipamentos você tem acesso?"
-    },
-    "preferences": {
-      "title": "Preferências de Treino",
-      "description": "Que tipo de treino você prefere?"
-    },
-    "workout": {
-      "title": "Rotina de Exercícios",
-      "description": "Qual é sua rotina típica de exercícios?"
-    },
-    "diet": {
-      "title": "Preferências Alimentares",
-      "description": "Qual é sua preferência alimentar?"
-    },
-    "progress": {
-      "title": "Acompanhamento de Progresso",
-      "description": "Como você acompanha seu progresso?"
-    },
-    "motivation": {
-      "title": "Motivação",
-      "description": "O que te motiva a treinar?"
-    },
-    "account": {
-      "title": "Configuração da Conta",
-      "description": "Vamos configurar sua conta"
-    },
-    "final": {
-      "title": "Verificação Final",
-      "description": "Revise sua configuração antes de completar"
-    }
+  "biometrics": {
+    "title": "Fale sobre você",
+    "first_name": "Nome",
+    "last_name": "Sobrenome",
+    "height_cm": "Altura (cm)",
+    "weight_kg": "Peso (kg)",
+    "body_fat_pct": "% de gordura",
+    "rhr_bpm": "Frequência cardíaca de repouso (BPM)",
+    "birthdate": "Data de nascimento (opcional)",
+    "next": "Avançar",
+    "back": "Voltar"
   },
-  "navigation": {
-    "next": "Próximo",
-    "previous": "Anterior",
-    "skip": "Pular",
-    "finish": "Completar Configuração"
+  "goals": {
+    "title": "Seu objetivo e rotina",
+    "goal_primary": "Objetivo principal",
+    "days_per_week": "Dias por semana",
+    "days_of_week": "Escolha os dias",
+    "add_window": "Adicionar faixa de horário",
+    "environment": "Onde você treina?",
+    "equipment_basic": "Selecione o que você tem em casa",
+    "tone_auto": "Definiremos o tom do treinador com base no seu objetivo."
   },
-  "progress": "Passo {{current}} de {{total}}",
-  "completion": {
-    "title": "Configuração Completa!",
-    "message": "Seu plano de treino personalizado está pronto",
-    "cta": "Começar a Treinar"
+  "profile": {
+    "title": "Perfil de treino",
+    "experience_level": "Nível de experiência",
+    "confidence": "Confiança nos movimentos",
+    "constraints": "Lesões e restrições",
+    "warmup": "Estilo de aquecimento",
+    "mobility": "Foco de mobilidade",
+    "rest_pref": "Preferência de descanso",
+    "intensity": "Orientação de intensidade"
+  },
+  "review": {
+    "title": "Revisar e criar plano",
+    "edit": "Editar",
+    "confirm": "Criar meu plano",
+    "creating": "Criando seu plano...",
+    "done": "Vamos começar com sua sessão de baseline."
   }
 }

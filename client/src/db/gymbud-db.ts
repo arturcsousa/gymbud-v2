@@ -1,4 +1,5 @@
 import Dexie, { Table } from 'dexie'
+import { OnboardingState } from './onboarding-store'
 
 export type QueueOp = 'insert' | 'update' | 'delete'
 export type QueueStatus = 'queued' | 'processing' | 'done' | 'error'
@@ -66,6 +67,7 @@ export class GymBudDB extends Dexie {
   sessions!: Table<SessionRow, string>
   session_exercises!: Table<SessionExerciseRow, string>
   logged_sets!: Table<LoggedSetRow, string>
+  onboarding_state!: Table<OnboardingState, string>
 
   constructor() {
     super('gymbud')
@@ -94,6 +96,21 @@ export class GymBudDB extends Dexie {
         'id, session_id, order_index, updated_at, [session_id+order_index]',
       logged_sets:
         'id, session_exercise_id, set_number, updated_at, [session_exercise_id+set_number]'
+    })
+
+    // Add onboarding_state table in version 3
+    this.version(3).stores({
+      meta: 'key, updated_at',
+      sync_events: '++id, ts',
+      queue_mutations:
+        'id, status, next_attempt_at, created_at, entity, [status+next_attempt_at]',
+      sessions:
+        'id, user_id, plan_id, status, started_at, completed_at, updated_at, [user_id+started_at]',
+      session_exercises:
+        'id, session_id, order_index, updated_at, [session_id+order_index]',
+      logged_sets:
+        'id, session_exercise_id, set_number, updated_at, [session_exercise_id+set_number]',
+      onboarding_state: 'user_id, updated_at'
     })
   }
 }

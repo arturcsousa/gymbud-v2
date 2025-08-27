@@ -29,6 +29,12 @@ Progressive Web Application (PWA) built with Vite + React using `wouter` for cli
 - **`/app/history/:id`** - Detailed view of completed session
 - **`/app/*`** - Catch-all 404 page
 
+### Onboarding Routes (/app/onboarding/*)
+- **`/app/onboarding/biometrics`** — Step 1: identity & biometrics (first/last name, height, weight, BF%, RHR, birthdate)
+- **`/app/onboarding/goals`** — Step 2: goal + coach tone (auto), schedule (days/week + windows), environment (auto equipment; home_basic picker)
+- **`/app/onboarding/profile`** — Step 3: experience, confidence sliders, constraints, warm-up/mobility, rest preference, intensity style
+- **`/app/onboarding/review`** — Step 4: review + create plan (calls plan-get-or-create EF)
+
 ## Component Architecture
 
 ### App Shell Structure

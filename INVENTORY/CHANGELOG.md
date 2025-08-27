@@ -1,5 +1,26 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 16:03 - Engine Reference Seed & Onboarding Consolidation
+**Completed**: Finalized inventory documentation updates for engine reference layer and onboarding system
+- **Reference Layer Documentation**: Updated `03_DB_NOTES.md` with comprehensive Preserve catalog integration details
+- **Onboarding i18n Coverage**: Confirmed complete 12-step onboarding wizard translation coverage in `05_I18N_STRUCTURE.md`
+  - English and PT-BR translations for all onboarding steps (profile, goals, experience, schedule, equipment, preferences, workout, diet, progress, motivation, account, final)
+  - Navigation controls, progress indicators, and completion messaging
+- **Route Documentation**: Verified onboarding route structure in `06_FRONTEND_ROUTES.md`
+  - Single `/app/onboarding` route handling 12-step wizard for profile setup and plan generation
+  - Integration with `finalizeOnboarding()` action and plan-get-or-create Edge Function
+- **Engine Integration**: Onboarding wizard feeds deterministic plan seeds to Training Engine v2
+  - Plan seeds drive reproducible session generation with stable sorting
+  - Seamless transition from onboarding completion to active training plans
+
+**Impact**: Complete documentation alignment for onboarding flow and engine reference layer, ensuring accurate project inventory for ongoing development
+
+## 2025-08-27 16:40 ET — Phase B Scaffold (Onboarding)
+- **FE**: Added 4 onboarding routes; Dexie onboarding_state shape; Zod schemas; EF payload shape; telemetry events
+- **DB**: No changes (earlier today we added biometrics, reference layer, and views)
+- **i18n**: Added onboarding.* keys for EN and pt-BR
+- **Engine**: Baseline session method wired via ref_baseline_protocols; plan creation returns baseline_session_id
+
 ## 2025-08-27 15:33 - Phase E2: Reconciliation & Merge Rules Implementation
 **Implemented**: Enhanced void mutation reconciliation with safe merge rules for offline-first sync
 - **Void Mutation Support**: Added `logged_sets/void` entity type with `void` operation in sync queue

@@ -2,53 +2,44 @@
   "title": "Welcome to GymBud",
   "subtitle": "Let's set up your personalized training plan",
   "steps": {
-    "profile": {
-      "title": "Personal Information",
-      "description": "Tell us about yourself"
+    "biometrics": {
+      "title": "Tell us about you",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "height_cm": "Height (cm)",
+      "weight_kg": "Weight (kg)",
+      "body_fat_pct": "Body fat %",
+      "rhr_bpm": "Resting heart rate (BPM)",
+      "birthdate": "Birthdate (optional)",
+      "next": "Next",
+      "back": "Back"
     },
     "goals": {
-      "title": "Training Goals",
-      "description": "What do you want to achieve?"
+      "title": "Your goal & routine",
+      "goal_primary": "Primary goal",
+      "days_per_week": "Days per week",
+      "days_of_week": "Pick your days",
+      "add_window": "Add time window",
+      "environment": "Where do you train?",
+      "equipment_basic": "Select what you have at home",
+      "tone_auto": "We'll set your coach tone based on your goal."
     },
-    "experience": {
-      "title": "Experience Level",
-      "description": "How long have you been training?"
+    "profile": {
+      "title": "Training profile",
+      "experience_level": "Experience level",
+      "confidence": "Movement confidence",
+      "constraints": "Injuries & constraints",
+      "warmup": "Warm-up style",
+      "mobility": "Mobility focus",
+      "rest_pref": "Rest preference",
+      "intensity": "Intensity guidance"
     },
-    "schedule": {
-      "title": "Training Schedule",
-      "description": "When can you train?"
-    },
-    "equipment": {
-      "title": "Available Equipment",
-      "description": "What equipment do you have access to?"
-    },
-    "preferences": {
-      "title": "Training Preferences",
-      "description": "What type of training do you prefer?"
-    },
-    "workout": {
-      "title": "Workout Routine",
-      "description": "What's your typical workout routine?"
-    },
-    "diet": {
-      "title": "Dietary Preferences",
-      "description": "What's your dietary preference?"
-    },
-    "progress": {
-      "title": "Progress Tracking",
-      "description": "How do you track your progress?"
-    },
-    "motivation": {
-      "title": "Motivation",
-      "description": "What motivates you to work out?"
-    },
-    "account": {
-      "title": "Account Setup",
-      "description": "Let's set up your account"
-    },
-    "final": {
-      "title": "Final Check",
-      "description": "Review your setup before completing"
+    "review": {
+      "title": "Review & create your plan",
+      "edit": "Edit",
+      "confirm": "Create my plan",
+      "creating": "Creating your plan...",
+      "done": "Let's start with your baseline session."
     }
   },
   "navigation": {

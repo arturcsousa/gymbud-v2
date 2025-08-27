@@ -8,7 +8,7 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Languages**: EN (default), PT-BR
 - **Detection**: localStorage → navigator → htmlTag fallback
 - **Persistence**: Automatic localStorage caching with immediate HTML attribute updates
-- **Namespaces**: 20 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, stats, badges, sync)
+- **Namespaces**: 21 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, stats, badges, sync)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
 ## File Structure
@@ -29,6 +29,7 @@ client/src/i18n/
 │   │   ├── errors.json        # Error messages
 │   │   ├── stats.json         # Progress tracking and analytics interface
 │   │   ├── badges.json        # Streak achievement system
+│   │   ├── onboarding.json    # Onboarding process
 │   │   └── [5 other namespaces].json
 │   └── pt-BR/                  # Portuguese Brazil translations (COMPLETE)
 │       ├── common.json
@@ -352,6 +353,13 @@ Streak achievement system:
 - `streakAchievement` - Generic achievement message with interpolation
 - `streak_3_awarded` through `streak_100_awarded` - Milestone badge names
 - Thresholds: 3, 5, 7, 14, 30, 50, 75, 100 days
+
+### **onboarding.json**
+Onboarding process:
+- `biometrics`: { title, first_name, last_name, height_cm, weight_kg, body_fat_pct, rhr_bpm, birthdate, next, back }
+- `goals`: { title, goal_primary, days_per_week, days_of_week, add_window, environment, equipment_basic, tone_auto }
+- `profile`: { title, experience_level, confidence, constraints, warmup, mobility, rest_pref, intensity }
+- `review`: { title, edit, confirm, creating, done }
 
 ### **Portuguese Translations (PT-BR) - COMPLETE COVERAGE**
 All Portuguese files now mirror the English structure exactly with proper Brazilian Portuguese conventions:
