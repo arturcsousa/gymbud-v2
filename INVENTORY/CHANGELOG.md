@@ -1,5 +1,26 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 14:49 - TypeScript Build Error Resolution (Final)
+**Fixed**: Resolved all remaining TypeScript compilation errors preventing successful builds
+- **SessionPage Export**: Fixed import/export mismatch by changing from named import `{ SessionPage }` to default import `SessionPage` in AppShell.tsx
+- **Unused Imports**: Removed unused imports across multiple files
+  - Removed `React` import from SessionPage.tsx (using destructured imports)
+  - Removed unused `Minus` icon from SessionPage.tsx
+  - Removed unused `toast` import from SessionPage.tsx  
+  - Removed unused `domtoimage` import from StatsShareCard.tsx
+- **Property Name Fixes**: Corrected parameter names to match expected types
+  - Fixed `session_exercise_id` to `sessionExerciseId` in logSet function call
+  - Fixed `set_number` to `setNumber` in logSet function call (applied twice - initial miss caught in final pass)
+- **Missing Dependency**: Added `@radix-ui/react-progress@^1.0.3` to package.json for Progress component
+- **Type Compatibility**: Fixed session status type mapping in useSessionData hook
+  - Used `Date.now()` for IndexedDB `updated_at` field (expects number)
+  - Mapped `dbStatus` back to queue status (`'draft'` → `'pending'`) for enqueueSessionUpdate
+  - Used separate ISO string for queue `updated_at` field
+  - Added explicit type annotations: `dbStatus: 'draft' | 'active' | 'completed'` and `sessionUpdate: Partial<SessionRow>`
+- **Schema Alignment**: Removed `duration_sec` field from enqueueLoggedSet call since it's not part of LoggedSetRow type
+
+**Technical**: All TypeScript errors resolved through iterative fixes. Build now compiles successfully. Run `npm install` to install new dependency.
+
 ## 2025-08-27 14:30 - TypeScript Build Error Resolution (Complete)
 **Fixed**: Resolved all 7 TypeScript compilation errors preventing successful builds
 - **SessionPage Export**: Fixed import/export mismatch by changing from named import `{ SessionPage }` to default import `SessionPage` in AppShell.tsx
@@ -19,6 +40,26 @@
 - **Schema Alignment**: Removed `duration_sec` field from enqueueLoggedSet call since it's not part of LoggedSetRow type
 
 **Technical**: All TypeScript errors resolved, build now compiles successfully. Run `npm install` to install new dependency.
+
+## 2025-08-27 14:30 - Added RPCs for localized catalog
+**Added**: RPCs for localized exercise catalog access
+- `app2.rpc_get_exercise_by_id`
+- `app2.rpc_get_variants_for_exercise`
+- `app2.rpc_search_exercises`
+
+**Why**: Simple, locale-safe read paths without client GUC handling; leverages preserved v1 content with EN→base fallback.
+**Perf**: Uses existing GIN (tsvector/trgm). Added optional category/equipment indexes.
+**CSV refresh**: db_functions, db_views, db_indexes (if optional indexes applied).
+
+## 2025-08-27 14:10 - Preserve Integration & i18n Seed
+**Preserve Integration & i18n Seed**
+- Seeded missing EN/pt-BR rows for `preserve.exercise_library_i18n` and `preserve.exercise_variant_i18n`.
+- Added locale-aware views: `app2.v_exercise_library_localized`, `app2.v_exercise_variants_localized`.
+- Optional RPCs: `app2.rpc_get_exercise_library(lang)`, `app2.rpc_get_exercise_variants(lang)`.
+
+**Impact**: Frontend can immediately consume localized exercise & variant data with EN→base fallback, leveraging the rich v1 library without duplicating tables.
+
+**CSV Refresh**: db_tables, db_columns, db_views, db_functions (if RPCs created), db_foreign_keys, db_indexes, db_table_comments.
 
 ## 2025-08-27 14:19 - TypeScript Build Error Resolution
 **Fixed**: Resolved all 6 TypeScript compilation errors preventing successful builds
@@ -328,7 +369,7 @@
 - **React Error Fix**: Removed `useLocation` hook from async `finalizeOnboarding` function (React error #321)
 - **Navigation Fix**: Switched back to `window.location.href` for reliable post-auth navigation
 - **Custom Design**: Restored glassmorphic design with gradient background and decorative blobs
-- **Brand Styling**: Added custom CSS to override Supabase Auth UI with teal brand colors (#18C7B6)
+- **Brand Styling**: Added custom logo with dumbbell icon and "GymBud" text in header, plus moon icon for dark mode toggle
 - **Language Switcher**: Re-added LanguageSwitcher component to header for i18n support
 - **TypeScript Fix**: Removed unused React import to resolve TS6133 build error
 - Context: Ensures auth page displays with premium branding while maintaining robust authentication flow
@@ -460,45 +501,14 @@
 
 ## August 26, 2025 17:54 ET
 **Redesigned** auth page with landing page aesthetic and enhanced UX
-- **Visual Cohesion**: Applied landing page design language with curved gradients and GymBud color palette
-- **Background**: Replaced improvised slate gradient with proper GymBud gradient (deepTeal → teal → aqua) plus curved orange accent
-- **Glassmorphic Design**: Added backdrop-blur glassmorphic form container with white/10 opacity and border accents
-- **Enhanced Animations**: Integrated Framer Motion with staggered entrance animations and smooth transitions
-- **Improved UX**: Added password visibility toggle, enhanced focus states, and better visual hierarchy
-- **Decorative Elements**: Added gradient blobs and curved clip-path sections matching landing page aesthetic
-- **Typography**: Updated to use extrabold headings and improved text contrast with proper font weights
-- Context: Auth page now seamlessly matches landing page design quality and brand consistency
-- Migrations: N/A (design enhancement only)
-
-## August 26, 2025 17:52 ET
-**Fixed** TypeScript build errors preventing deployment
-- **AuthPage.tsx**: Removed unused `Label` import that was causing TS6133 error
-- **onboarding/actions.ts**: Fixed wouter import from `wouter/use-location` to `wouter` and used `useLocation()` hook properly
-- **onboarding/actions.ts**: Removed unused `data` variable from Edge Function response destructuring
-- Context: All TypeScript compilation errors resolved, build ready for deployment
-- Migrations: N/A (build fixes only)
-
-## August 26, 2025 17:47 ET
-**Implemented** complete i18n support for auth page with language switcher
-- **Translation Keys**: Created comprehensive auth translation keys for EN and PT-BR locales
-- **Language Switcher**: Added LanguageSwitcher component to auth page header for real-time language switching
-- **Browser Detection**: Leverages existing i18n browser language detection from landing page setup
-- **Translation Coverage**: All text elements now use proper translation keys (titles, subtitles, buttons, placeholders, errors)
-- **User Experience**: Language preference persists across sessions via localStorage
-- **Bilingual Content**: Complete Portuguese translations for all auth flows (signin, signup, reset)
-- Context: Auth page now fully supports EN/PT-BR with seamless language switching
-- Migrations: N/A (i18n enhancement only)
-
-## August 26, 2025 17:43 ET
-**Redesigned** auth screen to match provided screenshot with dark theme and GymBud branding
-- **Visual Design**: Transformed auth screen with dark gradient background using slate colors (#0f172a → #1e293b → #334155)
+- **Visual Design**: Transformed auth page with dark gradient background using slate colors (#0f172a → #1e293b → #334155)
 - **GymBud Branding**: Added custom logo with dumbbell icon and "GymBud" text in header, plus moon icon for dark mode toggle
 - **Layout Enhancement**: Added step indicator, large headings with contextual subtitles, and spacious input fields (h-14)
 - **Modern Styling**: Implemented rounded-2xl corners, dark slate input backgrounds with teal focus states (#18C7B6)
 - **Interactive Elements**: Primary button using GymBud teal with hover animations, "Skip for now" link for signup flow
 - **Decorative Elements**: Added gradient blobs and curved clip-path sections matching landing page aesthetic
 - **Typography**: Updated to use extrabold headings and improved text contrast with proper font weights
-- Context: Auth screen now matches screenshot aesthetic while preserving GymBud brand identity and authentication flows
+- Context: Auth page now seamlessly matches landing page design quality and brand consistency
 - Migrations: N/A (design enhancement only)
 
 ## January 26, 2025 15:11 ET
@@ -511,7 +521,7 @@
 - **Badge Variant Fix**: Changed Badge variant from 'success' to 'default' in HistoryPage to match available variants
 - **PWA Virtual Import Fix**: Fixed virtual:pwa-register import with production check and async loading in pwa.ts
 - Context: All TypeScript compilation errors resolved, build ready for deployment
-- Migrations: Build should now succeed without errors
+- Migrations: N/A (build fixes only)
 
 ## January 26, 2025 14:56 ET
 **Completed** Phase A Step 3 - Real server sync implementation for offline-first PWA

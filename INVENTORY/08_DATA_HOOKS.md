@@ -87,6 +87,30 @@ interface ProfileData {
 3. Cache successful queries to localStorage
 4. Return cached data when offline
 
+## Exercise Data Reads
+
+**Preferred path (simple):**
+- Call `app2.rpc_get_exercise_library(lang)` and `app2.rpc_get_exercise_variants(lang)` where `lang ∈ {'en','pt-BR'}`.
+
+**Alternate path (advanced):**
+- `select set_config('app.locale',$1,true);`
+- Query `app2.v_exercise_library_localized` or `app2.v_exercise_variants_localized`.
+
+**Why:** Reuses preserved v1 content, adds locale fallback (requested → EN → base), and exposes rich fields (equipment, patterns, primary_muscles, etc.) needed by E1/E2 and the Session Runner.
+
+## Hooks → RPC mapping (Exercises)
+
+- `useExercise(exerciseId, lang)` → `app2.rpc_get_exercise_by_id(exerciseId, lang)`
+- `useExerciseVariants(exerciseId, lang)` → `app2.rpc_get_variants_for_exercise(exerciseId, lang)`
+- `useExerciseSearch({ q, lang, category, equipment })` → `app2.rpc_search_exercises(q, lang, category, equipment)`
+
+**Query Keys (TanStack v5):**
+- `['exercise', exerciseId, lang]`
+- `['exercise-variants', exerciseId, lang]`
+- `['exercise-search', { q, lang, category, equipment }]`
+
+**RLS:** All RPCs are `language sql stable` (invoker), so they respect `preserve.*` RLS. No service-role required for reads.
+
 ## Database Integration
 
 ### Dexie Schema Integration
