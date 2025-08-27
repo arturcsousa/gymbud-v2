@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## August 26, 2025 22:46 ET
+**Fixed** BottomNav visibility issue on History, Library, and Settings pages
+- **Root Cause**: Page containers with `min-h-screen` were overlapping the `fixed bottom-0` positioned BottomNav component
+- **Solution**: Added `pb-20` (80px bottom padding) to all affected page containers to prevent content overlap
+- **Pages Fixed**: HistoryPage, LibraryPage, SettingsPage - both loading and main states
+- **BottomNav Component**: Already had proper `z-50` positioning, issue was container overlap not z-index
+- **User Experience**: Bottom navigation now visible and functional across all app pages
+- Context: Ensures consistent navigation accessibility across the entire app interface
+- Migrations: N/A (CSS layout fix only)
+
 ## August 26, 2025 22:26 ET
 **Redesigned** all app pages with consistent AuthPage-style layout and geometric teal gradient backgrounds
 - **HomePage**: Applied AuthPage-style geometric teal gradient background with single centered card layout, removed scrolling, integrated BottomNav

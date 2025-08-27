@@ -64,11 +64,13 @@ export { ComponentName }             // Named export for AppShell
 - **Import Alignment**: All AppShell imports now match component exports exactly
 
 ### Design System Components
-- **GradientLayout**: Main container with gradient background (#005870 to #0C8F93 to #18C7B6)
-- **ContentLayout**: Page wrapper with title, navigation bar, and scrollable content area
-- **Glassmorphic Cards**: Semi-transparent cards with backdrop blur and subtle shadows
-- **Navigation Bar**: Back/next buttons with gradient styling and smooth transitions
-- **Interactive Elements**: Toggle switches, category buttons, search inputs with consistent styling
+- **Geometric Teal Gradient Background**: Consistent across all app pages using `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`
+- **Diagonal Clipped Sections**: Subtle lighter teal curved sections with `clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)'`
+- **Single Centered Card Layout**: All pages use `max-w-md` centered cards that fit on one screen without scrolling
+- **Glass Morphism Cards**: Semi-transparent cards with `bg-white/10 backdrop-blur-xl` and `shadow-2xl ring-1 ring-white/20`
+- **BottomNav Integration**: Consistent bottom navigation bar with `fixed bottom-0 z-50` positioning and `pb-20` page padding to prevent overlap
+- **Compact UI Elements**: Streamlined components designed to fit single-screen constraint with efficient space usage
+- **Interactive Elements**: Toggle switches, category buttons, search inputs with consistent teal gradient active states
 
 ### PWA Infrastructure
 - **Service Worker**: Precaches app shell, stale-while-revalidate for API calls
