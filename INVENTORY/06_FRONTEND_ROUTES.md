@@ -96,7 +96,8 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 ### Sync Engine Architecture (Phase A Complete)
 - **Push Mutations**: Queue-based replay system with idempotency and backoff
   - Entities: logged_sets, sessions, session_exercises, coach_audit
-  - Edge Functions: sync-logged-sets, sync-sessions, sync-session-exercises, sync-coach-audit
+  - Push: sync-logged-sets, sync-sessions, sync-session-exercises, sync-coach-audit
+  - Pull: pull-updates (delta reads)
 - **Pull Updates**: Delta reads with watermark tracking and safe merge
   - Edge Function: pull-updates with RLS enforcement
   - Triggers: app start, post-flush, manual sync
@@ -104,6 +105,11 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - **Cross-tab Coordination**: BroadcastChannel for sync events
 - **Error Handling**: Structured error codes with user-friendly messages
 - **Telemetry**: sync_events logging for debugging and analytics
+
+### PWA Install & Version
+- **Install Prompts**: `usePWAInstall` hook with dismissal tracking persisted in IndexedDB; `InstallBanner` component shown from `AppShell`
+- **Version Management**: `VITE_APP_VERSION` injected at build time from git SHA or timestamp; surfaced in Settings page; included in update toast notifications
+- **Update System**: Toast notifications for app updates with version information and manual update checks
 
 ### Authentication Flow
 - **Route**: `/auth`
@@ -187,7 +193,7 @@ const isAppDomain = window.location.hostname === 'app.gymbud.ai' ||
 ### IndexedDB Schema (Dexie)
 ```typescript
 // Database tables with versioned schema (v2)
-meta: { key, value, updated_at }
+meta: { key, value, updated_at }                    // Includes last_pull_at watermark for delta sync
 sync_events: { id?, ts, kind: 'success'|'failure', code?, items? }
 queue_mutations: { id, entity, op, payload, user_id, idempotency_key, status, retries, next_attempt_at, created_at, updated_at }
 sessions: { id, user_id, plan_id, status, started_at, completed_at, notes, updated_at }
@@ -197,7 +203,7 @@ logged_sets: { id, session_exercise_id, set_number, reps, weight, rpe, notes, up
 
 ### Sync Engine Features
 - **Queue Management**: FIFO mutation replay with retry logic and exponential backoff
-- **Server Integration**: Real Supabase Edge Function calls for app2.logged_sets inserts
+- **Server Integration**: Edge Functions for all entity synchronization (push: sync-logged-sets, sync-sessions, sync-session-exercises, sync-coach-audit; pull: pull-updates)
 - **Error Mapping**: Standardized error codes (auth_missing, rls_denied, invalid_payload, network_offline, rate_limited, server_unavailable, timeout, unknown)
 - **Sync Telemetry**: Persistent sync status tracking in meta table with event history capped to last 50
 - **Idempotency**: Conflict-free upserts using queue mutation ID as primary key
