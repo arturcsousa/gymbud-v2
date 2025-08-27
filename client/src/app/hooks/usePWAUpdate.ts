@@ -11,15 +11,15 @@ export function usePWAUpdate() {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
       // Import dynamically to avoid build errors in development
       import('virtual:pwa-register')
-        .then((module: any) => {
+        .then((module) => {
           const { registerSW } = module;
           registerSW({
             immediate: true,
-            onRegisteredSW(_swUrl: string, _registration: ServiceWorkerRegistration) {
+            onRegisteredSW(_swUrl: string, _registration: ServiceWorkerRegistration | undefined) {
               // Optional: expose for debugging
               // console.log("SW registered:", registration);
             },
-            onRegisterError(_error: any) {
+            onRegisterError(_error: unknown) {
               // Usually silent on prod; no toast necessary
               // console.error("SW register error", error);
             },
