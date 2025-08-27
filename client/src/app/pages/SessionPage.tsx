@@ -105,11 +105,36 @@ function SessionPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen grid place-items-center bg-gradient-to-b from-teal-900 via-teal-950 to-black p-6">
-        <div className="w-full max-w-md rounded-2xl bg-white/10 backdrop-blur-xl p-6 shadow-xl ring-1 ring-white/10">
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-            <span className="ml-3 text-white text-sm">{t('app:session.loading')}</span>
+      <div 
+        className="min-h-screen relative overflow-hidden"
+        style={{
+          background: '#005870', // PALETTE.deepTeal
+        }}
+      >
+        {/* Main teal gradient background */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`,
+          }}
+        />
+        
+        {/* Subtle lighter teal curved section with diagonal clip */}
+        <div 
+          className="absolute top-0 right-0 w-2/3 h-full"
+          style={{
+            background: `linear-gradient(135deg, #0C8F93 0%, #14A085 50%, #18C7B6 100%)`,
+            clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
+          }}
+        />
+
+        {/* Main content */}
+        <div className="min-h-screen grid place-items-center py-4 relative z-10">
+          <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+              <span className="ml-3 text-white text-sm">{t('app:session.loading')}</span>
+            </div>
           </div>
         </div>
         <BottomNav />
@@ -127,117 +152,142 @@ function SessionPage() {
   const progress = ((currentExerciseIndex + 1) / 5) * 100
 
   return (
-    <div className="min-h-screen grid place-items-center bg-gradient-to-b from-teal-900 via-teal-950 to-black p-6">
-      <div className="w-full max-w-md rounded-2xl bg-white/10 backdrop-blur-xl p-6 shadow-xl ring-1 ring-white/10">
-        {/* Header with Progress */}
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-white text-sm font-medium">
-            {t('app:session.exercise')} {currentExerciseIndex + 1} {t('common:of')} 5
-          </span>
-          <div className="text-white text-sm font-bold">
-            {formatTime(timer)}
-          </div>
-        </div>
-        <div className="w-full bg-white/20 rounded-full h-1.5 mb-4">
-          <div 
-            className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] h-1.5 rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: '#005870', // PALETTE.deepTeal
+      }}
+    >
+      {/* Main teal gradient background */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`,
+        }}
+      />
+      
+      {/* Subtle lighter teal curved section with diagonal clip */}
+      <div 
+        className="absolute top-0 right-0 w-2/3 h-full"
+        style={{
+          background: `linear-gradient(135deg, #0C8F93 0%, #14A085 50%, #18C7B6 100%)`,
+          clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        }}
+      />
 
-        {/* Current Exercise */}
-        <div className="text-center mb-4">
-          <h2 className="text-lg font-semibold text-white mb-1">
-            {currentExerciseData?.name}
-          </h2>
-          <div className="flex justify-center gap-3 text-xs text-white/80">
-            <span>{currentExerciseData?.sets} {t('app:session.sets')}</span>
-            <span>{currentExerciseData?.reps} {t('app:session.reps')}</span>
-            <span>{currentExerciseData?.weight} lbs</span>
-          </div>
-        </div>
-
-        {/* Sets - Compact */}
-        <div className="space-y-2 mb-4">
-          {sets.map((set, index) => (
-            <div key={set.id} className="bg-white/10 rounded-lg p-2">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-white font-medium text-xs">
-                  {t('app:session.set')} {index + 1}
-                </span>
-                <Badge 
-                  variant={set.completed ? "default" : "secondary"}
-                  className={
-                    set.completed 
-                      ? "bg-green-500/20 text-green-300 border-green-500/30 text-xs px-2 py-0"
-                      : "bg-white/20 text-white border-white/30 text-xs px-2 py-0"
-                  }
-                >
-                  {set.completed ? '✓' : '○'}
-                </Badge>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 items-end">
-                <div>
-                  <Label className="text-white text-xs mb-1 block">
-                    {t('app:session.reps')}
-                  </Label>
-                  <Input
-                    type="number"
-                    value={set.reps}
-                    onChange={(e) => updateSet(set.id, 'reps', e.target.value)}
-                    className="bg-white/20 border-white/30 text-white placeholder:text-white/60 h-6 text-xs"
-                    placeholder="0"
-                  />
-                </div>
-                
-                <div>
-                  <Label className="text-white text-xs mb-1 block">
-                    {t('app:session.weight')}
-                  </Label>
-                  <Input
-                    type="number"
-                    value={set.weight}
-                    onChange={(e) => updateSet(set.id, 'weight', e.target.value)}
-                    className="bg-white/20 border-white/30 text-white placeholder:text-white/60 h-6 text-xs"
-                    placeholder="0"
-                  />
-                </div>
-
-                <Button
-                  onClick={() => updateSet(set.id, 'completed', !set.completed)}
-                  variant={set.completed ? "secondary" : "default"}
-                  className={
-                    set.completed 
-                      ? "bg-white/20 text-white hover:bg-white/30 h-6 text-xs px-2"
-                      : "bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] h-6 text-xs px-2"
-                  }
-                >
-                  {set.completed ? <CheckCircle className="w-3 h-3" /> : '✓'}
-                </Button>
-              </div>
+      {/* Main content */}
+      <div className="min-h-screen grid place-items-center py-4 relative z-10">
+        <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
+          {/* Header with Progress */}
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-white text-sm font-medium">
+              {t('app:session.exercise')} {currentExerciseIndex + 1} {t('common:of')} 5
+            </span>
+            <div className="text-white text-sm font-bold">
+              {formatTime(timer)}
             </div>
-          ))}
-        </div>
+          </div>
+          <div className="w-full bg-white/20 rounded-full h-2 mb-6">
+            <div 
+              className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] h-2 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
 
-        {/* Navigation */}
-        <div className="flex justify-between items-center gap-3">
-          <Button
-            onClick={currentExerciseIndex > 0 ? handlePreviousExercise : handlePauseWorkout}
-            variant="secondary"
-            className="bg-white/20 text-white hover:bg-white/30 flex items-center gap-1 text-xs px-3 py-2"
-          >
-            <ArrowLeft className="w-3 h-3" />
-            {currentExerciseIndex > 0 ? t('app:session.previous') : t('app:session.pause')}
-          </Button>
+          {/* Current Exercise */}
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-bold text-white mb-2">
+              {currentExerciseData?.name}
+            </h2>
+            <div className="flex justify-center gap-4 text-sm text-white/80">
+              <span>{currentExerciseData?.sets} {t('app:session.sets')}</span>
+              <span>{currentExerciseData?.reps} {t('app:session.reps')}</span>
+              <span>{currentExerciseData?.weight} lbs</span>
+            </div>
+          </div>
 
-          <Button
-            onClick={currentExerciseIndex < 4 ? handleNextExercise : handleFinishWorkout}
-            className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] flex items-center gap-1 text-xs px-3 py-2"
-          >
-            {currentExerciseIndex < 4 ? t('app:session.nextExercise') : t('app:session.finish')}
-            <ArrowRight className="w-3 h-3" />
-          </Button>
+          {/* Sets - Compact */}
+          <div className="space-y-3 mb-6">
+            {sets.map((set, index) => (
+              <div key={set.id} className="bg-white/10 rounded-xl p-3">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-white font-medium text-sm">
+                    {t('app:session.set')} {index + 1}
+                  </span>
+                  <Badge 
+                    variant={set.completed ? "default" : "secondary"}
+                    className={
+                      set.completed 
+                        ? "bg-green-500/20 text-green-300 border-green-500/30 text-xs"
+                        : "bg-white/20 text-white border-white/30 text-xs"
+                    }
+                  >
+                    {set.completed ? '✓' : '○'}
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3 items-end">
+                  <div>
+                    <Label className="text-white text-xs mb-1 block">
+                      {t('app:session.reps')}
+                    </Label>
+                    <Input
+                      type="number"
+                      value={set.reps}
+                      onChange={(e) => updateSet(set.id, 'reps', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/60 h-8 text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label className="text-white text-xs mb-1 block">
+                      {t('app:session.weight')}
+                    </Label>
+                    <Input
+                      type="number"
+                      value={set.weight}
+                      onChange={(e) => updateSet(set.id, 'weight', e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder:text-white/60 h-8 text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+
+                  <Button
+                    onClick={() => updateSet(set.id, 'completed', !set.completed)}
+                    variant={set.completed ? "secondary" : "default"}
+                    className={
+                      set.completed 
+                        ? "bg-white/20 text-white hover:bg-white/30 h-8 text-xs px-3"
+                        : "bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] h-8 text-xs px-3"
+                    }
+                  >
+                    {set.completed ? <CheckCircle className="w-3 h-3" /> : '✓'}
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Navigation */}
+          <div className="flex justify-between items-center gap-3">
+            <Button
+              onClick={currentExerciseIndex > 0 ? handlePreviousExercise : handlePauseWorkout}
+              variant="secondary"
+              className="bg-white/20 text-white hover:bg-white/30 flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              {currentExerciseIndex > 0 ? t('app:session.previous') : t('app:session.pause')}
+            </Button>
+
+            <Button
+              onClick={currentExerciseIndex < 4 ? handleNextExercise : handleFinishWorkout}
+              className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] flex items-center gap-2"
+            >
+              {currentExerciseIndex < 4 ? t('app:session.nextExercise') : t('app:session.finish')}
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </div>
       
