@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
 import { 
@@ -8,7 +8,6 @@ import {
   Clock, 
   Target,
   Plus,
-  Minus,
   CheckCircle2,
   Info,
   Undo2
@@ -18,7 +17,6 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { toast } from 'sonner'
 import { useSessionData } from '@/hooks/useSessionData'
 
 interface RestTimerState {

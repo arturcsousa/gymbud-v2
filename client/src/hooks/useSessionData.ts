@@ -348,20 +348,21 @@ export function useSessionData(sessionId?: string) {
         started_at: updates.started_at,
         completed_at: updates.completed_at,
         notes: updates.notes,
-        updated_at: new Date().toISOString()
+        updated_at: Date.now()
       }
 
       // Update in IndexedDB
       await db.sessions.update(sessionId, sessionUpdate)
 
-      // Enqueue for sync
+      // Enqueue for sync - map back to queue status
+      const queueStatus = dbStatus === 'draft' ? 'pending' : dbStatus
       await enqueueSessionUpdate({
         id: sessionId,
-        status: dbStatus,
+        status: queueStatus,
         started_at: updates.started_at,
         completed_at: updates.completed_at,
         notes: updates.notes,
-        updated_at: sessionUpdate.updated_at
+        updated_at: new Date().toISOString()
       })
 
       // Log telemetry event

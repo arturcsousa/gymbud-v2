@@ -1,6 +1,5 @@
 import { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import domtoimage from 'dom-to-image-more';
 
 interface StatsShareCardProps {
   userName?: string;
