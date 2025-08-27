@@ -88,7 +88,29 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 relative overflow-hidden">
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: '#005870', // PALETTE.deepTeal
+      }}
+    >
+      {/* Main teal gradient background */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`,
+        }}
+      />
+      
+      {/* Orange curved section with diagonal clip */}
+      <div 
+        className="absolute top-0 right-0 w-2/3 h-full"
+        style={{
+          background: `linear-gradient(135deg, #18C7B6 0%, #FF9F1C 70%)`,
+          clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        }}
+      />
+
       {/* Header with Language Switcher */}
       <header className="absolute top-0 left-0 right-0 z-20 p-4 pt-6">
         <div className="flex justify-end">
@@ -96,18 +118,8 @@ export function AuthPage() {
         </div>
       </header>
 
-      {/* Decorative gradient blobs */}
-      <div 
-        className="absolute top-20 left-10 w-64 h-64 rounded-full opacity-10 blur-3xl"
-        style={{ backgroundColor: '#FF9F1C' }}
-      />
-      <div 
-        className="absolute bottom-20 right-10 w-48 h-48 rounded-full opacity-10 blur-3xl"
-        style={{ backgroundColor: '#18C7B6' }}
-      />
-      
       {/* Main content */}
-      <div className="min-h-screen grid place-items-center py-4">
+      <div className="min-h-screen grid place-items-center py-4 relative z-10">
         <div className="w-full max-w-md rounded-3xl bg-white/10 backdrop-blur-xl p-8 shadow-2xl ring-1 ring-white/20 relative z-10">
           {/* Centered Logo */}
           <div className="flex flex-col items-center mb-8">
