@@ -10,7 +10,7 @@ import { OnboardingStore, type OnboardingState } from '@/db/onboarding-store'
 import { type PlanSeed, type PlanCreateRequest, type PlanCreateResponse } from '@/types/planseed'
 import { supabase } from '@/lib/supabase'
 
-export function ReviewPage() {
+function ReviewPage() {
   const [, navigate] = useLocation()
   const { t } = useTranslation(['onboarding'])
   const [loading, setLoading] = useState(false)
@@ -280,4 +280,4 @@ export function ReviewPage() {
   )
 }
 
-export { ReviewPage }
+export default ReviewPage

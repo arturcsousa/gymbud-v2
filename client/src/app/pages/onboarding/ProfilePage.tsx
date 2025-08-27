@@ -22,7 +22,7 @@ const MOVEMENT_PATTERNS = [
   { key: 'push', label: 'Push' },
   { key: 'pull', label: 'Pull' },
   { key: 'carry', label: 'Carry' }
-]
+] as const
 
 const CONSTRAINT_AREAS = [
   { value: 'shoulder', label: 'Shoulder' },
@@ -42,7 +42,9 @@ const MOBILITY_AREAS = [
   { value: 'shoulders', label: 'Shoulders' }
 ]
 
-export function ProfilePage() {
+type MovementPattern = typeof MOVEMENT_PATTERNS[number]['key']
+
+function ProfilePage() {
   const [, navigate] = useLocation()
   const { t } = useTranslation(['onboarding'])
   const [loading, setLoading] = useState(false)
@@ -113,6 +115,14 @@ export function ProfilePage() {
       await OnboardingStore.saveState({
         user_id: userId,
         ...data,
+        confidence: {
+          squat: data.confidence.squat,
+          hinge: data.confidence.hinge,
+          lunge: data.confidence.lunge,
+          push: data.confidence.push,
+          pull: data.confidence.pull,
+          carry: data.confidence.carry
+        },
         constraints
       })
       
@@ -125,16 +135,16 @@ export function ProfilePage() {
     }
   }
 
-  const handleConfidenceChange = (movement: string, value: number[]) => {
-    form.setValue(`confidence.${movement}` as any, value[0] as any)
+  const handleConfidenceChange = (movement: MovementPattern, value: number[]) => {
+    form.setValue(`confidence.${movement}`, value[0] as 1 | 2 | 3 | 4 | 5)
   }
 
   const handleMobilityToggle = (area: string, checked: boolean) => {
     const current = form.getValues('mobility_focus') || []
     if (checked) {
-      form.setValue('mobility_focus', [...current, area as any])
+      form.setValue('mobility_focus', [...current, area])
     } else {
-      form.setValue('mobility_focus', current.filter(a => a !== area))
+      form.setValue('mobility_focus', current.filter((a: string) => a !== area))
     }
   }
 
@@ -146,7 +156,7 @@ export function ProfilePage() {
     setConstraints(constraints.filter((_, i) => i !== index))
   }
 
-  const updateConstraint = (index: number, field: string, value: any) => {
+  const updateConstraint = (index: number, field: string, value: string) => {
     const updated = [...constraints]
     updated[index] = { ...updated[index], [field]: value }
     setConstraints(updated)
@@ -167,7 +177,7 @@ export function ProfilePage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-2">
               <Label>{t('onboarding:profile.experience_level')}</Label>
-              <Select onValueChange={(value) => form.setValue('experience_level', value as any)}>
+              <Select onValueChange={(value: 'beginner' | 'intermediate' | 'advanced') => form.setValue('experience_level', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your experience level" />
                 </SelectTrigger>
@@ -186,11 +196,11 @@ export function ProfilePage() {
                   <div className="flex justify-between">
                     <Label className="text-sm">{movement.label}</Label>
                     <span className="text-sm text-gray-500">
-                      {form.watch(`confidence.${movement.key}` as any) || 3}/5
+                      {form.watch(`confidence.${movement.key}`) || 3}/5
                     </span>
                   </div>
                   <Slider
-                    value={[form.watch(`confidence.${movement.key}` as any) || 3]}
+                    value={[form.watch(`confidence.${movement.key}`) || 3]}
                     onValueChange={(value) => handleConfidenceChange(movement.key, value)}
                     max={5}
                     min={1}
@@ -224,7 +234,7 @@ export function ProfilePage() {
                   <div className="grid grid-cols-2 gap-3">
                     <Select 
                       value={constraint.area}
-                      onValueChange={(value) => updateConstraint(index, 'area', value)}
+                      onValueChange={(value: string) => updateConstraint(index, 'area', value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select area" />
@@ -239,7 +249,7 @@ export function ProfilePage() {
                     </Select>
                     <Select 
                       value={constraint.severity}
-                      onValueChange={(value) => updateConstraint(index, 'severity', value)}
+                      onValueChange={(value: string) => updateConstraint(index, 'severity', value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Severity" />
@@ -260,7 +270,7 @@ export function ProfilePage() {
               <p className="text-xs text-gray-500 mb-2">
                 {t('onboarding:profile.warmup_explain')}
               </p>
-              <Select onValueChange={(value) => form.setValue('warmup_style', value as any)}>
+              <Select onValueChange={(value: 'none' | 'quick' | 'standard' | 'therapeutic') => form.setValue('warmup_style', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select warm-up style" />
                 </SelectTrigger>
@@ -280,8 +290,8 @@ export function ProfilePage() {
                   <div key={area.value} className="flex items-center space-x-2">
                     <Checkbox
                       id={area.value}
-                      checked={form.getValues('mobility_focus')?.includes(area.value as any)}
-                      onCheckedChange={(checked) => handleMobilityToggle(area.value, checked as boolean)}
+                      checked={form.getValues('mobility_focus')?.includes(area.value)}
+                      onCheckedChange={(checked: boolean) => handleMobilityToggle(area.value, checked)}
                     />
                     <Label htmlFor={area.value}>{area.label}</Label>
                   </div>
@@ -291,7 +301,7 @@ export function ProfilePage() {
 
             <div className="space-y-2">
               <Label>{t('onboarding:profile.rest_pref')}</Label>
-              <Select onValueChange={(value) => form.setValue('rest_preference', value as any)}>
+              <Select onValueChange={(value: 'shorter' | 'as_prescribed' | 'longer') => form.setValue('rest_preference', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select rest preference" />
                 </SelectTrigger>
@@ -305,7 +315,7 @@ export function ProfilePage() {
 
             <div className="space-y-2">
               <Label>{t('onboarding:profile.intensity')}</Label>
-              <Select onValueChange={(value) => form.setValue('intensity_style', value as any)}>
+              <Select onValueChange={(value: 'rpe' | 'rir' | 'fixed') => form.setValue('intensity_style', value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select intensity guidance" />
                 </SelectTrigger>
@@ -320,7 +330,7 @@ export function ProfilePage() {
             {watchedIntensityStyle === 'rpe' && (
               <div className="space-y-2">
                 <Label>RPE Coaching Level</Label>
-                <Select onValueChange={(value) => form.setValue('rpe_coaching_level', value as any)}>
+                <Select onValueChange={(value: 'teach_me' | 'standard' | 'advanced') => form.setValue('rpe_coaching_level', value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="How much RPE coaching do you want?" />
                   </SelectTrigger>
@@ -356,4 +366,4 @@ export function ProfilePage() {
   )
 }
 
-export { ProfilePage }
+export default ProfilePage

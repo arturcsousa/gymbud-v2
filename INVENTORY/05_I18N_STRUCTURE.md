@@ -356,10 +356,10 @@ Streak achievement system:
 
 ### **onboarding.json**
 Onboarding process:
-- `biometrics`: { title, first_name, last_name, height_cm, weight_kg, body_fat_pct, rhr_bpm, birthdate, next, back }
-- `goals`: { title, goal_primary, days_per_week, days_of_week, add_window, environment, equipment_basic, tone_auto }
-- `profile`: { title, experience_level, confidence, constraints, warmup, mobility, rest_pref, intensity }
-- `review`: { title, edit, confirm, creating, done }
+- `biometrics`: { title, explain, first_name, last_name, height_cm, weight_kg, body_fat_pct, rhr_bpm, birthdate, next, back }
+- `goals`: { title, explain, goal_primary, days_per_week, days_of_week, add_window, environment, equipment_basic, equipment_explain, schedule_explain, tone_auto }
+- `profile`: { title, explain, experience_level, confidence, constraints, warmup, warmup_explain, mobility, rest_pref, intensity }
+- `review`: { title, explain, edit, confirm, creating, done }
 
 ### **Portuguese Translations (PT-BR) - COMPLETE COVERAGE**
 All Portuguese files now mirror the English structure exactly with proper Brazilian Portuguese conventions:

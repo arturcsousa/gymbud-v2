@@ -42,7 +42,8 @@ export const ONB_STORE = 'onboarding_state';
 export class OnboardingStore {
   static async getState(userId: string): Promise<OnboardingState | null> {
     try {
-      return await db.onboarding_state.get(userId);
+      const result = await db.onboarding_state.get(userId);
+      return result || null;
     } catch (error) {
       console.error('Failed to get onboarding state:', error);
       return null;

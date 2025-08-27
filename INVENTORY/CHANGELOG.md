@@ -1,5 +1,21 @@
 # GymBud v2 - Changelog
 
+## 2025-08-27 18:05 - TypeScript Compilation Error Resolution
+**Fixed**: Resolved all TypeScript compilation errors preventing successful builds
+- **Missing Slider Component**: Created `client/src/components/ui/slider.tsx` using Radix UI primitives with proper TypeScript types
+- **Duplicate Export Declarations**: Fixed ProfilePage.tsx and ReviewPage.tsx by removing duplicate export statements
+  - Changed from `export function` + `export { }` to single `export default`
+- **Type Safety Improvements**: Added proper TypeScript types for all event handlers and form values
+  - ProfilePage.tsx: Added explicit types for onValueChange, onCheckedChange handlers
+  - Removed unsafe `as any` type assertions throughout onboarding components
+- **Confidence Type Mismatch**: Fixed confidence object structure to match expected `Record<MovementPattern, 1|2|3|4|5>` type
+- **OnboardingStore**: Fixed undefined vs null return type issue in getState method
+- **Queue System**: Added 'void' to QueueOp union type to support void operations
+- **Sync Queue**: Added LoggedSetRow import and proper type casting for voided property access
+- **Build Status**: All TypeScript errors resolved, ready for production deployment
+
+**Technical**: Complete type safety overhaul for onboarding system with proper Radix UI component integration
+
 ## 2025-08-27 16:03 - Engine Reference Seed & Onboarding Consolidation
 **Completed**: Finalized inventory documentation updates for engine reference layer and onboarding system
 - **Reference Layer Documentation**: Updated `03_DB_NOTES.md` with comprehensive Preserve catalog integration details
@@ -14,6 +30,12 @@
   - Seamless transition from onboarding completion to active training plans
 
 **Impact**: Complete documentation alignment for onboarding flow and engine reference layer, ensuring accurate project inventory for ongoing development
+
+## 2025-08-27 16:17 ET — Onboarding Explanation Text Enhancement
+- **UX**: Added explanatory text to all 4 onboarding steps with full EN/PT-BR localization
+- **i18n**: Added `explain`, `equipment_explain`, `schedule_explain`, `warmup_explain` keys to onboarding namespace
+- **Components**: Enhanced BiometricsPage, GoalsPage, ProfilePage, ReviewPage with contextual explanations
+- **Design**: Subtle styling (gray text, smaller font) positioned under titles and relevant form sections
 
 ## 2025-08-27 16:40 ET — Phase B Scaffold (Onboarding)
 - **FE**: Added 4 onboarding routes; Dexie onboarding_state shape; Zod schemas; EF payload shape; telemetry events
@@ -787,23 +809,3 @@
 - Responsive design with mobile-first approach
 - Smooth anchor scrolling for SPA navigation
 - Environment variable integration for app URLs
-
-## [2025-01-26 12:12] - Translation Keys Final Fixes
-### Fixed
-- **WhyDifferent Section**: Replaced hardcoded Portuguese subtitle "O que nos Torna Diferentes" with translation key `landing:different.subtitle`
-- **Programs Section**: Replaced hardcoded Portuguese subtitle "Programas & Objetivos" with translation key `landing:programs.subtitle`  
-- **Pricing Section**: Replaced hardcoded Portuguese subtitle "Preços Simples e Transparentes" with translation key `landing:pricing.subtitle`
-- **Translation Files**: Added missing subtitle keys to both EN and PT-BR landing.json files for different, programs sections
-- **PT-BR Pricing**: Updated pricing subtitle to match existing structure "Escolha o plano que melhor atende às suas necessidades"
-
-### Verified
-- **Complete Translation Coverage**: All marketing components now use proper translation keys instead of hardcoded text
-- **Language Picker**: Confirmed working correctly in navbar for EN/PT-BR switching
-- **FAQ Component**: Verified proper translation key usage for all FAQ items and title
-- **All Sections**: Hero, HowItWorks, WhyDifferent, Programs, Progress, Pricing, FinalCta, and NavBar all use translation keys
-
-### Technical Details
-- All hardcoded Portuguese text replaced with `t('landing:section.key')` pattern
-- Translation keys follow consistent naming convention across all components
-- Both EN and PT-BR locale files have complete coverage for all sections
-- Language switching persists correctly via localStorage

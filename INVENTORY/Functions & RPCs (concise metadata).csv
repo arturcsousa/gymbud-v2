@@ -1,9 +1,0 @@
-schema_name,function_name,arguments,return_type,language,kind,volatility,security_definer
-app2,handle_new_user,,trigger,plpgsql,function,volatile,true
-app2,rpc_get_exercise_by_id,"p_exercise_id uuid, lang text",app2.v_exercise_library_localized,sql,function,stable,false
-app2,rpc_get_exercise_library,lang text,SETOF app2.v_exercise_library_localized,sql,function,stable,false
-app2,rpc_get_exercise_variants,lang text,SETOF app2.v_exercise_variants_localized,sql,function,stable,false
-app2,rpc_get_variants_for_exercise,"p_exercise_id uuid, lang text",SETOF app2.v_exercise_variants_localized,sql,function,stable,false
-app2,rpc_search_exercises,"q text, lang text, p_category text, p_equipment text[]",SETOF app2.v_exercise_library_localized,sql,function,stable,false
-app2,set_updated_at,,trigger,plpgsql,function,volatile,false
-app2,touch_updated_at,,trigger,plpgsql,function,volatile,false

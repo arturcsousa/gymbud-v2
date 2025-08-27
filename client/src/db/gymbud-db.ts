@@ -1,7 +1,7 @@
 import Dexie, { Table } from 'dexie'
 import { OnboardingState } from './onboarding-store'
 
-export type QueueOp = 'insert' | 'update' | 'delete'
+export type QueueOp = 'insert' | 'update' | 'delete' | 'void'
 export type QueueStatus = 'queued' | 'processing' | 'done' | 'error'
 
 export interface MetaRow { key: string; value: any; updated_at: number }

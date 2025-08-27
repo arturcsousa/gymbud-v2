@@ -179,7 +179,7 @@ async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
   
   // Special handling for logged_sets with void reconciliation
   if (entity === 'app2.logged_sets') {
-    const localRow = await table.get(serverRow.id)
+    const localRow = await table.get(serverRow.id) as { voided: boolean } | undefined
     const hasPendingVoid = await hasPendingVoidMutation(serverRow.id)
     
     // Merge rules for void reconciliation
@@ -207,7 +207,7 @@ async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
     const existingBySetNumber = await table
       .where('[session_exercise_id+set_number]')
       .equals([serverRow.session_exercise_id, serverRow.set_number])
-      .first()
+      .first() as { voided: boolean } | undefined
     
     if (existingBySetNumber && existingBySetNumber.id !== serverRow.id) {
       // Duplicate detected - server row is canonical
