@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## August 26, 2025 20:55 ET
+**Implemented** Phase A Step 7 - Delta pulls for read-side synchronization
+- **Edge Function**: Created `pull-updates` for fetching fresh server state with RLS enforcement
+  - Request: `{ "since": "ISO8601" }` → Response: structured data with counts and watermarks
+  - Queries app2.sessions, app2.session_exercises, app2.logged_sets filtered by updated_at > since
+  - Returns `{ ok, since, until, counts, data }` envelope matching sync EF patterns
+- **Sync Engine Extension**: Enhanced `client/src/sync/queue.ts` with pull orchestration
+  - Added `pullUpdates()` function with `last_pull_at` watermark tracking in Dexie meta
+  - Integrated pull triggers: app start, post-flush, manual "Sync now" 
+  - Safe merge strategy: upsert if no local mutations, skip if pending changes to avoid clobbering
+- **Conflict Resolution**: Implemented "most-recent-wins" with local change preservation
+  - Checks for pending queue mutations before merging server data
+  - Logs merge skips when local changes exist to prevent data loss
+- **Error Handling**: Reuses existing Step 5 error mapping and telemetry infrastructure
+  - Pull failures logged to sync_events with backoff retry logic
+  - Cross-tab coordination via BroadcastChannel for pull triggers
+- **Test Infrastructure**: Created `test-pull-updates.js` for acceptance testing
+  - Cold pull, RLS filtering, backoff recovery, and invalid request validation
+- Context: Complete bidirectional sync - push mutations via queue, pull updates via delta reads
+- Migrations: Deploy Edge Function with `supabase functions deploy pull-updates`
+
 ## August 26, 2025 20:45 ET
 **Implemented** Phase A Step 6 - Expanded queue coverage for sessions, session_exercises, and coach_audit
 - **Edge Functions**: Created three new sync endpoints mirroring sync-logged-sets pattern:

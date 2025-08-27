@@ -5,6 +5,7 @@ import i18n from '@/i18n'
 import { mapEdgeError, type ErrorCode } from '@/lib/errors/mapEdgeError'
 
 let flushLock = false
+let pullLock = false
 const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('gymbud-sync') : null
 
 export async function enqueue(opts: {
@@ -134,6 +135,103 @@ async function updateMeta(key: string, value: any): Promise<void> {
   await db.meta.put({ key, value, updated_at: Date.now() })
 }
 
+// Check if row has pending local mutations
+async function hasPendingMutation(entity: string, rowId: string): Promise<boolean> {
+  const count = await db.queue_mutations
+    .where('[entity+payload.id+status]')
+    .between([entity, rowId, 'queued'], [entity, rowId, 'queued'])
+    .count()
+  return count > 0
+}
+
+// Safe merge server data with local data
+async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
+  const tableName = entity.replace('app2.', '') as 'sessions' | 'session_exercises' | 'logged_sets'
+  const table = db[tableName]
+  
+  if (!table) return
+  
+  // Check if we have pending mutations for this row
+  const hasPending = await hasPendingMutation(entity, serverRow.id)
+  
+  if (!hasPending) {
+    // No local changes, safe to upsert server data
+    await table.put(serverRow)
+  } else {
+    // Has pending changes - only update if server is newer
+    const localRow = await table.get(serverRow.id)
+    if (!localRow || new Date(serverRow.updated_at) > new Date(localRow.updated_at)) {
+      // Server is newer, but preserve local changes by selective merge
+      // For now, skip updating to avoid clobbering - field-level merge would go here
+      console.log(`[sync] Skipping merge for ${entity}:${serverRow.id} - has pending local changes`)
+    }
+  }
+}
+
+// Pull fresh data from server
+async function pullUpdates(): Promise<void> {
+  if (pullLock) return
+  pullLock = true
+  
+  try {
+    const lastPullMeta = await db.meta.get('last_pull_at')
+    const since = lastPullMeta?.value || '1970-01-01T00:00:00Z'
+    
+    const { data, error } = await supabase.functions.invoke('pull-updates', {
+      body: { since }
+    })
+    
+    if (error) throw new Error(error.message || 'PULL_INVOKE_FAILED')
+    
+    if (!data?.ok) {
+      throw new Error(data?.error || 'PULL_FAILED')
+    }
+    
+    let totalPulled = 0
+    
+    // Merge sessions
+    for (const session of data.data.sessions || []) {
+      await safeMergeRow('app2.sessions', session)
+      totalPulled++
+    }
+    
+    // Merge session_exercises  
+    for (const exercise of data.data.session_exercises || []) {
+      await safeMergeRow('app2.session_exercises', exercise)
+      totalPulled++
+    }
+    
+    // Merge logged_sets
+    for (const loggedSet of data.data.logged_sets || []) {
+      await safeMergeRow('app2.logged_sets', loggedSet)
+      totalPulled++
+    }
+    
+    // Update watermark
+    await updateMeta('last_pull_at', data.until)
+    await updateMeta('last_pull_status', 'success')
+    await updateMeta('last_pull_error_code', null)
+    
+    if (totalPulled > 0) {
+      await addSyncEvent({ ts: Date.now(), kind: 'success', items: totalPulled })
+    }
+    
+    // Nudge other tabs
+    bc?.postMessage('queue-change')
+    
+  } catch (err) {
+    const mappedError = mapEdgeError(err)
+    await updateMeta('last_pull_status', 'failure')
+    await updateMeta('last_pull_error_code', mappedError.code)
+    await addSyncEvent({ ts: Date.now(), kind: 'failure', code: mappedError.code })
+    
+    console.warn('[sync] pull failed', { error: mappedError.code })
+    throw err
+  } finally {
+    pullLock = false
+  }
+}
+
 export async function flush(maxBatch = 50): Promise<void> {
   if (flushLock) return
   flushLock = true
@@ -146,7 +244,15 @@ export async function flush(maxBatch = 50): Promise<void> {
       .limit(maxBatch)
       .toArray()
 
-    if (batch.length === 0) return
+    if (batch.length === 0) {
+      // No mutations to flush, try pull updates
+      try {
+        await pullUpdates()
+      } catch (err) {
+        // Pull failed, but don't throw - flush succeeded with 0 items
+      }
+      return
+    }
 
     // Update meta: sync started
     await updateMeta('last_sync_at', new Date().toISOString())
@@ -178,6 +284,16 @@ export async function flush(maxBatch = 50): Promise<void> {
         failureCount++
         // Don't spam; console is fine in dev
         console.warn('[sync] retry scheduled', { id: m.id, retries, error: mappedError.code })
+      }
+    }
+
+    // After successful flush, try to pull updates
+    if (successCount > 0 && failureCount === 0) {
+      try {
+        await pullUpdates()
+      } catch (err) {
+        // Pull failed, but flush succeeded - don't change flush status
+        console.warn('[sync] post-flush pull failed', err)
       }
     }
 
@@ -214,7 +330,15 @@ export function requestFlush() {
   void flush()
 }
 
+// Manual pull trigger
+export function requestPull() {
+  if (pullLock) return
+  bc?.postMessage('pull') // other tabs too
+  void pullUpdates().catch(console.error)
+}
+
 // Broadcast listeners
 bc?.addEventListener('message', (ev) => {
   if (ev.data === 'flush') void flush()
+  if (ev.data === 'pull') void pullUpdates().catch(console.error)
 })

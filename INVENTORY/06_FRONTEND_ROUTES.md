@@ -87,11 +87,21 @@ export { ComponentName }             // Named export for AppShell
 - **Provider**: Global Toasts provider wrapping entire app for consistent styling
 
 ### Offline-First Data Flow
-```
 User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Supabase
-                     ↓
-              UI Updates (optimistic)
-```
+                     ↓                                      ↓
+              UI Updates (optimistic)              Delta Pulls (bidirectional)
+
+### Sync Engine Architecture (Phase A Complete)
+- **Push Mutations**: Queue-based replay system with idempotency and backoff
+  - Entities: logged_sets, sessions, session_exercises, coach_audit
+  - Edge Functions: sync-logged-sets, sync-sessions, sync-session-exercises, sync-coach-audit
+- **Pull Updates**: Delta reads with watermark tracking and safe merge
+  - Edge Function: pull-updates with RLS enforcement
+  - Triggers: app start, post-flush, manual sync
+  - Conflict Resolution: Skip merge if local mutations pending
+- **Cross-tab Coordination**: BroadcastChannel for sync events
+- **Error Handling**: Structured error codes with user-friendly messages
+- **Telemetry**: sync_events logging for debugging and analytics
 
 ### Authentication Flow
 - **Route**: `/auth`
