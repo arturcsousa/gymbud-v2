@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Share2, TrendingUp, Activity } from 'lucide-react';
 import { toast } from 'sonner';
