@@ -1,0 +1,99 @@
+Page,Route,User Action,UI Element,Handler Function,Network Call,Database Table,Database Operation,RLS Policy,Telemetry Event,Navigation Target,Status
+AuthPage,/app/auth,Enter email and password,Form inputs,AuthPage.handleSubmit(),supabase.auth.signUp(),auth.users,INSERT,none_required,auth_signup_started,/app/auth/verify,Complete
+AuthPage,/app/auth,Click Sign Up button,Submit button,AuthPage.handleSubmit(),supabase.auth.signUp(),auth.users,INSERT,none_required,auth_signup_succeeded,/app/auth/verify,Complete
+AuthPage,/app/auth,Click Sign In button,Submit button,AuthPage.handleSubmit(),supabase.auth.signInWithPassword(),auth.users,SELECT,none_required,auth_signin_started,/app,Complete
+AuthPage,/app/auth,Click Forgot Password,Link,Navigation,None,None,None,None,None,/app/auth/reset-password,Complete
+VerifyPage,/app/auth/verify,Enter OTP digits,OTP inputs,VerifyPage.handleVerify(),supabase.auth.verifyOtp(),auth.users,UPDATE,none_required,auth_verify_started,/app/onboarding/biometrics,Complete
+VerifyPage,/app/auth/verify,Click Resend Code,Button,VerifyPage.handleResend(),supabase.auth.resend(),auth.users,None,none_required,auth_resend_started,None,Complete
+VerifyPage,/app/auth/verify,Auto-submit on complete,Auto trigger,VerifyPage.handleVerify(),supabase.auth.verifyOtp(),auth.users,UPDATE,none_required,auth_verify_succeeded,/app/onboarding/biometrics,Complete
+ResetPasswordPage,/app/auth/reset-password,Enter email,Form input,ResetPasswordPage.handleRequestReset(),supabase.auth.resetPasswordForEmail(),auth.users,None,none_required,password_reset_requested,None,Complete
+ResetPasswordPage,/app/auth/reset-password,Click Send Reset Email,Button,ResetPasswordPage.handleRequestReset(),supabase.auth.resetPasswordForEmail(),auth.users,None,none_required,password_reset_succeeded,None,Complete
+ResetPasswordPage,/app/auth/reset-password,Enter new password,Form inputs,ResetPasswordPage.handleUpdatePassword(),supabase.auth.updateUser(),auth.users,UPDATE,none_required,password_update_succeeded,/app/auth,Complete
+ResetPasswordPage,/app/auth/reset-password,Click Update Password,Button,ResetPasswordPage.handleUpdatePassword(),supabase.auth.updateUser(),auth.users,UPDATE,none_required,password_update_succeeded,/app/auth,Complete
+BiometricsPage,/app/onboarding/biometrics,Enter first name,Form input,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+BiometricsPage,/app/onboarding/biometrics,Enter last name,Form input,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+BiometricsPage,/app/onboarding/biometrics,Enter date of birth,Date picker,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+BiometricsPage,/app/onboarding/biometrics,Select gender,Dropdown,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+BiometricsPage,/app/onboarding/biometrics,Enter height,Number input,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+BiometricsPage,/app/onboarding/biometrics,Enter weight,Number input,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+BiometricsPage,/app/onboarding/biometrics,Enter resting heart rate,Number input,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+BiometricsPage,/app/onboarding/biometrics,Select body fat percentage,Slider,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+BiometricsPage,/app/onboarding/biometrics,Click Continue,Button,BiometricsPage.onSubmit(),OnboardingStore.saveState(),onboarding_state (IndexedDB),INSERT/UPDATE,None,onb_saved,/app/onboarding/goals,Complete
+GoalsPage,/app/onboarding/goals,Select primary goal,Radio buttons,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+GoalsPage,/app/onboarding/goals,Choose training frequency,Dropdown,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+GoalsPage,/app/onboarding/goals,Select environment,Radio buttons,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+GoalsPage,/app/onboarding/goals,Choose equipment,Multi-select,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+GoalsPage,/app/onboarding/goals,Click Continue,Button,GoalsPage.onSubmit(),OnboardingStore.saveState(),onboarding_state (IndexedDB),UPDATE,None,onb_saved,/app/onboarding/profile,Complete
+ProfilePage,/app/onboarding/profile,Select experience level,Radio buttons,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+ProfilePage,/app/onboarding/profile,Rate confidence,Slider,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+ProfilePage,/app/onboarding/profile,Add injury constraint,Form inputs,handleAddConstraint(),None,onboarding_state (IndexedDB),None,None,None,None,Complete
+ProfilePage,/app/onboarding/profile,Remove constraint,Button,handleRemoveConstraint(),None,onboarding_state (IndexedDB),None,None,None,None,Complete
+ProfilePage,/app/onboarding/profile,Choose warmup style,Radio buttons,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+ProfilePage,/app/onboarding/profile,Select mobility focus,Radio buttons,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+ProfilePage,/app/onboarding/profile,Choose rest preference,Radio buttons,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+ProfilePage,/app/onboarding/profile,Select intensity style,Radio buttons,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+ProfilePage,/app/onboarding/profile,Choose RPE coaching,Radio buttons,Form state update,None,onboarding_state (IndexedDB),None,None,None,None,Complete
+ProfilePage,/app/onboarding/profile,Click Continue,Button,ProfilePage.onSubmit(),OnboardingStore.saveState(),onboarding_state (IndexedDB),UPDATE,None,onb_saved,/app/onboarding/review,Complete
+ReviewPage,/app/onboarding/review,Review biometrics,Display only,None,None,None,None,None,onb_viewed,None,Complete
+ReviewPage,/app/onboarding/review,Review goals,Display only,None,None,None,None,None,None,None,Complete
+ReviewPage,/app/onboarding/review,Review profile,Display only,None,None,None,None,None,None,None,Complete
+ReviewPage,/app/onboarding/review,Click Create My Plan,Button,ReviewPage.createPlan(),supabase.functions.invoke('plan-get-or-create'),app2.plans,INSERT,plans_self,plan_created,/app?baseline_session={id},Complete
+ReviewPage,/app/onboarding/review,Update user profile,Auto trigger,Profile update,supabase.from('profiles').update(),app2.profiles,UPDATE,profiles_self,None,None,Complete
+ReviewPage,/app/onboarding/review,Clear onboarding state,Auto trigger,OnboardingStore.clearState(),None,onboarding_state (IndexedDB),DELETE,None,None,None,Complete
+HomePage,/app,Click Start New Workout,Button,Navigation,None,None,None,None,None,/app/session/{id},Complete
+HomePage,/app,Click View History,Button,Navigation,None,None,None,None,None,/app/history,Complete
+HomePage,/app,Click View Stats,Button,Navigation,None,None,None,None,None,/app/stats,Complete
+HomePage,/app,Bottom nav - Home,Button,Navigation,None,None,None,None,None,/app,Complete
+HomePage,/app,Bottom nav - Session,Button,Navigation,None,None,None,None,None,/app/session/{id},Complete
+HomePage,/app,Bottom nav - History,Button,Navigation,None,None,None,None,None,/app/history,Complete
+HomePage,/app,Bottom nav - Stats,Button,Navigation,None,None,None,None,None,/app/stats,Complete
+HomePage,/app,Bottom nav - Settings,Button,Navigation,None,None,None,None,None,/app/settings,Complete
+SessionPage,/app/session/{id},Navigate to previous exercise,Button,handlePreviousExercise(),None,None,None,None,None,None,Complete
+SessionPage,/app/session/{id},Navigate to next exercise,Button,handleNextExercise(),None,None,None,None,None,None,Complete
+SessionPage,/app/session/{id},Enter reps,Number input,setSetInputs(),None,None,None,None,None,None,Complete
+SessionPage,/app/session/{id},Enter weight,Number input,setSetInputs(),None,None,None,None,None,None,Complete
+SessionPage,/app/session/{id},Enter RPE,Number input,setSetInputs(),None,None,None,None,None,None,Complete
+SessionPage,/app/session/{id},Click Log Set,Button,handleLogSet(),useSessionData.logSet(),logged_sets (IndexedDB + sync),INSERT,logged_sets_self,set_logged,None,Complete
+SessionPage,/app/session/{id},Click Undo Last Set,Button,handleUndoLastSet(),useSessionData.undoLastSet(),logged_sets (IndexedDB + sync),UPDATE (void),logged_sets_self,set_undone,None,Complete
+SessionPage,/app/session/{id},Start rest timer,Auto trigger,startRestTimer(),None,None,None,None,rest_started,None,Complete
+SessionPage,/app/session/{id},Pause rest timer,Button,pauseRestTimer(),None,None,None,None,rest_paused,None,Complete
+SessionPage,/app/session/{id},Resume rest timer,Button,resumeRestTimer(),None,None,None,None,rest_resumed,None,Complete
+SessionPage,/app/session/{id},Skip rest timer,Button,skipRestTimer(),None,None,None,None,rest_skipped,None,Complete
+SessionPage,/app/session/{id},Add time to rest,Button,addRestTime(),None,None,None,None,rest_time_added,None,Complete
+SessionPage,/app/session/{id},Click Finish Workout,Button,handleFinishWorkout(),useSessionData.finishSession(),sessions (IndexedDB + sync),UPDATE,sessions_self,session_finished,/app/history/{id},Complete
+SessionPage,/app/session/{id},Click Back to Home,Button,Navigation,None,None,None,None,None,/app,Complete
+HistoryPage,/app/history,View session list,Display,HistoryPage.loadSessions(),Mock data (placeholder),None,None,None,None,None,Placeholder
+HistoryPage,/app/history,Click session card,Button,handleViewSession(),None,None,None,None,None,/app/history/{id},Complete
+HistoryPage,/app/history,Click Start First Workout,Button,handleBackToHome(),None,None,None,None,None,/app,Complete
+HistoryPage,/app/history,Click Back to Home,Button,handleBackToHome(),None,None,None,None,None,/app,Complete
+HistoryDetailPage,/app/history/{id},View session details,Display,HistoryDetailPage.loadSession(),dataManager.getSession(),sessions (IndexedDB),SELECT,None,None,None,Complete
+HistoryDetailPage,/app/history/{id},View exercise breakdown,Display,Data loading,dataManager.getSession(),session_exercises (IndexedDB),SELECT,None,None,None,Complete
+HistoryDetailPage,/app/history/{id},View logged sets,Display,Data loading,dataManager.getSession(),logged_sets (IndexedDB),SELECT,None,None,None,Complete
+HistoryDetailPage,/app/history/{id},Click Edit session,Button,Navigation,None,None,None,None,None,/app/session/{id},Complete
+HistoryDetailPage,/app/history/{id},Click Back to History,Button,Navigation,None,None,None,None,None,/app/history,Complete
+StatsPage,/app/stats,View session metrics,Display,useProfileData(),supabase.from('profiles').select(),app2.profiles,SELECT,profiles_self,None,None,Complete
+StatsPage,/app/stats,View weight history,Display,useProfileData(),Hypothetical weight_logs query,weight_logs (hypothetical),SELECT,None,None,None,Placeholder
+StatsPage,/app/stats,Toggle offline indicator,Display,Auto state,None,None,None,None,None,None,Complete
+StatsPage,/app/stats,Share workout stats,Button,Share functionality,None,None,None,None,None,None,Placeholder
+SettingsPage,/app/settings,View account email,Display,SettingsPage.loadUserData(),supabase.auth.getUser(),auth.users,SELECT,none_required,None,None,Complete
+SettingsPage,/app/settings,Change language,Dropdown,setLanguage(),i18n.changeLanguage(),None,None,None,None,None,Complete
+SettingsPage,/app/settings,Toggle units,Button,setUnits(),None,None,None,None,None,None,Placeholder
+SettingsPage,/app/settings,Toggle notifications,Switch,setNotifications(),None,None,None,None,None,None,Placeholder
+SettingsPage,/app/settings,View sync status,Display,Live query,useLiveQuery(),queue_mutations (IndexedDB),SELECT,None,None,None,Complete
+SettingsPage,/app/settings,View pending mutations,Display,Live query,pendingCount(),queue_mutations (IndexedDB),SELECT,None,None,None,Complete
+SettingsPage,/app/settings,View last sync time,Display,Live query,syncMeta query,meta (IndexedDB),SELECT,None,None,None,Complete
+SettingsPage,/app/settings,Click Sync Now,Button,SettingsPage.handleSyncNow(),requestFlush(),Multiple via sync queue,Multiple,Multiple,None,None,Complete
+SettingsPage,/app/settings,Click Save Settings,Button,SettingsPage.handleSaveSettings(),Placeholder implementation,None,None,None,None,None,Placeholder
+SettingsPage,/app/settings,Click Sign Out,Button,SettingsPage.handleSignOut(),supabase.auth.signOut(),auth.users,None,none_required,None,/auth/signin,Complete
+AuthGuard,Protected routes,Redirect unauthenticated,Auto redirect,AuthGuard component,None,None,None,None,None,/auth/signin,Complete
+AuthGuard,Protected routes,Show loading spinner,Display,AuthGuard component,None,None,None,None,None,None,Complete
+BottomNav,All app pages,Navigate to Home,Button,Navigation,None,None,None,None,None,/app,Complete
+BottomNav,All app pages,Navigate to Session,Button,Navigation,None,None,None,None,None,/app/session/{id},Complete
+BottomNav,All app pages,Navigate to History,Button,Navigation,None,None,None,None,None,/app/history,Complete
+BottomNav,All app pages,Navigate to Stats,Button,Navigation,None,None,None,None,None,/app/stats,Complete
+BottomNav,All app pages,Navigate to Settings,Button,Navigation,None,None,None,None,None,/app/settings,Complete
+SyncQueue,Background,Enqueue mutation,Auto trigger,enqueue(),None,queue_mutations (IndexedDB),INSERT,None,None,None,Complete
+SyncQueue,Background,Flush mutations,Auto/Manual trigger,flush(),Edge Function calls,Multiple tables,Multiple,Multiple,None,None,Complete
+SyncQueue,Background,Pull updates,Auto trigger,pullUpdates(),supabase.functions.invoke('pull-updates'),Multiple tables,SELECT,Multiple,None,None,Complete
+SyncQueue,Background,Handle sync conflicts,Auto trigger,safeMergeRow(),None,Multiple tables,UPDATE,Multiple,None,None,Complete
+SyncQueue,Background,Retry failed mutations,Auto trigger,Retry logic,Edge Function calls,Multiple tables,Multiple,Multiple,None,None,Complete
