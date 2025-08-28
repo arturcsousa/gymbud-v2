@@ -262,7 +262,7 @@ async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
 }
 
 // Pull fresh data from server
-async function pullUpdates(): Promise<void> {
+export async function pullUpdates(): Promise<void> {
   if (pullLock) return
   pullLock = true
   

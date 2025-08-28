@@ -127,3 +127,4 @@ function HistoryPage() {
 }
 
 export default HistoryPage;
+export { HistoryPage };

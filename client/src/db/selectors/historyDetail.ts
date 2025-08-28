@@ -11,7 +11,11 @@ export async function selectSessionDetail(sessionId: string) {
   const session = await db.sessions.get(sessionId);
   const sx = await db.session_exercises.where('session_id').equals(sessionId).toArray();
   const sets = await db.logged_sets
-    .filter(s => s.session_id === sessionId && !s.voided)
+    .filter(s => {
+      // Find sets that belong to session exercises of this session
+      const sxIds = sx.map(exercise => exercise.id);
+      return sxIds.includes(s.session_exercise_id) && !s.voided;
+    })
     .toArray();
 
   const bySx = new Map<string, HistoryExerciseRow>();
@@ -21,8 +25,8 @@ export async function selectSessionDetail(sessionId: string) {
   for (const s of sets) {
     const bucket = bySx.get(s.session_exercise_id);
     if (!bucket) continue;
-    bucket.sets.push({ set_number: s.set_number, reps: s.reps, weight_kg: s.weight_kg, rpe: s.rpe });
-    bucket.volumeKg += (s.weight_kg ?? 0) * (s.reps ?? 0);
+    bucket.sets.push({ set_number: s.set_number, reps: s.reps ?? undefined, weight_kg: s.weight ?? undefined, rpe: s.rpe ?? undefined });
+    bucket.volumeKg += (s.weight ?? 0) * (s.reps ?? 0);
   }
   const exercises = Array.from(bySx.values())
     .map(e => ({ ...e, volumeKg: Math.round(e.volumeKg * 10) / 10 }))

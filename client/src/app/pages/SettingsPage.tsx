@@ -96,7 +96,7 @@ function DeadLetterPanel() {
 }
 
 function SettingsPage() {
-  const { t, i18n } = useTranslation(['app', 'common', 'errors', 'settings'])
+  const { t } = useTranslation(['app', 'common', 'errors', 'settings'])
   const [, setLocation] = useLocation()
   const [loading, setLoading] = useState(true)
   const [syncing, setSyncing] = useState(false)

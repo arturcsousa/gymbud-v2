@@ -38,13 +38,13 @@ export async function selectSessionsIndex(): Promise<SessionListItem[]> {
     for (const sxId of sxIds) {
       const arr = setsBySx.get(sxId) ?? [];
       totalSets += arr.length;
-      for (const a of arr) totalVolumeKg += (a.weight_kg ?? 0) * (a.reps ?? 0);
+      for (const a of arr) totalVolumeKg += (a.weight ?? 0) * (a.reps ?? 0);
     }
     const start = s.started_at ? new Date(s.started_at) : undefined;
     const end   = s.completed_at ? new Date(s.completed_at) : undefined;
     const dur   = start && end ? Math.max(1, Math.round((+end - +start) / 60000)) : undefined;
 
-    const dateISO = new Date(s.completed_at ?? s.started_at ?? s.created_at ?? Date.now())
+    const dateISO = new Date(s.completed_at ?? s.started_at ?? s.updated_at ?? Date.now())
       .toISOString().slice(0,10);
 
     return {
