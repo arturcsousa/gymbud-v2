@@ -78,7 +78,7 @@ export type ConflictRecord = {
   id: string;               // `${entity}:${entity_id}`
   entity: 'sessions' | 'session_exercises' | 'logged_sets' | 'coach_audit';
   entity_id: string;
-  op: 'insert' | 'update' | 'void';
+  op: 'insert' | 'update' | 'delete' | 'void';
   local: any;               // local snapshot we tried to push (or current Dexie row)
   server: any;              // latest from server
   diff?: Array<{ field: string; local: any; server: any }>;
