@@ -1,5 +1,23 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 14:39 - Sync-Sessions Edge Function with Baseline Handling
+**Implemented**: Complete sync-sessions Edge Function with baseline completion workflow and audit logging
+- **Edge Function**: Created `supabase/functions/sync-sessions/index.ts` with validated request handling
+  - Zod validation for session status updates with baseline flag support
+  - Business rule enforcement: `baseline=true` only allowed when `status='completed'`
+  - RLS compliance via `requireUser` helper from `_shared/auth.ts`
+  - Batch processing up to 200 session updates per request
+- **Baseline Workflow**: Automated profile and audit updates when baseline sessions completed
+  - Profile flip: Sets `profiles.assessment_required = false` when baseline completed
+  - Audit logging: Creates `coach_audit` entries with `event='baseline_completed'`
+  - Side-effect processing only for sessions marked `baseline=true` and `status='completed'`
+- **Database Schema**: Confirmed `app2.sessions.baseline` column exists with `boolean NOT NULL DEFAULT false`
+- **Error Handling**: Comprehensive error responses for validation failures, RLS violations, and database errors
+- **API Contract**: Accepts `{items: [{id, status, completed_at?, baseline?}]}` format
+- **Response Format**: Returns `{ok: true, updated: number, items: SessionRow[]}` with processed results
+
+**Technical**: Replaces legacy mutation queue format with modern validated API, enables assessment completion workflow for onboarding progression
+
 ## 2025-08-28 14:29 - i18n Sync Namespace Implementation
 **Fixed**: Resolved TypeScript import error for missing sync.json translation files
 - **Missing Files**: Created `client/src/i18n/locales/en/sync.json` and `client/src/i18n/locales/pt-BR/sync.json`
@@ -756,9 +774,10 @@
 - **RLS Compliance**: Edge Function uses end-user JWT for proper Row Level Security enforcement
 - **Idempotency**: Uses queue mutation ID as primary key for conflict-free upserts with `onConflict: "id"`
 - **Error Handling**: Structured response validation with proper error codes and messages
-- **Scope**: Only app2.logged_sets inserts supported initially, other mutations remain queued for future expansion
-- Context: End-to-end sync flow now functional - enqueue → offline → online → flush → DB insert
-- Migrations: Deploy Edge Function with `supabase functions deploy sync-logged-sets`
+- **API Contract**: Accepts `{items: [{id, reps, weight, rpe, completed_at}]}` format
+- **Response Format**: Returns `{ok: true, updated: number, items: LoggedSetRow[]}` with processed results
+
+**Technical**: End-to-end sync flow now functional - enqueue → offline → online → flush → DB insert
 
 ## January 26, 2025 14:42 ET
 **Completed** Dexie offline-first database and sync queue implementation

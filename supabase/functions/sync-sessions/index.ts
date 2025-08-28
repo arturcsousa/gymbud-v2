@@ -1,115 +1,94 @@
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { z } from "npm:zod@3.23.8";
+import { CORS_HEADERS, err, json, options } from "../_shared/http.ts";
+import { requireUser } from "../_shared/auth.ts";
+import { parseJson } from "../_shared/validate.ts";
 
-type QueueOp = 'insert' | 'update' | 'delete';
-type Mutation = {
-  id: string;
-  entity: string;     // 'app2.sessions'
-  op: QueueOp;        // 'update' only in this step
-  payload: any;       // { id, status?, started_at?, completed_at?, notes?, updated_at? }
-};
+const Status = z.enum(["pending", "in_progress", "completed", "void"]);
+const UpdateItem = z.object({
+  id: z.string().uuid(),
+  status: Status,
+  completed_at: z.string().datetime().optional(),
+  baseline: z.boolean().optional(), // true only when completing baseline
+});
+const Body = z.object({ items: z.array(UpdateItem).min(1).max(200) });
 
-// Valid status transitions
-const VALID_TRANSITIONS = {
-  'pending': ['active', 'cancelled'],
-  'active': ['completed', 'cancelled'],
-  'completed': [], // terminal state
-  'cancelled': []  // terminal state
-};
+Deno.serve(async (req) => {
+  const pre = options(req);
+  if (pre) return pre;
+  if (req.method !== "POST") return err(405, "METHOD_NOT_ALLOWED", "Use POST");
 
-serve(async (req) => {
-  if (req.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
+  const authed = await requireUser(req);
+  if (authed instanceof Response) return authed;
+  const { supabase, userId } = authed;
+
+  // Validate body
+  // @ts-ignore
+  const parsed = await parseJson(req, Body);
+  // @ts-ignore
+  if (parsed.error) return parsed.error;
+  // @ts-ignore
+  const { items } = parsed.data as z.infer<typeof Body>;
+
+  // Business rules: only allow baseline=true when status='completed'
+  for (const it of items) {
+    if (it.baseline === true && it.status !== "completed") {
+      return err(422, "VALIDATION_FAILED", "baseline can only be set when status=completed");
+    }
   }
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-  const authHeader = req.headers.get("Authorization") ?? "";
+  // Apply updates (RLS ensures these rows belong to user)
+  const updates = items.map((it) => ({
+    id: it.id,
+    status: it.status,
+    completed_at: it.completed_at ?? (it.status === "completed" ? new Date().toISOString() : null),
+    baseline: it.baseline ?? false,
+    user_id: userId, // harmless if column ignored; RLS still binds to auth.uid()
+  }));
 
-  // IMPORTANT: run under the *end-user* JWT so RLS applies.
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: authHeader } },
-  });
+  // Update sessions
+  const { data: updated, error: upErr } = await supabase
+    .schema("app2")
+    .from("sessions")
+    .upsert(updates, { onConflict: "id", ignoreDuplicates: false })
+    .select();
 
-  let body: { mutations?: Mutation[] };
-  try {
-    body = await req.json();
-  } catch {
-    return new Response(JSON.stringify({ error: "invalid_json" }), {
-      status: 400,
-      headers: { "content-type": "application/json" },
-    });
+  if (upErr) {
+    const msg = (upErr as any).message || "Update failed";
+    if (/row-level security|permission denied/i.test(msg)) return err(403, "RLS_DENIED", msg);
+    return err(400, (upErr as any).code || "EF_DB_ERROR", msg, upErr);
   }
 
-  const mutations = body.mutations ?? [];
-  const results: Array<{ id: string; status: string; code?: string; message?: string }> = [];
+  // Handle baseline side-effects (flip profile flag + audit entry) for any completed baseline
+  const completedBaselineIds = (updated ?? [])
+    .filter((r: any) => r.status === "completed" && r.baseline === true)
+    .map((r: any) => r.id as string);
 
-  for (const m of mutations) {
-    if (m.entity !== "app2.sessions" || m.op !== "update") {
-      results.push({ id: m.id, status: "skipped", code: "unsupported" });
-      continue;
-    }
-
-    const p = m.payload || {};
-    
-    // Build update object with only allowed fields
-    const updateData: any = {
-      updated_at: new Date().toISOString()
-    };
-    
-    if (p.status !== undefined) updateData.status = p.status;
-    if (p.started_at !== undefined) updateData.started_at = p.started_at;
-    if (p.completed_at !== undefined) updateData.completed_at = p.completed_at;
-    if (p.notes !== undefined) updateData.notes = p.notes;
-
-    const sessionId = p.id ?? m.id;
-    if (!sessionId) {
-      results.push({ id: m.id, status: "error", code: "invalid_payload" });
-      continue;
-    }
-
-    // If status is being updated, validate transition
-    if (p.status) {
-      // First get current status
-      const { data: currentSession, error: fetchError } = await supabase
-        .schema("app2")
-        .from("sessions")
-        .select("status")
-        .eq("id", sessionId)
-        .single();
-
-      if (fetchError) {
-        results.push({ id: m.id, status: "error", code: fetchError.code ?? "db_error", message: fetchError.message });
-        continue;
-      }
-
-      const currentStatus = currentSession?.status;
-      const newStatus = p.status;
-
-      // Validate transition
-      if (currentStatus && currentStatus !== newStatus) {
-        const validNextStates = VALID_TRANSITIONS[currentStatus as keyof typeof VALID_TRANSITIONS] || [];
-        if (!validNextStates.includes(newStatus)) {
-          results.push({ id: m.id, status: "error", code: "invalid_payload" });
-          continue;
-        }
-      }
-    }
-
-    const { error } = await supabase
+  if (completedBaselineIds.length > 0) {
+    // 1) flip profiles.assessment_required = false
+    const { error: profErr } = await supabase
       .schema("app2")
-      .from("sessions")
-      .update(updateData)
-      .eq("id", sessionId);
+      .from("profiles")
+      .update({ assessment_required: false })
+      .eq("user_id", userId);
+    if (profErr) {
+      return err(400, (profErr as any).code || "EF_DB_ERROR", "Profile flip failed", profErr);
+    }
 
-    if (error) {
-      results.push({ id: m.id, status: "error", code: error.code ?? "db_error", message: error.message });
-    } else {
-      results.push({ id: m.id, status: "ok" });
+    // 2) log to coach_audit
+    const auditRows = completedBaselineIds.map((sid) => ({
+      user_id: userId,
+      event: "baseline_completed",
+      session_id: sid,
+      created_at: new Date().toISOString(),
+    }));
+    const { error: auditErr } = await supabase
+      .schema("app2")
+      .from("coach_audit")
+      .insert(auditRows);
+    if (auditErr) {
+      return err(400, (auditErr as any).code || "EF_DB_ERROR", "Audit log failed", auditErr);
     }
   }
 
-  return new Response(JSON.stringify({ results }), {
-    headers: { "content-type": "application/json" },
-  });
+  return json(200, { ok: true, updated: updated?.length ?? 0, items: updated ?? [] });
 });
