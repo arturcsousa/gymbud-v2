@@ -11,7 +11,11 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Namespaces**: 21 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, stats, badges, sync)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
-## Recent Updates (2025-08-28 10:41)
+## Recent Updates (2025-08-28 14:09)
+- **Stats Page Translation Fix**: Resolved PT-BR stats.json structure mismatch by moving nested keys to root level
+- **Translation Coverage**: Added missing translation keys for stats page in both EN and PT-BR languages
+- **Key Structure Alignment**: Fixed PT-BR stats translations to match EN format for proper i18next namespace resolution
+- **Complete Stats Coverage**: Both languages now have full translation coverage for metrics, charts, sharing, and UI elements
 - **TypeScript Compilation Fixes**: Resolved all TypeScript errors in onboarding components
 - **Type Safety**: Fixed GoalsPage.tsx and ProfilePage.tsx type mismatches for OnboardingState interface
 - **Form Data Casting**: Proper type casting for days_per_week and confidence values to match expected union types

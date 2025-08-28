@@ -1,5 +1,32 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 14:09 - Stats Page Translation & UI Improvements
+**Fixed**: Resolved translation key display issues and improved text visibility on Stats page
+- **Translation Structure**: Fixed PT-BR stats.json structure to match EN format by moving nested keys to root level
+- **Translation Coverage**: Added missing translation keys for both EN and PT-BR (title, subtitle, metrics, charts, sharing)
+- **UI Cleanup**: Removed GymBud branding section from metrics card for cleaner design
+- **Text Visibility**: Changed all grey text (`text-white/70`, `text-gray-400`) to bold white (`text-white font-bold`) for better readability
+  - Metric labels under numbers now bold white
+  - Page subtitle now bold white
+  - Chart empty state messages now bold white
+- **User Experience**: Stats page now displays proper translated content in both languages with improved contrast
+
+**Technical**: Translation keys now work correctly with i18next namespace structure, all text clearly visible against teal gradient background
+
+## 2025-08-28 13:52 - RLS Policy Verification Harness (Database Work)
+**Added**: Comprehensive RLS policy testing infrastructure for database security validation
+- **Test Structure**: Created `/qa/` directory with RLS audit harness files
+  - `/qa/rls_audit.ts` - Node script using @supabase/supabase-js@2 for policy testing
+  - `/qa/config.example.json` - Configuration template with anonKey, serviceRole, projectUrl
+  - `/qa/users.json` - Test users (owner vs other) with access tokens from GoTrue sign-in
+  - `/qa/results/` - JSON + Markdown reports directory for test outputs
+- **CI Integration**: Added `.github/workflows/rls-audit.yml` to run on PRs affecting schema or Edge Functions
+- **Test Coverage**: Enumerates all tables/views in app2.*, ref_*, and preserve.* schemas
+- **Policy Validation**: Tests SELECT/INSERT/UPDATE/DELETE operations with owner JWT, other JWT, and anon access
+- **Reporting**: Asserts expected pass/fail per policy, prints diffs and actionable suggestions for policy fixes
+
+**Technical**: Automated security testing ensures RLS policies work correctly across all database objects with comprehensive coverage
+
 ## 2025-08-28 11:11 - StatsPage TypeScript Build Error Fixed
 **Fixed**: Resolved TypeScript compilation error TS6133 in StatsPage component
 - **Removed**: Unused `user` state variable and related useEffect that was causing build failure

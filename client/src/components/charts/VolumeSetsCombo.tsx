@@ -17,35 +17,35 @@ export function VolumeSetsCombo({ data }: VolumeSetsComboProps) {
           dataKey="day" 
           axisLine={false}
           tickLine={false}
-          tick={{ fill: '#94a3b8', fontSize: 12 }}
+          tick={{ fill: '#ffffff', fontSize: 12, fontWeight: 'bold' }}
         />
         <YAxis 
           yAxisId="left"
           axisLine={false}
           tickLine={false}
-          tick={{ fill: '#94a3b8', fontSize: 12 }}
+          tick={{ fill: '#ffffff', fontSize: 12, fontWeight: 'bold' }}
         />
         <YAxis 
           yAxisId="right"
           orientation="right"
           axisLine={false}
           tickLine={false}
-          tick={{ fill: '#94a3b8', fontSize: 12 }}
+          tick={{ fill: '#ffffff', fontSize: 12, fontWeight: 'bold' }}
         />
         <Bar 
           yAxisId="left"
           dataKey="volume" 
-          fill="#0d9488"
-          opacity={0.6}
+          fill="#00BFA6"
+          opacity={0.8}
           radius={[2, 2, 0, 0]}
         />
         <Line 
           yAxisId="right"
           type="monotone"
           dataKey="sets"
-          stroke="#14b8a6"
-          strokeWidth={2}
-          dot={{ fill: '#14b8a6', strokeWidth: 2, r: 4 }}
+          stroke="#64FFDA"
+          strokeWidth={3}
+          dot={{ fill: '#64FFDA', strokeWidth: 2, r: 4 }}
         />
       </ComposedChart>
     </ResponsiveContainer>

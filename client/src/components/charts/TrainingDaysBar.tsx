@@ -17,16 +17,16 @@ export function TrainingDaysBar({ data }: TrainingDaysBarProps) {
           dataKey="day" 
           axisLine={false}
           tickLine={false}
-          tick={{ fill: '#94a3b8', fontSize: 12 }}
+          tick={{ fill: '#ffffff', fontSize: 12, fontWeight: 'bold' }}
         />
         <YAxis 
           axisLine={false}
           tickLine={false}
-          tick={{ fill: '#94a3b8', fontSize: 12 }}
+          tick={{ fill: '#ffffff', fontSize: 12, fontWeight: 'bold' }}
         />
         <Bar 
           dataKey="sessions" 
-          fill="#0d9488"
+          fill="#00BFA6"
           radius={[4, 4, 0, 0]}
         />
       </BarChart>

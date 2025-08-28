@@ -14,7 +14,7 @@ import { useProfileData } from '@/hooks/useProfileData';
 import domtoimage from 'dom-to-image-more';
 
 export default function StatsPage() {
-  const { t } = useTranslation(['stats', 'badges']);
+  const { t } = useTranslation('stats');
   const shareRef = useRef<HTMLDivElement>(null);
   const { checkAndAwardBadges } = useStreakBadges();
   
@@ -92,12 +92,12 @@ export default function StatsPage() {
         const file = new File([blob], 'gymbud-progress.png', { type: 'image/png' });
         
         await navigator.share({
-          title: t('stats:shareTitle'),
-          text: t('stats:shareText'),
+          title: t('shareTitle'),
+          text: t('shareText'),
           files: [file],
         });
         
-        toast.success(t('stats:shareSuccess'));
+        toast.success(t('shareSuccess'));
       } else {
         // Fallback to download
         const link = document.createElement('a');
@@ -105,11 +105,11 @@ export default function StatsPage() {
         link.href = dataUrl;
         link.click();
         
-        toast.success(t('stats:downloadSuccess'));
+        toast.success(t('downloadSuccess'));
       }
     } catch (error) {
       console.error('Share failed:', error);
-      toast.error(t('stats:shareError'));
+      toast.error(t('shareError'));
     }
   };
 
@@ -152,8 +152,8 @@ export default function StatsPage() {
         {/* Header */}
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
           <div className="text-center space-y-2">
-            <h1 className="text-xl font-bold text-white">{t('stats:title')}</h1>
-            <p className="text-white/70 text-sm">{t('stats:subtitle')}</p>
+            <h1 className="text-xl font-bold text-white">{t('title')}</h1>
+            <p className="text-white/70 text-sm">{t('subtitle')}</p>
           </div>
         </div>
 
@@ -165,19 +165,19 @@ export default function StatsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white/5 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-white">{metrics.totalSessions}</div>
-              <div className="text-white font-bold text-xs">{t('stats:totalSessions')}</div>
+              <div className="text-white font-bold text-xs">{t('totalSessions')}</div>
             </div>
             <div className="bg-white/5 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-white">{metrics.currentStreak}</div>
-              <div className="text-white font-bold text-xs">{t('stats:currentStreak')}</div>
+              <div className="text-white font-bold text-xs">{t('currentStreak')}</div>
             </div>
             <div className="bg-white/5 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-white">{Math.round(metrics.totalVolume)}</div>
-              <div className="text-white font-bold text-xs">{t('stats:totalVolume')}</div>
+              <div className="text-white font-bold text-xs">{t('totalVolume')}</div>
             </div>
             <div className="bg-white/5 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-white">{metrics.avgRPE.toFixed(1)}</div>
-              <div className="text-white font-bold text-xs">{t('stats:avgRPE')}</div>
+              <div className="text-white font-bold text-xs">{t('avgRPE')}</div>
             </div>
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function StatsPage() {
         {/* Charts */}
         <div className="space-y-4">
           <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
-            <ChartCard title={t('stats:weeklyActivity')}>
+            <ChartCard title={t('weeklyActivity')}>
               {metrics.weeklyData.length > 0 ? (
                 <TrainingDaysBar data={metrics.weeklyData} />
               ) : (
@@ -200,7 +200,7 @@ export default function StatsPage() {
           </div>
 
           <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
-            <ChartCard title={t('stats:volumeAndSets')}>
+            <ChartCard title={t('volumeAndSets')}>
               {metrics.weeklyData.length > 0 ? (
                 <VolumeSetsCombo data={metrics.weeklyData} />
               ) : (
@@ -215,7 +215,7 @@ export default function StatsPage() {
           </div>
 
           <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
-            <ChartCard title={t('stats:weightProgress')}>
+            <ChartCard title={t('weightProgress')}>
               {profileData.weightHistory.length > 0 ? (
                 <WeightProgression data={profileData.weightHistory} />
               ) : (
@@ -238,7 +238,7 @@ export default function StatsPage() {
             disabled={metrics.totalSessions === 0}
           >
             <Share2 className="w-5 h-5" />
-            {t('stats:shareProgress')}
+            {t('shareProgress')}
           </Button>
         </div>
       </div>

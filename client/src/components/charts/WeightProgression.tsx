@@ -15,13 +15,13 @@ export function WeightProgression({ data }: WeightProgressionProps) {
           dataKey="date" 
           axisLine={false}
           tickLine={false}
-          tick={{ fill: '#94a3b8', fontSize: 12 }}
+          tick={{ fill: '#ffffff', fontSize: 12, fontWeight: 'bold' }}
           tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
         />
         <YAxis 
           axisLine={false}
           tickLine={false}
-          tick={{ fill: '#94a3b8', fontSize: 12 }}
+          tick={{ fill: '#ffffff', fontSize: 12, fontWeight: 'bold' }}
           domain={['dataMin - 1', 'dataMax + 1']}
         />
         <Tooltip
@@ -37,10 +37,10 @@ export function WeightProgression({ data }: WeightProgressionProps) {
         <Line 
           type="monotone"
           dataKey="weight"
-          stroke="#14b8a6"
-          strokeWidth={3}
-          dot={{ fill: '#14b8a6', strokeWidth: 2, r: 5 }}
-          activeDot={{ r: 7, fill: '#0d9488' }}
+          stroke="#64FFDA"
+          strokeWidth={4}
+          dot={{ fill: '#64FFDA', strokeWidth: 2, r: 6 }}
+          activeDot={{ r: 8, fill: '#00BFA6' }}
         />
       </LineChart>
     </ResponsiveContainer>
