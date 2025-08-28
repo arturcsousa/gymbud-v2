@@ -1,11 +1,24 @@
 // Basic telemetry system for GymBud
 // This can be extended with PostHog, Sentry, or other analytics services
+import { db } from '@/db';
 
 interface TelemetryEvent {
   event: string;
   properties?: Record<string, any>;
   timestamp?: Date;
 }
+
+// New typed events for better type safety
+export type TelemetryEventType =
+  | { type: 'onb_step_viewed'; step_id: string }
+  | { type: 'onb_saved'; step_id: string }
+  | { type: 'onb_completed' }
+  | { type: 'plan_created'; plan_id: string }
+  | { type: 'baseline_session_seen'; session_id: string }
+  | { type: 'sync_success'; items: number }
+  | { type: 'sync_failure'; code: string }
+  | { type: 'set_void_started'; set_id: string }
+  | { type: 'set_void_confirmed'; set_id: string };
 
 class TelemetryService {
   private events: TelemetryEvent[] = [];
@@ -164,6 +177,24 @@ class TelemetryService {
   // Clear events (useful for testing)
   clearEvents() {
     this.events = [];
+  }
+}
+
+// New typed track function for better DX
+export function track(event: TelemetryEventType) {
+  telemetry.track(event.type, event);
+  
+  // Also store in IndexedDB for sync events log
+  if (event.type.startsWith('sync_') || event.type.includes('void')) {
+    try {
+      db.sync_events.add({
+        type: event.type,
+        data: event,
+        created_at: new Date().toISOString()
+      });
+    } catch (error) {
+      console.warn('Failed to store sync event:', error);
+    }
   }
 }
 

@@ -1,6 +1,13 @@
 {
   "sync": {
     "title": "Sincronização",
+    "status": "Status",
+    "syncNow": "Sincronizar agora",
+    "recentEvents": "Eventos recentes",
+    "success": "sucesso",
+    "failure": "falha",
+    "items": "itens",
+    "noEvents": "Nenhum evento de sincronização ainda",
     "description": "Gerencie os dados offline e a sincronização com a nuvem.",
     "sync_now": "Sincronizar agora",
     "pending": "Pendentes",

@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 import i18n from '@/i18n'
 import { mapEdgeError, type ErrorCode } from '@/lib/errors/mapEdgeError'
+import { track } from '@/lib/telemetry'
 
 let flushLock = false
 let pullLock = false
@@ -383,6 +384,8 @@ export async function flush(maxBatch = 50): Promise<void> {
       await updateMeta('last_sync_error_code', null)
       await addSyncEvent({ ts: now, kind: 'success', items: successCount })
       
+      track({ type: 'sync_success', items: successCount })
+      
       toast.success(i18n.t('app.sync.success'), {
         description: i18n.t('app.sync.success_detail'),
       })
@@ -390,6 +393,8 @@ export async function flush(maxBatch = 50): Promise<void> {
       await updateMeta('last_sync_status', 'failure')
       await updateMeta('last_sync_error_code', lastErrorCode)
       await addSyncEvent({ ts: now, kind: 'failure', code: lastErrorCode || 'unknown' })
+      
+      track({ type: 'sync_failure', code: lastErrorCode || 'unknown' })
       
       toast.error(i18n.t('app.sync.failure'), {
         description: i18n.t('app.sync.failure_detail'),

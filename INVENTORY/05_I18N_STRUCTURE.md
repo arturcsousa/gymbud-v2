@@ -11,7 +11,21 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Namespaces**: 22 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, stats, badges, sync)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
-## Recent Updates (2025-08-28 14:09)
+## Recent Updates (2025-08-28 15:51)
+- **Telemetry System Integration**: Added sync event tracking UI strings to settings namespace
+- **Settings Namespace Enhancement**: Added sync-related keys for developer UI and event logging
+  - `sync.recentEvents`: "Recent Events" / "Eventos recentes"
+  - `sync.noEvents`: "No sync events yet" / "Nenhum evento de sincronização ainda"
+  - `sync.syncNow`: "Sync Now" / "Sincronizar agora"
+  - `sync.status`: "Status" / "Status"
+  - `sync.success`: "success" / "sucesso"
+  - `sync.failure`: "failure" / "falha"
+  - `sync.items`: "items" / "itens"
+- **Developer Mode Support**: Added UI strings for sync events log component in SettingsPage
+- **Telemetry Integration**: Enhanced settings translations to support real-time sync event debugging
+- **Backward Compatibility**: Maintained existing sync translation structure while adding new keys
+
+## Previous Updates (2025-08-28 14:09)
 - **Stats Page Translation Fix**: Resolved PT-BR stats.json structure mismatch by moving nested keys to root level
 - **Translation Coverage**: Added missing translation keys for stats page in both EN and PT-BR languages
 - **Key Structure Alignment**: Fixed PT-BR stats translations to match EN format for proper i18next namespace resolution

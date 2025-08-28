@@ -1,5 +1,33 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 15:51 - Telemetry System with Sync Event Tracking
+**Implemented**: Complete telemetry system with sync event tracking and developer UI for debugging
+- **Telemetry Types**: Added new typed telemetry events for sync operations and set void tracking
+  - `sync_success`, `sync_failure` events with item counts and error codes
+  - `set_void_started`, `set_void_confirmed` events for undo operation tracking
+  - Enhanced existing telemetry with IndexedDB storage for sync events
+- **Sync Queue Integration**: Added telemetry tracking to sync operations in `client/src/sync/queue.ts`
+  - Success tracking: `track({ type: 'sync_success', items: successCount })`
+  - Failure tracking: `track({ type: 'sync_failure', code: errorCode })`
+  - Maintains existing `addSyncEvent` system alongside new telemetry
+- **Set Void Tracking**: Enhanced undo functionality with comprehensive telemetry in `useSessionData` hook
+  - Immediate tracking: `set_void_started` when user taps undo button
+  - Server confirmation: `set_void_confirmed` when server acknowledges void operation
+  - Covers both E1 (pending removal) and E2 (durable void) scenarios
+- **Developer UI**: Added sync events log in Settings page with dev mode toggle
+  - `SyncEventsLog` component displays last 10 sync events with timestamps
+  - Developer mode toggle to show/hide debug information
+  - Real-time updates using `useLiveQuery` from Dexie
+- **i18n Support**: Added sync event UI strings for EN and PT-BR
+  - Settings namespace: `sync.recentEvents`, `sync.noEvents`, `sync.syncNow`
+  - Portuguese translations: "Eventos recentes", "Sincronizar agora"
+- **Enhanced Telemetry**: Updated `client/src/lib/telemetry.ts` with typed events and IndexedDB integration
+  - Type-safe `TelemetryEventType` union for better developer experience
+  - Automatic storage of sync/void events in `sync_events` table
+  - Maintains backward compatibility with existing class-based telemetry
+
+**Technical**: Provides comprehensive debugging capabilities for offline-first sync system with user-friendly developer tools
+
 ## 2025-08-28 14:39 - Sync-Sessions Edge Function with Baseline Handling
 **Implemented**: Complete sync-sessions Edge Function with baseline completion workflow and audit logging
 - **Edge Function**: Created `supabase/functions/sync-sessions/index.ts` with validated request handling

@@ -4,6 +4,7 @@ import { db, SessionRow, SessionExerciseRow, LoggedSetRow, SyncEventRow } from '
 import { supabase } from '@/lib/supabase';
 import { enqueueLoggedSet, enqueueSessionUpdate, voidLoggedSet } from '@/sync/queue';
 import { toast } from 'sonner';
+import { track } from '@/lib/telemetry';
 
 interface SessionExercise {
   session_exercise_id: string;
@@ -289,6 +290,9 @@ export function useSessionData(sessionId?: string) {
         };
         await db.sync_events.add(telemetryEvent);
 
+        track({ type: 'set_void_started', set_id: lastSet.id });
+        track({ type: 'set_void_confirmed', set_id: lastSet.id });
+
         return { type: 'pending_removed', setNumber: lastSet.set_number };
       } else {
         // E2 behavior: Durable undo - enqueue void mutation
@@ -323,6 +327,8 @@ export function useSessionData(sessionId?: string) {
           items: 1
         };
         await db.sync_events.add(telemetryEvent);
+
+        track({ type: 'set_void_started', set_id: lastSet.id });
 
         return { type: 'void_queued', setNumber: lastSet.set_number };
       }

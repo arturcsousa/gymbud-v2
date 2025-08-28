@@ -1,6 +1,13 @@
 {
   "sync": {
     "title": "Sync",
+    "status": "Status",
+    "syncNow": "Sync Now",
+    "recentEvents": "Recent Events",
+    "success": "success",
+    "failure": "failure",
+    "items": "items",
+    "noEvents": "No sync events yet",
     "description": "Manage offline data and synchronization with the cloud.",
     "sync_now": "Sync Now",
     "pending": "Pending",

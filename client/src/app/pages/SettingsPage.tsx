@@ -6,18 +6,40 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { supabase } from '@/lib/supabase'
 import { db } from '@/db/gymbud-db'
 import { pendingCount, requestFlush } from '@/sync/queue'
-import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Bell, Globe, Database, LogOut } from 'lucide-react'
+import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Bell, Globe, Database, LogOut, Code } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
+function SyncEventsLog() {
+  const { t } = useTranslation(['settings'])
+  const events = useLiveQuery(
+    () => db.sync_events.orderBy('created_at').reverse().limit(10).toArray(),
+    []
+  )
+
+  if (!events?.length) return <p className="text-white/70 text-xs">{t('sync.noEvents')}</p>
+
+  return (
+    <ul className="space-y-2 text-sm">
+      {events.map(ev => (
+        <li key={ev.id} className="text-white/80 text-xs">
+          <span>{new Date(ev.created_at).toLocaleTimeString()} — {ev.type}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function SettingsPage() {
-  const { t, i18n } = useTranslation(['app', 'common', 'errors'])
+  const { t, i18n } = useTranslation(['app', 'common', 'errors', 'settings'])
   const [, setLocation] = useLocation()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [syncing, setSyncing] = useState(false)
+  const [devMode, setDevMode] = useState(false)
   
   // Settings state
   const [email, setEmail] = useState('')
@@ -311,9 +333,36 @@ function SettingsPage() {
             disabled={syncing || syncMeta?.lastSyncStatus === 'running'}
             className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7] text-sm py-2"
           >
-            {syncing ? t('app:sync.syncing') : t('app:settings.sync.syncNow')}
+            {syncing ? t('app:sync.syncing') : t('settings:sync.syncNow')}
           </Button>
         </div>
+
+        {/* Developer Mode Toggle */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Code className="w-4 h-4 text-white" />
+              <span className="text-white text-sm">Developer Mode</span>
+            </div>
+            <Switch
+              checked={devMode}
+              onCheckedChange={setDevMode}
+              className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00BFA6] data-[state=checked]:to-[#64FFDA]"
+            />
+          </div>
+        </div>
+
+        {/* Sync Events Log (Dev Mode Only) */}
+        {devMode && (
+          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-xl ring-1 ring-white/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-white text-sm">{t('settings:sync.recentEvents')}</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <SyncEventsLog />
+            </CardContent>
+          </Card>
+        )}
 
         {/* Actions */}
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20 space-y-3">

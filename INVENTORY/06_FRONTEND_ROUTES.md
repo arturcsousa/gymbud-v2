@@ -3,7 +3,24 @@
 ## Overview
 Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
-## Recent Updates (2025-08-28 14:29)
+## Recent Updates (2025-08-28 15:51)
+- **Telemetry System Integration**: Added comprehensive sync event tracking with developer UI
+- **Settings Page Enhancement**: Added developer mode toggle and sync events log component
+  - `SyncEventsLog` component displays last 10 sync events with real-time updates
+  - Developer mode toggle to show/hide debug information using `useLiveQuery` from Dexie
+  - Enhanced settings translations for sync event UI (EN/PT-BR)
+- **Sync Queue Telemetry**: Integrated telemetry tracking into sync operations
+  - Success/failure tracking with item counts and error codes
+  - Maintains existing `addSyncEvent` system alongside new typed telemetry
+- **Set Void Tracking**: Enhanced undo functionality with comprehensive telemetry
+  - `set_void_started` when user taps undo button
+  - `set_void_confirmed` when server acknowledges void operation
+  - Covers both E1 (pending removal) and E2 (durable void) scenarios
+- **Type-Safe Telemetry**: Added `TelemetryEventType` union with IndexedDB integration
+  - Automatic storage of sync/void events in `sync_events` table
+  - Backward compatibility with existing class-based telemetry system
+
+## Previous Updates (2025-08-28 14:29)
 - **Sync Namespace Implementation**: Added missing sync.json translation files for both EN and PT-BR languages
 - **TypeScript Build Fix**: Resolved import errors in i18n configuration for sync translation files
 - **Offline-First PWA Support**: Enhanced sync system with comprehensive translations for status indicators, actions, messages, and errors
@@ -298,9 +315,14 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 ### `/settings` - SettingsPage
 - **Layout**: AuthPage-style geometric teal gradient background with single centered card
 - **Sections**: Account (email), Preferences (notifications, language, units), Sync status, About
+- **Developer Mode**: Toggle to show/hide sync events log for debugging
+  - **SyncEventsLog Component**: Real-time display of last 10 sync events with timestamps
+  - **Event Types**: Shows sync_success, sync_failure, set_void_started, set_void_confirmed events
+  - **Live Updates**: Uses `useLiveQuery` for real-time event monitoring from IndexedDB
 - **Language Selection**: Dropdown interface using `common:languages.*` keys (English/Português)
 - **Language Persistence**: Immediate application via `i18n.changeLanguage()` on settings save
-- **Sync Integration**: Live pending mutations count and sync status display
+- **Sync Integration**: Live pending mutations count and sync status display with manual sync trigger
+- **Telemetry Integration**: Enhanced with sync event tracking UI strings for EN/PT-BR
 - **Glass Morphism**: Semi-transparent card with backdrop blur effect
 - **Bottom Padding**: `pb-20` to prevent BottomNav overlap
 - **BottomNav**: Integrated with Settings tab active state
