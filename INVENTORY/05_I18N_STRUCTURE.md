@@ -25,7 +25,7 @@ Complete internationalization setup for GymBud v2 with English (default) and Por
 - **coach**: AI coaching interactions and suggestions
 - **progress**: Analytics, stats, and progress tracking
 - **pricing**: Subscription and billing content
-- **settings**: User preferences, sync management, account settings
+- **settings**: User preferences, sync management, account settings, app configuration
 - **errors**: Error messages and validation feedback
 - **validation**: Form validation messages
 
@@ -38,18 +38,34 @@ Complete internationalization setup for GymBud v2 with English (default) and Por
 ## Key Translation Areas
 
 ### Settings Namespace Extensions
-Recent additions for sync failure management:
+Recent additions for app settings persistence and sync failure management:
 ```json
 {
+  "saved": "Saved / Salvo",
+  "language": "Language / Idioma", 
+  "units": "Units / Unidades",
+  "metric": "Metric (kg, cm) / Métrico (kg, cm)",
+  "imperial": "Imperial (lb, ft) / Imperial (lb, ft)",
+  "notifications": "Notifications / Notificações",
+  "notificationsDesc": "Receive workout reminders and updates / Receba lembretes de treino e atualizações",
+  "syncing": "Syncing... / Sincronizando...",
   "sync": {
-    "deadLetterQueue": "Dead-Letter Queue / Fila de erros",
-    "noFailed": "No failed syncs 🎉 / Sem falhas de sincronização 🎉",
+    "deadLetterQueue": "Dead-Letter Queue / Fila de Falhas",
+    "noFailed": "No failed syncs / Nenhuma sincronização falhada",
     "retry": "Retry / Tentar novamente",
-    "retryAll": "Retry all / Tentar todos", 
+    "retryAll": "Retry all / Tentar todas novamente", 
     "delete": "Delete / Excluir",
-    "deleteAll": "Delete all / Excluir todos",
+    "deleteAll": "Delete all / Excluir todas",
     "lastTried": "Last tried: / Última tentativa:"
   }
+}
+```
+
+### Error Namespace Extensions
+Added cloud sync error handling:
+```json
+{
+  "save_failed": "Could not save your settings to the cloud / Não foi possível salvar suas preferências na nuvem"
 }
 ```
 
@@ -86,9 +102,9 @@ client/src/i18n/
 │   │   ├── session.json
 │   │   ├── coach.json
 │   │   ├── progress.json
-│   │   ├── settings.json (enhanced with sync failure UI)
+│   │   ├── settings.json (enhanced with app settings + sync failure UI)
 │   │   ├── pricing.json
-│   │   ├── errors.json
+│   │   ├── errors.json (enhanced with cloud sync errors)
 │   │   ├── validation.json
 │   │   ├── faq.json
 │   │   ├── stats.json
@@ -103,6 +119,7 @@ client/src/i18n/
 - Interpolation: `t('sync.lastTried') + ' ' + timestamp`
 - Pluralization: `t('app:sync.pending', { count: pendingMutationsCount })`
 - Contextual keys: `t('settings:sync.deadLetterQueue')` for developer UI
+- Settings context: `t('settings.saved')` for auto-save notifications
 
 ## Quality Assurance
 - All user-facing strings localized in both EN and PT-BR
@@ -110,3 +127,4 @@ client/src/i18n/
 - Cultural adaptation for Brazilian Portuguese
 - Technical terms appropriately translated or preserved
 - Developer UI strings included for debugging tools
+- Settings persistence UI fully localized with contextual descriptions

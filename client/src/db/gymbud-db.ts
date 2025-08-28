@@ -67,6 +67,13 @@ export interface LoggedSetRow {
   updated_at: number
 }
 
+export type AppSettings = {
+  language: 'en' | 'pt-BR';
+  units: 'metric' | 'imperial';
+  notifications_opt_in: boolean;
+  updated_at: number; // ms epoch
+};
+
 export class GymBudDB extends Dexie {
   meta!: Table<MetaRow, string>
   sync_events!: Table<SyncEventRow, number>
@@ -75,6 +82,7 @@ export class GymBudDB extends Dexie {
   session_exercises!: Table<SessionExerciseRow, string>
   logged_sets!: Table<LoggedSetRow, string>
   onboarding_state!: Table<OnboardingState, string>
+  settings!: Table<{ key: string; value: any }, string>
 
   constructor() {
     super('gymbud')
@@ -120,7 +128,7 @@ export class GymBudDB extends Dexie {
       onboarding_state: 'user_id, updated_at'
     })
 
-    // Add failure tracking fields in version 4
+    // Add failure tracking fields and settings table in version 4
     this.version(4).stores({
       meta: 'key, updated_at',
       sync_events: '++id, ts',
@@ -132,9 +140,25 @@ export class GymBudDB extends Dexie {
         'id, session_id, order_index, updated_at, [session_id+order_index]',
       logged_sets:
         'id, session_exercise_id, set_number, updated_at, [session_exercise_id+set_number]',
-      onboarding_state: 'user_id, updated_at'
+      onboarding_state: 'user_id, updated_at',
+      settings: 'key' // single-row KV
     })
   }
 }
 
 export const db = new GymBudDB()
+
+export async function getSettings(): Promise<AppSettings> {
+  const row = await db.settings.get('app');
+  if (row) return row.value as AppSettings;
+  const def: AppSettings = { language: 'en', units: 'metric', notifications_opt_in: false, updated_at: Date.now() };
+  await db.settings.put({ key: 'app', value: def });
+  return def;
+}
+
+export async function setSettings(s: Partial<AppSettings>) {
+  const cur = await getSettings();
+  const next = { ...cur, ...s, updated_at: Date.now() } as AppSettings;
+  await db.settings.put({ key: 'app', value: next });
+  return next;
+}

@@ -1,4 +1,12 @@
 {
+  "saved": "Saved",
+  "language": "Language",
+  "units": "Units",
+  "metric": "Metric (kg, cm)",
+  "imperial": "Imperial (lb, ft)",
+  "notifications": "Notifications",
+  "notificationsDesc": "Receive workout reminders and updates",
+  "syncing": "Syncing...",
   "sync": {
     "title": "Sync",
     "status": "Status",

@@ -6,5 +6,6 @@
   "rate_limited": "Too many requests. Please wait a moment and try again.",
   "server_unavailable": "Server is unavailable. Try again in a moment.",
   "timeout": "Request timed out. Please try again.",
-  "unknown": "Something went wrong. Please try again."
+  "unknown": "Something went wrong. Please try again.",
+  "save_failed": "Could not save your settings to the cloud"
 }

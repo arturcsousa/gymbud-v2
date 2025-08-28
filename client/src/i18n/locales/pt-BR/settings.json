@@ -1,37 +1,45 @@
 {
+  "saved": "Salvo",
+  "language": "Idioma",
+  "units": "Unidades",
+  "metric": "Métrico (kg, cm)",
+  "imperial": "Imperial (lb, ft)",
+  "notifications": "Notificações",
+  "notificationsDesc": "Receba lembretes de treino e atualizações",
+  "syncing": "Sincronizando...",
   "sync": {
     "title": "Sincronização",
     "status": "Status",
-    "syncNow": "Sincronizar agora",
-    "recentEvents": "Eventos recentes",
+    "syncNow": "Sincronizar Agora",
+    "recentEvents": "Eventos Recentes",
     "success": "sucesso",
     "failure": "falha",
     "items": "itens",
     "noEvents": "Nenhum evento de sincronização ainda",
-    "description": "Gerencie os dados offline e a sincronização com a nuvem.",
-    "sync_now": "Sincronizar agora",
-    "pending": "Pendentes",
-    "pending_count": "{{count}} pendentes",
-    "last_sync": "Última sincronização",
+    "description": "Gerencie dados offline e sincronização com a nuvem.",
+    "sync_now": "Sincronizar Agora",
+    "pending": "Pendente",
+    "pending_count": "{{count}} pendente",
+    "last_sync": "Última Sincronização",
     "status": {
-      "running": "Em andamento",
+      "running": "Executando",
       "success": "Sucesso",
       "failure": "Falha"
     },
     "timeline": {
-      "title": "Atividade recente de sincronização",
-      "empty": "Ainda não há atividade de sincronização."
+      "title": "Atividade de Sincronização Recente",
+      "empty": "Nenhuma atividade de sincronização recente ainda."
     },
     "event": {
       "success": "Sucesso ({{items}} itens)",
       "failure": "Falha ({{code}})"
     },
-    "deadLetterQueue": "Fila de erros",
-    "noFailed": "Sem falhas de sincronização ",
+    "deadLetterQueue": "Fila de Falhas",
+    "noFailed": "Nenhuma sincronização falhada",
     "retry": "Tentar novamente",
-    "retryAll": "Tentar todos",
+    "retryAll": "Tentar todas novamente",
     "delete": "Excluir",
-    "deleteAll": "Excluir todos",
+    "deleteAll": "Excluir todas",
     "lastTried": "Última tentativa:"
   }
 }

@@ -7,8 +7,10 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { supabase } from '@/lib/supabase'
 import { db } from '@/db/gymbud-db'
+import { useSettings } from '@/providers/SettingsProvider'
 import { pendingCount, requestFlush, retryFailed, retryAllFailed, deleteFailed, clearAllFailed } from '@/sync/queue'
 import { errorLabels } from '@/lib/errors/mapEdgeError'
 import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Bell, Globe, Database, LogOut, Code } from 'lucide-react'
@@ -97,15 +99,14 @@ function SettingsPage() {
   const { t, i18n } = useTranslation(['app', 'common', 'errors', 'settings'])
   const [, setLocation] = useLocation()
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [devMode, setDevMode] = useState(false)
   
+  // Use settings context
+  const { settings, update, syncing: settingsSyncing } = useSettings()
+  
   // Settings state
   const [email, setEmail] = useState('')
-  const [notifications, setNotifications] = useState(true)
-  const [units, setUnits] = useState<'metric' | 'imperial'>('imperial')
-  const [language, setLanguage] = useState('en')
 
   // Live sync data
   const pendingMutationsCount = useLiveQuery(() => pendingCount(), [])
@@ -131,36 +132,10 @@ function SettingsPage() {
       if (user) {
         setEmail(user.email || '')
       }
-      
-      // Load user preferences (placeholder)
-      setNotifications(true)
-      setUnits('imperial')
-      setLanguage(i18n.language)
     } catch (error) {
       console.error('Error loading user data:', error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleSaveSettings = async () => {
-    setSaving(true)
-    try {
-      // Save settings (placeholder)
-      console.log('Saving settings:', {
-        notifications,
-        units,
-        language
-      })
-      
-      // Change language if different
-      if (language !== i18n.language) {
-        await i18n.changeLanguage(language)
-      }
-    } catch (error) {
-      console.error('Error saving settings:', error)
-    } finally {
-      setSaving(false)
     }
   }
 
@@ -202,7 +177,7 @@ function SettingsPage() {
     return t('app:sync.daysAgo', { count: diffDays })
   }
 
-  if (loading) {
+  if (loading || !settings) {
     return (
       <div 
         className="min-h-screen relative overflow-hidden pb-20"
@@ -303,59 +278,52 @@ function SettingsPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Globe className="w-4 h-4 text-white" />
-              <span className="text-white text-sm">{t('app:settings.language')}</span>
+              <span className="text-white text-sm">{t('settings.language')}</span>
             </div>
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="bg-white/20 text-white text-sm rounded-lg px-3 py-1 border border-white/30 focus:outline-none focus:ring-2 focus:ring-[#00BFA6] focus:border-transparent"
-            >
-              <option value="en" className="bg-slate-800 text-white">{t('common:languages.en')}</option>
-              <option value="pt-BR" className="bg-slate-800 text-white">{t('common:languages.pt-BR')}</option>
-            </select>
+            <Select value={settings.language} onValueChange={(v) => update({ language: v as any })}>
+              <SelectTrigger className="w-32 bg-white/20 text-white border-white/30">
+                <SelectValue placeholder="Language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="pt-BR">Português (Brasil)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
         {/* Units */}
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
-          <div className="flex items-center gap-2 mb-3">
-            <Database className="w-4 h-4 text-white" />
-            <h2 className="text-sm font-semibold text-white">{t('app:settings.units')}</h2>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => setUnits('imperial')}
-              className={`p-2 rounded-lg text-xs transition-all duration-200 ${
-                units === 'imperial' 
-                  ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
-                  : 'bg-white/20 text-white hover:bg-white/30'
-              }`}
-            >
-              {t('app:settings.imperial')}
-            </button>
-            <button
-              onClick={() => setUnits('metric')}
-              className={`p-2 rounded-lg text-xs transition-all duration-200 ${
-                units === 'metric' 
-                  ? 'bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900' 
-                  : 'bg-white/20 text-white hover:bg-white/30'
-              }`}
-            >
-              {t('app:settings.metric')}
-            </button>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Database className="w-4 h-4 text-white" />
+              <span className="text-white text-sm">{t('settings.units')}</span>
+            </div>
+            <Select value={settings.units} onValueChange={(v) => update({ units: v as any })}>
+              <SelectTrigger className="w-32 bg-white/20 text-white border-white/30">
+                <SelectValue placeholder="Units" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="metric">{t('settings.metric')}</SelectItem>
+                <SelectItem value="imperial">{t('settings.imperial')}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
         {/* Notifications */}
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Bell className="w-4 h-4 text-white" />
-              <span className="text-white text-sm">{t('app:settings.notifications')}</span>
+            <div>
+              <div className="flex items-center gap-2">
+                <Bell className="w-4 h-4 text-white" />
+                <span className="text-white text-sm font-medium">{t('settings.notifications')}</span>
+              </div>
+              <div className="text-white/70 text-xs mt-1">{t('settings.notificationsDesc')}</div>
             </div>
             <Switch
-              checked={notifications}
-              onCheckedChange={setNotifications}
+              checked={settings.notifications_opt_in}
+              onCheckedChange={(on) => update({ notifications_opt_in: !!on })}
               className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00BFA6] data-[state=checked]:to-[#64FFDA]"
             />
           </div>
@@ -366,6 +334,7 @@ function SettingsPage() {
           <div className="flex items-center gap-2 mb-3">
             <RefreshCw className="w-4 h-4 text-white" />
             <h2 className="text-sm font-semibold text-white">{t('app:settings.sync.title')}</h2>
+            {settingsSyncing && <span className="text-white/60 text-xs">{t('sync.syncing')}</span>}
           </div>
           <div className="bg-white/10 rounded-lg p-3 mb-3">
             <div className="flex items-center justify-between mb-2">
@@ -438,14 +407,6 @@ function SettingsPage() {
 
         {/* Actions */}
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20 space-y-3">
-          <Button
-            onClick={handleSaveSettings}
-            disabled={saving}
-            className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7] text-sm py-2"
-          >
-            {saving ? t('app:settings.saving') : t('app:settings.save')}
-          </Button>
-          
           <Button
             onClick={handleSignOut}
             variant="ghost"

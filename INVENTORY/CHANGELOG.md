@@ -1,5 +1,32 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 16:14 - Settings Store with Offline Cache + Cloud Sync Implementation
+**Implemented**: Complete settings persistence system with offline-first architecture and cloud synchronization
+- **Dexie Schema**: Added `settings` table (version 4) with single-row KV storage for app preferences
+  - `AppSettings` type: language ('en' | 'pt-BR'), units ('metric' | 'imperial'), notifications_opt_in (boolean), updated_at (timestamp)
+  - Helper functions: `getSettings()` with default seeding, `setSettings()` with partial updates and timestamp management
+- **Cloud Integration**: Created `settingsCloud.ts` with Supabase Auth user_metadata storage
+  - `loadCloudSettings()` and `saveCloudSettings()` functions using 'gymbud_settings_v1' metadata key
+  - No additional database tables required - leverages existing Supabase Auth infrastructure
+- **Settings Provider**: Implemented React context with reconciliation logic and side effects
+  - Boot sequence: load local → reconcile with cloud → apply newer settings based on updated_at timestamps
+  - Real-time updates with immediate local persistence + background cloud sync
+  - Side effects: automatic i18n language switching, units available via context
+  - Toast notifications: "Saved" on success, error messages on cloud sync failures
+- **UI Integration**: Enhanced SettingsPage with proper Select components and context integration
+  - Language switcher with English/Portuguese options
+  - Units selector with Metric/Imperial options  
+  - Notifications opt-in toggle with descriptive text
+  - Removed manual save button - settings auto-save on change with visual sync indicators
+- **i18n Coverage**: Added settings UI keys for EN/PT-BR
+  - Settings namespace: saved, language, units, metric, imperial, notifications, notificationsDesc, syncing
+  - Error namespace: save_failed for cloud sync error handling
+- **App Integration**: Wired SettingsProvider into AppShell to provide app-wide settings context
+  - All components can now access settings via `useSettings()` hook
+  - Automatic language application on app boot and settings changes
+
+**Technical**: Offline-first settings with cloud backup, no server DB changes required, ready for units integration in Session/Stats components
+
 ## 2025-08-28 15:57 - Sync Failure UX + Dead-Letter Viewer Implementation
 **Implemented**: Complete sync failure handling system with retry logic and developer UI for managing failed sync operations
 - **Dexie Schema Upgrade**: Bumped to version 4 with failure tracking fields in QueueMutation interface
@@ -331,41 +358,6 @@
 - **Property Name Fixes**: Corrected parameter names to match expected types
   - Fixed `session_exercise_id` to `sessionExerciseId` in logSet function call
   - Fixed `set_number` to `setNumber` in logSet function call
-- **Missing Dependency**: Added `@radix-ui/react-progress@^1.0.3` to package.json for Progress component
-- **Type Compatibility**: Fixed session status type by using `dbStatus` (properly typed) instead of `updates.status` (generic string) in enqueueSessionUpdate call
-- **Schema Alignment**: Removed `duration_sec` field from enqueueLoggedSet call since it's not part of LoggedSetRow type
-
-**Technical**: All TypeScript errors resolved, build now compiles successfully. Run `npm install` to install new dependency.
-
-## 2025-08-27 14:30 - Added RPCs for localized catalog
-**Added**: RPCs for localized exercise catalog access
-- `app2.rpc_get_exercise_by_id`
-- `app2.rpc_get_variants_for_exercise`
-- `app2.rpc_search_exercises`
-
-**Why**: Simple, locale-safe read paths without client GUC handling; leverages preserved v1 content with EN→base fallback.
-**Perf**: Uses existing GIN (tsvector/trgm). Added optional category/equipment indexes.
-**CSV refresh**: db_functions, db_views, db_indexes (if optional indexes applied).
-
-## 2025-08-27 14:10 - Preserve Integration & i18n Seed
-**Preserve Integration & i18n Seed**
-- Seeded missing EN/pt-BR rows for `preserve.exercise_library_i18n` and `preserve.exercise_variant_i18n`.
-- Added locale-aware views: `app2.v_exercise_library_localized`, `app2.v_exercise_variants_localized`.
-- Optional RPCs: `app2.rpc_get_exercise_library(lang)`, `app2.rpc_get_exercise_variants(lang)`.
-
-**Impact**: Frontend can immediately consume localized exercise & variant data with EN→base fallback, leveraging the rich v1 library without duplicating tables.
-
-**CSV Refresh**: db_tables, db_columns, db_views, db_functions (if RPCs created), db_foreign_keys, db_indexes, db_table_comments.
-
-## 2025-08-27 14:19 - TypeScript Build Error Resolution
-**Fixed**: Resolved all 6 TypeScript compilation errors preventing successful builds
-- **SessionPage Export**: Fixed import/export mismatch by changing from named import `{ SessionPage }` to default import `SessionPage` in AppShell.tsx
-- **Unused Imports**: Removed unused imports across multiple files
-  - Removed `React` import from SessionPage.tsx (using destructured imports)
-  - Removed unused `Minus` icon from SessionPage.tsx
-  - Removed unused `toast` import from SessionPage.tsx  
-  - Removed unused `domtoimage` import from StatsShareCard.tsx
-- **Property Name Fix**: Corrected `session_exercise_id` to `sessionExerciseId` in logSet function call to match expected parameter type
 - **Missing Dependency**: Added `@radix-ui/react-progress@^1.0.3` to package.json for Progress component
 - **Type Compatibility**: Fixed session status type by using `dbStatus` (properly typed) instead of `updates.status` (generic string) in enqueueSessionUpdate call
 - **Schema Alignment**: Removed `duration_sec` field from enqueueLoggedSet call since it's not part of LoggedSetRow type

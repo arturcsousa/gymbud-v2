@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 import { GradientLayout } from '@/app/components/GradientLayout'
+import SettingsProvider from '@/providers/SettingsProvider'
 
 import { AuthGuard } from '@/app/components/AuthGuard'
 import { OfflineIndicator } from '@/app/components/OfflineIndicator'
@@ -94,48 +95,50 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <GradientLayout>
-        {/* Offline indicator */}
-        <OfflineIndicator />
-        
-        {/* Conflict resolution banner */}
-        <ConflictBanner />
-        
-        {/* Install banner */}
-        <InstallBanner />
-        
-        {/* Main content */}
-        <div className="flex-1 flex flex-col">
-          {children || (
-            <Switch>
-              {/* Auth routes */}
-              <Route path="/auth/:action?" component={AuthPage} />
-              <Route path="/app/auth/verify" component={VerifyPage} />
-              <Route path="/app/auth/reset" component={ResetPasswordPage} />
-              
-              {/* Protected app routes */}
-              <AuthGuard user={user}>
-                <Route path="/" component={HomePage} />
+      <SettingsProvider>
+        <GradientLayout>
+          {/* Offline indicator */}
+          <OfflineIndicator />
+          
+          {/* Conflict resolution banner */}
+          <ConflictBanner />
+          
+          {/* Install banner */}
+          <InstallBanner />
+          
+          {/* Main content */}
+          <div className="flex-1 flex flex-col">
+            {children || (
+              <Switch>
+                {/* Auth routes */}
+                <Route path="/auth/:action?" component={AuthPage} />
+                <Route path="/app/auth/verify" component={VerifyPage} />
+                <Route path="/app/auth/reset" component={ResetPasswordPage} />
                 
-                {/* Onboarding routes */}
-                <Route path="/app/onboarding/biometrics" component={BiometricsPage} />
-                <Route path="/app/onboarding/goals" component={GoalsPage} />
-                <Route path="/app/onboarding/profile" component={ProfilePage} />
-                <Route path="/app/onboarding/review" component={ReviewPage} />
+                {/* Protected app routes */}
+                <AuthGuard user={user}>
+                  <Route path="/" component={HomePage} />
+                  
+                  {/* Onboarding routes */}
+                  <Route path="/app/onboarding/biometrics" component={BiometricsPage} />
+                  <Route path="/app/onboarding/goals" component={GoalsPage} />
+                  <Route path="/app/onboarding/profile" component={ProfilePage} />
+                  <Route path="/app/onboarding/review" component={ReviewPage} />
+                  
+                  <Route path="/session/:id" component={SessionPage} />
+                  <Route path="/history" component={HistoryPage} />
+                  <Route path="/history/:id" component={HistoryDetailPage} />
+                  <Route path="/stats" component={StatsPage} />
+                  <Route path="/settings" component={SettingsPage} />
+                </AuthGuard>
                 
-                <Route path="/session/:id" component={SessionPage} />
-                <Route path="/history" component={HistoryPage} />
-                <Route path="/history/:id" component={HistoryDetailPage} />
-                <Route path="/stats" component={StatsPage} />
-                <Route path="/settings" component={SettingsPage} />
-              </AuthGuard>
-              
-              {/* 404 fallback */}
-              <Route component={NotFoundPage} />
-            </Switch>
-          )}
-        </div>
-      </GradientLayout>
+                {/* 404 fallback */}
+                <Route component={NotFoundPage} />
+              </Switch>
+            )}
+          </div>
+        </GradientLayout>
+      </SettingsProvider>
     </QueryClientProvider>
   )
 }
