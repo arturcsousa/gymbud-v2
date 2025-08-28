@@ -4,6 +4,7 @@
 **Fixed**: Resolved all TypeScript compilation errors preventing successful builds
 - **GoalsPage.tsx**: Fixed type mismatch for `days_per_week` by properly casting `Number(data.days_per_week)` to union type `2 | 3 | 4 | 5 | 6`
 - **ProfilePage.tsx**: Fixed OnboardingState type mismatch by casting confidence values to expected union type `1 | 2 | 3 | 4 | 5`
+- **BiometricsPage.tsx**: Fixed telemetry.track() calls to use correct parameter structure (event name as first parameter, properties as second)
 - **Type Safety**: Ensured all onboarding form data conforms to expected OnboardingState interface types
 - **Build Status**: All TypeScript errors resolved, ready for production deployment
 
@@ -195,10 +196,7 @@
   - Fixed `session_exercise_id` to `sessionExerciseId` in logSet function call
   - Fixed `set_number` to `setNumber` in logSet function call
 - **Missing Dependency**: Added `@radix-ui/react-progress@^1.0.3` to package.json for Progress component
-- **Type Compatibility**: Fixed session status type mapping in useSessionData hook
-  - Used `Date.now()` for IndexedDB `updated_at` field (expects number)
-  - Mapped `dbStatus` back to queue status (`'draft'` → `'pending'`) for enqueueSessionUpdate
-  - Used separate ISO string for queue `updated_at` field
+- **Type Compatibility**: Fixed session status type by using `dbStatus` (properly typed) instead of `updates.status` (generic string) in enqueueSessionUpdate call
 - **Schema Alignment**: Removed `duration_sec` field from enqueueLoggedSet call since it's not part of LoggedSetRow type
 
 **Technical**: All TypeScript errors resolved, build now compiles successfully. Run `npm install` to install new dependency.

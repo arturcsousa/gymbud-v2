@@ -45,7 +45,7 @@ function BiometricsPage() {
       setUserId(user.id)
       
       // Track step viewed
-      telemetry.track({ type: 'onb_step_viewed', step_id: 'biometrics' })
+      telemetry.track('onb_step_viewed', { step_id: 'biometrics' })
       
       // Load existing onboarding state
       const state = await OnboardingStore.getState(user.id)
@@ -76,7 +76,7 @@ function BiometricsPage() {
       })
       
       // Track step saved
-      telemetry.track({ type: 'onb_saved', step_id: 'biometrics' })
+      telemetry.track('onb_saved', { step_id: 'biometrics' })
       
       // Navigate to next step
       navigate('/app/onboarding/goals')
