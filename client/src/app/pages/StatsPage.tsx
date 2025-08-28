@@ -7,7 +7,6 @@ import { ChartCard } from '@/components/charts/ChartCard';
 import { TrainingDaysBar } from '@/components/charts/TrainingDaysBar';
 import { VolumeSetsCombo } from '@/components/charts/VolumeSetsCombo';
 import { WeightProgression } from '@/components/charts/WeightProgression';
-import { AppHeader } from '@/app/components/AppHeader';
 import BottomNav from '@/components/BottomNav';
 import { useStreakBadges } from '@/hooks/useStreakBadges';
 import { useSessionMetrics } from '@/hooks/useSessionMetrics';
@@ -44,7 +43,7 @@ export default function StatsPage() {
         width: 1080,
         height: 1350,
         quality: 1,
-        bgcolor: '#0f172a',
+        bgcolor: '#005870',
         style: {
           transform: 'scale(2)',
           transformOrigin: 'top left',
@@ -87,15 +86,35 @@ export default function StatsPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-900/20 to-slate-900">
-        <AppHeader user={user} />
-        <div className="p-4 pb-20">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8">
-              <div className="flex items-center justify-center space-x-3">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-300"></div>
-                <span className="text-white">Loading your progress...</span>
-              </div>
+      <div 
+        className="min-h-screen relative overflow-hidden pb-20"
+        style={{
+          background: '#005870', // PALETTE.deepTeal
+        }}
+      >
+        {/* Main teal gradient background */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`,
+          }}
+        />
+        
+        {/* Subtle lighter teal curved section with diagonal clip */}
+        <div 
+          className="absolute top-0 right-0 w-2/3 h-full"
+          style={{
+            background: `linear-gradient(135deg, #0C8F93 0%, #14A085 50%, #18C7B6 100%)`,
+            clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
+          }}
+        />
+
+        {/* Loading content */}
+        <div className="relative z-10 px-6 pt-8 pb-4">
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl ring-1 ring-white/20">
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+              <span className="ml-3 text-white text-sm">Loading...</span>
             </div>
           </div>
         </div>
@@ -105,112 +124,138 @@ export default function StatsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-900/20 to-slate-900 overflow-y-scroll">
-      <AppHeader user={user} />
+    <div 
+      className="min-h-screen relative overflow-hidden pb-20"
+      style={{
+        background: '#005870', // PALETTE.deepTeal
+      }}
+    >
+      {/* Main teal gradient background */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`,
+        }}
+      />
       
-      <div className="p-4 pb-20">
-        <div className="max-w-2xl mx-auto">
-          {/* Offline indicator */}
-          {isOffline && (
-            <div className="mb-4 bg-orange-500/20 backdrop-blur-sm rounded-lg border border-orange-500/30 p-3">
-              <div className="flex items-center space-x-2 text-orange-200">
-                <Activity className="w-4 h-4" />
-                <span className="text-sm">Showing offline data - will sync when online</span>
-              </div>
-            </div>
-          )}
+      {/* Subtle lighter teal curved section with diagonal clip */}
+      <div 
+        className="absolute top-0 right-0 w-2/3 h-full"
+        style={{
+          background: `linear-gradient(135deg, #0C8F93 0%, #14A085 50%, #18C7B6 100%)`,
+          clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        }}
+      />
 
-          {/* Share Container */}
-          <div
-            ref={shareRef}
-            className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-6 space-y-6"
+      {/* Main content - positioned directly on page */}
+      <div className="relative z-10 px-6 pt-8 pb-4 space-y-6">
+        {/* Offline indicator */}
+        {isOffline && (
+          <div className="bg-orange-500/20 backdrop-blur-sm rounded-lg border border-orange-500/30 p-3">
+            <div className="flex items-center space-x-2 text-orange-200">
+              <Activity className="w-4 h-4" />
+              <span className="text-sm">Showing offline data - will sync when online</span>
+            </div>
+          </div>
+        )}
+
+        {/* Header */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <div className="text-center space-y-2">
+            <h1 className="text-xl font-bold text-white">{t('stats:title')}</h1>
+            <p className="text-white/70 text-sm">{t('stats:subtitle')}</p>
+          </div>
+        </div>
+
+        {/* Key Metrics */}
+        <div 
+          ref={shareRef}
+          className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20 space-y-4"
+        >
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white">{metrics.totalSessions}</div>
+              <div className="text-white/70 text-xs">{t('stats:totalSessions')}</div>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white">{metrics.currentStreak}</div>
+              <div className="text-white/70 text-xs">{t('stats:currentStreak')}</div>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white">{Math.round(metrics.totalVolume)}</div>
+              <div className="text-white/70 text-xs">{t('stats:totalVolume')}</div>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-white">{metrics.avgRPE.toFixed(1)}</div>
+              <div className="text-white/70 text-xs">{t('stats:avgRPE')}</div>
+            </div>
+          </div>
+
+          {/* GymBud Branding for share */}
+          <div className="text-center pt-4 border-t border-white/10">
+            <div className="text-teal-300 font-bold text-lg">GymBud</div>
+            <div className="text-gray-400 text-sm">{t('stats:brandTagline')}</div>
+          </div>
+        </div>
+
+        {/* Charts */}
+        <div className="space-y-4">
+          <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+            <ChartCard title={t('stats:weeklyActivity')}>
+              {metrics.weeklyData.length > 0 ? (
+                <TrainingDaysBar data={metrics.weeklyData} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  <div className="text-center">
+                    <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No activity data yet</p>
+                  </div>
+                </div>
+              )}
+            </ChartCard>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+            <ChartCard title={t('stats:volumeAndSets')}>
+              {metrics.weeklyData.length > 0 ? (
+                <VolumeSetsCombo data={metrics.weeklyData} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  <div className="text-center">
+                    <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No volume data yet</p>
+                  </div>
+                </div>
+              )}
+            </ChartCard>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+            <ChartCard title={t('stats:weightProgress')}>
+              {profileData.weightHistory.length > 0 ? (
+                <WeightProgression data={profileData.weightHistory} />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  <div className="text-center">
+                    <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No weight data yet</p>
+                  </div>
+                </div>
+              )}
+            </ChartCard>
+          </div>
+        </div>
+
+        {/* Share Button */}
+        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
+          <Button
+            onClick={handleShare}
+            className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4DD0E1] font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+            disabled={metrics.totalSessions === 0}
           >
-            {/* Header */}
-            <div className="text-center space-y-2">
-              <h1 className="text-3xl font-bold text-white">{t('stats:title')}</h1>
-              <p className="text-teal-200">{t('stats:subtitle')}</p>
-            </div>
-
-            {/* Key Metrics */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/5 rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-white">{metrics.totalSessions}</div>
-                <div className="text-teal-200 text-sm">{t('stats:totalSessions')}</div>
-              </div>
-              <div className="bg-white/5 rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-white">{metrics.currentStreak}</div>
-                <div className="text-teal-200 text-sm">{t('stats:currentStreak')}</div>
-              </div>
-              <div className="bg-white/5 rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-white">{Math.round(metrics.totalVolume)}</div>
-                <div className="text-teal-200 text-sm">{t('stats:totalVolume')}</div>
-              </div>
-              <div className="bg-white/5 rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-white">{metrics.avgRPE.toFixed(1)}</div>
-                <div className="text-teal-200 text-sm">{t('stats:avgRPE')}</div>
-              </div>
-            </div>
-
-            {/* Charts */}
-            <div className="space-y-4">
-              <ChartCard title={t('stats:weeklyActivity')}>
-                {metrics.weeklyData.length > 0 ? (
-                  <TrainingDaysBar data={metrics.weeklyData} />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    <div className="text-center">
-                      <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No activity data yet</p>
-                    </div>
-                  </div>
-                )}
-              </ChartCard>
-
-              <ChartCard title={t('stats:volumeAndSets')}>
-                {metrics.weeklyData.length > 0 ? (
-                  <VolumeSetsCombo data={metrics.weeklyData} />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    <div className="text-center">
-                      <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No volume data yet</p>
-                    </div>
-                  </div>
-                )}
-              </ChartCard>
-
-              <ChartCard title={t('stats:weightProgress')}>
-                {profileData.weightHistory.length > 0 ? (
-                  <WeightProgression data={profileData.weightHistory} />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    <div className="text-center">
-                      <TrendingUp className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No weight data yet</p>
-                    </div>
-                  </div>
-                )}
-              </ChartCard>
-            </div>
-
-            {/* GymBud Branding */}
-            <div className="text-center pt-4 border-t border-white/10">
-              <div className="text-teal-300 font-bold text-lg">GymBud</div>
-              <div className="text-gray-400 text-sm">{t('stats:brandTagline')}</div>
-            </div>
-          </div>
-
-          {/* Share Button */}
-          <div className="mt-6 text-center">
-            <Button
-              onClick={handleShare}
-              className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-xl font-semibold"
-              disabled={metrics.totalSessions === 0}
-            >
-              <Share2 className="w-5 h-5 mr-2" />
-              {t('stats:shareProgress')}
-            </Button>
-          </div>
+            <Share2 className="w-5 h-5" />
+            {t('stats:shareProgress')}
+          </Button>
         </div>
       </div>
       

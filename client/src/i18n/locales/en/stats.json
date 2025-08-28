@@ -11,6 +11,7 @@
   "shareTitle": "My GymBud Progress",
   "shareText": "Check out my fitness progress with GymBud!",
   "shareProgress": "Share Progress",
+  "shareSuccess": "Progress shared successfully!",
   "downloadSuccess": "Progress card downloaded successfully",
   "shareError": "Failed to share progress card",
   "brandTagline": "AI-Powered Personal Training",
@@ -35,7 +36,8 @@
       "hide_name": "Hide name",
       "hide_weights": "Hide weights",
       "hide_highlight": "Hide highlight"
-    }
+    },
+    "success": "Progress shared successfully!"
   },
   "charts": {
     "days": "Training Days / Week",

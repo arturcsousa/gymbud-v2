@@ -1,5 +1,16 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 10:53 - Stats Page Design Consistency Fixed
+**Fixed**: Stats page now matches consistent design pattern across all app pages
+- **Removed**: AppHeader component that was causing design inconsistency
+- **Updated**: Background to use consistent teal gradient with geometric clipping pattern
+- **Fixed**: Glassy container wrapper removed - components now placed directly on page
+- **Enhanced**: Scrolling behavior maintains proper design structure
+- **Added**: Missing translation keys (`shareSuccess`) to both EN and PT-BR stats.json files
+- **Improved**: Share button styling matches app design system with proper gradient colors
+
+**Technical**: Stats page now follows same layout pattern as HomePage and HistoryPage with proper backdrop-blur components and consistent spacing
+
 ## 2025-08-28 10:41 - TypeScript Compilation Error Resolution
 **Fixed**: Resolved all TypeScript compilation errors preventing successful builds
 - **GoalsPage.tsx**: Fixed type mismatch for `days_per_week` by properly casting `Number(data.days_per_week)` to union type `2 | 3 | 4 | 5 | 6`
