@@ -1,5 +1,14 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 10:41 - TypeScript Compilation Error Resolution
+**Fixed**: Resolved all TypeScript compilation errors preventing successful builds
+- **GoalsPage.tsx**: Fixed type mismatch for `days_per_week` by properly casting `Number(data.days_per_week)` to union type `2 | 3 | 4 | 5 | 6`
+- **ProfilePage.tsx**: Fixed OnboardingState type mismatch by casting confidence values to expected union type `1 | 2 | 3 | 4 | 5`
+- **Type Safety**: Ensured all onboarding form data conforms to expected OnboardingState interface types
+- **Build Status**: All TypeScript errors resolved, ready for production deployment
+
+**Technical**: Maintained type safety while ensuring form values properly conform to database schema expectations
+
 ## 2025-08-27 18:35 - Password Reset Functionality Implementation
 **Implemented**: Complete password reset system with dual-state handling for request and update flows
 - **ResetPasswordPage Component**: Created `/app/auth/reset` page with intelligent state detection based on URL token presence

@@ -11,12 +11,14 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Namespaces**: 21 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, stats, badges, sync)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
-## Recent Updates (2025-08-27 18:35)
+## Recent Updates (2025-08-28 10:41)
+- **TypeScript Compilation Fixes**: Resolved all TypeScript errors in onboarding components
+- **Type Safety**: Fixed GoalsPage.tsx and ProfilePage.tsx type mismatches for OnboardingState interface
+- **Form Data Casting**: Proper type casting for days_per_week and confidence values to match expected union types
 - **Password Reset System**: Added comprehensive password reset i18n keys to auth namespace
 - **Reset Flow Coverage**: Complete EN/PT-BR translations for dual-state password reset (request + update modes)
 - **Security Features**: Localized error messages for invalid tokens, rate limiting, and validation failures
 - **Navigation Keys**: Added goToApp key to common namespace for post-reset routing
-- **TypeScript Compatibility**: Fixed all onboarding component TypeScript errors with proper type safety
 - **Component Integration**: Enhanced ProfilePage and ReviewPage with proper export declarations
 - **Form Validation**: Improved onboarding form type safety with proper Zod schema integration
 - **UI Components**: Added Radix UI Slider component with full i18n support for confidence ratings
