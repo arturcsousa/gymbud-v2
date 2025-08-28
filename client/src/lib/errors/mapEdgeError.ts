@@ -6,6 +6,7 @@ export type ErrorCode =
   | 'rate_limited' 
   | 'server_unavailable' 
   | 'timeout' 
+  | 'version_conflict'
   | 'unknown'
 
 export interface MappedError {
@@ -98,5 +99,6 @@ export const errorLabels: Record<ErrorCode, string> = {
   server_unavailable: 'Server unavailable',
   timeout: 'Request timed out',
   rate_limited: 'Too many requests',
+  version_conflict: 'Version conflict',
   unknown: 'Unknown error',
 }

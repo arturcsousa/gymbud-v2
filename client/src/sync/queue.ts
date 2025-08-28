@@ -147,7 +147,7 @@ async function sendToServer(m: QueueMutation, opts: SendOptions = {}): Promise<v
     throw new Error('UNSUPPORTED_MUTATION')
   } catch (e: any) {
     const mappedError = mapEdgeError(e);
-    if (mappedError.code === 'version_conflict' || e?.message?.includes?.('version_conflict')) {
+    if (mappedError.code === 'version_conflict') {
       // fetch latest from server for this entity/id (lightweight GET via existing pull)
       const server = await fetchLatestFor(m.payload?.id || m.payload?.session_id || m.payload?.session_exercise_id).catch(() => null);
       const local = await snapshotLocal(m);
