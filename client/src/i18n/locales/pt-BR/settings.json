@@ -41,5 +41,17 @@
     "delete": "Excluir",
     "deleteAll": "Excluir todas",
     "lastTried": "Última tentativa:"
+  },
+  "conflicts": {
+    "title": "Conflitos",
+    "none": "Sem conflitos ",
+    "badge": "Precisa de decisão",
+    "seenAt": "Primeira detecção: {{ts}}",
+    "field": "Campo",
+    "local": "Seu",
+    "server": "Servidor",
+    "noFieldDiff": "Sem diferenças por campo",
+    "keepMine": "Ficar com o meu (forçar)",
+    "keepServer": "Ficar com o do servidor"
   }
 }

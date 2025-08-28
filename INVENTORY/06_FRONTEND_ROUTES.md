@@ -290,57 +290,46 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
   - **Offline-First**: Immediate IndexedDB data with background Supabase sync
   - **Features**: Real-time charts, social sharing, streak calculation, empty states
 - **`/settings`** - SettingsPage (account, preferences, sync status, data management)
-  - **Dead-Letter Queue Panel**: Failed sync mutations management
+  - **Layout**: AuthPage-style geometric teal gradient background with single centered card
+  - **Settings Persistence**: Real-time auto-save with SettingsProvider context integration
+    - **Language Selection**: Select dropdown with immediate i18n switching (English/Português)
+    - **Units Selection**: Metric/Imperial toggle with context availability for Session/Stats
+    - **Notifications**: Opt-in toggle for future notifications milestone (stores preference only)
+    - **Auto-Save**: No manual save button - changes persist immediately with "Saved" toast confirmations
+    - **Cloud Sync**: Background synchronization to Supabase Auth user_metadata with error handling
+  - **Developer Mode**: Toggle to show/hide sync events log and conflict resolution for debugging
+    - **SyncEventsLog Component**: Real-time display of last 10 sync events with timestamps
+    - **Event Types**: Shows sync_success, sync_failure, set_void_started, set_void_confirmed events
+    - **Live Updates**: Uses `useLiveQuery` for real-time event monitoring from IndexedDB
+  - **Sync Integration**: Live pending mutations count and sync status display with manual sync trigger
+  - **Dead-Letter Queue Panel**: Failed sync mutations management (developer mode only)
     - Real-time failed mutations list with entity/operation details
     - Error classification with human-readable labels and attempt counts
     - Individual retry/delete actions for specific mutations
     - Bulk operations: "Retry all" and "Delete all" failed mutations
     - Contextual error display with timestamps and failure reasons
+  - **Conflicts Panel**: Sync conflict resolution interface (developer mode only)
+    - Real-time conflicts list with entity details and field-level diff tables
+    - Visual conflict badges and timestamp display for conflict age tracking
+    - Resolution actions: "Keep mine (override)" and "Keep server" with automatic cleanup
+    - Responsive design with mobile-friendly button layout and proper accessibility
+    - Comprehensive telemetry tracking for conflict resolution outcomes
+  - **Glass Morphism**: Semi-transparent card with backdrop blur effect
+  - **Bottom Padding**: `pb-20` to prevent BottomNav overlap
+  - **BottomNav**: Integrated with Settings tab active state
 
-### Data Integration Architecture
-
-#### StatsPage Real Data Flow
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Dexie (Local) │    │  Supabase Views  │    │   StatsPage     │
-│                 │    │                  │    │                 │
-│ • sessions      │◄──►│ • v_session_     │◄──►│ • Real metrics  │
-│ • logged_sets   │    │   metrics        │    │ • Live charts   │
-│ • profiles      │    │ • profiles       │    │ • Offline ready │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-```
-
-#### Data Hooks
-- **useSessionMetrics**: Session analytics with offline-first architecture
-  - Queries: `sessions`, `session_exercises`, `logged_sets` from Dexie
-  - Server: `v_session_metrics` view from Supabase
-  - Calculations: Total sessions, volume, RPE, weekly data, streak
-- **useProfileData**: Weight progression with localStorage caching
-  - Queries: `profiles.weight_kg`, optional `weight_logs` table
-  - Fallback: Single data point from current weight if no history
-
-### `/settings` - SettingsPage
-- **Layout**: AuthPage-style geometric teal gradient background with single centered card
-- **Settings Persistence**: Real-time auto-save with SettingsProvider context integration
-  - **Language Selection**: Select dropdown with immediate i18n switching (English/Português)
-  - **Units Selection**: Metric/Imperial toggle with context availability for Session/Stats
-  - **Notifications**: Opt-in toggle for future notifications milestone (stores preference only)
-  - **Auto-Save**: No manual save button - changes persist immediately with "Saved" toast confirmations
-  - **Cloud Sync**: Background synchronization to Supabase Auth user_metadata with error handling
-- **Developer Mode**: Toggle to show/hide sync events log for debugging
-  - **SyncEventsLog Component**: Real-time display of last 10 sync events with timestamps
-  - **Event Types**: Shows sync_success, sync_failure, set_void_started, set_void_confirmed events
-  - **Live Updates**: Uses `useLiveQuery` for real-time event monitoring from IndexedDB
-- **Sync Integration**: Live pending mutations count and sync status display with manual sync trigger
-- **Dead-Letter Queue Panel**: Failed sync mutations management (developer mode only)
-  - Real-time failed mutations list with entity/operation details
-  - Error classification with human-readable labels and attempt counts
-  - Individual retry/delete actions for specific mutations
-  - Bulk operations: "Retry all" and "Delete all" failed mutations
-  - Contextual error display with timestamps and failure reasons
-- **Glass Morphism**: Semi-transparent card with backdrop blur effect
-- **Bottom Padding**: `pb-20` to prevent BottomNav overlap
-- **BottomNav**: Integrated with Settings tab active state
+### Debug Tools (Settings → Developer Mode)
+- **Sync Events Log** - Real-time sync operation history
+- **Dead-Letter Queue Panel** - Failed sync mutations management
+  - Failed mutations browser with error details
+  - Manual retry capabilities for individual or bulk operations
+  - Mutation deletion for unrecoverable failures
+  - Comprehensive error classification and user-friendly labels
+- **Conflicts Panel** - Sync conflict resolution interface
+  - Real-time conflicts detection and display with field-level diffs
+  - User-driven resolution with "Keep mine" (override) and "Keep server" options
+  - Automatic conflict cleanup and telemetry tracking for resolution outcomes
+  - Visual indicators for conflict age and decision requirements
 
 ### Onboarding System
 - **OnboardingWizard** - 12-step guided setup process
@@ -385,6 +374,11 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
   - Manual retry capabilities for individual or bulk operations
   - Mutation deletion for unrecoverable failures
   - Comprehensive error classification and user-friendly labels
+- **Conflicts Panel** - Sync conflict resolution interface
+  - Real-time conflicts detection and display with field-level diffs
+  - User-driven resolution with "Keep mine" (override) and "Keep server" options
+  - Automatic conflict cleanup and telemetry tracking for resolution outcomes
+  - Visual indicators for conflict age and decision requirements
 
 ### Telemetry Integration
 - Comprehensive event tracking for sync operations, authentication flows, and user interactions

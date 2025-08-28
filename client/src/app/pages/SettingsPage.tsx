@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/lib/supabase'
 import { db } from '@/db/gymbud-db'
 import { useSettings } from '@/providers/SettingsProvider'
-import { pendingCount, requestFlush, retryFailed, retryAllFailed, deleteFailed, clearAllFailed } from '@/sync/queue'
+import { pendingCount, requestFlush, retryFailed, retryAllFailed, deleteFailed, clearAllFailed, retryWithOverride, acceptServerVersion } from '@/sync/queue'
 import { errorLabels } from '@/lib/errors/mapEdgeError'
 import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Bell, Globe, Database, LogOut, Code } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
@@ -93,6 +93,65 @@ function DeadLetterPanel() {
       </ul>
     </div>
   )
+}
+
+function ConflictsPanel() {
+  const { t } = useTranslation(['settings']);
+  const conflicts = useLiveQuery(() => db.conflicts.orderBy('updated_at').reverse().toArray(), [], []);
+
+  if (!conflicts?.length) {
+    return <p className="text-white/80">{t('conflicts.none')}</p>;
+  }
+
+  const formatVal = (v: any) => {
+    if (v === null || v === undefined) return '—';
+    if (typeof v === 'object') return JSON.stringify(v);
+    return String(v);
+  };
+
+  return (
+    <div className="space-y-3">
+      <ul className="divide-y divide-white/10 rounded-xl ring-1 ring-white/10 bg-white/5">
+        {conflicts.map(c => (
+          <li key={c.id} className="p-3 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
+            <div className="text-sm">
+              <div className="font-semibold text-white">
+                {c.entity} · {c.entity_id}
+                <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200">
+                  {t('conflicts.badge')}
+                </span>
+              </div>
+              <div className="text-white/70">{t('conflicts.seenAt', { ts: new Date(c.first_seen_at).toLocaleString() })}</div>
+              {c.diff?.length ? (
+                <table className="mt-2 w-full text-xs text-white/80">
+                  <thead className="text-white/60">
+                    <tr><th className="text-left pr-2">{t('conflicts.field')}</th><th className="text-left pr-2">{t('conflicts.local')}</th><th className="text-left">{t('conflicts.server')}</th></tr>
+                  </thead>
+                  <tbody>
+                    {c.diff.map((d, i) => (
+                      <tr key={i}>
+                        <td className="align-top pr-2">{d.field}</td>
+                        <td className="align-top pr-2">{formatVal(d.local)}</td>
+                        <td className="align-top">{formatVal(d.server)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : <div className="text-white/60">{t('conflicts.noFieldDiff')}</div>}
+            </div>
+            <div className="flex md:flex-col gap-2 md:justify-center">
+              <Button size="sm" variant="secondary" onClick={() => retryWithOverride(c.id)}>
+                {t('conflicts.keepMine')}
+              </Button>
+              <Button size="sm" variant="default" onClick={() => acceptServerVersion(c.id)}>
+                {t('conflicts.keepServer')}
+              </Button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 function SettingsPage() {
@@ -401,6 +460,18 @@ function SettingsPage() {
             </CardHeader>
             <CardContent className="pt-0">
               <DeadLetterPanel />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Conflicts Panel (Dev Mode Only) */}
+        {devMode && (
+          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-xl ring-1 ring-white/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-white text-sm">{t('conflicts.title')}</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <ConflictsPanel />
             </CardContent>
           </Card>
         )}

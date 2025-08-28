@@ -38,7 +38,7 @@ Complete internationalization setup for GymBud v2 with English (default) and Por
 ## Key Translation Areas
 
 ### Settings Namespace Extensions
-Recent additions for app settings persistence and sync failure management:
+Recent additions for app settings persistence, sync failure management, and conflict resolution:
 ```json
 {
   "saved": "Saved / Salvo",
@@ -57,6 +57,18 @@ Recent additions for app settings persistence and sync failure management:
     "delete": "Delete / Excluir",
     "deleteAll": "Delete all / Excluir todas",
     "lastTried": "Last tried: / Última tentativa:"
+  },
+  "conflicts": {
+    "title": "Conflicts / Conflitos",
+    "none": "No conflicts 🎉 / Sem conflitos 🎉",
+    "badge": "Needs decision / Precisa de decisão",
+    "seenAt": "First seen: {{ts}} / Primeira detecção: {{ts}}",
+    "field": "Field / Campo",
+    "local": "Yours / Seu",
+    "server": "Server / Servidor",
+    "noFieldDiff": "No field-level differences available / Sem diferenças por campo",
+    "keepMine": "Keep mine (override) / Ficar com o meu (forçar)",
+    "keepServer": "Keep server / Ficar com o do servidor"
   }
 }
 ```

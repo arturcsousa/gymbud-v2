@@ -4,6 +4,8 @@ import { toast } from 'sonner'
 import i18n from '@/i18n'
 import { mapEdgeError, type ErrorCode } from '@/lib/errors/mapEdgeError'
 import { track } from '@/lib/telemetry'
+import { upsertConflict, deleteConflict } from '@/db/conflicts'
+import { shallowDiff } from '@/lib/diff'
 
 const MAX_ATTEMPTS = 5
 let flushLock = false
@@ -52,145 +54,207 @@ async function markFailure(m: QueueMutation, code: string): Promise<void> {
   })
 }
 
-async function sendToServer(m: QueueMutation): Promise<void> {
-  if (m.entity === 'app2.logged_sets' && m.op === 'insert') {
-    // Ensure the row uses the queue id as the primary key for idempotency
-    const payload = { id: m.id, ...m.payload }
+type SendOptions = { override?: boolean };
 
-    const { data, error } = await supabase.functions.invoke('sync-logged-sets', {
-      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
-    })
+async function sendToServer(m: QueueMutation, opts: SendOptions = {}): Promise<void> {
+  try {
+    if (m.entity === 'app2.logged_sets' && m.op === 'insert') {
+      // Ensure the row uses the queue id as the primary key for idempotency
+      const payload = { id: m.id, ...m.payload, override: opts.override }
 
-    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+      const { data, error } = await supabase.functions.invoke('sync-logged-sets', {
+        body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+      })
 
-    const res = data?.results?.[0]
-    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
-      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+
+      const res = data?.results?.[0]
+      if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+        throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      }
+      return
     }
-    return
-  }
 
-  if (m.entity === 'logged_sets/void' && m.op === 'void') {
-    // Handle void mutations for logged sets
-    const payload = { id: m.id, ...m.payload }
+    if (m.entity === 'logged_sets/void' && m.op === 'void') {
+      // Handle void mutations for logged sets
+      const payload = { id: m.id, ...m.payload, override: opts.override }
 
-    const { data, error } = await supabase.functions.invoke('sync-logged-sets', {
-      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
-    })
+      const { data, error } = await supabase.functions.invoke('sync-logged-sets', {
+        body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+      })
 
-    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+      if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
 
-    const res = data?.results?.[0]
-    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
-      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      const res = data?.results?.[0]
+      if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+        throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      }
+      return
     }
-    return
-  }
 
-  if (m.entity === 'app2.sessions' && m.op === 'update') {
-    // Ensure the row uses the queue id as the primary key for idempotency
-    const payload = { id: m.id, ...m.payload }
+    if (m.entity === 'app2.sessions' && m.op === 'update') {
+      // Ensure the row uses the queue id as the primary key for idempotency
+      const payload = { id: m.id, ...m.payload, override: opts.override }
 
-    const { data, error } = await supabase.functions.invoke('sync-sessions', {
-      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
-    })
+      const { data, error } = await supabase.functions.invoke('sync-sessions', {
+        body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+      })
 
-    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+      if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
 
-    const res = data?.results?.[0]
-    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
-      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      const res = data?.results?.[0]
+      if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+        throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      }
+      return
     }
-    return
-  }
 
-  if (m.entity === 'app2.session_exercises' && (m.op === 'insert' || m.op === 'update')) {
-    // Ensure the row uses the queue id as the primary key for idempotency
-    const payload = { id: m.id, ...m.payload }
+    if (m.entity === 'app2.session_exercises' && (m.op === 'insert' || m.op === 'update')) {
+      // Ensure the row uses the queue id as the primary key for idempotency
+      const payload = { id: m.id, ...m.payload, override: opts.override }
 
-    const { data, error } = await supabase.functions.invoke('sync-session-exercises', {
-      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
-    })
+      const { data, error } = await supabase.functions.invoke('sync-session-exercises', {
+        body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+      })
 
-    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+      if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
 
-    const res = data?.results?.[0]
-    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
-      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      const res = data?.results?.[0]
+      if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+        throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      }
+      return
     }
-    return
-  }
 
-  if (m.entity === 'app2.coach_audit' && m.op === 'insert') {
-    // Ensure the row uses the queue id as the primary key for idempotency
-    const payload = { id: m.id, ...m.payload }
+    if (m.entity === 'app2.coach_audit' && m.op === 'insert') {
+      // Ensure the row uses the queue id as the primary key for idempotency
+      const payload = { id: m.id, ...m.payload, override: opts.override }
 
-    const { data, error } = await supabase.functions.invoke('sync-coach-audit', {
-      body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
-    })
+      const { data, error } = await supabase.functions.invoke('sync-coach-audit', {
+        body: { mutations: [{ id: m.id, entity: m.entity, op: m.op, payload }] }
+      })
 
-    if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
+      if (error) throw new Error(error.message || 'SYNC_INVOKE_FAILED')
 
-    const res = data?.results?.[0]
-    if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
-      throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      const res = data?.results?.[0]
+      if (!res || (res.status !== 'ok' && res.status !== 'skipped')) {
+        throw new Error(res?.message || res?.code || 'SYNC_FAILED')
+      }
+      return
     }
-    return
-  }
 
-  // keep others queued until we add server support
-  throw new Error('UNSUPPORTED_MUTATION')
+    // keep others queued until we add server support
+    throw new Error('UNSUPPORTED_MUTATION')
+  } catch (e: any) {
+    const code = mapEdgeError(e).code;
+    if (code === 'version_conflict') {
+      // fetch latest from server for this entity/id (lightweight GET via existing pull)
+      const server = await fetchLatestFor(m.entity, m.payload?.id || m.payload?.session_id || m.payload?.session_exercise_id).catch(() => null);
+      const local = await snapshotLocal(m);
+      const id = `${m.entity}:${local?.id || m.payload?.id}`;
+      await upsertConflict({
+        id,
+        entity: m.entity.replace('app2.', '') as any,
+        entity_id: local?.id || m.payload?.id,
+        op: m.op,
+        local,
+        server,
+        diff: shallowDiff(local, server),
+        last_error_code: code,
+      });
+      track({ type: 'sync_failure', code }); // existing
+      track({ type: 'conflict_detected' as any });
+      // mark failed but don't drop it
+      await db.queue_mutations.update(m.id, { status: 'failed', last_error_code: code, last_error_at: Date.now() });
+      return;
+    }
+    throw e; // existing retry/backoff logic
+  }
 }
 
-function backoffDelay(retries: number) {
-  const base = Math.min(60, 2 ** retries) // seconds, capped at 60s
-  return base * 1000
-}
-
-// Helper function to cap sync events to last 50
-async function addSyncEvent(event: Omit<SyncEventRow, 'id'>): Promise<void> {
-  await db.sync_events.add(event)
-  
-  // Cap to last 50 events
-  const count = await db.sync_events.count()
-  if (count > 50) {
-    const oldestEvents = await db.sync_events.orderBy('ts').limit(count - 50).toArray()
-    const idsToDelete = oldestEvents.map(e => e.id!).filter(Boolean)
-    await db.sync_events.bulkDelete(idsToDelete)
+// Helper to snapshot local row referenced by mutation
+async function snapshotLocal(m: QueueMutation) {
+  switch (m.entity.replace('app2.', '')) {
+    case 'sessions': return await db.sessions.get(m.payload?.id);
+    case 'session_exercises': return await db.session_exercises.get(m.payload?.id);
+    case 'logged_sets': return await db.logged_sets.get(m.payload?.id);
+    case 'coach_audit': return m.payload; // ephemeral log; treat payload as local
+    default: return m.payload;
   }
 }
 
-// Helper function to update meta
-async function updateMeta(key: string, value: any): Promise<void> {
-  await db.meta.put({ key, value, updated_at: Date.now() })
+// Helper to fetch latest server data for conflict resolution
+async function fetchLatestFor(entity: string, entityId: string) {
+  // This would ideally be a lightweight GET endpoint
+  // For now, we'll return null and rely on the next pull to get server data
+  // In a full implementation, you'd have a dedicated endpoint for single-row fetches
+  return null;
 }
 
-// Check if row has pending local mutations
-async function hasPendingMutation(entity: string, rowId: string): Promise<boolean> {
+// expose a retry with override:
+export async function retryWithOverride(conflictId: string) {
+  const c = await db.conflicts.get(conflictId);
+  if (!c) return false;
+  // find the failed mutation that corresponds to this conflict
+  const target = await db.queue_mutations
+    .where({ entity: `app2.${c.entity}`, status: 'failed' })
+    .filter(m => (m.payload?.id || m.payload?.session_id) === c.entity_id)
+    .first();
+  if (!target) return false;
+
+  // reset status & add override marker the sender can pick up
+  await db.queue_mutations.update(target.id, { 
+    status: 'pending', 
+    last_error_code: null, 
+    last_error_at: null, 
+    payload: { ...target.payload, override: true }
+  });
+  await deleteConflict(conflictId);
+  await flush(); // existing orchestrator
+  track({ type: 'conflict_resolved_keep_mine' as any });
+  return true;
+}
+
+export async function acceptServerVersion(conflictId: string) {
+  const c = await db.conflicts.get(conflictId);
+  if (!c) return false;
+  // overwrite local mirror with server snapshot and drop failed mutation(s)
+  switch (c.entity) {
+    case 'sessions': 
+      if (c.server) await db.sessions.put(c.server); 
+      break;
+    case 'session_exercises': 
+      if (c.server) await db.session_exercises.put(c.server); 
+      break;
+    case 'logged_sets': 
+      if (c.server) await db.logged_sets.put(c.server); 
+      break;
+    case 'coach_audit': 
+      /* nothing to mirror */ 
+      break;
+  }
+  // delete any failed queued mutations against this entity
+  await db.queue_mutations
+    .where({ entity: `app2.${c.entity}`, status: 'failed' })
+    .filter(m => (m.payload?.id || m.payload?.session_id) === c.entity_id)
+    .delete();
+
+  await deleteConflict(conflictId);
+  track({ type: 'conflict_resolved_keep_server' as any });
+  return true;
+}
+
+// Check if row has pending local mutations for conflict detection
+async function hasLocalPendingMutationFor(rowId: string, entity: string): Promise<boolean> {
   const count = await db.queue_mutations
-    .where('[entity+payload.id+status]')
-    .between([entity, rowId, 'pending'], [entity, rowId, 'pending'])
-    .count()
-  return count > 0
+    .where('[entity+status]')
+    .equals([`app2.${entity}`, 'pending'])
+    .filter(m => m.payload?.id === rowId)
+    .count();
+  return count > 0;
 }
 
-// Check if row has pending void mutation
-async function hasPendingVoidMutation(setId: string): Promise<boolean> {
-  const mutation = await db.queue_mutations
-    .where('[entity+op]')
-    .equals(['logged_sets/void', 'void'])
-    .and(mutation => {
-      const payload = mutation.payload as { id?: string; voided?: boolean } | undefined
-      return payload?.id === setId && 
-             payload?.voided === true &&
-             mutation.status === 'pending'
-    })
-    .first()
-  
-  return !!mutation
-}
-
-// Safe merge server data with local data - Enhanced for void reconciliation
+// Safe merge server data with local data - Enhanced for conflict detection
 interface LoggedSetWithVoided {
   id: string
   voided?: boolean
@@ -204,6 +268,24 @@ async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
   const table = db[tableName]
   
   if (!table) return
+  
+  // Check for conflicts during pull/merge
+  if (await hasLocalPendingMutationFor(serverRow.id, tableName)) {
+    const local = await table.get(serverRow.id);
+    await upsertConflict({
+      id: `${tableName}:${serverRow.id}`,
+      entity: tableName,
+      entity_id: serverRow.id,
+      op: 'update',
+      local,
+      server: serverRow,
+      diff: shallowDiff(local, serverRow),
+      last_error_code: 'version_conflict'
+    });
+    track({ type: 'conflict_detected' as any });
+    // skip auto-merge; let user resolve
+    return;
+  }
   
   // Special handling for logged_sets with void reconciliation
   if (entity === 'app2.logged_sets') {
@@ -261,7 +343,6 @@ async function safeMergeRow(entity: string, serverRow: any): Promise<void> {
   }
 }
 
-// Pull fresh data from server
 export async function pullUpdates(): Promise<void> {
   if (pullLock) return
   pullLock = true
@@ -359,7 +440,9 @@ export async function flush(maxBatch = 50): Promise<void> {
       // optimistic "inflight" mark
       await db.queue_mutations.update(m.id, { status: 'inflight', updated_at: Date.now() })
       try {
-        await sendToServer(m)
+        // Check if this mutation has override flag from conflict resolution
+        const hasOverride = m.payload?.override === true;
+        await sendToServer(m, { override: hasOverride })
         await db.queue_mutations.update(m.id, { status: 'done', updated_at: Date.now() })
         successCount++
       } catch (err: any) {

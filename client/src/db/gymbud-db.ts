@@ -74,6 +74,19 @@ export type AppSettings = {
   updated_at: number; // ms epoch
 };
 
+export type ConflictRecord = {
+  id: string;               // `${entity}:${entity_id}`
+  entity: 'sessions' | 'session_exercises' | 'logged_sets' | 'coach_audit';
+  entity_id: string;
+  op: 'insert' | 'update' | 'void';
+  local: any;               // local snapshot we tried to push (or current Dexie row)
+  server: any;              // latest from server
+  diff?: Array<{ field: string; local: any; server: any }>;
+  last_error_code?: string; // 'version_conflict', etc.
+  first_seen_at: number;
+  updated_at: number;
+};
+
 export class GymBudDB extends Dexie {
   meta!: Table<MetaRow, string>
   sync_events!: Table<SyncEventRow, number>
@@ -83,6 +96,7 @@ export class GymBudDB extends Dexie {
   logged_sets!: Table<LoggedSetRow, string>
   onboarding_state!: Table<OnboardingState, string>
   settings!: Table<{ key: string; value: any }, string>
+  conflicts!: Table<ConflictRecord, string>
 
   constructor() {
     super('gymbud')
@@ -142,6 +156,23 @@ export class GymBudDB extends Dexie {
         'id, session_exercise_id, set_number, updated_at, [session_exercise_id+set_number]',
       onboarding_state: 'user_id, updated_at',
       settings: 'key' // single-row KV
+    })
+
+    // Add conflicts store in version 5
+    this.version(5).stores({
+      meta: 'key, updated_at',
+      sync_events: '++id, ts',
+      queue_mutations:
+        'id, entity, op, created_at, status, attempts, last_error_code, last_error_at',
+      sessions:
+        'id, user_id, plan_id, status, started_at, completed_at, updated_at, [user_id+started_at]',
+      session_exercises:
+        'id, session_id, order_index, updated_at, [session_id+order_index]',
+      logged_sets:
+        'id, session_exercise_id, set_number, updated_at, [session_exercise_id+set_number]',
+      onboarding_state: 'user_id, updated_at',
+      settings: 'key',
+      conflicts: 'id, entity, entity_id, first_seen_at'
     })
   }
 }

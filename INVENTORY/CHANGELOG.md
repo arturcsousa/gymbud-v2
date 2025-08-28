@@ -1,5 +1,37 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 16:44 - Conflict Resolution System Implementation
+**Implemented**: Complete conflict detection and resolution system for offline-first sync layer
+- **Dexie Schema**: Upgraded to version 5 with `conflicts` store for persistent conflict tracking
+  - `ConflictRecord` type: entity, entity_id, op, local/server snapshots, field-level diff, timestamps
+  - Indexed by id, entity, entity_id, first_seen_at for efficient querying
+- **Conflict Detection**: Enhanced sync queue with automatic conflict detection on push and pull paths
+  - Version conflict detection in `sendToServer()` with server snapshot fetching
+  - Silent overlap detection in `safeMergeRow()` when local pending mutations exist
+  - Field-level diff generation using `shallowDiff()` utility (ignores metadata fields)
+- **Resolution Actions**: Implemented conflict resolution with user choice preservation
+  - `retryWithOverride()`: Keep local changes, retry mutation with override flag
+  - `acceptServerVersion()`: Accept server data, discard local pending changes
+  - Automatic conflict cleanup and telemetry tracking for resolution outcomes
+- **Developer UI**: Added Conflicts panel in Settings page behind dev mode toggle
+  - Real-time conflict list with entity details, field-level diff table, resolution buttons
+  - Responsive design with mobile-friendly button layout and proper accessibility
+  - Visual conflict badges and timestamp display for conflict age tracking
+- **Telemetry Integration**: Added conflict-specific telemetry events
+  - `conflict_detected`: When version conflicts are identified during sync
+  - `conflict_resolved_keep_mine`: When user chooses to override with local changes
+  - `conflict_resolved_keep_server`: When user accepts server version
+- **i18n Coverage**: Complete EN/PT-BR localization for conflict resolution UI
+  - Settings namespace: conflicts.title, none, badge, seenAt, field, local, server
+  - Action labels: keepMine (override), keepServer with contextual descriptions
+  - Portuguese translations: "Conflitos", "Ficar com o meu (forçar)", "Ficar com o do servidor"
+- **Utilities**: Created supporting infrastructure for conflict management
+  - `client/src/db/conflicts.ts`: Conflict CRUD operations (upsert, delete, clear)
+  - `client/src/lib/diff.ts`: Shallow field comparison with metadata filtering
+  - Enhanced queue system with override support and conflict persistence
+
+**Technical**: First-cut conflict resolution system with user-driven resolution, field-level diff visualization, and comprehensive telemetry for debugging offline-first sync conflicts
+
 ## 2025-08-28 16:38 - TypeScript Compilation Error Resolution
 **Fixed**: Resolved all TypeScript compilation errors preventing successful builds
 - **Missing Named Exports**: Added `export { HistoryPage }` and `export { HistoryDetailPage }` to fix AppShell import errors
@@ -687,13 +719,13 @@
 
 ## August 26, 2025 20:18 ET
 **Fixed** PWA manifest link and mobile viewport issues
-- **PWA Manifest Link**: Added missing `<link rel="manifest" href="/manifest.webmanifest" />` to index.html head section
-- **Mobile Viewport**: Fixed unwanted scrolling by using `height: 100%` and `100dvh` for proper mobile viewport handling
-- **Background Bleeding**: Eliminated corner gaps by removing outer padding from GradientLayout and using `h-full` constraints
-- **CSS Fixes**: Added global CSS rules for `html, body` height and `overflow-x: hidden` to prevent horizontal scrolling
-- **Layout Optimization**: Moved padding inside container to `px-2 sm:px-4` and removed nested `min-h-screen` conflicts
-- Context: PWA now properly loads manifest and displays full-screen without scrolling or background gaps on mobile
-- Migrations: N/A (UI and manifest fixes only)
+- **PWA Manifest**: Fixed icon paths from `/icons/icon-192.png` to `/icons/icon-192.jpg` to match actual file format
+- **Icon Type**: Updated MIME type from `image/png` to `image/jpeg` for proper PWA manifest validation
+- **Auth Debugging**: Added comprehensive logging for Supabase signup process to diagnose 500 errors
+- **Email Confirmation**: Added proper handling for email confirmation flow with user-friendly messaging
+- **Error Details**: Enhanced error logging with signup attempt details and response inspection
+- Context: Resolved PWA manifest download errors and improved auth error visibility for debugging
+- Migrations: N/A (bug fixes and debugging enhancements)
 
 ## August 26, 2025 19:52 ET
 **Restored** custom AuthPage design and fixed React hooks error

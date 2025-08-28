@@ -41,5 +41,17 @@
     "delete": "Delete",
     "deleteAll": "Delete all",
     "lastTried": "Last tried:"
+  },
+  "conflicts": {
+    "title": "Conflicts",
+    "none": "No conflicts ",
+    "badge": "Needs decision",
+    "seenAt": "First seen: {{ts}}",
+    "field": "Field",
+    "local": "Yours",
+    "server": "Server",
+    "noFieldDiff": "No field-level differences available",
+    "keepMine": "Keep mine (override)",
+    "keepServer": "Keep server"
   }
 }
