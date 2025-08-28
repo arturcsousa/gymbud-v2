@@ -1,0 +1,28 @@
+{
+  "status": {
+    "online": "Online",
+    "offline": "Offline",
+    "syncing": "Syncing...",
+    "synced": "Synced",
+    "error": "Sync Error"
+  },
+  "actions": {
+    "sync_now": "Sync Now",
+    "retry": "Retry",
+    "force_sync": "Force Sync"
+  },
+  "messages": {
+    "sync_complete": "Sync completed successfully",
+    "sync_failed": "Sync failed. Please try again.",
+    "offline_mode": "You're offline. Changes will sync when connection is restored.",
+    "pending_changes": "{{count}} changes pending sync",
+    "no_pending_changes": "All changes synced",
+    "last_sync": "Last sync: {{time}}"
+  },
+  "errors": {
+    "network_error": "Network error. Check your connection.",
+    "server_error": "Server error. Please try again later.",
+    "auth_error": "Authentication error. Please sign in again.",
+    "conflict_error": "Sync conflict detected. Please review changes."
+  }
+}

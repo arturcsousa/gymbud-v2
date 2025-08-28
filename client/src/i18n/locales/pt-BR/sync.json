@@ -1,0 +1,28 @@
+{
+  "status": {
+    "online": "Online",
+    "offline": "Offline",
+    "syncing": "Sincronizando...",
+    "synced": "Sincronizado",
+    "error": "Erro de Sincronização"
+  },
+  "actions": {
+    "sync_now": "Sincronizar Agora",
+    "retry": "Tentar Novamente",
+    "force_sync": "Forçar Sincronização"
+  },
+  "messages": {
+    "sync_complete": "Sincronização concluída com sucesso",
+    "sync_failed": "Falha na sincronização. Tente novamente.",
+    "offline_mode": "Você está offline. As alterações serão sincronizadas quando a conexão for restaurada.",
+    "pending_changes": "{{count}} alterações pendentes de sincronização",
+    "no_pending_changes": "Todas as alterações sincronizadas",
+    "last_sync": "Última sincronização: {{time}}"
+  },
+  "errors": {
+    "network_error": "Erro de rede. Verifique sua conexão.",
+    "server_error": "Erro do servidor. Tente novamente mais tarde.",
+    "auth_error": "Erro de autenticação. Faça login novamente.",
+    "conflict_error": "Conflito de sincronização detectado. Revise as alterações."
+  }
+}
