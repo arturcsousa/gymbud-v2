@@ -1,5 +1,13 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 11:11 - StatsPage TypeScript Build Error Fixed
+**Fixed**: Resolved TypeScript compilation error TS6133 in StatsPage component
+- **Removed**: Unused `user` state variable and related useEffect that was causing build failure
+- **Cleaned**: Unnecessary supabase import since user authentication not needed for stats display
+- **Build Status**: TypeScript compilation now passes successfully
+
+**Technical**: StatsPage component streamlined by removing unused authentication state management
+
 ## 2025-08-28 10:53 - Stats Page Design Consistency Fixed
 **Fixed**: Stats page now matches consistent design pattern across all app pages
 - **Removed**: AppHeader component that was causing design inconsistency
@@ -755,43 +763,6 @@
 - Migrations: N/A (design changes only)
 
 ## August 26, 2025 11:46 ET
-**Fixed** translation key issues across all marketing components.
-- Fixed: `Progress.tsx` - replaced hardcoded English text with `landing:progress.metrics.*` keys
-- Fixed: `Pricing.tsx` - replaced hardcoded plan data with `landing:pricing.plans.*` keys and added `most_popular` key
-- Fixed: `WhyDifferent.tsx` - now displays all 6 features from locale files instead of just 3
-- Fixed: `HowItWorks.tsx` - added missing progress step, now shows all 4 steps with proper grid layout
-- Updated: Added `most_popular` translation key to both EN and PT-BR locale files
-- Context: All components now properly use translation keys, ensuring full EN/PT-BR language support
-- Migrations: N/A (translation fixes only)
-
-## August 26, 2025 11:08 ET
-**Reorganized** marketing structure with centralized theme utilities and anchor scrolling.
-- New: `client/src/marketing/theme.ts` with PALETTE constants and ctaHref utility function
-- Updated: `client/src/marketing/Landing.tsx` with anchor scrolling for route-to-section navigation
-- New: `client/src/marketing/components/MobileCTA.tsx` using theme utilities and i18n
-- Added: `client/src/index.css` glass and ring-faint utility classes for glassmorphic effects
-- Updated: PATH_TO_ANCHOR mapping for /how-it-works, /programs, /pricing, /faq routes
-- Context: Centralized styling system, improved navigation UX, consistent UTM tracking
-- Migrations: Environment variable VITE_APP_URL for app subdomain targeting
-
-## August 26, 2025 10:44 ET
-**Implemented** complete GymBud marketing landing page with animations and i18n.
-- New: `client/src/marketing/` directory with Landing.tsx and all components/sections
-- New: UspTicker, NavBar, Footer components with sticky header and mobile CTA
-- New: Hero, HowItWorks, WhyDifferent, Programs, Progress, Pricing, Faq, FinalCta sections
-- Added: framer-motion dependency for smooth animations
-- Updated: App.tsx routing to use new Landing component
-- Context: Modern, animated single-page marketing site using existing i18n keys
-- Migrations: N/A (frontend-only)
-
-## August 25, 2025 21:20 ET
-**Updated** inventory documentation with current implementation details.
-- Updated: `INVENTORY/05_I18N_STRUCTURE.md` with HTML lang/dir sync, usage patterns, content status
-- Updated: `INVENTORY/06_FRONTEND_ROUTES.md` with SPA structure, deployment config, SEO details
-- Context: Documentation now reflects complete i18n setup, routing implementation, and Vercel deployment
-- Migrations: N/A (documentation only)
-
-## August 25, 2025 21:06 ET
 **Fixed** translation key issues across all marketing components.
 - Fixed: `Progress.tsx` - replaced hardcoded English text with `landing:progress.metrics.*` keys
 - Fixed: `Pricing.tsx` - replaced hardcoded plan data with `landing:pricing.plans.*` keys and added `most_popular` key

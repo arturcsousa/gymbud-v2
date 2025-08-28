@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Share2, TrendingUp, Activity } from 'lucide-react';
 import { toast } from 'sonner';
@@ -11,14 +11,12 @@ import BottomNav from '@/components/BottomNav';
 import { useStreakBadges } from '@/hooks/useStreakBadges';
 import { useSessionMetrics } from '@/hooks/useSessionMetrics';
 import { useProfileData } from '@/hooks/useProfileData';
-import { supabase } from '@/lib/supabase';
 import domtoimage from 'dom-to-image-more';
 
 export default function StatsPage() {
   const { t } = useTranslation(['stats', 'badges']);
   const shareRef = useRef<HTMLDivElement>(null);
   const { checkAndAwardBadges } = useStreakBadges();
-  const [user, setUser] = useState<any>(null);
   
   // Real data hooks
   const { metrics, isLoading: metricsLoading, isOffline: metricsOffline } = useSessionMetrics();
@@ -28,57 +26,6 @@ export default function StatsPage() {
   const isOffline = metricsOffline || profileOffline;
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    getUser();
-  }, []);
-
-  const handleShare = async () => {
-    if (!shareRef.current) return;
-
-    try {
-      const dataUrl = await domtoimage.toPng(shareRef.current, {
-        width: 1080,
-        height: 1350,
-        quality: 1,
-        bgcolor: '#005870',
-        style: {
-          transform: 'scale(2)',
-          transformOrigin: 'top left',
-        },
-      });
-
-      if (navigator.share && 'canShare' in navigator) {
-        // Convert data URL to blob for sharing
-        const response = await fetch(dataUrl);
-        const blob = await response.blob();
-        const file = new File([blob], 'gymbud-progress.png', { type: 'image/png' });
-        
-        await navigator.share({
-          title: t('stats:shareTitle'),
-          text: t('stats:shareText'),
-          files: [file],
-        });
-        
-        toast.success(t('stats:shareSuccess'));
-      } else {
-        // Fallback to download
-        const link = document.createElement('a');
-        link.download = 'gymbud-progress.png';
-        link.href = dataUrl;
-        link.click();
-        
-        toast.success(t('stats:downloadSuccess'));
-      }
-    } catch (error) {
-      console.error('Share failed:', error);
-      toast.error(t('stats:shareError'));
-    }
-  };
-
-  React.useEffect(() => {
     // Check for new badges when component mounts
     checkAndAwardBadges();
   }, [checkAndAwardBadges]);
@@ -122,6 +69,49 @@ export default function StatsPage() {
       </div>
     );
   }
+
+  const handleShare = async () => {
+    if (!shareRef.current) return;
+
+    try {
+      const dataUrl = await domtoimage.toPng(shareRef.current, {
+        width: 1080,
+        height: 1350,
+        quality: 1,
+        bgcolor: '#005870',
+        style: {
+          transform: 'scale(2)',
+          transformOrigin: 'top left',
+        },
+      });
+
+      if (navigator.share && 'canShare' in navigator) {
+        // Convert data URL to blob for sharing
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        const file = new File([blob], 'gymbud-progress.png', { type: 'image/png' });
+        
+        await navigator.share({
+          title: t('stats:shareTitle'),
+          text: t('stats:shareText'),
+          files: [file],
+        });
+        
+        toast.success(t('stats:shareSuccess'));
+      } else {
+        // Fallback to download
+        const link = document.createElement('a');
+        link.download = 'gymbud-progress.png';
+        link.href = dataUrl;
+        link.click();
+        
+        toast.success(t('stats:downloadSuccess'));
+      }
+    } catch (error) {
+      console.error('Share failed:', error);
+      toast.error(t('stats:shareError'));
+    }
+  };
 
   return (
     <div 
