@@ -272,7 +272,7 @@ export function useSessionData(sessionId?: string) {
         .equals(['app2.logged_sets', 'insert'])
         .and(mutation => 
           mutation.payload?.id === lastSet.id && 
-          mutation.status === 'queued'
+          mutation.status === 'pending'
         )
         .first();
 
@@ -303,7 +303,7 @@ export function useSessionData(sessionId?: string) {
         const existingVoid = await db.queue_mutations
           .where(['entity', 'idempotency_key'])
           .equals(['logged_sets/void', `void_${lastSet.id}`])
-          .and(mutation => mutation.status === 'queued')
+          .and(mutation => mutation.status === 'pending')
           .first();
 
         if (existingVoid) {

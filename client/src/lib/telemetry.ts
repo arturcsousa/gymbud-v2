@@ -1,6 +1,6 @@
 // Basic telemetry system for GymBud
 // This can be extended with PostHog, Sentry, or other analytics services
-import { db } from '@/db';
+import { db } from '@/db/gymbud-db';
 
 interface TelemetryEvent {
   event: string;
@@ -188,6 +188,8 @@ export function track(event: TelemetryEventType) {
   if (event.type.startsWith('sync_') || event.type.includes('void')) {
     try {
       db.sync_events.add({
+        ts: Date.now(),
+        kind: 'success',
         type: event.type,
         data: event,
         created_at: new Date().toISOString()

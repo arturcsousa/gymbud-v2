@@ -12,11 +12,14 @@ export interface SyncEventRow {
   kind: 'success' | 'failure'
   code?: string
   items?: number
+  type?: string
+  data?: any
+  created_at?: string
 }
 
 export interface QueueMutation {
   id: string
-  entity: 'sessions' | 'session_exercises' | 'logged_sets' | 'coach_audit'
+  entity: 'sessions' | 'session_exercises' | 'logged_sets' | 'coach_audit' | 'app2.logged_sets' | 'app2.sessions' | 'app2.session_exercises' | 'app2.coach_audit' | 'logged_sets/void'
   op: QueueOp
   payload: any                  // shape to send to server later
   user_id?: string
