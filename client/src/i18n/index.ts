@@ -17,6 +17,10 @@ import enProgress from './locales/en/progress.json';
 import enPricing from './locales/en/pricing.json';
 import enErrors from './locales/en/errors.json';
 import enValidation from './locales/en/validation.json';
+import enStats from './locales/en/stats.json';
+import enBadges from './locales/en/badges.json';
+import enSettings from './locales/en/settings.json';
+import enSync from './locales/en/sync.json';
 
 import ptBRCommon from './locales/pt-BR/common.json';
 import ptBRLanding from './locales/pt-BR/landing.json';
@@ -32,6 +36,10 @@ import ptBRProgress from './locales/pt-BR/progress.json';
 import ptBRPricing from './locales/pt-BR/pricing.json';
 import ptBRErrors from './locales/pt-BR/errors.json';
 import ptBRValidation from './locales/pt-BR/validation.json';
+import ptBRStats from './locales/pt-BR/stats.json';
+import ptBRBadges from './locales/pt-BR/badges.json';
+import ptBRSettings from './locales/pt-BR/settings.json';
+import ptBRSync from './locales/pt-BR/sync.json';
 
 const RTL_LANG_PREFIXES = ['ar', 'fa', 'he', 'ur'];
 
@@ -59,6 +67,10 @@ const resources = {
     pricing: enPricing,
     errors: enErrors,
     validation: enValidation,
+    stats: enStats,
+    badges: enBadges,
+    settings: enSettings,
+    sync: enSync,
   },
   'pt-BR': {
     common: ptBRCommon,
@@ -75,6 +87,10 @@ const resources = {
     pricing: ptBRPricing,
     errors: ptBRErrors,
     validation: ptBRValidation,
+    stats: ptBRStats,
+    badges: ptBRBadges,
+    settings: ptBRSettings,
+    sync: ptBRSync,
   },
 };
 
