@@ -101,7 +101,7 @@ function GoalsPage() {
       const extendedState = {
         user_id: userId,
         ...data,
-        days_per_week: data.days_per_week as 2 | 3 | 4 | 5 | 6,
+        days_per_week: Number(data.days_per_week) as 2 | 3 | 4 | 5 | 6,
         ai_tone,
         units: isMetric ? 'metric' as const : 'imperial' as const,
         date_format: isMetric ? 'dmy' as const : 'mdy' as const,

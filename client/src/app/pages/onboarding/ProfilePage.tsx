@@ -134,12 +134,12 @@ function ProfilePage() {
         user_id: userId,
         ...data,
         confidence: {
-          squat: data.confidence.squat,
-          hinge: data.confidence.hinge,
-          lunge: data.confidence.lunge,
-          push: data.confidence.push,
-          pull: data.confidence.pull,
-          carry: data.confidence.carry
+          squat: data.confidence.squat as 1 | 2 | 3 | 4 | 5,
+          hinge: data.confidence.hinge as 1 | 2 | 3 | 4 | 5,
+          lunge: data.confidence.lunge as 1 | 2 | 3 | 4 | 5,
+          push: data.confidence.push as 1 | 2 | 3 | 4 | 5,
+          pull: data.confidence.pull as 1 | 2 | 3 | 4 | 5,
+          carry: data.confidence.carry as 1 | 2 | 3 | 4 | 5
         },
         constraints: validConstraints,
         updated_at: Date.now()
