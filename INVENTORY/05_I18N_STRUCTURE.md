@@ -140,3 +140,6 @@ client/src/i18n/
 - Technical terms appropriately translated or preserved
 - Developer UI strings included for debugging tools
 - Settings persistence UI fully localized with contextual descriptions
+
+## Recent Updates
+**2025-08-28**: Edge Function Validation — Part 2 implementation did not require i18n changes as all validation occurs server-side with structured API responses. Error messages use standardized HTTP status codes and machine-readable error taxonomy rather than user-facing strings.

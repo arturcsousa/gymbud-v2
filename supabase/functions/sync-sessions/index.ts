@@ -1,94 +1,123 @@
-import { z } from "npm:zod@3.23.8";
-import { CORS_HEADERS, err, json, options } from "../_shared/http.ts";
-import { requireUser } from "../_shared/auth.ts";
-import { parseJson } from "../_shared/validate.ts";
+import { ok, fail, byteSize, jsonResponse } from '../_shared/http.ts';
+import { requireUser, getClient } from '../_shared/auth.ts';
+import { z, ZodError } from 'https://deno.land/x/zod@v3.23.8/mod.ts';
+import { zBatch, zSession } from '../_shared/validate.ts';
 
-const Status = z.enum(["pending", "in_progress", "completed", "void"]);
-const UpdateItem = z.object({
-  id: z.string().uuid(),
-  status: Status,
-  completed_at: z.string().datetime().optional(),
-  baseline: z.boolean().optional(), // true only when completing baseline
-});
-const Body = z.object({ items: z.array(UpdateItem).min(1).max(200) });
+const MAX_BYTES = 512 * 1024;
+const MAX_ITEMS = 200;
+const REQUEST_TIMEOUT = 8000;
 
 Deno.serve(async (req) => {
-  const pre = options(req);
-  if (pre) return pre;
-  if (req.method !== "POST") return err(405, "METHOD_NOT_ALLOWED", "Use POST");
+  const start = Date.now();
+  
+  // Method validation
+  if (req.method !== 'POST') {
+    return jsonResponse(fail('invalid_payload', 'POST required'), 405);
+  }
+  
+  // Auth validation
+  const { user, error: authErr } = await requireUser(req);
+  if (!user) {
+    const code = authErr === 'auth_invalid' ? 'auth_invalid' : 'auth_missing';
+    return jsonResponse(fail(code, 'Authentication required'), 401);
+  }
 
-  const authed = await requireUser(req);
-  if (authed instanceof Response) return authed;
-  const { supabase, userId } = authed;
+  // Parse JSON body
+  let body: unknown;
+  try { 
+    body = await req.json(); 
+  } catch { 
+    return jsonResponse(fail('invalid_payload', 'Invalid JSON'), 400); 
+  }
+  
+  // Payload size check
+  if (byteSize(body) > MAX_BYTES) {
+    return jsonResponse(fail('payload_too_large', 'Payload too large'), 413);
+  }
 
-  // Validate body
-  // @ts-ignore
-  const parsed = await parseJson(req, Body);
-  // @ts-ignore
-  if (parsed.error) return parsed.error;
-  // @ts-ignore
-  const { items } = parsed.data as z.infer<typeof Body>;
+  // Schema validation
+  const schema = zBatch(zSession);
+  let parsed: z.infer<typeof schema>;
+  try { 
+    parsed = schema.parse(body); 
+  } catch (e) {
+    const ze = e as ZodError;
+    return jsonResponse(fail('invalid_payload', 'Validation failed', ze.flatten()), 422);
+  }
 
-  // Business rules: only allow baseline=true when status='completed'
-  for (const it of items) {
-    if (it.baseline === true && it.status !== "completed") {
-      return err(422, "VALIDATION_FAILED", "baseline can only be set when status=completed");
+  // Rate limiting
+  if (parsed.items.length > MAX_ITEMS) {
+    return jsonResponse(fail('rate_limited', 'Too many items'), 429);
+  }
+
+  const { supabase } = getClient(req);
+
+  // Process items with idempotency and RLS-friendly writes
+  const results: Array<{ 
+    id: string; 
+    status: 'ok' | 'conflict' | 'denied' | 'error'; 
+    reason?: string 
+  }> = [];
+
+  for (const item of parsed.items) {
+    // Timeout check
+    if (Date.now() - start > REQUEST_TIMEOUT) {
+      results.push({ id: item.id, status: 'error', reason: 'timeout' });
+      continue;
+    }
+
+    try {
+      // Use RPC for idempotent upsert with server-side user_id binding
+      const { error } = await supabase.rpc('upsert_session_v1', {
+        p_id: item.id,
+        p_baseline: item.baseline ?? false,
+        p_status: item.status,
+        p_started_at: item.started_at ?? null,
+        p_completed_at: item.completed_at ?? null,
+        p_client_rev: item.client_rev,
+        p_override: parsed.override ?? false
+      });
+
+      if (error) {
+        // Map common error cases
+        const msg = (error.message || '').toLowerCase();
+        if (msg.includes('conflict') || msg.includes('client_rev')) {
+          results.push({ id: item.id, status: 'conflict', reason: 'version_conflict' });
+          continue;
+        }
+        if (msg.includes('rls') || msg.includes('permission') || msg.includes('denied')) {
+          results.push({ id: item.id, status: 'denied', reason: 'rls_denied' });
+          continue;
+        }
+        results.push({ id: item.id, status: 'error', reason: 'internal' });
+        continue;
+      }
+
+      results.push({ id: item.id, status: 'ok' });
+    } catch {
+      results.push({ id: item.id, status: 'error', reason: 'internal' });
     }
   }
 
-  // Apply updates (RLS ensures these rows belong to user)
-  const updates = items.map((it) => ({
-    id: it.id,
-    status: it.status,
-    completed_at: it.completed_at ?? (it.status === "completed" ? new Date().toISOString() : null),
-    baseline: it.baseline ?? false,
-    user_id: userId, // harmless if column ignored; RLS still binds to auth.uid()
-  }));
-
-  // Update sessions
-  const { data: updated, error: upErr } = await supabase
-    .schema("app2")
-    .from("sessions")
-    .upsert(updates, { onConflict: "id", ignoreDuplicates: false })
-    .select();
-
-  if (upErr) {
-    const msg = (upErr as any).message || "Update failed";
-    if (/row-level security|permission denied/i.test(msg)) return err(403, "RLS_DENIED", msg);
-    return err(400, (upErr as any).code || "EF_DB_ERROR", msg, upErr);
-  }
-
-  // Handle baseline side-effects (flip profile flag + audit entry) for any completed baseline
-  const completedBaselineIds = (updated ?? [])
-    .filter((r: any) => r.status === "completed" && r.baseline === true)
-    .map((r: any) => r.id as string);
-
-  if (completedBaselineIds.length > 0) {
-    // 1) flip profiles.assessment_required = false
-    const { error: profErr } = await supabase
-      .schema("app2")
-      .from("profiles")
-      .update({ assessment_required: false })
-      .eq("user_id", userId);
-    if (profErr) {
-      return err(400, (profErr as any).code || "EF_DB_ERROR", "Profile flip failed", profErr);
+  // Server-side telemetry (non-blocking)
+  queueMicrotask(() => {
+    try {
+      const stats = results.reduce((acc, r) => {
+        acc[r.status] = (acc[r.status] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      
+      // Log to console for now (could be PostHog/Sentry later)
+      console.log('sync_sessions_completed', {
+        user_id: user.id,
+        total_items: parsed.items.length,
+        duration_ms: Date.now() - start,
+        stats
+      });
+    } catch {
+      // Ignore telemetry errors
     }
+  });
 
-    // 2) log to coach_audit
-    const auditRows = completedBaselineIds.map((sid) => ({
-      user_id: userId,
-      event: "baseline_completed",
-      session_id: sid,
-      created_at: new Date().toISOString(),
-    }));
-    const { error: auditErr } = await supabase
-      .schema("app2")
-      .from("coach_audit")
-      .insert(auditRows);
-    if (auditErr) {
-      return err(400, (auditErr as any).code || "EF_DB_ERROR", "Audit log failed", auditErr);
-    }
-  }
-
-  return json(200, { ok: true, updated: updated?.length ?? 0, items: updated ?? [] });
+  return jsonResponse(ok({ results }));
 });

@@ -1,5 +1,35 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 16:50 - Edge Function Validation — Part 2 (Complete Hardening)
+**Implemented**: Comprehensive Edge Function validation system with unified error taxonomy and strict input/output validation
+- **Shared Utilities**: Created robust shared infrastructure for all Edge Functions
+  - `_shared/http.ts`: Unified error taxonomy (auth_missing, auth_invalid, invalid_payload, payload_too_large, rate_limited, version_conflict, rls_denied, not_found, internal) with consistent response envelope `{ ok: boolean, data/error }`
+  - `_shared/auth.ts`: Centralized auth validation with `requireUser()` and `getClient()` helpers using proper Supabase client setup
+  - `_shared/validate.ts`: Comprehensive Zod schemas for all sync entities (LoggedSet, Session, SessionExercise) with batch wrapper and validation helpers
+- **Hardened Endpoints**: Completely rewrote all sync endpoints with comprehensive validation
+  - **sync-logged-sets**: Full validation pipeline with idempotency via `client_rev`, RPC-based upserts, per-item status tracking
+  - **sync-sessions**: Session status validation with baseline handling and server-side user binding
+  - **sync-session-exercises**: Exercise metadata sync with order management and conflict resolution
+- **Security & Performance**: Added multiple protection layers
+  - **Input Limits**: 512KB payload size limit, 200 items per batch, 8-second request timeout
+  - **Rate Limiting**: Batch size validation with 429 responses for oversized requests
+  - **Auth Guards**: Strict JWT validation with early exits for missing/invalid tokens
+  - **RLS Compliance**: Server-side user_id binding, never trust client-provided user data
+- **Error Handling**: Comprehensive error mapping and structured responses
+  - **Idempotency**: Client revision tracking with conflict detection and override support
+  - **Status Tracking**: Per-item results (ok/conflict/denied/error) with detailed reason codes
+  - **Timeout Protection**: Request-level timeouts with graceful degradation
+- **Telemetry Integration**: Non-blocking server-side telemetry with performance metrics
+  - **Event Tracking**: Completion events with user_id, item counts, duration, status breakdown
+  - **Privacy-Safe**: Console logging for now, ready for PostHog/Sentry integration
+- **Contract Testing**: Created comprehensive test suite with 20+ test scenarios
+  - **Happy Path**: Valid payloads with proper auth and expected 200 responses
+  - **Failure Matrix**: Auth missing (401), validation failures (422), rate limiting (429), payload size (413)
+  - **Response Format**: Consistent `{ ok: boolean }` envelope validation across all endpoints
+  - **Test Runner**: Executable Deno script with environment variable configuration
+
+**Technical**: All Edge Functions now enforce strict validation, consistent error handling, and comprehensive security measures with idempotency support and detailed telemetry
+
 ## 2025-08-28 16:44 - Conflict Resolution System Implementation
 **Implemented**: Complete conflict detection and resolution system for offline-first sync layer
 - **Dexie Schema**: Upgraded to version 5 with `conflicts` store for persistent conflict tracking

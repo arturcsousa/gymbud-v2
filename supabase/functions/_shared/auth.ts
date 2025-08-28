@@ -1,24 +1,53 @@
-import { createClient } from "npm:@supabase/supabase-js@2";
-import { err } from "./http.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import type { User } from 'https://esm.sh/@supabase/supabase-js@2';
 
-export type Authed = {
-  supabase: ReturnType<typeof createClient>;
-  userId: string;
-};
-
-export async function requireUser(req: Request): Promise<Response | Authed> {
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const serviceRole = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader) return err(401, "NO_AUTH", "Missing Authorization header");
-
-  const supabase = createClient(supabaseUrl, serviceRole, {
-    global: { headers: { Authorization: authHeader } },
+export function getClient(req: Request) {
+  const url = Deno.env.get('SUPABASE_URL')!;
+  const anon = Deno.env.get('SUPABASE_ANON_KEY')!;
+  const authHeader = req.headers.get('Authorization') || '';
+  const token = authHeader.replace(/^Bearer\s+/i, '');
+  
+  const supabase = createClient(url, anon, { 
+    global: { 
+      headers: { 
+        Authorization: `Bearer ${token}` 
+      } 
+    } 
   });
+  
+  return { supabase, token };
+}
 
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user?.id) {
-    return err(401, "INVALID_TOKEN", "Invalid or expired JWT");
+export async function requireUser(req: Request): Promise<
+  | { user: User; error: null }
+  | { user: null; error: 'auth_missing' | 'auth_invalid' }
+> {
+  const { supabase } = getClient(req);
+  
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    
+    if (error || !user) {
+      return { user: null, error: 'auth_missing' };
+    }
+    
+    return { user, error: null };
+  } catch {
+    return { user: null, error: 'auth_invalid' };
   }
-  return { supabase, userId: data.user.id };
+}
+
+export function extractUserId(req: Request): string | null {
+  const authHeader = req.headers.get('Authorization') || '';
+  const token = authHeader.replace(/^Bearer\s+/i, '');
+  
+  if (!token) return null;
+  
+  try {
+    // Basic JWT payload extraction (without verification - Supabase handles that)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.sub || null;
+  } catch {
+    return null;
+  }
 }

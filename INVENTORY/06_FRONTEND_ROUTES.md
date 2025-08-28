@@ -33,6 +33,9 @@ Progressive Web Application (PWA) built with Vite + React using `wouter` for cli
   - Automatic storage of sync/void events in `sync_events` table
   - Backward compatibility with existing class-based telemetry system
 
+## Recent Updates
+**2025-08-28**: Edge Function Validation — Part 2 implementation focused on server-side hardening with no frontend routing changes. All validation occurs at the Edge Function level with structured API responses and consistent error handling.
+
 ## Route Structure
 
 ### Marketing Routes (/)
