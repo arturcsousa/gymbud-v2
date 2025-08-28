@@ -165,26 +165,20 @@ export default function StatsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white/5 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-white">{metrics.totalSessions}</div>
-              <div className="text-white/70 text-xs">{t('stats:totalSessions')}</div>
+              <div className="text-white font-bold text-xs">{t('stats:totalSessions')}</div>
             </div>
             <div className="bg-white/5 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-white">{metrics.currentStreak}</div>
-              <div className="text-white/70 text-xs">{t('stats:currentStreak')}</div>
+              <div className="text-white font-bold text-xs">{t('stats:currentStreak')}</div>
             </div>
             <div className="bg-white/5 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-white">{Math.round(metrics.totalVolume)}</div>
-              <div className="text-white/70 text-xs">{t('stats:totalVolume')}</div>
+              <div className="text-white font-bold text-xs">{t('stats:totalVolume')}</div>
             </div>
             <div className="bg-white/5 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-white">{metrics.avgRPE.toFixed(1)}</div>
-              <div className="text-white/70 text-xs">{t('stats:avgRPE')}</div>
+              <div className="text-white font-bold text-xs">{t('stats:avgRPE')}</div>
             </div>
-          </div>
-
-          {/* GymBud Branding for share */}
-          <div className="text-center pt-4 border-t border-white/10">
-            <div className="text-teal-300 font-bold text-lg">GymBud</div>
-            <div className="text-gray-400 text-sm">{t('stats:brandTagline')}</div>
           </div>
         </div>
 

@@ -1,5 +1,20 @@
 {
-  "title": "Estatísticas",
+  "title": "Seu Progresso",
+  "subtitle": "Acompanhe sua jornada fitness",
+  "totalSessions": "Total de Sessões",
+  "currentStreak": "Sequência Atual",
+  "totalVolume": "Volume Total",
+  "avgRPE": "RPE Médio",
+  "weeklyActivity": "Atividade Semanal",
+  "volumeAndSets": "Volume e Séries",
+  "weightProgress": "Progresso do Peso",
+  "shareTitle": "Meu Progresso no GymBud",
+  "shareText": "Confira meu progresso fitness com o GymBud!",
+  "shareProgress": "Compartilhar Progresso",
+  "shareSuccess": "Progresso compartilhado com sucesso!",
+  "downloadSuccess": "Cartão de progresso baixado com sucesso",
+  "shareError": "Falha ao compartilhar cartão de progresso",
+  "brandTagline": "Treinamento Pessoal com IA",
   "updated": "Atualizado",
   "cards": {
     "streak": {
@@ -21,7 +36,8 @@
       "hide_name": "Ocultar nome",
       "hide_weights": "Ocultar pesos",
       "hide_highlight": "Ocultar destaque"
-    }
+    },
+    "success": "Progresso compartilhado com sucesso!"
   },
   "charts": {
     "days": "Dias de Treino / Semana",
@@ -37,23 +53,5 @@
   "empty": {
     "title": "Ainda não há dados de treino",
     "cta": "Comece Seu Primeiro Treino"
-  },
-  "stats": {
-    "title": "Seu Progresso",
-    "subtitle": "Acompanhe sua jornada fitness",
-    "totalSessions": "Total de Sessões",
-    "currentStreak": "Sequência Atual",
-    "totalVolume": "Volume Total",
-    "avgRPE": "RPE Médio",
-    "weeklyActivity": "Atividade Semanal",
-    "volumeAndSets": "Volume e Séries",
-    "weightProgress": "Progresso do Peso",
-    "shareTitle": "Meu Progresso no GymBud",
-    "shareText": "Confira meu progresso fitness com o GymBud!",
-    "shareProgress": "Compartilhar Progresso",
-    "shareSuccess": "Progresso compartilhado com sucesso!",
-    "downloadSuccess": "Cartão de progresso baixado com sucesso",
-    "shareError": "Falha ao compartilhar cartão de progresso",
-    "brandTagline": "Treinamento Pessoal com IA"
   }
 }
