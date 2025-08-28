@@ -189,6 +189,8 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 
 ### Utility Hooks
 - **useOnlineStatus**: Custom hook for real-time network connectivity detection using browser online/offline events
+- **useHistory**: Offline-first history data with background sync and local filtering
+- **useHistoryDetail**: Individual session details with telemetry integration
 
 ### Form Patterns
 - **Optimistic Updates**: Immediate UI feedback with rollback on errors

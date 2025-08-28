@@ -1,5 +1,21 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 16:38 - TypeScript Compilation Error Resolution
+**Fixed**: Resolved all TypeScript compilation errors preventing successful builds
+- **Missing Named Exports**: Added `export { HistoryPage }` and `export { HistoryDetailPage }` to fix AppShell import errors
+- **Unused Variables**: Removed unused `i18n` variable from SettingsPage.tsx (TS6133)
+- **Database Schema Alignment**: Fixed column name mismatches in history selectors
+  - `weight_kg` → `weight` (matches LoggedSetRow schema)
+  - `created_at` → `updated_at` (matches SessionRow schema)  
+  - Fixed `session_id` filtering logic in historyDetail.ts (logged sets use `session_exercise_id`)
+- **Null Type Handling**: Fixed null-to-undefined conversions in historyDetail selector for proper type compatibility
+- **Missing Dependencies**: 
+  - Exported `pullUpdates` function from sync/queue.ts to fix import errors in history hooks
+  - Created `useOnlineStatus.ts` hook for network connectivity tracking
+- **Build Status**: All TypeScript errors resolved, ready for Vercel deployment
+
+**Technical**: Complete type safety restoration for history functionality with proper database schema alignment and dependency resolution
+
 ## 2025-08-28 16:29 - History Functionality Implementation
 **Implemented**: Complete history system with offline-first data layer and UI components matching app design
 - **Data Selectors**: Created `client/src/db/selectors/history.ts` and `historyDetail.ts` with computed session metrics
@@ -305,10 +321,10 @@
   - Deduplication by `(session_exercise_id, set_number)` with server canonical
 - **Pending State Tracking**: Added `meta.pendingVoidAck` field for UI state management
 - **Idempotency Protection**: Prevents duplicate void mutations with `void_{setId}` keys
-- **Enhanced UX**: Contextual toast messages ("Undo queued—will retry when online", "Undo already in progress")
-- **Data Integrity**: All selectors filter out `voided: true` sets from metrics and UI
-- **Telemetry Events**: `set_void_requested`, `set_void_confirmed`, `set_void_failed` tracking
-- **Helper Functions**: `hasPendingVoidMutation()`, `isSetPendingVoidAck()` for reconciliation logic
+- **Enhanced UX**: Contextual toast messages and accessibility announcements
+  - "Undo queued—will retry when online" for offline scenarios
+  - "Can't undo this set" for server rejections
+  - Screen reader announcements when returning to set after undo
 
 **Technical**: Prevents double-counts, resurrection of voided sets, and ensures consistent offline-first behavior with server reconciliation
 
@@ -530,7 +546,7 @@
 - **Settings Page Update**: Changed language selection to dropdown and applied immediate language changes
 - **HTML Lang Attributes**: Auto-update HTML lang attributes on language change
 - Context: Complete language persistence system with proper TypeScript error handling
-- Migrations: N/A (language persistence and TypeScript fixes)
+- Migrations: N/A (frontend-only)
 
 ## August 26, 2025 22:46 ET
 **Fixed** BottomNav visibility issue on History, Library, and Settings pages
