@@ -289,6 +289,12 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
   - **Offline-First**: Immediate IndexedDB data with background Supabase sync
   - **Features**: Real-time charts, social sharing, streak calculation, empty states
 - **`/settings`** - SettingsPage (account, preferences, sync status, data management)
+  - **Dead-Letter Queue Panel**: Failed sync mutations management
+    - Real-time failed mutations list with entity/operation details
+    - Error classification with human-readable labels and attempt counts
+    - Individual retry/delete actions for specific mutations
+    - Bulk operations: "Retry all" and "Delete all" failed mutations
+    - Contextual error display with timestamps and failure reasons
 
 ### Data Integration Architecture
 
@@ -326,3 +332,70 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - **Glass Morphism**: Semi-transparent card with backdrop blur effect
 - **Bottom Padding**: `pb-20` to prevent BottomNav overlap
 - **BottomNav**: Integrated with Settings tab active state
+- **Dead-Letter Queue Panel**: Failed sync mutations management
+  - Real-time failed mutations list with entity/operation details
+  - Error classification with human-readable labels and attempt counts
+  - Individual retry/delete actions for specific mutations
+  - Bulk operations: "Retry all" and "Delete all" failed mutations
+  - Contextual error display with timestamps and failure reasons
+
+### Onboarding System
+- **OnboardingWizard** - 12-step guided setup process
+  - Profile information (name, age, gender, biometrics)
+  - Fitness goals and experience level
+  - Schedule preferences and equipment availability
+  - Workout and diet preferences
+  - Progress tracking setup and motivation factors
+  - Account finalization and plan generation
+
+### Specialized Components
+- **Chart Components** - Reusable analytics charts (TrainingDaysBar, VolumeSetsCombo, WeightProgression)
+- **StatsShareCard** - Social sharing with PNG export functionality
+- **LanguageSwitcher** - Global language toggle with persistence
+
+## Navigation Patterns
+
+### Bottom Navigation
+- **Home** (`/app`) - Dashboard and today's plan
+- **Session** (`/app/session`) - Active workout runner
+- **History** (`/app/history`) - Past workout sessions
+- **Stats** (`/app/stats`) - Progress analytics and charts
+- **Settings** (`/app/settings`) - Account and app preferences
+
+### Authentication Flow
+1. **Landing** → **AuthPage** (signin/signup)
+2. **Signup** → **VerifyPage** (email confirmation)
+3. **Verification Success** → **OnboardingWizard** (new users) or **HomePage** (existing)
+4. **Password Reset** → **ResetPasswordPage** → **AuthPage**
+
+### Onboarding Flow
+1. **Profile Setup** (4 steps) → **Plan Generation** → **HomePage**
+2. Automatic plan creation via `plan-get-or-create` Edge Function
+3. Seamless transition to active training plans
+
+## Developer Features
+
+### Debug Tools (Settings → Developer Mode)
+- **Sync Events Log** - Real-time sync operation history
+- **Dead-Letter Queue Panel** - Failed sync mutations management
+  - Failed mutations browser with error details
+  - Manual retry capabilities for individual or bulk operations
+  - Mutation deletion for unrecoverable failures
+  - Comprehensive error classification and user-friendly labels
+
+### Telemetry Integration
+- Comprehensive event tracking for sync operations, authentication flows, and user interactions
+- Privacy-safe logging with domain-only tracking and no PII exposure
+- Real-time debugging capabilities for offline-first sync system
+
+## i18n Coverage
+- **Complete EN/PT-BR localization** for all routes and components
+- **Namespace structure**: 14 translation files per language
+- **Context-aware translations** including developer UI strings
+- **Cultural adaptation** for Brazilian Portuguese conventions
+
+## PWA Features
+- **Offline-first architecture** with IndexedDB storage
+- **Service Worker** with precaching and stale-while-revalidate strategies
+- **Installable app** with proper manifest and icon configuration
+- **Background sync** with mutation queue and conflict resolution

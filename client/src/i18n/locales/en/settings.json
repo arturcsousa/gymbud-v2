@@ -25,6 +25,13 @@
     "event": {
       "success": "Success ({{items}} items)",
       "failure": "Failure ({{code}})"
-    }
+    },
+    "deadLetterQueue": "Dead-Letter Queue",
+    "noFailed": "No failed syncs ",
+    "retry": "Retry",
+    "retryAll": "Retry all",
+    "delete": "Delete",
+    "deleteAll": "Delete all",
+    "lastTried": "Last tried:"
   }
 }

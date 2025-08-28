@@ -2,7 +2,7 @@ import Dexie, { Table } from 'dexie'
 import { OnboardingState } from './onboarding-store'
 
 export type QueueOp = 'insert' | 'update' | 'delete' | 'void'
-export type QueueStatus = 'queued' | 'processing' | 'done' | 'error'
+export type QueueStatus = 'pending' | 'inflight' | 'failed' | 'done'
 
 export interface MetaRow { key: string; value: any; updated_at: number }
 
@@ -16,16 +16,20 @@ export interface SyncEventRow {
 
 export interface QueueMutation {
   id: string
-  entity: string                // e.g., 'app2.logged_sets'
+  entity: 'sessions' | 'session_exercises' | 'logged_sets' | 'coach_audit'
   op: QueueOp
   payload: any                  // shape to send to server later
   user_id?: string
   idempotency_key?: string
   status: QueueStatus
-  retries: number
-  next_attempt_at: number       // epoch ms
   created_at: number
-  updated_at: number
+  attempts?: number             // # of send attempts
+  last_error_code?: string      // from mapEdgeError
+  last_error_at?: number        // ms timestamp
+  // Legacy fields for backward compatibility
+  retries?: number
+  next_attempt_at?: number      // epoch ms
+  updated_at?: number
 }
 
 export interface SessionRow {
@@ -104,6 +108,21 @@ export class GymBudDB extends Dexie {
       sync_events: '++id, ts',
       queue_mutations:
         'id, status, next_attempt_at, created_at, entity, [status+next_attempt_at]',
+      sessions:
+        'id, user_id, plan_id, status, started_at, completed_at, updated_at, [user_id+started_at]',
+      session_exercises:
+        'id, session_id, order_index, updated_at, [session_id+order_index]',
+      logged_sets:
+        'id, session_exercise_id, set_number, updated_at, [session_exercise_id+set_number]',
+      onboarding_state: 'user_id, updated_at'
+    })
+
+    // Add failure tracking fields in version 4
+    this.version(4).stores({
+      meta: 'key, updated_at',
+      sync_events: '++id, ts',
+      queue_mutations:
+        'id, entity, op, created_at, status, attempts, last_error_code, last_error_at',
       sessions:
         'id, user_id, plan_id, status, started_at, completed_at, updated_at, [user_id+started_at]',
       session_exercises:

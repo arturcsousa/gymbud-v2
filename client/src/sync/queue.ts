@@ -5,6 +5,7 @@ import i18n from '@/i18n'
 import { mapEdgeError, type ErrorCode } from '@/lib/errors/mapEdgeError'
 import { track } from '@/lib/telemetry'
 
+const MAX_ATTEMPTS = 5
 let flushLock = false
 let pullLock = false
 const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('gymbud-sync') : null
@@ -20,15 +21,17 @@ export async function enqueue(opts: {
   const now = Date.now()
   const row: QueueMutation = {
     id,
-    entity: opts.entity,
+    entity: opts.entity as any,
     op: opts.op,
     payload: opts.payload,
     user_id: opts.user_id,
     idempotency_key: opts.idempotency_key ?? id,
-    status: 'queued',
+    status: 'pending',
+    created_at: now,
+    attempts: 0,
+    // Legacy fields for backward compatibility
     retries: 0,
     next_attempt_at: now,
-    created_at: now,
     updated_at: now,
   }
   await db.queue_mutations.add(row)
@@ -37,7 +40,16 @@ export async function enqueue(opts: {
 }
 
 export async function pendingCount(): Promise<number> {
-  return db.queue_mutations.where('status').equals('queued').count()
+  return db.queue_mutations.where('status').equals('pending').count()
+}
+
+async function markFailure(m: QueueMutation, code: string): Promise<void> {
+  await db.queue_mutations.update(m.id, {
+    status: 'failed',
+    attempts: (m.attempts ?? 0) + 1,
+    last_error_code: code,
+    last_error_at: Date.now(),
+  })
 }
 
 async function sendToServer(m: QueueMutation): Promise<void> {
@@ -157,7 +169,7 @@ async function updateMeta(key: string, value: any): Promise<void> {
 async function hasPendingMutation(entity: string, rowId: string): Promise<boolean> {
   const count = await db.queue_mutations
     .where('[entity+payload.id+status]')
-    .between([entity, rowId, 'queued'], [entity, rowId, 'queued'])
+    .between([entity, rowId, 'pending'], [entity, rowId, 'pending'])
     .count()
   return count > 0
 }
@@ -171,7 +183,7 @@ async function hasPendingVoidMutation(setId: string): Promise<boolean> {
       const payload = mutation.payload as { id?: string; voided?: boolean } | undefined
       return payload?.id === setId && 
              payload?.voided === true &&
-             mutation.status === 'queued'
+             mutation.status === 'pending'
     })
     .first()
   
@@ -320,8 +332,8 @@ export async function flush(maxBatch = 50): Promise<void> {
   try {
     const now = Date.now()
     const batch = await db.queue_mutations
-      .where('[status+next_attempt_at]')
-      .between(['queued', 0], ['queued', now])
+      .where('status')
+      .equals('pending')
       .limit(maxBatch)
       .toArray()
 
@@ -344,27 +356,43 @@ export async function flush(maxBatch = 50): Promise<void> {
     let lastErrorCode: ErrorCode | null = null
 
     for (const m of batch) {
-      // optimistic "processing" mark
-      await db.queue_mutations.update(m.id, { status: 'processing', updated_at: Date.now() })
+      // optimistic "inflight" mark
+      await db.queue_mutations.update(m.id, { status: 'inflight', updated_at: Date.now() })
       try {
-        await sendToServer(m) // will throw for now
+        await sendToServer(m)
         await db.queue_mutations.update(m.id, { status: 'done', updated_at: Date.now() })
         successCount++
-      } catch (err) {
+      } catch (err: any) {
         const mappedError = mapEdgeError(err)
         lastErrorCode = mappedError.code
         
-        const retries = (m.retries ?? 0) + 1
-        const next = Date.now() + backoffDelay(retries)
-        await db.queue_mutations.update(m.id, {
-          status: 'queued',
-          retries,
-          next_attempt_at: next,
-          updated_at: Date.now(),
-        })
-        failureCount++
+        const attempts = (m.attempts ?? 0) + 1
+        
+        // Check if we should mark as failed
+        if (attempts >= MAX_ATTEMPTS || 
+            mappedError.code === 'invalid_payload' || 
+            mappedError.code === 'rls_denied') {
+          await markFailure(m, mappedError.code)
+          track({ type: 'sync_failure', code: mappedError.code })
+          failureCount++
+        } else {
+          // Retry with backoff
+          const next = Date.now() + backoffDelay(attempts)
+          await db.queue_mutations.update(m.id, {
+            status: 'pending',
+            attempts,
+            last_error_code: mappedError.code,
+            last_error_at: Date.now(),
+            // Legacy fields
+            retries: attempts,
+            next_attempt_at: next,
+            updated_at: Date.now(),
+          })
+          failureCount++
+        }
+        
         // Don't spam; console is fine in dev
-        console.warn('[sync] retry scheduled', { id: m.id, retries, error: mappedError.code })
+        console.warn('[sync] retry scheduled', { id: m.id, attempts, error: mappedError.code })
       }
     }
 
@@ -449,7 +477,7 @@ export async function voidLoggedSet(setId: string, userId: string): Promise<stri
       const payload = mutation.payload as { id?: string; voided?: boolean } | undefined
       return payload?.id === setId && 
              payload?.voided === true &&
-             mutation.status === 'queued'
+             mutation.status === 'pending'
     })
     .first()
 
@@ -480,6 +508,42 @@ export async function enqueueSessionUpdate(payload: {
     payload,
     idempotency_key: `session-${payload.id}-${Date.now()}`,
   });
+}
+
+// Dead-Letter Queue Management Functions
+export async function retryFailed(id: string): Promise<void> {
+  const m = await db.queue_mutations.get(id) as QueueMutation | undefined
+  if (!m || m.status !== 'failed') return
+  
+  await db.queue_mutations.update(id, { 
+    status: 'pending', 
+    last_error_code: undefined, 
+    last_error_at: undefined 
+  })
+  await flush() // existing flush orchestrator
+  track({ type: 'sync_failure', code: 'manual_retry' })
+}
+
+export async function retryAllFailed(): Promise<void> {
+  const failed = await db.queue_mutations.where('status').equals('failed').toArray()
+  await Promise.all(failed.map(m => db.queue_mutations.update(m.id, { 
+    status: 'pending', 
+    last_error_code: undefined, 
+    last_error_at: undefined 
+  })))
+  await flush()
+  track({ type: 'sync_failure', code: 'manual_retry_all' })
+}
+
+export async function deleteFailed(id: string): Promise<void> {
+  await db.queue_mutations.delete(id)
+  track({ type: 'sync_failure', code: 'manual_delete' })
+}
+
+export async function clearAllFailed(): Promise<void> {
+  const count = await db.queue_mutations.where('status').equals('failed').count()
+  await db.queue_mutations.where('status').equals('failed').delete()
+  track({ type: 'sync_success', items: count })
 }
 
 // Broadcast listeners

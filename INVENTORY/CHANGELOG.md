@@ -1,5 +1,31 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 15:57 - Sync Failure UX + Dead-Letter Viewer Implementation
+**Implemented**: Complete sync failure handling system with retry logic and developer UI for managing failed sync operations
+- **Dexie Schema Upgrade**: Bumped to version 4 with failure tracking fields in QueueMutation interface
+  - Added `attempts`, `last_error_code`, `last_error_at` fields for comprehensive failure tracking
+  - Updated status enum: `'pending' | 'inflight' | 'failed' | 'done'` (modernized from legacy 'queued'/'processing')
+  - Maintained backward compatibility with legacy `retries`, `next_attempt_at`, `updated_at` fields
+- **Retry Semantics**: Enhanced queue.ts with intelligent failure handling and retry logic
+  - Max attempts cap (5) with terminal failure conditions for `invalid_payload` and `rls_denied` errors
+  - Exponential backoff retry scheduling with immediate failure marking for unrecoverable errors
+  - Dead-letter queue management functions: `retryFailed()`, `retryAllFailed()`, `deleteFailed()`, `clearAllFailed()`
+- **Error Classification**: Added user-friendly error labels in mapEdgeError.ts
+  - Comprehensive error mapping: auth_missing, rls_denied, invalid_payload, network_offline, server_unavailable, timeout, rate_limited, unknown
+  - Human-readable labels for Dead-Letter Queue UI display
+- **Developer UI**: Created DeadLetterPanel component in SettingsPage behind dev mode toggle
+  - Real-time failed mutations list with entity/operation details, error reasons, and attempt counts
+  - Individual retry/delete actions plus bulk "Retry all"/"Delete all" operations
+  - Contextual error display with timestamps and attempt counters
+- **i18n Support**: Complete EN/PT-BR localization for sync failure UI
+  - Settings namespace: `deadLetterQueue`, `noFailed`, `retry`, `retryAll`, `delete`, `deleteAll`, `lastTried`
+  - Portuguese translations: "Fila de erros", "Tentar novamente", "Excluir todos"
+- **Telemetry Integration**: Enhanced failure tracking with manual retry/delete action events
+  - Events: `sync_failure` with error codes, `manual_retry`, `manual_retry_all`, `manual_delete`
+  - Comprehensive audit trail for sync operation debugging and monitoring
+
+**Technical**: Provides robust failure recovery system for offline-first PWA with developer-friendly debugging tools and comprehensive error handling
+
 ## 2025-08-28 15:51 - Telemetry System with Sync Event Tracking
 **Implemented**: Complete telemetry system with sync event tracking and developer UI for debugging
 - **Telemetry Types**: Added new typed telemetry events for sync operations and set void tracking
@@ -359,7 +385,7 @@
 
 **Technical**: All TypeScript errors resolved, build now compiles successfully with Phase E2 durable undo functionality
 
-## 2025-08-27 13:52 - Phase E2: Durable Undo Implementation
+## 2025-08-27 14:03 - Phase E2: Durable Undo Implementation
 **Implemented**: Durable undo functionality for logged sets with offline-first support
 - **Queue System**: Added `logged_sets/void` mutation type with de-duplication logic
   - `enqueueLoggedSetVoid()` helper function with idempotency key `void_{setId}`

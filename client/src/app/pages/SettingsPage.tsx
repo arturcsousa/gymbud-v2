@@ -9,7 +9,8 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { supabase } from '@/lib/supabase'
 import { db } from '@/db/gymbud-db'
-import { pendingCount, requestFlush } from '@/sync/queue'
+import { pendingCount, requestFlush, retryFailed, retryAllFailed, deleteFailed, clearAllFailed } from '@/sync/queue'
+import { errorLabels } from '@/lib/errors/mapEdgeError'
 import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Bell, Globe, Database, LogOut, Code } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 
@@ -30,6 +31,65 @@ function SyncEventsLog() {
         </li>
       ))}
     </ul>
+  )
+}
+
+function DeadLetterPanel() {
+  const { t } = useTranslation(['settings'])
+  const failed = useLiveQuery(
+    () => db.queue_mutations.where('status').equals('failed').reverse().limit(50).toArray(),
+    [],
+    []
+  )
+
+  if (!failed?.length) {
+    return <p className="text-white/80">{t('sync.noFailed')}</p>
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex gap-2">
+        <Button onClick={retryAllFailed} variant="default" size="sm" className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7]">
+          {t('sync.retryAll')}
+        </Button>
+        <Button onClick={clearAllFailed} variant="destructive" size="sm" className="bg-red-500/20 text-red-300 border-red-500/30 hover:bg-red-500/30">
+          {t('sync.deleteAll')}
+        </Button>
+      </div>
+      <ul className="divide-y divide-white/10 rounded-xl ring-1 ring-white/10 bg-white/5">
+        {failed.map(m => (
+          <li key={m.id} className="p-3 flex items-center justify-between">
+            <div className="text-sm text-white/90">
+              <div className="font-semibold">{m.entity} · {m.op}</div>
+              <div className="text-white/70">
+                {errorLabels[m.last_error_code as keyof typeof errorLabels] || errorLabels.unknown}{' '}
+                {m.attempts ? `(${m.attempts}x)` : null}
+              </div>
+              <div className="text-white/60">
+                {t('sync.lastTried')} {new Date(m.last_error_at ?? Date.now()).toLocaleString()}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                onClick={() => retryFailed(m.id)}
+                className="bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7]"
+              >
+                {t('sync.retry')}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => deleteFailed(m.id)}
+                className="border-white/30 text-white hover:bg-white/10"
+              >
+                {t('sync.delete')}
+              </Button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -360,6 +420,18 @@ function SettingsPage() {
             </CardHeader>
             <CardContent className="pt-0">
               <SyncEventsLog />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Dead-Letter Queue (Dev Mode Only) */}
+        {devMode && (
+          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-xl ring-1 ring-white/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-white text-sm">{t('settings:sync.deadLetterQueue')}</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <DeadLetterPanel />
             </CardContent>
           </Card>
         )}

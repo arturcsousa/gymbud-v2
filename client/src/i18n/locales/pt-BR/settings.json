@@ -25,6 +25,13 @@
     "event": {
       "success": "Sucesso ({{items}} itens)",
       "failure": "Falha ({{code}})"
-    }
+    },
+    "deadLetterQueue": "Fila de erros",
+    "noFailed": "Sem falhas de sincronização ",
+    "retry": "Tentar novamente",
+    "retryAll": "Tentar todos",
+    "delete": "Excluir",
+    "deleteAll": "Excluir todos",
+    "lastTried": "Última tentativa:"
   }
 }

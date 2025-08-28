@@ -88,3 +88,15 @@ export function mapEdgeError(err: unknown): MappedError {
   // Default fallback
   return { code: 'unknown' }
 }
+
+// User-friendly error labels for Dead-Letter Queue UI
+export const errorLabels: Record<ErrorCode, string> = {
+  auth_missing: 'Authentication required',
+  rls_denied: 'Permission denied (RLS)',
+  invalid_payload: 'Invalid data',
+  network_offline: 'No internet',
+  server_unavailable: 'Server unavailable',
+  timeout: 'Request timed out',
+  rate_limited: 'Too many requests',
+  unknown: 'Unknown error',
+}
