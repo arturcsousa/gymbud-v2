@@ -1,264 +1,121 @@
-import { useState, useEffect } from 'react'
-import { useLocation } from 'wouter'
-import { useTranslation } from 'react-i18next'
-import { ArrowLeft, Calendar, Timer, Dumbbell, Edit } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { dataManager, Session } from '@/app/db/indexeddb'
+import { useRoute, Link } from 'wouter';
+import { useTranslation } from 'react-i18next';
+import { useHistoryDetail } from '@/hooks/useHistoryDetail';
+import { useSettings } from '@/providers/SettingsProvider';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
-interface HistoryDetailPageProps {
-  params: { id: string }
+function kgToLb(n: number) {
+  return Math.round(n * 2.20462262185 * 10) / 10;
 }
 
-export function HistoryDetailPage({ params }: HistoryDetailPageProps) {
-  const { t } = useTranslation(['app', 'history', 'session'])
-  const [, setLocation] = useLocation()
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+function SectionSkeleton() {
+  return (
+    <div className="animate-pulse space-y-3">
+      <div className="h-6 w-40 bg-white/10 rounded" />
+      <div className="h-24 bg-white/5 rounded" />
+      <div className="h-24 bg-white/5 rounded" />
+    </div>
+  );
+}
 
-  useEffect(() => {
-    loadSession()
-  }, [params.id])
+export default function HistoryDetailPage() {
+  const [, params] = useRoute<{ id: string }>('/app/history/:id');
+  const sessionId = params?.id!;
+  const { t } = useTranslation();
+  const { settings } = useSettings();
+  const { data, loading } = useHistoryDetail(sessionId);
 
-  const loadSession = async () => {
-    try {
-      const sessionData = await dataManager.getSession(params.id)
-      setSession(sessionData || null)
-    } catch (error) {
-      console.error('Error loading session:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const unitLabel = settings?.units === 'imperial' ? 'lb' : 'kg';
+  const fmtNum = (n: number) => new Intl.NumberFormat().format(n);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).format(date)
-  }
-
-  const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    
-    if (hours > 0) {
-      return `${hours}h ${minutes}m`
-    }
-    return `${minutes}m`
-  }
-
-  const getStatusBadge = (status: Session['status']) => {
-    const variants = {
-      planned: 'secondary',
-      in_progress: 'default',
-      completed: 'default',
-      skipped: 'destructive'
-    } as const
-
+  if (loading || !data) {
     return (
-      <Badge variant={variants[status] || 'secondary'}>
-        {t(`app:session.status.${status}`)}
-      </Badge>
-    )
-  }
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-muted rounded w-1/3"></div>
-          <div className="h-32 bg-muted rounded"></div>
-          <div className="space-y-4">
-            <div className="h-24 bg-muted rounded"></div>
-            <div className="h-24 bg-muted rounded"></div>
-          </div>
-        </div>
+      <div className="p-4 pb-20">
+        <Card className="bg-white/10 backdrop-blur-xl ring-1 ring-white/20">
+          <CardHeader><CardTitle>{t('history.detail.title')}</CardTitle></CardHeader>
+          <CardContent><SectionSkeleton /></CardContent>
+        </Card>
       </div>
-    )
+    );
   }
 
-  if (!session) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <h1 className="text-2xl font-bold mb-4">{t('history:detail.notFound.title')}</h1>
-        <p className="text-muted-foreground mb-4">{t('history:detail.notFound.message')}</p>
-        <Button onClick={() => setLocation('/history')}>
-          {t('history:detail.backToHistory')}
-        </Button>
-      </div>
-    )
-  }
+  const started = data.session?.started_at ? new Date(data.session.started_at) : null;
+  const completed = data.session?.completed_at ? new Date(data.session.completed_at) : null;
+  const dateLabel = new Date(data.session?.completed_at ?? data.session?.started_at ?? Date.now())
+    .toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 
-  const exercises = session.data?.exercises || []
-  const totalSets = exercises.reduce((acc: number, ex: any) => acc + (ex.sets?.length || 0), 0)
+  const volume = settings?.units === 'imperial' ? kgToLb(data.totals.volumeKg) : data.totals.volumeKg;
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setLocation('/history')}
-          className="gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t('history:detail.back')}
-        </Button>
-      </div>
+    <div className="p-4 pb-20 space-y-4">
+      <Link href="/app/history">
+        <a className="text-sm text-white/80 hover:underline">&larr; {t('history.backToList')}</a>
+      </Link>
 
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">
-            {session.data?.name || t('app:session.workout')}
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            {formatDate(session.date)}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          {getStatusBadge(session.status)}
-          {session.status !== 'completed' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setLocation(`/session/${session.id}`)}
-              className="gap-2"
-            >
-              <Edit className="h-4 w-4" />
-              {t('history:detail.edit')}
-            </Button>
-          )}
-        </div>
-      </div>
+      <Card className="bg-white/10 backdrop-blur-xl ring-1 ring-white/20">
+        <CardHeader>
+          <CardTitle>{t('history.detail.sessionOn', { date: dateLabel })}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-white/80">
+          <div className="flex flex-wrap gap-4">
+            <InfoPill label={t('history.sets_short')} value={String(data.totals.sets)} />
+            <InfoPill label={t('history.totalVolume')} value={`${fmtNum(volume)} ${unitLabel}`} />
+            {started && completed ? (
+              <InfoPill label={t('history.duration_short')}
+                value={`${Math.max(1, Math.round((+completed - +started) / 60000))} ${t('history.min')}`} />
+            ) : null}
+            <InfoPill label={t('history.statusLabel')} value={t(`history.status_${data.session?.status ?? 'completed'}`)} />
+          </div>
+        </CardContent>
+      </Card>
 
-      {/* Session stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm text-muted-foreground">{t('history:detail.stats.date')}</p>
-                <p className="font-medium">{formatDate(session.date)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Timer className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm text-muted-foreground">{t('history:detail.stats.duration')}</p>
-                <p className="font-medium">
-                  {session.data?.duration 
-                    ? formatTime(session.data.duration)
-                    : t('history:detail.stats.notRecorded')
-                  }
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Dumbbell className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-sm text-muted-foreground">{t('history:detail.stats.exercises')}</p>
-                <p className="font-medium">
-                  {exercises.length} {t('history:stats.exercises')}, {totalSets} {t('history:stats.sets')}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Exercises */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">{t('session:exercises.title')}</h2>
-        
-        {exercises.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-8">
-              <Dumbbell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">
-                {t('history:detail.noExercises')}
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          exercises.map((exercise: any, exerciseIndex: number) => (
-            <Card key={exercise.id || exerciseIndex}>
-              <CardHeader>
-                <CardTitle className="text-lg">
-                  {exercise.name || t('session:exercise.unnamed')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {exercise.sets && exercise.sets.length > 0 ? (
-                  <div className="space-y-2">
-                    {/* Headers */}
-                    <div className="grid grid-cols-12 gap-2 text-sm font-medium text-muted-foreground border-b pb-2">
-                      <div className="col-span-1 text-center">{t('session:set.setNumber')}</div>
-                      <div className="col-span-2 text-center">{t('session:set.reps')}</div>
-                      <div className="col-span-2 text-center">{t('session:set.weight')}</div>
-                      <div className="col-span-2 text-center">{t('session:set.rpe')}</div>
-                      <div className="col-span-5">{t('session:set.notes')}</div>
+      <Card className="bg-white/10 backdrop-blur-xl ring-1 ring-white/20">
+        <CardHeader><CardTitle>{t('history.detail.exercises')}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          {data.exercises.map((ex) => {
+            const exVol = settings?.units === 'imperial' ? kgToLb(ex.volumeKg) : ex.volumeKg;
+            return (
+              <div key={ex.id} className="p-3 rounded-xl ring-1 ring-white/10 bg-white/5">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="font-semibold text-white">{ex.name ?? t('history.unknownExercise')}</div>
+                    <div className="text-white/70 text-sm">
+                      {t('history.sets', { count: ex.sets.length })} · {t('history.totalVolume')} {fmtNum(exVol)} {unitLabel}
                     </div>
-                    
-                    {/* Sets */}
-                    {exercise.sets.map((set: any, setIndex: number) => (
-                      <div key={set.id || setIndex} className="grid grid-cols-12 gap-2 text-sm py-2 border-b border-muted">
-                        <div className="col-span-1 text-center font-medium">
-                          {setIndex + 1}
-                        </div>
-                        <div className="col-span-2 text-center">
-                          {set.reps || '-'}
-                        </div>
-                        <div className="col-span-2 text-center">
-                          {set.weight ? `${set.weight}kg` : '-'}
-                        </div>
-                        <div className="col-span-2 text-center">
-                          {set.rpe || '-'}
-                        </div>
-                        <div className="col-span-5 text-muted-foreground">
-                          {set.notes || '-'}
-                        </div>
-                      </div>
-                    ))}
                   </div>
-                ) : (
-                  <p className="text-muted-foreground text-center py-4">
-                    {t('history:detail.noSets')}
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+                </div>
+                <ul className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {ex.sets
+                    .sort((a, b) => (a.set_number ?? 0) - (b.set_number ?? 0))
+                    .map((s, i) => (
+                      <li key={i} className="text-sm text-white/85 p-2 rounded-lg bg-white/0 ring-1 ring-white/10">
+                        <span className="font-mono mr-2">#{s.set_number ?? i + 1}</span>
+                        {s.reps ?? 0}×{fmtNum(settings?.units === 'imperial' ? kgToLb(s.weight_kg ?? 0) : (s.weight_kg ?? 0))} {unitLabel}
+                        {typeof s.rpe === 'number' ? <span className="ml-2 text-white/60">RPE {s.rpe}</span> : null}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            );
+          })}
+        </CardContent>
+      </Card>
 
-      {/* Session notes (if any) */}
-      {session.data?.notes && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('history:detail.notes.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="whitespace-pre-wrap">{session.data.notes}</p>
-          </CardContent>
-        </Card>
-      )}
+      <div className="flex gap-2">
+        <Link href="/app/stats">
+          <a><Button variant="secondary">{t('history.viewStats')}</Button></a>
+        </Link>
+      </div>
     </div>
-  )
+  );
+}
+
+function InfoPill({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="px-3 py-1.5 rounded-full bg-white/5 ring-1 ring-white/10 text-sm">
+      <span className="text-white/60">{label}: </span>
+      <span className="text-white font-semibold">{value}</span>
+    </div>
+  );
 }

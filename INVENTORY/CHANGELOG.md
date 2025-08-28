@@ -1,5 +1,32 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 16:29 - History Functionality Implementation
+**Implemented**: Complete history system with offline-first data layer and UI components matching app design
+- **Data Selectors**: Created `client/src/db/selectors/history.ts` and `historyDetail.ts` with computed session metrics
+  - `selectSessionsIndex()`: Aggregates sessions with date, duration, total sets, volume, status, exercise count
+  - `selectSessionDetail()`: Provides exercise breakdown with per-exercise volume and set details
+  - Efficient data aggregation using Maps for O(n) performance with large datasets
+- **React Hooks**: Built `useHistory()` and `useHistoryDetail()` with Dexie-first + background sync pattern
+  - Immediate IndexedDB results with opportunistic `pullUpdates()` when online
+  - Local filtering (text search, status filter, date range) without server round-trips
+  - Telemetry integration: `history_list_viewed`, `history_detail_viewed` events
+- **UI Components**: Replaced placeholder pages with production-ready history interface
+  - **HistoryPage**: List view with search/filter controls, skeleton loading, empty state with CTA
+  - **HistoryDetailPage**: Session detail with info pills, exercise breakdown, set-by-set display
+  - Consistent design: glassy cards, backdrop-blur, teal gradients matching app aesthetic
+- **i18n Coverage**: Complete EN/PT-BR localization for history namespace
+  - List UI: search, filters, status labels, metrics (exercises, sets, duration, volume)
+  - Detail UI: session info, exercise names, set display, navigation controls
+  - Empty states and error messages with contextual CTAs
+- **Units Integration**: Imperial/metric conversion with SettingsProvider integration
+  - Weight display respects user preference (kg ↔ lb conversion)
+  - Formatted numbers with proper locale-aware display
+- **Route Integration**: `/app/history/:id` detail route with proper navigation flow
+  - Back navigation to history list, forward navigation to stats page
+  - URL parameter handling with wouter `useRoute` hook
+
+**Technical**: Offline-first architecture with computed metrics, type-safe data structures, performance-optimized aggregation, ready for production use
+
 ## 2025-08-28 16:14 - Settings Store with Offline Cache + Cloud Sync Implementation
 **Implemented**: Complete settings persistence system with offline-first architecture and cloud synchronization
 - **Dexie Schema**: Added `settings` table (version 4) with single-row KV storage for app preferences
@@ -655,7 +682,7 @@
 ## August 26, 2025 19:52 ET
 **Restored** custom AuthPage design and fixed React hooks error
 - **React Error Fix**: Removed `useLocation` hook from async `finalizeOnboarding` function (React error #321)
-- **Navigation Fix**: Switched back to `window.location.href` for reliable post-auth navigation
+- **Navigation Fix**: Switched back to `window.location.href` for reliable redirect to `/app/session/today`
 - **Custom Design**: Restored glassmorphic design with gradient background and decorative blobs
 - **Brand Styling**: Added custom logo with dumbbell icon and "GymBud" text in header, plus moon icon for dark mode toggle
 - **Language Switcher**: Re-added LanguageSwitcher component to header for i18n support

@@ -1,0 +1,33 @@
+{
+  "title": "Histórico",
+  "search": "Buscar no histórico…",
+  "status": "Status",
+  "filters": {
+    "all": "Todos",
+    "completed": "Concluídos",
+    "active": "Em andamento",
+    "pending": "Pendentes"
+  },
+  "status_completed": "Concluído",
+  "status_active": "Em andamento",
+  "status_pending": "Pendente",
+  "exercises": "{{count}} exercícios",
+  "sets": "{{count}} séries",
+  "duration": "{{minutes}} min",
+  "duration_short": "Duração",
+  "sets_short": "Séries",
+  "totalVolume": "Volume total",
+  "min": "min",
+  "emptyTitle": "Ainda sem treinos",
+  "emptyBody": "Seus treinos aparecerão aqui assim que você começar a registrar.",
+  "startWorkout": "Começar um treino",
+  "backToList": "Voltar ao histórico",
+  "statusLabel": "Status",
+  "detail": {
+    "title": "Detalhes do treino",
+    "sessionOn": "Treino em {{date}}",
+    "exercises": "Exercícios"
+  },
+  "unknownExercise": "Exercício",
+  "viewStats": "Ver Estatísticas"
+}

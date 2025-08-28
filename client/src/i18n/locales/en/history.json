@@ -1,40 +1,52 @@
 {
-  "title": "Workout History",
+  "title": "History",
   "subtitle": "Track your fitness journey",
   "search": {
-    "placeholder": "Search workouts..."
+    "placeholder": "Search history…"
   },
   "filters": {
-    "all": "All"
+    "all": "All",
+    "completed": "Completed",
+    "active": "Active",
+    "pending": "Pending"
   },
+  "status": "Status",
+  "status_completed": "Completed",
+  "status_active": "Active",
+  "status_pending": "Pending",
   "stats": {
-    "exercises": "exercises",
-    "sets": "sets",
-    "minutes": "min"
+    "exercises": "{{count}} exercises",
+    "sets": "{{count}} sets",
+    "minutes": "{{minutes}} min",
+    "duration_short": "Duration",
+    "sets_short": "Sets",
+    "totalVolume": "Total volume",
+    "min": "min"
   },
   "actions": {
     "view": "View Details",
-    "loadMore": "Load More"
+    "loadMore": "Load More",
+    "viewStats": "View Stats"
   },
   "empty": {
-    "title": "No workouts yet",
-    "message": "Start your first workout to see it here",
-    "startFirst": "Start First Workout"
+    "title": "No sessions yet",
+    "message": "Your past workouts will appear here once you start logging.",
+    "startFirst": "Start a workout"
   },
   "noResults": {
     "title": "No matching workouts",
     "message": "Try adjusting your search or filters"
   },
   "detail": {
-    "back": "Back to History",
+    "back": "Back to history",
     "edit": "Edit Session",
-    "backToHistory": "Back to History",
+    "backToHistory": "Back to history",
     "notFound": {
       "title": "Session Not Found",
       "message": "The workout session you're looking for doesn't exist."
     },
     "stats": {
-      "date": "Date",
+      "date": "Session on {{date}}",
       "duration": "Duration",
       "exercises": "Exercises",
       "notRecorded": "Not recorded"
@@ -43,6 +55,10 @@
     "noSets": "No sets recorded",
     "notes": {
       "title": "Session Notes"
-    }
-  }
+    },
+    "title": "Session details",
+    "sessionOn": "Session on {{date}}",
+    "exercises": "Exercises"
+  },
+  "unknownExercise": "Exercise"
 }
