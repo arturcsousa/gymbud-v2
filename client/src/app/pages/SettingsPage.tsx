@@ -17,7 +17,7 @@ import BottomNav from '@/components/BottomNav'
 function SyncEventsLog() {
   const { t } = useTranslation(['settings'])
   const events = useLiveQuery(
-    () => db.sync_events.orderBy('created_at').reverse().limit(10).toArray(),
+    () => db.sync_events.orderBy('ts').reverse().limit(10).toArray(),
     []
   )
 
@@ -27,7 +27,7 @@ function SyncEventsLog() {
     <ul className="space-y-2 text-sm">
       {events.map(ev => (
         <li key={ev.id} className="text-white/80 text-xs">
-          <span>{new Date(ev.created_at).toLocaleTimeString()} — {ev.type}</span>
+          <span>{new Date(ev.ts).toLocaleTimeString()} — {ev.kind}</span>
         </li>
       ))}
     </ul>
