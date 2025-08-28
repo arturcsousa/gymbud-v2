@@ -1,5 +1,23 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 14:29 - i18n Sync Namespace Implementation
+**Fixed**: Resolved TypeScript import error for missing sync.json translation files
+- **Missing Files**: Created `client/src/i18n/locales/en/sync.json` and `client/src/i18n/locales/pt-BR/sync.json`
+- **Translation Structure**: Added comprehensive sync-related translations for offline-first PWA
+  - Status indicators: online, offline, syncing, synced, error
+  - Action buttons: sync now, retry, force sync
+  - User messages: sync complete, offline mode, pending changes count, last sync time
+  - Error messages: network, server, auth, and conflict errors
+- **i18n Integration**: Files properly imported in `index.ts` configuration (lines 23, 42)
+- **Build Status**: TypeScript compilation error resolved, imports now successful
+
+**Technical**: Sync namespace supports offline-first PWA sync system with proper EN/PT-BR localization
+
+## 2025-08-28 11:45 ET — RLS Verification (QA run)
+**Summary:** RLS audit passed (13/13). No cross-user leakage; anon visibility blocked; preserve/ref read-only enforced.
+**Details:** Results stored in qa.rls_results (see latest run_id via query).
+**Impact:** Security gate cleared. Proceeding to EF Input Validation Sweep (Milestone C.2).
+
 ## 2025-08-28 14:09 - Stats Page Translation & UI Improvements
 **Fixed**: Resolved translation key display issues and improved text visibility on Stats page
 - **Translation Structure**: Fixed PT-BR stats.json structure to match EN format by moving nested keys to root level

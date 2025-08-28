@@ -3,7 +3,11 @@
 ## Overview
 Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
-## Recent Updates (2025-08-28 10:41)
+## Recent Updates (2025-08-28 14:29)
+- **Sync Namespace Implementation**: Added missing sync.json translation files for both EN and PT-BR languages
+- **TypeScript Build Fix**: Resolved import errors in i18n configuration for sync translation files
+- **Offline-First PWA Support**: Enhanced sync system with comprehensive translations for status indicators, actions, messages, and errors
+- **i18n Integration**: Sync namespace properly integrated into react-i18next configuration with 22 total namespaces
 - **TypeScript Compilation Fixes**: Resolved all TypeScript errors preventing successful builds
 - **Onboarding Type Safety**: Fixed GoalsPage.tsx and ProfilePage.tsx type mismatches for OnboardingState interface
 - **Form Data Validation**: Proper type casting for days_per_week and confidence values to match expected union types
@@ -263,7 +267,7 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - **`/session/:id`** - SessionPage (workout execution with timer, set logging, exercise progression)
 - **`/history`** - HistoryPage (past sessions list with filters and search)
 - **`/history/:id`** - HistoryDetailPage (individual session review with metrics)
-- **`/stats`** - StatsPage (progress analytics with charts, social sharing, streak badges)
+- **`/stats`** - StatsPage (progress analytics with charts, streaks, and social sharing)
   - **Data Sources**: useSessionMetrics (Dexie + v_session_metrics), useProfileData (profiles + weight_logs)
   - **Offline-First**: Immediate IndexedDB data with background Supabase sync
   - **Features**: Real-time charts, social sharing, streak calculation, empty states

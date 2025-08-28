@@ -8,7 +8,7 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Languages**: EN (default), PT-BR
 - **Detection**: localStorage → navigator → htmlTag fallback
 - **Persistence**: Automatic localStorage caching with immediate HTML attribute updates
-- **Namespaces**: 21 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, stats, badges, sync)
+- **Namespaces**: 22 total (common, landing, faq, app, auth, onboarding, assessment, plan, session, coach, progress, pricing, errors, validation, settings, stats, badges, sync)
 - **Settings**: `keySeparator: '.'`, `nsSeparator: ':'`, `returnNull: false`, `escapeValue: false`
 
 ## Recent Updates (2025-08-28 14:09)
@@ -27,6 +27,11 @@ Bilingual internationalization setup using `react-i18next` with English (EN) as 
 - **Form Validation**: Improved onboarding form type safety with proper Zod schema integration
 - **UI Components**: Added Radix UI Slider component with full i18n support for confidence ratings
 - **Auth OTP Flow**: Added comprehensive email verification keys for 6-digit OTP system with resend functionality
+- **Sync Namespace Added**: Created missing sync.json files for both EN and PT-BR languages
+- **TypeScript Build Fix**: Resolved import errors for sync translation files in i18n configuration
+- **Offline-First PWA Support**: Added comprehensive sync-related translations for status indicators, actions, messages, and errors
+- **Translation Structure**: Sync namespace includes status (online/offline/syncing), actions (sync now/retry), user messages (sync complete/pending changes), and error handling
+- **Build Status**: All TypeScript compilation errors resolved, sync translations properly integrated
 
 ## File Structure
 ```

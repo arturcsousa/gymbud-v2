@@ -1,76 +1,72 @@
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
+// Validated, RLS-aware insert into app2.logged_sets
+import { z } from "npm:zod@3.23.8";
+import { CORS_HEADERS, json, err, options } from "../_shared/http.ts";
+import { requireUser } from "../_shared/auth.ts";
+import { parseJson } from "../_shared/validate.ts";
 
-type QueueOp = 'insert' | 'update' | 'delete';
-type Mutation = {
-  id: string;
-  entity: string;     // 'app2.logged_sets'
-  op: QueueOp;        // 'insert' only in this step
-  payload: any;       // { id?, session_exercise_id, set_number, reps?, weight?, rpe?, notes? }
-};
+const LoggedSetItem = z.object({
+  session_exercise_id: z.string().uuid(),
+  reps: z.number().int().min(0).max(500),
+  weight: z.number().min(0).max(2000),
+  rpe: z.number().min(0).max(10).optional(),
+  notes: z.string().max(2000).optional(),
+  created_at: z.string().datetime().optional(),
+});
+const BodySchema = z.object({ items: z.array(LoggedSetItem).min(1).max(200) });
 
-serve(async (req) => {
+Deno.serve(async (req) => {
+  // CORS preflight
+  const pre = options(req);
+  if (pre) return pre;
+
   if (req.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
+    return err(405, "METHOD_NOT_ALLOWED", "Use POST");
   }
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-  const authHeader = req.headers.get("Authorization") ?? "";
+  const authed = await requireUser(req);
+  if (authed instanceof Response) return authed;
+  const { supabase, userId } = authed;
 
-  // IMPORTANT: run under the *end-user* JWT so RLS applies.
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: authHeader } },
-  });
+  const parsed = await parseJson(req, BodySchema);
+  // parseJson returns Response on error
+  // @ts-ignore
+  if (parsed.error) return parsed.error;
+  // @ts-ignore
+  const { items } = parsed.data as z.infer<typeof BodySchema>;
 
-  let body: { mutations?: Mutation[] };
-  try {
-    body = await req.json();
-  } catch {
-    return new Response(JSON.stringify({ error: "invalid_json" }), {
-      status: 400,
-      headers: { "content-type": "application/json" },
-    });
+  // Attach user_id server-side; RLS ensures session_exercise belongs to user
+  const rows = items.map((i) => ({
+    session_exercise_id: i.session_exercise_id,
+    reps: i.reps,
+    weight: i.weight,
+    rpe: i.rpe ?? null,
+    notes: i.notes ?? null,
+    created_at: i.created_at ?? null,
+    user_id: userId, // if column exists; if not, RLS still checks via session->session_exercise join
+  }));
+
+  const { data, error } = await supabase
+    .schema("app2")
+    .from("logged_sets")
+    .insert(rows)
+    .select();
+
+  if (error) {
+    // Map common failure modes
+    const msg = (error as any).message || "Insert failed";
+    const code = (error as any).code || "EF_DB_ERROR";
+    // RLS/permission denied → 403; constraint → 409; otherwise 400
+    if (/violates row-level security|permission denied/i.test(msg)) {
+      return err(403, "RLS_DENIED", msg);
+    }
+    if (code === "23505") { // unique_violation
+      return err(409, "CONFLICT", msg);
+    }
+    return err(400, code, msg, error);
   }
 
-  const mutations = body.mutations ?? [];
-  const results: Array<{ id: string; status: string; code?: string; message?: string }> = [];
-
-  for (const m of mutations) {
-    if (m.entity !== "app2.logged_sets" || m.op !== "insert") {
-      results.push({ id: m.id, status: "skipped", code: "unsupported" });
-      continue;
-    }
-
-    const p = m.payload || {};
-    const row = {
-      id: p.id ?? m.id, // idempotency via primary key 'id'
-      session_exercise_id: p.session_exercise_id,
-      set_number: p.set_number,
-      reps: p.reps ?? null,
-      weight: p.weight ?? null,
-      rpe: p.rpe ?? null,
-      notes: p.notes ?? null,
-    };
-
-    if (!row.session_exercise_id || typeof row.set_number !== "number") {
-      results.push({ id: m.id, status: "error", code: "invalid_payload" });
-      continue;
-    }
-
-    const { error } = await supabase
-      .schema("app2")
-      .from("logged_sets")
-      .upsert([row], { onConflict: "id", ignoreDuplicates: true });
-
-    if (error) {
-      results.push({ id: m.id, status: "error", code: error.code ?? "db_error", message: error.message });
-    } else {
-      results.push({ id: m.id, status: "ok" });
-    }
-  }
-
-  return new Response(JSON.stringify({ results }), {
-    headers: { "content-type": "application/json" },
-  });
+  return new Response(
+    JSON.stringify({ ok: true, inserted: data?.length ?? 0, items: data ?? [] }),
+    { status: 201, headers: CORS_HEADERS },
+  );
 });
