@@ -30,6 +30,7 @@ import { useSessionData } from '@/hooks/useSessionData'
 import { useExerciseDetails } from '@/hooks/useExerciseDetails'
 import { ReplaceExerciseSheet } from '@/components/ReplaceExerciseSheet'
 import { CoachPanel } from '@/components/CoachPanel'
+import ExerciseHelpTicker from '@/components/exercise/ExerciseHelpTicker'
 
 interface RestTimerState {
   isActive: boolean
@@ -328,25 +329,7 @@ function SessionPage() {
                 </div>
               </div>
 
-              {/* Exercise Cues Ticker */}
-              {exerciseDetails?.cues && exerciseDetails.cues.length > 0 && (
-                <div className="mt-3 p-2 bg-teal-500/10 border border-teal-500/20 rounded-lg">
-                  <div className="text-xs text-teal-300 font-medium mb-1">Form Cues</div>
-                  <div className="text-sm text-teal-100">
-                    {exerciseDetails.cues.join(' • ')}
-                  </div>
-                </div>
-              )}
-
-              {/* Contraindications Warning */}
-              {exerciseDetails?.contraindications && exerciseDetails.contraindications.length > 0 && (
-                <div className="mt-3 p-2 bg-orange-500/10 border border-orange-500/20 rounded-lg">
-                  <div className="text-xs text-orange-300 font-medium mb-1">⚠️ Safety Notes</div>
-                  <div className="text-sm text-orange-100">
-                    {exerciseDetails.contraindications.join(' • ')}
-                  </div>
-                </div>
-              )}
+              <ExerciseHelpTicker exerciseId={currentExercise?.variant_id} className="mt-3" />
 
               {/* Swap Exercise CTA Button */}
               <div className="mt-4">

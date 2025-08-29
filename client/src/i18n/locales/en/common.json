@@ -31,5 +31,18 @@
   "of": "of",
   "start_free": "Start Free",
   "see_how": "See How It Works",
-  "goToApp": "Go to app"
+  "goToApp": "Go to app",
+  "show": "Show",
+  "hide": "Hide",
+  "errors": {
+    "generic": "Something went wrong. Please try again."
+  },
+  "exercise": {
+    "help": {
+      "heading": "Exercise Help",
+      "instructions": "Instructions",
+      "cues": "Form Cues",
+      "contraindications": "Precautions"
+    }
+  }
 }

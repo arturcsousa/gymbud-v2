@@ -29,5 +29,18 @@
   "of": "de",
   "start_free": "Começar Grátis",
   "see_how": "Veja Como Funciona",
-  "goToApp": "Ir para o app"
+  "goToApp": "Ir para o app",
+  "show": "Mostrar",
+  "hide": "Ocultar",
+  "errors": {
+    "generic": "Algo deu errado. Tente novamente."
+  },
+  "exercise": {
+    "help": {
+      "heading": "Ajuda do Exercício",
+      "instructions": "Instruções",
+      "cues": "Dicas de Execução",
+      "contraindications": "Precauções"
+    }
+  }
 }

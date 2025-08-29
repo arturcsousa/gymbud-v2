@@ -115,18 +115,16 @@ interface ProfileData {
 **RLS**
 - Reads occur via invoker RPCs; `preserve.*` stays read-only to app roles.
 
-## Hooks → RPC mapping (Exercises)
-
-- `useExercise(exerciseId, lang)` → `app2.rpc_get_exercise_by_id(exerciseId, lang)`
-- `useExerciseVariants(exerciseId, lang)` → `app2.rpc_get_variants_for_exercise(exerciseId, lang)`
-- `useExerciseSearch({ q, lang, category, equipment })` → `app2.rpc_search_exercises(q, lang, category, equipment)`
-
-**Query Keys (TanStack v5):**
-- `['exercise', exerciseId, lang]`
-- `['exercise-variants', exerciseId, lang]`
-- `['exercise-search', { q, lang, category, equipment }]`
-
-**RLS:** All RPCs are `language sql stable` (invoker), so they respect `preserve.*` RLS. No service-role required for reads.
+## Exercise Data Hooks
+- **useExercise(exerciseId: string|undefined)** → ExerciseI18n|null
+  - Query key: ["exercise", exerciseId, lang]
+  - Calls: rpc_get_exercise_by_id(p_exercise_id, lang)
+- **useExerciseSearch({ q, category?, equipment? })** → ExerciseI18n[]
+  - Query key: ["exercise-search", q, category, equipment, lang]
+  - Calls: rpc_search_exercises(q, lang, p_category, p_equipment)
+- **Notes**:
+  - i18n fallback handled at SQL (lang → 'en')
+  - Results include: name, description, instructions_bulleted, cues, contraindications, category, equipment, movement_pattern
 
 ## Database Integration
 

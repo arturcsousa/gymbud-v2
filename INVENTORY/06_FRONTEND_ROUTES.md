@@ -469,3 +469,9 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - `https://app.gymbud.ai/history/session_123` - Session detail
 - `https://app.gymbud.ai/auth/verify?email=user@example.com` - Email verification
 - `https://app.gymbud.ai/onboarding` - New user setup wizard
+
+### Session Runner — Exercise Help
+- **Component**: ExerciseHelpTicker (`client/src/components/exercise/ExerciseHelpTicker.tsx`)
+- **Mount point**: Session Runner exercise pane; requires current exerciseId prop
+- **Data**: uses app2.rpc_get_exercise_by_id(lang-aware; returns instructions_bulleted, cues, contraindications)
+- **UX**: collapsible, accessible (aria-labelledby, aria-controls, keyboard toggles)
