@@ -1,5 +1,15 @@
 # GymBud v2 - Changelog
 
+## 2025-08-29 12:19 - Vercel Build Fixes for AI Coach System
+**Fixed**: TypeScript compilation errors and missing dependencies for successful Vercel deployment
+- **Missing UI Component**: Created `client/src/components/ui/separator.tsx` with Radix UI Separator implementation
+- **Missing Dependency**: Added `@radix-ui/react-separator@^1.0.3` to package.json dependencies
+- **Named Exports**: Added named exports to AI Coach components for TypeScript compatibility
+  - `export { CoachPanel }` in CoachPanel.tsx
+  - `export { useCoachSuggestions, useSuggest, useApplyRecommendation, useDismissRecommendation, useCoach }` in useCoach.ts
+- **Build Status**: All TypeScript compilation errors resolved, ready for Vercel deployment
+- **Root Cause**: AI Coach system components were missing required UI dependencies and proper named exports
+
 ## 2025-08-29 11:29 - AI Coach System Implementation
 **Implemented**: Complete AI Coach system with Edge Functions, frontend components, and i18n support
 - **Edge Functions**: Created `coach-suggest` and `coach-apply` with RLS compliance and audit logging
@@ -164,7 +174,7 @@
 - **Missing Dependencies**: 
   - Exported `pullUpdates` function from sync/queue.ts to fix import errors in history hooks
   - Created `useOnlineStatus.ts` hook for network connectivity tracking
-- **Build Status**: All TypeScript errors resolved, ready for Vercel deployment
+- **Build Status**: All TypeScript errors resolved, ready for production deployment
 
 **Technical**: Complete type safety restoration for history functionality with proper database schema alignment and dependency resolution
 

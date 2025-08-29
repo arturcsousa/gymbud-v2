@@ -291,3 +291,6 @@ export function useCoach(sessionId: string) {
     refetch: suggestions.refetch
   };
 }
+
+// Named exports for all functions
+export { useCoachSuggestions, useSuggest, useApplyRecommendation, useDismissRecommendation, useCoach };

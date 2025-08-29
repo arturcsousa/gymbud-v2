@@ -246,6 +246,8 @@ export function CoachPanel({ sessionId, isOpen, onClose }: CoachPanelProps) {
   );
 }
 
+export { CoachPanel };
+
 interface SuggestionCardProps {
   suggestion: CoachRecommendation;
   onApply: () => void;

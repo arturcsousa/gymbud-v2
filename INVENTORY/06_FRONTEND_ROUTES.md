@@ -3,6 +3,13 @@
 ## Overview
 Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
+## Recent Updates (2025-08-29 12:19)
+- **Vercel Build Fixes**: Resolved TypeScript compilation errors for AI Coach system deployment
+  - **Missing UI Component**: Added Separator component (`client/src/components/ui/separator.tsx`) with Radix UI implementation
+  - **Dependency Resolution**: Added `@radix-ui/react-separator@^1.0.3` to package.json for complete shadcn/ui compatibility
+  - **Named Exports**: Added proper named exports to CoachPanel and useCoach components for TypeScript compatibility
+  - **Build Status**: All compilation errors resolved, ready for Vercel deployment
+
 ## Recent Updates (2025-08-29 11:29)
 - **AI Coach System Implementation**: Complete coaching system with Edge Functions and interactive UI
   - **CoachPanel Component**: Modal interface accessible from SessionPage header with Brain icon
@@ -342,11 +349,10 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
     - Bulk operations: "Retry all" and "Delete all" failed mutations
     - Contextual error display with timestamps and failure reasons
   - **Conflicts Panel**: Sync conflict resolution interface (developer mode only)
-    - Real-time conflicts list with entity details and field-level diff tables
-    - Visual conflict badges and timestamp display for conflict age tracking
-    - Resolution actions: "Keep mine (override)" and "Keep server" with automatic cleanup
-    - Responsive design with mobile-friendly button layout and proper accessibility
-    - Comprehensive telemetry tracking for conflict resolution outcomes
+    - Real-time conflicts detection and display with field-level diffs
+    - User-driven resolution with "Keep mine (override)" and "Keep server" options
+    - Automatic conflict cleanup and telemetry tracking for resolution outcomes
+    - Visual indicators for conflict age and decision requirements
   - **Glass Morphism**: Semi-transparent card with backdrop blur effect
   - **Bottom Padding**: `pb-20` to prevent BottomNav overlap
   - **BottomNav**: Integrated with Settings tab active state
