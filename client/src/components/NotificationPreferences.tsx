@@ -8,12 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/ui/use-toast'
 import { useSettings } from '@/providers/SettingsProvider'
-import { requestNotificationPermission, scheduleNotifications, clearScheduledNotifications, type NotificationPreferences } from '@/services/notificationScheduler'
+import { requestNotificationPermission, scheduleNotifications, type NotificationPreferences } from '@/services/notificationScheduler'
 import { Bell, Clock } from 'lucide-react'
 
 export function NotificationPreferencesCard() {
   const { t } = useTranslation(['settings'])
-  const { settings, update } = useSettings()
+  const { settings } = useSettings()
   const [loading, setLoading] = useState(false)
   const [preferences, setPreferences] = useState<NotificationPreferences>({
     enabled: settings?.notifications_opt_in || false,

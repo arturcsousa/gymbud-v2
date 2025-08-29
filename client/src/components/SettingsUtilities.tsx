@@ -73,7 +73,7 @@ export function SettingsUtilities() {
         toast.success(`${t('utilities.delete.done')}: Redirecting to home page...`)
         setTimeout(() => setLocation('/'), 2000)
       } else {
-        const errorMessage = result.error instanceof Error ? result.error.message : String(result.error)
+        const errorMessage = typeof result.error === 'string' ? result.error : (result.error as Error)?.message || 'Unknown error'
         toast.error(`${t('utilities.delete.error')}: ${errorMessage}`)
       }
     } catch (error: unknown) {

@@ -120,7 +120,13 @@ export async function exportUserData(format: 'json' | 'csv', includeVoided: bool
       plans: plansResult.data || [],
       sessions,
       session_exercises: sessionExercises,
-      logged_sets: loggedSets
+      logged_sets: loggedSets,
+      export_metadata: {
+        user_id: user.id,
+        exported_at: new Date().toISOString(),
+        version: '1.0',
+        include_voided: includeVoided
+      }
     }
 
     const timestamp = new Date().toISOString().split('T')[0]
