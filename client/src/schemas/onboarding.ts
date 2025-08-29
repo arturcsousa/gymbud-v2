@@ -21,17 +21,18 @@ export const GoalsSchema = z.object({
 
 export const ProfileSchema = z.object({
   experience_level: z.enum(['beginner','intermediate','advanced']),
-  confidence: z.record(z.enum(['squat','hinge','lunge','push','pull','carry']), z.enum([1,2,3,4,5] as any)),
   constraints: z.array(z.object({
     area: z.enum(['shoulder','elbow','wrist','hip','knee','ankle','low_back','cardio_limits']),
     severity: z.enum(['mild','moderate','severe']),
     avoid_movements: z.array(z.string()).optional()
-  })).optional(),
-  warmup_style: z.enum(['none','quick','standard','therapeutic']),
-  mobility_focus: z.array(z.enum(['tspine','hips','ankles','shoulders'])).optional(),
-  rest_preference: z.enum(['shorter','as_prescribed','longer']),
-  intensity_style: z.enum(['rpe','rir','fixed']),
-  rpe_coaching_level: z.enum(['teach_me','standard','advanced'])
+  })).optional().default([]),
+  // Auto-populated fields based on experience_level - not collected from frontend
+  confidence: z.record(z.enum(['squat','hinge','lunge','push','pull','carry']), z.enum([1,2,3,4,5] as any)).optional(),
+  warmup_style: z.enum(['none','quick','standard','therapeutic']).optional().default('standard'),
+  mobility_focus: z.array(z.enum(['tspine','hips','ankles','shoulders'])).optional().default([]),
+  rest_preference: z.enum(['shorter','as_prescribed','longer']).optional().default('as_prescribed'),
+  intensity_style: z.enum(['rpe','rir','fixed']).optional().default('rpe'),
+  rpe_coaching_level: z.enum(['teach_me','standard','advanced']).optional().default('standard')
 });
 
 export type BioFormData = z.infer<typeof BioSchema>;

@@ -1,5 +1,32 @@
 # GymBud v2 - Changelog
 
+## August 29, 2025 19:17 ET — ProfilePage Simplification with Backend Auto-Population
+**Simplified**: Streamlined onboarding ProfilePage to collect only essential user inputs with intelligent backend defaults
+- **Frontend Simplification**: Removed complex UI components for movement confidence, rest preference, intensity guidance, mobility focus, and warm-up style
+  - ProfilePage now only shows Experience Level (required) and Injuries & Constraints (optional)
+  - Cleaner, faster onboarding experience with reduced cognitive load
+  - Added helpful empty state message for constraints section
+- **Backend Auto-Population Logic**: Added intelligent defaults based on experience level
+  - **Movement Confidence**: Auto-set based on experience (beginner=1, intermediate=3, advanced=5 for all movement patterns)
+  - **Rest Preference**: Default to 'as_prescribed' for all users
+  - **Intensity Guidance**: Default to 'rpe' with 'standard' coaching level
+  - **Warm-up Style**: Default to 'standard' for all users  
+  - **Mobility Focus**: Default to empty array (no specific focus areas)
+- **Schema Updates**: Updated ProfileSchema with optional fields and proper defaults
+  - Made removed UI fields optional with `.default()` values
+  - Maintained backward compatibility with existing onboarding data
+  - Added `getConfidenceFromExperience()` helper function for consistent mapping
+- **i18n Coverage**: Updated translation keys for simplified ProfilePage
+  - Added experience level options, constraint areas, severity levels
+  - Removed obsolete keys for removed UI components
+  - Complete EN/PT-BR coverage for new simplified interface
+- **UX Improvements**: Enhanced constraint management with better visual feedback
+  - Added red asterisk (*) for required Experience Level field
+  - Improved constraint area and severity dropdowns with proper styling
+  - Added contextual help text for users with no constraints
+
+**Technical**: Reduces onboarding friction while maintaining data completeness through intelligent backend defaults based on user experience level
+
 ## August 29, 2025 19:10 ET — Authentication & Onboarding UX Fixes
 **Fixed**: Multiple critical authentication and onboarding user experience issues
 - **Verification Page Routing**: Fixed OTP verification not redirecting after successful code entry
@@ -1069,67 +1096,67 @@
 
 ## August 26, 2025 11:52 ET
 **Redesigned** landing page to match provided design with exact color palette.
-- Updated: Color palette to use exact design colors (#005870, #0C8F93, #18C7B6, #FF9F1C)
-- Redesigned: `Hero.tsx` with curved gradient background, proper button styling, and full-height layout
-- Redesigned: `HowItWorks.tsx` with person image placeholder on right and feature list on left
-- Redesigned: `WhyDifferent.tsx` with orange background and colorful program cards layout
-- Redesigned: `Programs.tsx` with carousel-style card layout and navigation arrows
-- Redesigned: `Pricing.tsx` with simple white cards on teal background matching design
-- Fixed: Removed unused PALETTE import from Hero.tsx to resolve TypeScript build error
+- **Color Palette**: Updated to use exact design colors (#005870, #0C8F93, #18C7B6, #FF9F1C)
+- **GymBud Branding**: Added custom logo with dumbbell icon and "GymBud" text in header, plus moon icon for dark mode toggle
+- **Layout Enhancement**: Added step indicator, large headings with contextual subtitles, and spacious input fields (h-14)
+- **Modern Styling**: Implemented rounded-2xl corners, dark slate input backgrounds with teal focus states (#18C7B6)
+- **Interactive Elements**: Primary button using GymBud teal with hover animations, "Skip for now" link for signup flow
+- **Decorative Elements**: Added gradient blobs and curved clip-path sections matching landing page aesthetic
+- **Typography**: Updated to use extrabold headings and improved text contrast with proper font weights
 - Context: Complete visual redesign to match provided mockup, maintaining all translation functionality
 - Migrations: N/A (design changes only)
 
 ## August 26, 2025 11:46 ET
 **Fixed** translation key issues across all marketing components.
-- Fixed: `Progress.tsx` - replaced hardcoded English text with `landing:progress.metrics.*` keys
-- Fixed: `Pricing.tsx` - replaced hardcoded plan data with `landing:pricing.plans.*` keys and added `most_popular` key
-- Fixed: `WhyDifferent.tsx` - now displays all 6 features from locale files instead of just 3
-- Fixed: `HowItWorks.tsx` - added missing progress step, now shows all 4 steps with proper grid layout
-- Updated: Added `most_popular` translation key to both EN and PT-BR locale files
+- **Progress.tsx**: Replaced hardcoded English text with `landing:progress.metrics.*` keys
+- **Pricing.tsx**: Replaced hardcoded plan data with `landing:pricing.plans.*` keys and added `most_popular` key
+- **WhyDifferent.tsx**: Now displays all 6 features from locale files instead of just 3
+- **HowItWorks.tsx**: Added missing progress step, now shows all 4 steps with proper grid layout
+- **Updated**: Added `most_popular` translation key to both EN and PT-BR locale files
 - Context: All components now properly use translation keys, ensuring full EN/PT-BR language support
 - Migrations: N/A (translation fixes only)
 
 ## August 25, 2025 20:00 ET
 **Added** Vercel deployment configuration for production hosting.
-- New: `vercel.json` with SPA routing, security headers, and build configuration
-- Updated: `client/package.json` with vercel-build script and typecheck
-- New: `.vercelignore` to exclude development files from deployment
-- New: `client/.env.example` with environment variable documentation
+- **New**: `vercel.json` with SPA routing, security headers, and build configuration
+- **Updated**: `client/package.json` with vercel-build script and typecheck
+- **New**: `.vercelignore` to exclude development files from deployment
+- **New**: `client/.env.example` with environment variable documentation
 - Context: Ready for production deployment on Vercel with proper SPA routing
 - Migrations: Set VITE_SITE_URL in Vercel dashboard environment variables
 
 ## August 25, 2025 21:18 ET
 **Added** HTML lang/dir attribute synchronization with i18n language changes.
-- Updated: `client/src/i18n/index.ts` with setHtmlLangAttributes helper function
-- Added: RTL language detection for Arabic, Farsi, Hebrew, Urdu prefixes
-- Added: Dynamic lang and dir attribute updates on language change events
-- Verified: `client/index.html` has default lang="en" attribute
+- **Updated**: `client/src/i18n/index.ts` with setHtmlLangAttributes helper function
+- **Added**: RTL language detection for Arabic, Farsi, Hebrew, Urdu prefixes
+- **Added**: Dynamic lang and dir attribute updates on language change events
+- **Verified**: `client/index.html` has default lang="en" attribute
 - Context: Improves accessibility and browser behavior for language switching
 - Migrations: N/A (frontend-only)
 
 ## August 25, 2025 21:15 ET
 **Added** SEO optimization for marketing site with meta tags and structured data.
-- Updated: `client/index.html` with comprehensive SEO meta tags, Open Graph, Twitter cards
-- Added: JSON-LD structured data for SoftwareApplication schema
-- New: `client/public/robots.txt` allowing marketing crawling, disallowing /app/
-- New: `client/public/sitemap.xml` with all marketing routes and priorities
-- Added: color-scheme meta tag for dark mode support
+- **Updated**: `client/index.html` with comprehensive SEO meta tags, Open Graph, Twitter cards
+- **Added**: JSON-LD structured data for SoftwareApplication schema
+- **New**: `client/public/robots.txt` allowing marketing crawling, disallowing /app/
+- **New**: `client/public/sitemap.xml` with all marketing routes and priorities
+- **Added**: color-scheme meta tag for dark mode support
 - Context: Improved social sharing and search engine visibility for gymbud.ai
 - Migrations: N/A (frontend-only)
 
 ## August 25, 2025 21:00 ET
 **Added** complete GymBud marketing landing page with animations and i18n.
-- New: `client/src/marketing/` directory with Landing.tsx and all components/sections
-- New: UspTicker, NavBar, Footer components with sticky header and mobile CTA
-- New: Hero, HowItWorks, WhyDifferent, Programs, Progress, Pricing, Faq, FinalCta sections
-- Added: framer-motion dependency for smooth animations
-- Updated: App.tsx routing to use new Landing component
+- **New**: `client/src/marketing/` directory with Landing.tsx and all components/sections
+- **New**: UspTicker, NavBar, Footer components with sticky header and mobile CTA
+- **New**: Hero, HowItWorks, WhyDifferent, Programs, Progress, Pricing, Faq, FinalCta sections
+- **Added**: framer-motion dependency for smooth animations
+- **Updated**: App.tsx routing to use new Landing component
 - Context: Modern, animated single-page marketing site using existing i18n keys
 - Migrations: N/A (frontend-only)
 
 ## August 25, 2025 20:00 ET
 **Added** bilingual i18n scaffolding and documented routes.
-- New: `INVENTORY/05_I18N_STRUCTURE.md`
-- New: `INVENTORY/06_FRONTEND_ROUTES.md`
+- **New**: `INVENTORY/05_I18N_STRUCTURE.md`
+- **New**: `INVENTORY/06_FRONTEND_ROUTES.md`
 - Context: Fresh slate marketing → app split, EN/PT-BR namespaces seeded for landing + future app.
 - Migrations: N/A (frontend-only)

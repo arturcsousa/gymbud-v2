@@ -50,10 +50,34 @@
   },
   "profile": {
     "title": "Perfil de treino",
-    "explain": "Saber sobre lesões ou limitações mantém seus treinos seguros e eficazes.",
+    "explain": "Conhecer lesões ou limitações mantém seus treinos seguros e eficazes.",
     "experience_level": "Nível de experiência",
+    "experience_placeholder": "Selecione seu nível de experiência",
+    "experience": {
+      "beginner": "Iniciante",
+      "intermediate": "Intermediário",
+      "advanced": "Avançado"
+    },
+    "constraints": "Lesões e limitações",
+    "add_constraint": "Adicionar Limitação",
+    "no_constraints": "Sem lesões ou limitações? Ótimo! Você pode pular esta seção.",
+    "remove": "Remover",
+    "constraint_areas": {
+      "shoulder": "Ombro",
+      "elbow": "Cotovelo",
+      "wrist": "Punho",
+      "hip": "Quadril",
+      "knee": "Joelho",
+      "ankle": "Tornozelo",
+      "low_back": "Lombar",
+      "cardio_limits": "Limitações Cardíacas"
+    },
+    "severity": {
+      "mild": "Leve",
+      "moderate": "Moderada",
+      "severe": "Severa"
+    },
     "confidence": "Confiança nos movimentos",
-    "constraints": "Lesões e restrições",
     "warmup": "Estilo de aquecimento",
     "warmup_explain": "Um bom aquecimento prepara seu corpo e sua mente, reduzindo o risco de lesão e aumentando seu desempenho.",
     "mobility": "Foco de mobilidade",

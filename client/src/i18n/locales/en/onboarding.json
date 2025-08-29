@@ -55,13 +55,31 @@
       "title": "Training profile",
       "explain": "Knowing about injuries or limitations keeps your workouts safe and effective.",
       "experience_level": "Experience level",
-      "confidence": "Movement confidence",
+      "experience_placeholder": "Select your experience level",
+      "experience": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate", 
+        "advanced": "Advanced"
+      },
       "constraints": "Injuries & constraints",
-      "warmup": "Warm-up style",
-      "warmup_explain": "A good warm-up prepares your body and mind, reducing the risk of injury and boosting performance.",
-      "mobility": "Mobility focus",
-      "rest_pref": "Rest preference",
-      "intensity": "Intensity guidance"
+      "add_constraint": "Add Constraint",
+      "no_constraints": "No injuries or constraints? Great! You can skip this section.",
+      "remove": "Remove",
+      "constraint_areas": {
+        "shoulder": "Shoulder",
+        "elbow": "Elbow", 
+        "wrist": "Wrist",
+        "hip": "Hip",
+        "knee": "Knee",
+        "ankle": "Ankle",
+        "low_back": "Lower Back",
+        "cardio_limits": "Cardio Limitations"
+      },
+      "severity": {
+        "mild": "Mild",
+        "moderate": "Moderate",
+        "severe": "Severe"
+      }
     },
     "review": {
       "title": "Review & create your plan",
