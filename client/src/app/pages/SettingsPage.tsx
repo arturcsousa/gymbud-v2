@@ -13,13 +13,10 @@ import { db } from '@/db/gymbud-db'
 import { useSettings } from '@/providers/SettingsProvider'
 import { pendingCount, requestFlush, retryFailed, retryAllFailed, deleteFailed, clearAllFailed, retryWithOverride, acceptServerVersion } from '@/sync/queue'
 import { errorLabels } from '@/lib/errors/mapEdgeError'
-import { regeneratePlan, exportUserData, deleteAccount, getVersionInfo, canInstallPWA, installPWA } from '@/services/settingsUtilities'
-import { requestNotificationPermission, scheduleNotifications, clearScheduledNotifications, type NotificationPreferences } from '@/services/notificationScheduler'
 import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Globe, Database, LogOut, Code } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
 import { SettingsUtilities } from '@/components/SettingsUtilities'
 import { NotificationPreferencesCard } from '@/components/NotificationPreferences'
-import { toast } from 'react-toastify';
 
 function SyncEventsLog() {
   const { t } = useTranslation(['settings'])
