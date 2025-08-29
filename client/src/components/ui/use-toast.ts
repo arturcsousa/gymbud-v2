@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast as sonnerToast } from 'sonner';
 
 export interface ToastProps {
   title?: string;
@@ -10,10 +10,17 @@ export const useToast = () => {
   return {
     toast: ({ title, description, variant }: ToastProps) => {
       if (variant === 'destructive') {
-        toast.error(title || description || 'Error');
+        sonnerToast.error(title || description || 'Error');
       } else {
-        toast.success(title || description || 'Success');
+        sonnerToast.success(title || description || 'Success');
       }
     },
   };
+};
+
+// Export toast function directly for direct imports
+export const toast = {
+  success: (message: string) => sonnerToast.success(message),
+  error: (message: string) => sonnerToast.error(message),
+  info: (message: string) => sonnerToast.info(message),
 };

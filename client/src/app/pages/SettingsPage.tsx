@@ -8,10 +8,6 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { toast } from '@/components/ui/use-toast'
 import { supabase } from '@/lib/supabase'
 import { db } from '@/db/gymbud-db'
 import { useSettings } from '@/providers/SettingsProvider'
@@ -23,6 +19,7 @@ import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Globe, Database, 
 import BottomNav from '@/components/BottomNav'
 import { SettingsUtilities } from '@/components/SettingsUtilities'
 import { NotificationPreferencesCard } from '@/components/NotificationPreferences'
+import { toast } from 'react-toastify';
 
 function SyncEventsLog() {
   const { t } = useTranslation(['settings'])

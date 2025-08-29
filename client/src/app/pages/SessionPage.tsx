@@ -515,6 +515,8 @@ function SessionPage() {
       </div>
       {isCoachPanelOpen && (
         <CoachPanel
+          sessionId={sessionId}
+          isOpen={isCoachPanelOpen}
           onClose={() => setIsCoachPanelOpen(false)}
         />
       )}

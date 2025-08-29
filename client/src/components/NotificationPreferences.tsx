@@ -42,10 +42,9 @@ export function NotificationPreferencesCard() {
       // Request permission first
       const permissionResult = await requestNotificationPermission()
       if (!permissionResult.granted) {
-        toast({
+        toast.error({
           title: t('notifications.permission.denied'),
           description: permissionResult.error,
-          variant: 'destructive',
         })
         return
       }
@@ -73,7 +72,7 @@ export function NotificationPreferencesCard() {
     try {
       if (preferences.enabled) {
         await scheduleNotifications(preferences)
-        toast({
+        toast.success({
           title: t('notifications.save'),
           description: 'Notification preferences saved successfully',
         })
@@ -82,11 +81,8 @@ export function NotificationPreferencesCard() {
       // Store preferences
       localStorage.setItem('notification_preferences', JSON.stringify(preferences))
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive',
-      })
+      console.error('Failed to update notification preferences:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to update notification preferences')
     } finally {
       setLoading(false)
     }

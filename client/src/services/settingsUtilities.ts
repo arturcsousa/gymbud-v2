@@ -152,15 +152,10 @@ export async function exportUserData(format: 'json' | 'csv', includeVoided: bool
     telemetry.track('settings.export.completed', { format, records: Object.keys(exportData).length })
 
   } catch (error: unknown) {
-    console.error('Export error:', error)
-    let errorMessage: string;
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    } else {
-      errorMessage = String(error);
-    }
-    telemetry.track('settings.export.failed', { format, error: errorMessage })
-    throw error
+    console.error('Export failed:', error)
+    const message = error instanceof Error ? error.message : 'Export failed'
+    telemetry.track('settings.export.failed', { error: message })
+    return { success: false, error: message }
   }
 }
 

@@ -29,25 +29,14 @@ export function SettingsUtilities() {
     try {
       const result = await regeneratePlan()
       if (result.success) {
-        toast({
-          title: t('utilities.regenerate.success'),
-          description: `Plan ID: ${result.plan_id}`,
-        })
+        toast.success(`${t('utilities.regenerate.success')} - Plan ID: ${result.plan_id}`)
       } else {
         const errorMessage = result.error instanceof Error ? result.error.message : String(result.error)
-        toast({
-          title: t('utilities.regenerate.error'),
-          description: errorMessage,
-          variant: 'destructive',
-        })
+        toast.error(`${t('utilities.regenerate.error')}: ${errorMessage}`)
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error)
-      toast({
-        title: t('utilities.regenerate.error'),
-        description: errorMessage,
-        variant: 'destructive',
-      })
+      toast.error(`${t('utilities.regenerate.error')}: ${errorMessage}`)
     } finally {
       setLoading(null)
     }
@@ -56,18 +45,16 @@ export function SettingsUtilities() {
   const handleExportData = async () => {
     setLoading('export')
     try {
-      await exportUserData(exportFormat, includeVoided)
-      toast({
-        title: t('utilities.export.success'),
-        description: `Data exported as ${exportFormat.toUpperCase()}`,
-      })
+      const result = await exportUserData(exportFormat, includeVoided)
+      if (result.success) {
+        toast.success(t('utilities.export.success'))
+      } else {
+        const errorMessage = result.error instanceof Error ? result.error.message : String(result.error)
+        toast.error(`${t('utilities.export.error')}: ${errorMessage}`)
+      }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error)
-      toast({
-        title: t('utilities.export.error'),
-        description: errorMessage,
-        variant: 'destructive',
-      })
+      toast.error(`${t('utilities.export.error')}: ${errorMessage}`)
     } finally {
       setLoading(null)
     }
@@ -75,11 +62,7 @@ export function SettingsUtilities() {
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== 'DELETE') {
-      toast({
-        title: t('utilities.delete.error'),
-        description: t('utilities.delete.confirmPrompt'),
-        variant: 'destructive',
-      })
+      toast.error(`${t('utilities.delete.error')}: ${t('utilities.delete.confirmPrompt')}`)
       return
     }
 
@@ -87,26 +70,15 @@ export function SettingsUtilities() {
     try {
       const result = await deleteAccount()
       if (result.success) {
-        toast({
-          title: t('utilities.delete.done'),
-          description: 'Redirecting to home page...',
-        })
+        toast.success(`${t('utilities.delete.done')}: Redirecting to home page...`)
         setTimeout(() => setLocation('/'), 2000)
       } else {
         const errorMessage = result.error instanceof Error ? result.error.message : String(result.error)
-        toast({
-          title: t('utilities.delete.error'),
-          description: errorMessage,
-          variant: 'destructive',
-        })
+        toast.error(`${t('utilities.delete.error')}: ${errorMessage}`)
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error)
-      toast({
-        title: t('utilities.delete.error'),
-        description: errorMessage,
-        variant: 'destructive',
-      })
+      toast.error(`${t('utilities.delete.error')}: ${errorMessage}`)
     } finally {
       setLoading(null)
       setDeleteDialogOpen(false)
@@ -118,18 +90,11 @@ export function SettingsUtilities() {
     try {
       const success = await installPWA()
       if (success) {
-        toast({
-          title: 'App Install',
-          description: 'Install prompt triggered',
-        })
+        toast.success('App Install: Install prompt triggered')
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error)
-      toast({
-        title: 'Install Error',
-        description: errorMessage,
-        variant: 'destructive',
-      })
+      toast.error(`Install Error: ${errorMessage}`)
     } finally {
       setLoading(null)
     }
