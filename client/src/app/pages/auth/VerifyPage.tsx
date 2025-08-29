@@ -173,7 +173,27 @@ export function VerifyPage({ params }: VerifyPageProps) {
       // Track successful verification
       telemetry.trackAuthOtpVerifySucceeded(email);
 
-      // Success - the auth state change will handle routing
+      // Explicit navigation after successful verification
+      // Check if user has an active plan to determine routing
+      try {
+        const { data: activePlan } = await supabase
+          .from("app2_plans")
+          .select("id, status")
+          .eq("status", "active")
+          .maybeSingle();
+        
+        if (activePlan) {
+          // Returning user with active plan - go to app
+          window.location.href = "/";
+        } else {
+          // New user without plan - start onboarding
+          window.location.href = "/app/onboarding/biometrics";
+        }
+      } catch (planError) {
+        console.error('Failed to check plan status:', planError);
+        // On error, default to onboarding (safer for new users)
+        window.location.href = "/app/onboarding/biometrics";
+      }
       
     } catch (error: any) {
       setError(t('auth.verify.invalidCode', 'Invalid or expired code'));

@@ -19,14 +19,37 @@
       "title": "Your goal & routine",
       "explain": "Your goals shape your program. The coach will adjust its style to motivate you in the way that feels right for your journey.",
       "goal_primary": "Primary goal",
+      "goal_primary_placeholder": "Select your primary goal",
       "days_per_week": "Days per week",
+      "days_per_week_placeholder": "How many days per week?",
       "days_of_week": "Pick your days",
       "add_window": "Add time window",
       "environment": "Where do you train?",
+      "environment_placeholder": "Where do you train?",
       "equipment_basic": "Select what you have at home",
       "equipment_explain": "We adapt your workouts to the equipment you actually have, so you never see exercises you can't do.",
       "schedule_explain": "Your schedule helps us design a plan that fits your week instead of fighting against it.",
-      "tone_auto": "We'll set your coach tone based on your goal."
+      "tone_auto": "We'll set your coach tone based on your goal.",
+      "goals": {
+        "fat_loss": "Fat Loss",
+        "muscle_gain": "Muscle Gain",
+        "performance": "Performance",
+        "longevity": "Longevity",
+        "general_fitness": "General Fitness"
+      },
+      "days": {
+        "2": "2 days",
+        "3": "3 days",
+        "4": "4 days",
+        "5": "5 days",
+        "6": "6 days"
+      },
+      "environments": {
+        "commercial_gym": "Commercial Gym",
+        "home_basic": "Home (Basic Equipment)",
+        "home_rack": "Home (Full Setup)",
+        "outdoors_mixed": "Outdoors/Mixed"
+      }
     },
     "profile": {
       "title": "Training profile",

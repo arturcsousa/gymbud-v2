@@ -155,39 +155,45 @@ function GoalsPage() {
             {/* Primary Goal */}
             <div className="space-y-2">
               <Label className="text-white font-medium">
-                {t('onboarding:steps.goals.goal_primary')}
+                {t('onboarding:steps.goals.goal_primary')} <span className="text-red-300">*</span>
               </Label>
               <Select onValueChange={(value) => form.setValue('goal_primary', value as any)}>
-                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50">
-                  <SelectValue placeholder="Select your primary goal" className="text-white/50" />
+                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50 data-[placeholder]:text-white/50">
+                  <SelectValue placeholder={t('onboarding:steps.goals.goal_primary_placeholder', 'Select your primary goal')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="fat_loss">Fat Loss</SelectItem>
-                  <SelectItem value="muscle_gain">Muscle Gain</SelectItem>
-                  <SelectItem value="performance">Performance</SelectItem>
-                  <SelectItem value="longevity">Longevity</SelectItem>
-                  <SelectItem value="general_fitness">General Fitness</SelectItem>
+                <SelectContent className="bg-white border-gray-200">
+                  <SelectItem value="fat_loss">{t('onboarding:steps.goals.goals.fat_loss', 'Fat Loss')}</SelectItem>
+                  <SelectItem value="muscle_gain">{t('onboarding:steps.goals.goals.muscle_gain', 'Muscle Gain')}</SelectItem>
+                  <SelectItem value="performance">{t('onboarding:steps.goals.goals.performance', 'Performance')}</SelectItem>
+                  <SelectItem value="longevity">{t('onboarding:steps.goals.goals.longevity', 'Longevity')}</SelectItem>
+                  <SelectItem value="general_fitness">{t('onboarding:steps.goals.goals.general_fitness', 'General Fitness')}</SelectItem>
                 </SelectContent>
               </Select>
+              {form.formState.errors.goal_primary && (
+                <p className="text-sm text-red-300">{form.formState.errors.goal_primary.message}</p>
+              )}
             </div>
 
             {/* Days per Week */}
             <div className="space-y-2">
               <Label className="text-white font-medium">
-                {t('onboarding:steps.goals.days_per_week')}
+                {t('onboarding:steps.goals.days_per_week')} <span className="text-red-300">*</span>
               </Label>
               <Select onValueChange={(value) => form.setValue('days_per_week', value as any)}>
-                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50">
-                  <SelectValue placeholder="How many days per week?" className="text-white/50" />
+                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50 data-[placeholder]:text-white/50">
+                  <SelectValue placeholder={t('onboarding:steps.goals.days_per_week_placeholder', 'How many days per week?')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="2">2 days</SelectItem>
-                  <SelectItem value="3">3 days</SelectItem>
-                  <SelectItem value="4">4 days</SelectItem>
-                  <SelectItem value="5">5 days</SelectItem>
-                  <SelectItem value="6">6 days</SelectItem>
+                <SelectContent className="bg-white border-gray-200">
+                  <SelectItem value="2">{t('onboarding:steps.goals.days.2', '2 days')}</SelectItem>
+                  <SelectItem value="3">{t('onboarding:steps.goals.days.3', '3 days')}</SelectItem>
+                  <SelectItem value="4">{t('onboarding:steps.goals.days.4', '4 days')}</SelectItem>
+                  <SelectItem value="5">{t('onboarding:steps.goals.days.5', '5 days')}</SelectItem>
+                  <SelectItem value="6">{t('onboarding:steps.goals.days.6', '6 days')}</SelectItem>
                 </SelectContent>
               </Select>
+              {form.formState.errors.days_per_week && (
+                <p className="text-sm text-red-300">{form.formState.errors.days_per_week.message}</p>
+              )}
             </div>
 
             {/* Days of Week Selection */}
@@ -224,19 +230,22 @@ function GoalsPage() {
             {/* Training Environment */}
             <div className="space-y-2">
               <Label className="text-white font-medium">
-                {t('onboarding:steps.goals.environment')}
+                {t('onboarding:steps.goals.environment')} <span className="text-red-300">*</span>
               </Label>
               <Select onValueChange={(value) => form.setValue('environment', value as any)}>
-                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50">
-                  <SelectValue placeholder="Where do you train?" className="text-white/50" />
+                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50 data-[placeholder]:text-white/50">
+                  <SelectValue placeholder={t('onboarding:steps.goals.environment_placeholder', 'Where do you train?')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="commercial_gym">Commercial Gym</SelectItem>
-                  <SelectItem value="home_basic">Home (Basic Equipment)</SelectItem>
-                  <SelectItem value="home_rack">Home (Full Setup)</SelectItem>
-                  <SelectItem value="outdoors_mixed">Outdoors/Mixed</SelectItem>
+                <SelectContent className="bg-white border-gray-200">
+                  <SelectItem value="commercial_gym">{t('onboarding:steps.goals.environments.commercial_gym', 'Commercial Gym')}</SelectItem>
+                  <SelectItem value="home_basic">{t('onboarding:steps.goals.environments.home_basic', 'Home (Basic Equipment)')}</SelectItem>
+                  <SelectItem value="home_rack">{t('onboarding:steps.goals.environments.home_rack', 'Home (Full Setup)')}</SelectItem>
+                  <SelectItem value="outdoors_mixed">{t('onboarding:steps.goals.environments.outdoors_mixed', 'Outdoors/Mixed')}</SelectItem>
                 </SelectContent>
               </Select>
+              {form.formState.errors.environment && (
+                <p className="text-sm text-red-300">{form.formState.errors.environment.message}</p>
+              )}
             </div>
 
             {/* Equipment Selection for Home Basic */}
@@ -282,7 +291,7 @@ function GoalsPage() {
                 className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:border-white/50"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                {t('onboarding:steps.goals.back')}
+                {t('onboarding:navigation.previous', 'Previous')}
               </Button>
               
               <Button 
@@ -290,9 +299,9 @@ function GoalsPage() {
                 disabled={loading}
                 className="bg-white/20 border-white/30 text-white hover:bg-white/30 hover:border-white/50 disabled:opacity-50"
               >
-                {loading ? 'Saving...' : (
+                {loading ? t('common:loading', 'Loading...') : (
                   <>
-                    {t('onboarding:steps.goals.next')}
+                    {t('onboarding:navigation.next', 'Next')}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </>
                 )}

@@ -130,7 +130,7 @@ function BiometricsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="first_name" className="text-white font-medium">
-                  {t('onboarding:steps.biometrics.first_name')}
+                  {t('onboarding:steps.biometrics.first_name')} <span className="text-red-300">*</span>
                 </Label>
                 <Input
                   id="first_name"
@@ -145,7 +145,7 @@ function BiometricsPage() {
               
               <div className="space-y-2">
                 <Label htmlFor="last_name" className="text-white font-medium">
-                  {t('onboarding:steps.biometrics.last_name')}
+                  {t('onboarding:steps.biometrics.last_name')} <span className="text-red-300">*</span>
                 </Label>
                 <Input
                   id="last_name"
@@ -163,7 +163,7 @@ function BiometricsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="height_cm" className="text-white font-medium">
-                  {t('onboarding:steps.biometrics.height_cm')}
+                  {t('onboarding:steps.biometrics.height_cm')} <span className="text-red-300">*</span>
                 </Label>
                 <Input
                   id="height_cm"
@@ -179,7 +179,7 @@ function BiometricsPage() {
               
               <div className="space-y-2">
                 <Label htmlFor="weight_kg" className="text-white font-medium">
-                  {t('onboarding:steps.biometrics.weight_kg')}
+                  {t('onboarding:steps.biometrics.weight_kg')} <span className="text-red-300">*</span>
                 </Label>
                 <Input
                   id="weight_kg"
@@ -199,13 +199,16 @@ function BiometricsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="body_fat_pct" className="text-white/70 font-medium text-sm">
-                  {t('onboarding:steps.biometrics.body_fat_pct')} <span className="text-white/50">(optional)</span>
+                  {t('onboarding:steps.biometrics.body_fat_pct')}
                 </Label>
                 <Input
                   id="body_fat_pct"
                   type="number"
                   step="0.1"
-                  {...form.register('body_fat_pct', { valueAsNumber: true })}
+                  {...form.register('body_fat_pct', { 
+                    valueAsNumber: true,
+                    setValueAs: (value) => value === '' ? undefined : parseFloat(value)
+                  })}
                   placeholder="20"
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/50 focus:bg-white/30 focus:border-white/50"
                 />
@@ -213,12 +216,15 @@ function BiometricsPage() {
               
               <div className="space-y-2">
                 <Label htmlFor="rhr_bpm" className="text-white/70 font-medium text-sm">
-                  {t('onboarding:steps.biometrics.rhr_bpm')} <span className="text-white/50">(optional)</span>
+                  {t('onboarding:steps.biometrics.rhr_bpm')}
                 </Label>
                 <Input
                   id="rhr_bpm"
                   type="number"
-                  {...form.register('rhr_bpm', { valueAsNumber: true })}
+                  {...form.register('rhr_bpm', { 
+                    valueAsNumber: true,
+                    setValueAs: (value) => value === '' ? undefined : parseFloat(value)
+                  })}
                   placeholder="65"
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/50 focus:bg-white/30 focus:border-white/50"
                 />
@@ -228,7 +234,7 @@ function BiometricsPage() {
             {/* Birthdate */}
             <div className="space-y-2">
               <Label htmlFor="birthdate" className="text-white/70 font-medium text-sm">
-                {t('onboarding:steps.biometrics.birthdate')}
+                {t('onboarding:steps.biometrics.birthdate')} <span className="text-red-300">*</span>
               </Label>
               <Input
                 id="birthdate"
@@ -236,6 +242,9 @@ function BiometricsPage() {
                 {...form.register('birthdate')}
                 className="bg-white/20 border-white/30 text-white placeholder:text-white/50 focus:bg-white/30 focus:border-white/50"
               />
+              {form.formState.errors.birthdate && (
+                <p className="text-sm text-red-300">{form.formState.errors.birthdate.message}</p>
+              )}
             </div>
 
             {/* Navigation Buttons */}

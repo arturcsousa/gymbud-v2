@@ -1,5 +1,34 @@
 # GymBud v2 - Changelog
 
+## August 29, 2025 19:10 ET — Authentication & Onboarding UX Fixes
+**Fixed**: Multiple critical authentication and onboarding user experience issues
+- **Verification Page Routing**: Fixed OTP verification not redirecting after successful code entry
+  - Added explicit navigation logic after successful `verifyOtp()` call
+  - Checks for active plan to route to home vs onboarding appropriately
+  - Uses `window.location.href` for reliable navigation in production
+- **BiometricsPage Validation**: Fixed optional fields requiring values despite being marked optional
+  - Updated Zod schema to properly handle empty values for `body_fat_pct` and `rhr_bpm`
+  - Added `setValueAs` transforms to convert empty strings to `undefined`
+  - Enhanced schema with union types and NaN handling for optional numeric fields
+- **BiometricsPage UI**: Improved field labeling to show required vs optional fields clearly
+  - Added red asterisks (*) to required fields: first_name, last_name, height_cm, weight_kg
+  - Removed "(optional)" text from optional fields: body_fat_pct, rhr_bpm, birthdate
+  - Maintained visual hierarchy with white labels for required, white/70 for optional
+- **GoalsPage Dropdowns**: Fixed dropdown styling and translation key issues
+  - Updated SelectContent with proper white background and border styling
+  - Added comprehensive i18n keys for all dropdown options and placeholders
+  - Fixed CTAs showing translation keys instead of translated content
+  - Added red asterisks (*) to required fields for consistency
+- **i18n Coverage**: Added missing translation keys for improved UX
+  - EN: goal options, day counts, environment types, placeholders
+  - PT-BR: complete translations for all dropdown content and navigation
+  - Fixed navigation buttons to use proper `onboarding:navigation.*` keys
+- **Rate Limit Protection**: Enhanced verification page to handle 429 errors gracefully
+  - Added specific error handling for rate limiting with extended cooldown (120s)
+  - Improved duplicate request protection with `autoResendAttempted` ref guard
+
+**Technical**: Authentication flow now works end-to-end, onboarding validation respects optional fields, UI clearly indicates required vs optional inputs
+
 ## August 29, 2025 18:41 ET — Critical Auth & PWA Manifest Fixes
 **Fixed**: Resolved critical authentication 403 error and PWA manifest icon loading issues
 - **Supabase Auth 403 Fix**: Identified root cause as missing Site URL configuration in Supabase project

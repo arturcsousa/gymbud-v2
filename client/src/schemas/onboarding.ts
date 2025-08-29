@@ -5,9 +5,9 @@ export const BioSchema = z.object({
   last_name: z.string().min(1),
   height_cm: z.number().min(90).max(250),
   weight_kg: z.number().min(30).max(300),
-  body_fat_pct: z.number().min(3).max(60).optional(),
-  rhr_bpm: z.number().min(30).max(120).optional(),
-  birthdate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional()
+  body_fat_pct: z.union([z.number().min(3).max(60), z.nan(), z.undefined()]).optional().transform(val => val && !isNaN(val) ? val : undefined),
+  rhr_bpm: z.union([z.number().min(30).max(120), z.nan(), z.undefined()]).optional().transform(val => val && !isNaN(val) ? val : undefined),
+  birthdate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().or(z.literal(''))
 });
 
 export const GoalsSchema = z.object({

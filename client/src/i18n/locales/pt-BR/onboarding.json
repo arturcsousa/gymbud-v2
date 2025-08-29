@@ -14,16 +14,39 @@
   },
   "goals": {
     "title": "Seu objetivo e rotina",
-    "explain": "Seus objetivos moldam seu programa. O coach vai ajustar seu estilo para te motivar do jeito que faz mais sentido para a sua jornada.",
+    "explain": "Seus objetivos moldam seu programa. O coach ajustará seu estilo para motivá-lo da forma que parecer certa para sua jornada.",
     "goal_primary": "Objetivo principal",
+    "goal_primary_placeholder": "Selecione seu objetivo principal",
     "days_per_week": "Dias por semana",
-    "days_of_week": "Escolha os dias",
-    "add_window": "Adicionar faixa de horário",
+    "days_per_week_placeholder": "Quantos dias por semana?",
+    "days_of_week": "Escolha seus dias",
+    "add_window": "Adicionar janela de tempo",
     "environment": "Onde você treina?",
+    "environment_placeholder": "Onde você treina?",
     "equipment_basic": "Selecione o que você tem em casa",
-    "equipment_explain": "Adaptamos seus treinos ao equipamento que você realmente tem, para que você nunca veja exercícios impossíveis de realizar.",
-    "schedule_explain": "Sua agenda nos ajuda a criar um plano que se encaixa na sua semana, em vez de lutar contra ela.",
-    "tone_auto": "Definiremos o tom do treinador com base no seu objetivo."
+    "equipment_explain": "Adaptamos seus treinos aos equipamentos que você realmente tem, para que nunca veja exercícios que não pode fazer.",
+    "schedule_explain": "Sua agenda nos ajuda a criar um plano que se encaixa na sua semana em vez de lutar contra ela.",
+    "tone_auto": "Definiremos o tom do seu coach com base no seu objetivo.",
+    "goals": {
+      "fat_loss": "Perda de Gordura",
+      "muscle_gain": "Ganho de Músculo",
+      "performance": "Performance",
+      "longevity": "Longevidade",
+      "general_fitness": "Condicionamento Geral"
+    },
+    "days": {
+      "2": "2 dias",
+      "3": "3 dias",
+      "4": "4 dias",
+      "5": "5 dias",
+      "6": "6 dias"
+    },
+    "environments": {
+      "commercial_gym": "Academia Comercial",
+      "home_basic": "Casa (Equipamentos Básicos)",
+      "home_rack": "Casa (Setup Completo)",
+      "outdoors_mixed": "Ao Ar Livre/Misto"
+    }
   },
   "profile": {
     "title": "Perfil de treino",
