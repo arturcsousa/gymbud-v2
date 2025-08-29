@@ -34,7 +34,7 @@ interface Constraint {
 }
 
 // Auto-populate fields based on experience level
-const getConfidenceFromExperience = (level: 'beginner' | 'intermediate' | 'advanced') => {
+const getConfidenceFromExperience = (level: 'beginner' | 'intermediate' | 'advanced'): Record<'squat'|'hinge'|'lunge'|'push'|'pull'|'carry', 1|2|3|4|5> => {
   const confidenceMap = {
     beginner: 1,
     intermediate: 3,
