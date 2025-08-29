@@ -27,7 +27,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useSessionData } from '@/hooks/useSessionData'
-import { useExerciseDetails } from '@/hooks/useExerciseDetails'
 import { ReplaceExerciseSheet } from '@/components/ReplaceExerciseSheet'
 import { CoachPanel } from '@/components/CoachPanel'
 import ExerciseHelpTicker from '@/components/exercise/ExerciseHelpTicker'
