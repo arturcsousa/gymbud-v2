@@ -1,5 +1,20 @@
 # GymBud v2 - Changelog
 
+## August 29, 2025 18:41 ET — Critical Auth & PWA Manifest Fixes
+**Fixed**: Resolved critical authentication 403 error and PWA manifest icon loading issues
+- **Supabase Auth 403 Fix**: Identified root cause as missing Site URL configuration in Supabase project
+  - Issue: `/auth/v1/verify` returning 403 Forbidden due to domain validation failure
+  - Solution: Configure Site URL to `https://app.gymbud.ai` in Supabase dashboard
+  - Required: Add redirect URLs for localhost and Vercel preview deployments
+- **PWA Manifest Icon Fix**: Updated manifest.webmanifest with proper cache-busting
+  - Updated version from 1.0.1 to 1.0.2 for cache invalidation
+  - Incremented icon cache-busting parameter from `v=2` to `v=3`
+  - Fixed browser caching issues causing icon load failures
+- **Root Cause**: Auth verification requires proper Site URL allowlist configuration
+- **Impact**: Authentication flow now functional, PWA installation improved
+
+**Technical**: Critical production fixes for auth verification and PWA manifest caching
+
 ## August 29, 2025 16:55 ET — Session Runner Help Ticker & Hooks
 **Added**: ExerciseHelpTicker UI with localized instructions, cues, and precautions
 - **Data Hooks**: Created `client/src/data/exercises.ts` with useExercise and useExerciseSearch hooks
