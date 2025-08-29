@@ -1,4 +1,4 @@
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import i18n from "@/i18n";
 

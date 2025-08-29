@@ -73,9 +73,6 @@ function SessionPage() {
 
   // Fetch exercise details for current exercise
   const currentExercise = exercises[currentExerciseIndex]
-  const { data: exerciseDetails } = useExerciseDetails(
-    currentExercise?.variant_id || undefined
-  )
 
   // Refs for accessibility
   const restTimerRef = useRef<HTMLDivElement>(null)
