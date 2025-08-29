@@ -47,7 +47,7 @@ export interface ApplyResult {
 }
 
 // Hook to fetch coach suggestions for a session
-export function useCoachSuggestions(sessionId: string, filters?: { status?: string }) {
+function useCoachSuggestions(sessionId: string, filters?: { status?: string }) {
   return useQuery({
     queryKey: ['coach-suggestions', sessionId, filters],
     queryFn: async (): Promise<CoachRecommendation[]> => {
@@ -71,7 +71,7 @@ export function useCoachSuggestions(sessionId: string, filters?: { status?: stri
 }
 
 // Hook to generate new suggestions
-export function useSuggest() {
+function useSuggest() {
   const { i18n, t } = useTranslation('coach');
   const queryClient = useQueryClient();
 
@@ -139,7 +139,7 @@ export function useSuggest() {
 }
 
 // Hook to apply a recommendation
-export function useApplyRecommendation() {
+function useApplyRecommendation() {
   const { t } = useTranslation('coach');
   const queryClient = useQueryClient();
 
@@ -196,7 +196,7 @@ export function useApplyRecommendation() {
 }
 
 // Hook to dismiss a recommendation
-export function useDismissRecommendation() {
+function useDismissRecommendation() {
   const { t } = useTranslation('coach');
   const queryClient = useQueryClient();
 
@@ -238,6 +238,27 @@ export function useDismissRecommendation() {
   });
 }
 
+// Combined hook that provides all coach functionality
+function useCoach(sessionId: string) {
+  const suggestions = useCoachSuggestions(sessionId, { status: 'suggested' });
+  const suggest = useSuggest();
+  const apply = useApplyRecommendation();
+  const dismiss = useDismissRecommendation();
+
+  return {
+    suggestions: suggestions.data || [],
+    isLoading: suggestions.isLoading,
+    error: suggestions.error,
+    suggest: suggest.mutate,
+    isSuggesting: suggest.isPending,
+    apply: apply.mutate,
+    isApplying: apply.isPending,
+    dismiss: dismiss.mutate,
+    isDismissing: dismiss.isPending,
+    refetch: suggestions.refetch
+  };
+}
+
 // Utility functions
 function trackCoachEvent(event: string, properties: Record<string, any>) {
   // Integration with existing telemetry system
@@ -269,27 +290,6 @@ function announceToScreenReader(message: string) {
   setTimeout(() => {
     document.body.removeChild(announcement);
   }, 1000);
-}
-
-// Combined hook for easier usage
-export function useCoach(sessionId: string) {
-  const suggestions = useCoachSuggestions(sessionId, { status: 'suggested' });
-  const suggest = useSuggest();
-  const apply = useApplyRecommendation();
-  const dismiss = useDismissRecommendation();
-
-  return {
-    suggestions: suggestions.data || [],
-    isLoading: suggestions.isLoading,
-    error: suggestions.error,
-    suggest: suggest.mutate,
-    isSuggesting: suggest.isPending,
-    apply: apply.mutate,
-    isApplying: apply.isPending,
-    dismiss: dismiss.mutate,
-    isDismissing: dismiss.isPending,
-    refetch: suggestions.refetch
-  };
 }
 
 // Named exports for all functions

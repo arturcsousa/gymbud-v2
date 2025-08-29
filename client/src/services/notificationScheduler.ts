@@ -58,10 +58,11 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
       return { granted: false, error: 'Permission denied by user' }
     }
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Notification permission error:', error)
-    telemetry.track('notifications.permission.denied', { reason: 'error', error: error.message })
-    return { granted: false, error: error.message }
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    telemetry.track('notifications.permission.denied', { reason: 'error', error: errorMessage })
+    return { granted: false, error: errorMessage }
   }
 }
 

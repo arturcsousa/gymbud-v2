@@ -75,10 +75,11 @@ export async function regeneratePlan(): Promise<RegeneratePlanResult> {
     telemetry.track('settings.plan.regenerate_succeeded', { plan_id: data?.plan_id })
     return { success: true, plan_id: data?.plan_id }
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Plan regeneration error:', error)
-    telemetry.track('settings.plan.regenerate_failed', { error: error.message })
-    return { success: false, error: error.message }
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    telemetry.track('settings.plan.regenerate_failed', { error: errorMessage })
+    return { success: false, error: errorMessage }
   }
 }
 
@@ -98,20 +99,20 @@ export async function exportUserData(format: 'json' | 'csv', includeVoided: bool
     // Pull latest updates from server first
     await pullUpdates()
 
-    // Assemble data from Dexie
-    const [profiles, plans, sessions, sessionExercises, loggedSets] = await Promise.all([
-      db.profiles.where('user_id').equals(user.id).toArray(),
-      db.plans.where('user_id').equals(user.id).toArray(),
+    // Assemble data from Dexie and Supabase
+    const [sessions, sessionExercises, loggedSets, profilesResult, plansResult] = await Promise.all([
       db.sessions.where('user_id').equals(user.id).toArray(),
       db.session_exercises.where('user_id').equals(user.id).toArray(),
       includeVoided 
         ? db.logged_sets.where('user_id').equals(user.id).toArray()
-        : db.logged_sets.where('user_id').equals(user.id).and(item => !item.voided).toArray()
+        : db.logged_sets.where('user_id').equals(user.id).and(item => !item.voided).toArray(),
+      supabase.from('profiles').select('*').eq('user_id', user.id),
+      supabase.from('plans').select('*').eq('user_id', user.id)
     ])
 
     const exportData: ExportData = {
-      profiles,
-      plans,
+      profiles: profilesResult.data || [],
+      plans: plansResult.data || [],
       sessions,
       session_exercises: sessionExercises,
       logged_sets: loggedSets,
@@ -134,8 +135,8 @@ export async function exportUserData(format: 'json' | 'csv', includeVoided: bool
         { name: 'sessions.csv', data: arrayToCSV(sessions) },
         { name: 'session_exercises.csv', data: arrayToCSV(sessionExercises) },
         { name: 'logged_sets.csv', data: arrayToCSV(loggedSets) },
-        { name: 'plans.csv', data: arrayToCSV(plans) },
-        { name: 'profiles.csv', data: arrayToCSV(profiles) }
+        { name: 'plans.csv', data: arrayToCSV(plansResult.data || []) },
+        { name: 'profiles.csv', data: arrayToCSV(profilesResult.data || []) }
       ]
 
       // For now, just download the main sessions CSV (ZIP would require additional library)

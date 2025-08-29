@@ -3,6 +3,15 @@
 ## Overview
 Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
+## Recent Updates (2025-08-29 13:47)
+- **Vercel Build Fixes**: Resolved all 15 TypeScript compilation errors for successful deployment
+  - **Export Conflicts**: Fixed useCoach.ts function redeclaration by removing individual export keywords
+  - **Missing Dependencies**: Added `@radix-ui/react-separator@^1.0.3` and created Separator UI component
+  - **Error Handling**: Fixed unknown error type handling across notificationScheduler.ts and settingsUtilities.ts
+  - **Database Schema**: Aligned property access (weight_kg→weight, created_at→updated_at, profiles/plans via Supabase)
+  - **Import Paths**: Fixed sync/pullUpdates import to use sync/queue module
+  - **Build Status**: All TypeScript errors resolved, ready for Vercel deployment
+
 ## Recent Updates (2025-08-29 12:19)
 - **Vercel Build Fixes**: Resolved TypeScript compilation errors for AI Coach system deployment
   - **Missing UI Component**: Added Separator component (`client/src/components/ui/separator.tsx`) with Radix UI implementation

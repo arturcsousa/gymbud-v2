@@ -31,41 +31,25 @@
   - **Constraint Filters**: Localized equipment names, fatigue levels, time constraints
   - **Suggestion Types**: Translated kind labels (substitute, tweak, deload, skip with alternative)
 
-## 2025-08-29 10:38 - Settings Completeness & Notifications System (G1 + G2 Complete Implementation)
-**Implemented**: Complete Settings utilities and notifications system with self-service features and privacy-safe reminders
-- **G1: Settings Utilities**: Four self-service utilities with full offline-first and RLS-safe implementation
-  - **Regenerate Plan**: Button calls existing `plan-get-or-create` EF with seed rotation, clears Dexie mirrors (sessions, session_exercises, logged_sets, queue_mutations), triggers fresh session generation
-  - **Export Data**: Client-side assembly from Dexie with JSON/CSV formats, includes all user tables (profiles, plans, sessions, session_exercises, logged_sets), optional voided sets inclusion, pull-updates reconciliation before export
-  - **Delete Account**: Two-step confirmation with typed "DELETE" phrase, calls new `account-delete` Edge Function for RLS-compliant cascading deletes, marks profile for deletion, clears all Dexie data, signs out user
-  - **Version/About**: Shows app version, build SHA, PWA install prompt when available, links to privacy/terms on marketing site
-- **G2: Notifications System**: Privacy-safe opt-in reminders with local scheduling and Web Notifications API
-  - **Preferences UI**: Time/weekday pickers for daily reminders (default 8PM) and weekly summaries (default Sunday 6PM), quiet hours configuration, weekday selector with full i18n
-  - **Client Scheduler**: Local notification scheduling for next 7 days (daily) and 4 weeks (weekly), respects quiet hours, stores in IndexedDB for persistence, setTimeout timers for 24h window
-  - **Permission Handling**: Requests Web Notifications permission, graceful fallback with explanatory toasts, tracks permission states via telemetry
-  - **Weekly Summaries**: Generates dynamic content from Dexie metrics (session count, total volume, streak calculation), contextual messages for inactive periods
-- **Edge Function**: Created `supabase/functions/account-delete/index.ts` with comprehensive user data deletion
-  - Deletes user-owned app2.* rows in dependency order (logged_sets → session_exercises → sessions → plans → coach_audit)
-  - Marks profiles.deletion_requested=true instead of immediate deletion for audit trail
-  - RLS-compliant via user JWT, structured response with per-table deletion results
-  - Handles partial failures with detailed error reporting and rollback guidance
-- **Services Layer**: Comprehensive utilities and notification management
-  - `client/src/services/settingsUtilities.ts`: Regenerate, export, delete, version functions with telemetry integration
-  - `client/src/services/notificationScheduler.ts`: Permission requests, scheduling logic, quiet hours, streak calculation, weekly summary generation
-  - CSV export with proper escaping, JSON export with metadata, blob download helpers
-- **UI Components**: Modular components for clean Settings page organization
-  - `client/src/components/SettingsUtilities.tsx`: Four utility cards with loading states, confirmation dialogs, format selectors
-  - `client/src/components/NotificationPreferences.tsx`: Enhanced notification settings with time inputs, weekday selectors, quiet hours configuration
-  - Consistent glassy card design, proper error handling, optimistic UI updates
-- **i18n Coverage**: Complete EN/PT-BR localization for all new features
-  - Settings namespace: utilities.* (regenerate, export, delete, about) and notifications.* (preferences, scheduling, weekdays)
-  - Portuguese translations: "Regenerar Plano", "Exportar Dados", "Excluir Conta", "Notificações", weekday names, time labels
-  - Error messages, confirmation dialogs, success toasts, permission explanations
-- **Telemetry Integration**: Comprehensive event tracking for all utilities and notification actions
-  - Settings events: `settings.plan.regenerate_*`, `settings.export.*`, `settings.account.delete_*`, `settings.about.install_*`
-  - Notification events: `notifications.permission.*`, `notifications.scheduled.*`, `notifications.shown`
-  - Privacy-safe tracking with no PII, structured event properties for debugging
-
-**Technical**: Self-service utilities reduce support burden, notifications system respects user privacy with local-first scheduling, comprehensive error handling and recovery flows, maintains offline-first architecture with proper sync integration
+## 2025-08-29 13:47 - Build Fixes
+**Fixed**: All TypeScript compilation errors and missing dependencies for successful Vercel deployment
+- **Missing UI Component**: Created `client/src/components/ui/separator.tsx` with Radix UI Separator implementation
+- **Missing Dependency**: Added `@radix-ui/react-separator@^1.0.3` to package.json dependencies
+- **Export Redeclaration Errors**: Fixed useCoach.ts function export conflicts
+  - Removed individual `export` keywords from function declarations
+  - Kept single named export statement at end of file
+  - `export { useCoachSuggestions, useSuggest, useApplyRecommendation, useDismissRecommendation, useCoach }`
+- **TypeScript Error Handling**: Fixed unknown error type handling in multiple files
+  - notificationScheduler.ts: Added proper error type guards with `error instanceof Error ? error.message : String(error)`
+  - settingsUtilities.ts: Fixed all catch blocks to handle `error: unknown` parameter
+- **Database Schema Alignment**: Fixed property access errors
+  - notificationScheduler.ts: Changed `weight_kg` to `weight` for LoggedSetRow compatibility
+  - notificationScheduler.ts: Changed `created_at` to `updated_at` for SessionRow compatibility
+  - notificationScheduler.ts: Added `updated_at` property to MetaRow entries
+  - settingsUtilities.ts: Fixed import path from `@/sync/pullUpdates` to `@/sync/queue`
+  - settingsUtilities.ts: Updated profiles/plans queries to use Supabase directly (app2 schema)
+- **Build Status**: All 15 TypeScript compilation errors resolved, ready for Vercel deployment
+- **Root Cause**: AI Coach system components had export conflicts, missing dependencies, and database schema misalignment
 
 ## 2025-08-28 20:09 - Milestone F: Engine v2, Library Swaps & Stats Parity (Complete Implementation)
 **Implemented**: Complete GymBud Engine v2 with deterministic session generation, exercise library integration, and stats parity verification
@@ -232,7 +216,7 @@
 
 **Technical**: Offline-first settings with cloud backup, no server DB changes required, ready for units integration in Session/Stats components
 
-## 2025-08-28 15:57 - Sync Failure UX + Dead-Letter Viewer Implementation
+## 2025-08-28 16:03 - Sync Failure UX + Dead-Letter Viewer Implementation
 **Implemented**: Complete sync failure handling system with retry logic and developer UI for managing failed sync operations
 - **Dexie Schema Upgrade**: Bumped to version 4 with failure tracking fields in QueueMutation interface
   - Added `attempts`, `last_error_code`, `last_error_at` fields for comprehensive failure tracking
@@ -258,7 +242,7 @@
 
 **Technical**: Provides robust failure recovery system for offline-first PWA with developer-friendly debugging tools and comprehensive error handling
 
-## 2025-08-28 15:51 - Telemetry System with Sync Event Tracking
+## 2025-08-28 15:57 - Telemetry System with Sync Event Tracking
 **Implemented**: Complete telemetry system with sync event tracking and developer UI for debugging
 - **Telemetry Types**: Added new typed telemetry events for sync operations and set void tracking
   - `sync_success`, `sync_failure` events with item counts and error codes
