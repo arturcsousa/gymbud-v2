@@ -3,10 +3,10 @@ import { useLocation } from 'wouter'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 
@@ -40,7 +40,7 @@ const HOME_BASIC_EQUIPMENT = [
 
 function GoalsPage() {
   const [, navigate] = useLocation()
-  const { t, i18n } = useTranslation(['onboarding'])
+  const { t } = useTranslation(['onboarding'])
   const [loading, setLoading] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
 
@@ -56,21 +56,22 @@ function GoalsPage() {
     }
   })
 
-  const watchedGoal = form.watch('goal_primary')
   const watchedEnvironment = form.watch('environment')
+  const watchedDaysPerWeek = form.watch('days_per_week')
 
+  // Get user ID and load existing state
   useEffect(() => {
     const loadUserAndState = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session?.user) {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
         navigate('/auth')
         return
       }
-
-      setUserId(session.user.id)
-
-      // Load existing state if available
-      const state = await OnboardingStore.getState(session.user.id)
+      
+      setUserId(user.id)
+      
+      // Load existing onboarding state
+      const state = await OnboardingStore.getState(user.id)
       if (state) {
         form.reset({
           goal_primary: state.goal_primary,
@@ -84,32 +85,26 @@ function GoalsPage() {
     }
 
     loadUserAndState()
-  }, [form, navigate, i18n.language])
+  }, [form, navigate])
 
   const onSubmit = async (data: GoalsFormData) => {
     if (!userId) return
 
     setLoading(true)
     try {
-      // Auto-set ai_tone based on goal
-      const ai_tone = watchedGoal ? GOAL_TONE_MAP[watchedGoal] : 'supportive'
-      
-      // Set locale-based defaults
-      const isMetric = i18n.language === 'pt-BR'
-      
-      // Create extended state with additional fields
-      const extendedState = {
-        user_id: userId,
+      // Convert days_per_week to number for schema validation
+      const processedData = {
         ...data,
         days_per_week: Number(data.days_per_week) as 2 | 3 | 4 | 5 | 6,
-        ai_tone,
-        units: isMetric ? 'metric' as const : 'imperial' as const,
-        date_format: isMetric ? 'dmy' as const : 'mdy' as const,
-        updated_at: Date.now()
+        coach_tone: GOAL_TONE_MAP[data.goal_primary]
       }
+
+      await OnboardingStore.saveState({
+        user_id: userId,
+        ...processedData
+      })
       
-      await OnboardingStore.saveState(extendedState)
-      
+      // Navigate to next step
       navigate('/app/onboarding/profile')
     } catch (error) {
       console.error('Failed to save goals:', error)
@@ -118,62 +113,53 @@ function GoalsPage() {
     }
   }
 
-  const handleDayToggle = (day: string, checked: boolean) => {
-    const currentDays = form.getValues('days_of_week') || []
-    if (checked) {
-      form.setValue('days_of_week', [...currentDays, day as 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'])
-    } else {
-      form.setValue('days_of_week', currentDays.filter(d => d !== day))
-    }
-  }
-
-  const handleEquipmentToggle = (equipment: string, checked: boolean) => {
-    const currentEquipment = form.getValues('equipment') || []
-    if (checked) {
-      form.setValue('equipment', [...currentEquipment, equipment])
-    } else {
-      form.setValue('equipment', currentEquipment.filter(e => e !== equipment))
-    }
-  }
-
-  const handleGoalChange = (value: string) => {
-    form.setValue('goal_primary', value as GoalsFormData['goal_primary'])
-  }
-
-  const handleDaysPerWeekChange = (value: string) => {
-    const numValue = Number(value) as 2 | 3 | 4 | 5 | 6
-    form.setValue('days_per_week', numValue)
-  }
-
-  const handleEnvironmentChange = (value: string) => {
-    form.setValue('environment', value as GoalsFormData['environment'])
-    // Clear equipment when switching away from home_basic
-    if (value !== 'home_basic') {
-      form.setValue('equipment', [])
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-900 via-teal-800 to-teal-700 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl bg-white/10 backdrop-blur-xl border-white/20">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-white text-center">
-            {t('onboarding:goals.title')}
-          </CardTitle>
-          <p className="text-white/80 text-center">
-            {t('onboarding:goals.explain')}
+    <div 
+      className="min-h-screen relative overflow-hidden"
+      style={{
+        background: '#005870', // PALETTE.deepTeal
+      }}
+    >
+      {/* Main teal gradient background */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, #005870 0%, #0C8F93 50%, #18C7B6 100%)`,
+        }}
+      />
+      
+      {/* Subtle lighter teal curved section with diagonal clip */}
+      <div 
+        className="absolute top-0 right-0 w-2/3 h-full"
+        style={{
+          background: `linear-gradient(135deg, #0C8F93 0%, #14A085 50%, #18C7B6 100%)`,
+          clipPath: 'polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        }}
+      />
+
+      {/* Main content */}
+      <div className="relative z-10 px-6 pt-8 pb-8 space-y-6">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-white mb-2">
+            {t('onboarding:steps.goals.title')}
+          </h1>
+          <p className="text-white/70 text-sm max-w-md mx-auto">
+            {t('onboarding:steps.goals.explain')}
           </p>
-        </CardHeader>
-        <CardContent>
+        </div>
+
+        {/* Form Card */}
+        <div className="backdrop-blur-md bg-white/10 rounded-2xl border border-white/20 p-6 shadow-xl">
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Primary Goal */}
             <div className="space-y-2">
               <Label className="text-white font-medium">
-                {t('onboarding:goals.goal_primary')}
+                {t('onboarding:steps.goals.goal_primary')}
               </Label>
-              <Select onValueChange={handleGoalChange} value={watchedGoal || ''}>
-                <SelectTrigger className="bg-white/90 border-white/20">
-                  <SelectValue placeholder="Select your primary goal" />
+              <Select onValueChange={(value) => form.setValue('goal_primary', value as any)}>
+                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50">
+                  <SelectValue placeholder="Select your primary goal" className="text-white/50" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="fat_loss">Fat Loss</SelectItem>
@@ -188,77 +174,97 @@ function GoalsPage() {
             {/* Days per Week */}
             <div className="space-y-2">
               <Label className="text-white font-medium">
-                {t('onboarding:goals.days_per_week')}
+                {t('onboarding:steps.goals.days_per_week')}
               </Label>
-              <Select onValueChange={handleDaysPerWeekChange} value={form.watch('days_per_week')?.toString() || ''}>
-                <SelectTrigger className="bg-white/90 border-white/20">
-                  <SelectValue placeholder="Select training frequency" />
+              <Select onValueChange={(value) => form.setValue('days_per_week', value as any)}>
+                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50">
+                  <SelectValue placeholder="How many days per week?" className="text-white/50" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="2">2 days per week</SelectItem>
-                  <SelectItem value="3">3 days per week</SelectItem>
-                  <SelectItem value="4">4 days per week</SelectItem>
-                  <SelectItem value="5">5 days per week</SelectItem>
-                  <SelectItem value="6">6 days per week</SelectItem>
+                  <SelectItem value="2">2 days</SelectItem>
+                  <SelectItem value="3">3 days</SelectItem>
+                  <SelectItem value="4">4 days</SelectItem>
+                  <SelectItem value="5">5 days</SelectItem>
+                  <SelectItem value="6">6 days</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Days of Week */}
-            <div className="space-y-2">
-              <Label className="text-white font-medium">
-                {t('onboarding:goals.days_of_week')}
-              </Label>
-              <div className="grid grid-cols-2 gap-2">
-                {DAYS_OF_WEEK.map((day) => (
-                  <div key={day.value} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={day.value}
-                      checked={form.getValues('days_of_week')?.includes(day.value as any) || false}
-                      onCheckedChange={(checked: boolean) => handleDayToggle(day.value, checked)}
-                    />
-                    <Label htmlFor={day.value} className="text-white/90">{day.label}</Label>
-                  </div>
-                ))}
+            {/* Days of Week Selection */}
+            {watchedDaysPerWeek && (
+              <div className="space-y-3">
+                <Label className="text-white font-medium">
+                  {t('onboarding:steps.goals.days_of_week')}
+                </Label>
+                <div className="grid grid-cols-2 gap-3">
+                  {DAYS_OF_WEEK.map((day) => (
+                    <div key={day.value} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={day.value}
+                        checked={form.watch('days_of_week')?.includes(day.value)}
+                        onCheckedChange={(checked) => {
+                          const current = form.getValues('days_of_week') || []
+                          if (checked) {
+                            form.setValue('days_of_week', [...current, day.value])
+                          } else {
+                            form.setValue('days_of_week', current.filter(d => d !== day.value))
+                          }
+                        }}
+                        className="border-white/30 data-[state=checked]:bg-white/20 data-[state=checked]:border-white/50"
+                      />
+                      <Label htmlFor={day.value} className="text-white/90 text-sm">
+                        {day.label}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Environment */}
+            {/* Training Environment */}
             <div className="space-y-2">
               <Label className="text-white font-medium">
-                {t('onboarding:goals.environment')}
+                {t('onboarding:steps.goals.environment')}
               </Label>
-              <Select onValueChange={handleEnvironmentChange} value={watchedEnvironment || ''}>
-                <SelectTrigger className="bg-white/90 border-white/20">
-                  <SelectValue placeholder="Select your training environment" />
+              <Select onValueChange={(value) => form.setValue('environment', value as any)}>
+                <SelectTrigger className="bg-white/20 border-white/30 text-white focus:bg-white/30 focus:border-white/50">
+                  <SelectValue placeholder="Where do you train?" className="text-white/50" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="commercial_gym">Commercial Gym</SelectItem>
                   <SelectItem value="home_basic">Home (Basic Equipment)</SelectItem>
-                  <SelectItem value="home_rack">Home (Full Rack)</SelectItem>
+                  <SelectItem value="home_rack">Home (Full Setup)</SelectItem>
                   <SelectItem value="outdoors_mixed">Outdoors/Mixed</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {/* Equipment (only for home_basic) */}
+            {/* Equipment Selection for Home Basic */}
             {watchedEnvironment === 'home_basic' && (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Label className="text-white font-medium">
-                  {t('onboarding:goals.equipment_basic')}
+                  {t('onboarding:steps.goals.equipment_basic')}
                 </Label>
                 <p className="text-white/70 text-sm">
-                  {t('onboarding:goals.equipment_explain')}
+                  {t('onboarding:steps.goals.equipment_explain')}
                 </p>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   {HOME_BASIC_EQUIPMENT.map((equipment) => (
                     <div key={equipment} className="flex items-center space-x-2">
                       <Checkbox
                         id={equipment}
-                        checked={form.getValues('equipment')?.includes(equipment) || false}
-                        onCheckedChange={(checked: boolean) => handleEquipmentToggle(equipment, checked)}
+                        checked={form.watch('equipment')?.includes(equipment)}
+                        onCheckedChange={(checked) => {
+                          const current = form.getValues('equipment') || []
+                          if (checked) {
+                            form.setValue('equipment', [...current, equipment])
+                          } else {
+                            form.setValue('equipment', current.filter(e => e !== equipment))
+                          }
+                        }}
+                        className="border-white/30 data-[state=checked]:bg-white/20 data-[state=checked]:border-white/50"
                       />
-                      <Label htmlFor={equipment} className="text-white/90 capitalize">
+                      <Label htmlFor={equipment} className="text-white/90 text-sm capitalize">
                         {equipment.replace('_', ' ')}
                       </Label>
                     </div>
@@ -267,29 +273,37 @@ function GoalsPage() {
               </div>
             )}
 
-            {/* Navigation */}
+            {/* Navigation Buttons */}
             <div className="flex justify-between pt-6">
               <Button 
-                type="button"
-                variant="outline" 
+                type="button" 
+                variant="outline"
                 onClick={() => navigate('/app/onboarding/biometrics')}
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:border-white/50"
               >
-                {t('onboarding:goals.back')}
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {t('onboarding:steps.goals.back')}
               </Button>
+              
               <Button 
                 type="submit" 
                 disabled={loading}
-                className="bg-teal-600 hover:bg-teal-700 text-white"
+                className="bg-white/20 border-white/30 text-white hover:bg-white/30 hover:border-white/50 disabled:opacity-50"
               >
-                {loading ? 'Saving...' : t('onboarding:goals.next')}
+                {loading ? 'Saving...' : (
+                  <>
+                    {t('onboarding:steps.goals.next')}
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </>
+                )}
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
 
 export default GoalsPage
+export { GoalsPage }

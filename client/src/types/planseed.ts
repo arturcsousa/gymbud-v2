@@ -33,7 +33,10 @@ export type PlanCreateRequest = {
 
 export type PlanCreateResponse = {
   plan_id: string;
-  baseline_session_id: string;
+  status: string;
+} | {
+  error: string;
+  detail?: string;
 };
 
 export type ProfileUpdateRequest = {
