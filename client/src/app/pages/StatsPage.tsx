@@ -24,7 +24,7 @@ export default function StatsPage() {
   const { profileData, isLoading: profileLoading, isOffline: profileOffline } = useProfileData();
   
   // Stats parity check (dev only)
-  const { data: parityData, isLoading: isParityLoading, reportMismatch } = useStatsParity();
+  const { data: parityData, reportMismatch } = useStatsParity();
 
   const isLoading = metricsLoading || profileLoading;
   const isOffline = metricsOffline || profileOffline;
