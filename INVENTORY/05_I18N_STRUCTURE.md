@@ -201,3 +201,25 @@ Form validation messages
 - **Configuration**: keySeparator: false, returnNull: false, escapeValue: false
 - **File Structure**: `/client/src/i18n/locales/{lang}/{namespace}.json`
 - **Bootstrap**: `/client/src/i18n/index.ts` with language detection and namespace registration
+
+### Keys added (2025-08-29)
+
+**EN:**
+- common.show = "Show"
+- common.hide = "Hide"
+- common.loading = "Loading…"
+- errors.generic = "Something went wrong. Please try again."
+- exercise.help.heading = "Exercise Help"
+- exercise.help.instructions = "Instructions"
+- exercise.help.cues = "Form Cues"
+- exercise.help.contraindications = "Precautions"
+
+**pt-BR:**
+- common.show = "Mostrar"
+- common.hide = "Ocultar"
+- common.loading = "Carregando…"
+- errors.generic = "Algo deu errado. Tente novamente."
+- exercise.help.heading = "Ajuda do Exercício"
+- exercise.help.instructions = "Instruções"
+- exercise.help.cues = "Dicas de Execução"
+- exercise.help.contraindications = "Precauções"
