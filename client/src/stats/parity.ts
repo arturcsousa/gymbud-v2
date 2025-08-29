@@ -90,7 +90,7 @@ async function computeClientStats(): Promise<Record<string, number>> {
   const completedSessions = sessions.filter(s => s.status === 'completed');
 
   // Get all logged sets (non-voided)
-  const loggedSets = await db.logged_sets.where('voided').notEqual(true).toArray();
+  const loggedSets = await db.logged_sets.where('voided').equals(false).or('voided').equals(undefined).toArray();
 
   // Calculate metrics
   const totalSessions = completedSessions.length;
@@ -98,7 +98,7 @@ async function computeClientStats(): Promise<Record<string, number>> {
   
   // Total volume (sum of reps * weight for sets with weight)
   const totalVolume = loggedSets.reduce((sum, set) => {
-    const weight = set.weight_kg || 0;
+    const weight = set.weight || 0;
     const reps = set.reps || 0;
     return sum + (weight * reps);
   }, 0);
@@ -111,14 +111,14 @@ async function computeClientStats(): Promise<Record<string, number>> {
 
   // Sessions this week
   const sessionsThisWeek = completedSessions.filter(session => {
-    const sessionDate = new Date(session.completed_at || session.created_at);
+    const sessionDate = new Date(session.completed_at || session.updated_at);
     return sessionDate >= thisWeekStart;
   }).length;
 
   // Sessions last week
   const sessionsLastWeek = completedSessions.filter(session => {
-    const sessionDate = new Date(session.completed_at || session.created_at);
-    return sessionDate >= lastWeekStart && sessionDate <= lastWeekEnd;
+    const sessionDate = new Date(session.completed_at || session.updated_at);
+    return sessionDate >= lastWeekStart && sessionDate < thisWeekStart;
   }).length;
 
   return {

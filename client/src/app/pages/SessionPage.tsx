@@ -199,7 +199,7 @@ function SessionPage() {
     setLocation('/app/home')
   }
 
-  const handleExerciseReplaced = (newExercise: { id: string; name: string; rest_sec: number }) => {
+  const handleExerciseReplaced = () => {
     // Update the current exercise in the local state
     // The actual data will be updated via the ReplaceExerciseSheet component
     // This triggers a re-render with the new exercise name

@@ -24,7 +24,7 @@ export default function StatsPage() {
   const { profileData, isLoading: profileLoading, isOffline: profileOffline } = useProfileData();
   
   // Stats parity check (dev only)
-  const { result: parityResult, isChecking: parityChecking, checkParity } = useStatsParity();
+  const { data: parityData, isLoading: isParityLoading, reportMismatch } = useStatsParity();
 
   const isLoading = metricsLoading || profileLoading;
   const isOffline = metricsOffline || profileOffline;
@@ -35,9 +35,9 @@ export default function StatsPage() {
     
     // Check stats parity in dev mode
     if (import.meta.env.DEV && !isLoading) {
-      checkParity();
+      reportMismatch();
     }
-  }, [checkAndAwardBadges, checkParity, isLoading]);
+  }, [checkAndAwardBadges, reportMismatch, isLoading]);
 
   // Loading state
   if (isLoading) {
@@ -125,8 +125,8 @@ export default function StatsPage() {
   const handleReportParity = () => {
     // Log telemetry for parity mismatch reporting
     console.log('stats_parity_mismatch_reported', {
-      diffs: parityResult.diffs.slice(0, 3),
-      total_diffs: parityResult.diffs.length,
+      diffs: parityData.diffs.slice(0, 3),
+      total_diffs: parityData.diffs.length,
       build_sha: import.meta.env.VITE_BUILD_SHA || 'unknown',
       user_reported: true
     });
@@ -161,7 +161,7 @@ export default function StatsPage() {
       {/* Main content - positioned directly on page */}
       <div className="relative z-10 px-6 pt-8 pb-4 space-y-6">
         {/* Dev-only Stats Parity Banner */}
-        {import.meta.env.DEV && !parityResult.ok && parityResult.diffs.length > 0 && (
+        {import.meta.env.DEV && !parityData.ok && parityData.diffs.length > 0 && (
           <div className="bg-orange-500/20 backdrop-blur-sm rounded-lg border border-orange-500/30 p-4">
             <div className="flex items-start space-x-3">
               <AlertTriangle className="w-5 h-5 text-orange-300 mt-0.5 flex-shrink-0" />
@@ -170,15 +170,15 @@ export default function StatsPage() {
                   {t('parityMismatch.title', 'Stats Parity Mismatch Detected')}
                 </div>
                 <div className="text-orange-200/80 text-xs space-y-1">
-                  {parityResult.diffs.slice(0, 3).map((diff, index) => (
+                  {parityData.diffs.slice(0, 3).map((diff, index) => (
                     <div key={index}>
                       <strong>{diff.metric}:</strong> Client={diff.client}, Server={diff.server} 
                       ({diff.difference > 0 ? '+' : ''}{diff.difference.toFixed(2)})
                     </div>
                   ))}
-                  {parityResult.diffs.length > 3 && (
+                  {parityData.diffs.length > 3 && (
                     <div className="text-orange-200/60">
-                      +{parityResult.diffs.length - 3} more differences
+                      +{parityData.diffs.length - 3} more differences
                     </div>
                   )}
                 </div>
