@@ -67,6 +67,38 @@ export interface LoggedSetRow {
   updated_at: number
 }
 
+export interface ProfileRow {
+  user_id: string
+  height_cm?: number | null
+  weight_kg?: number | null
+  assessment_required?: boolean
+  updated_at: number
+}
+
+export interface PlanRow {
+  id: string
+  user_id: string
+  status: 'active' | 'inactive'
+  seed: Record<string, any>
+  updated_at: number
+}
+
+export interface App2ProfileRow {
+  user_id: string
+  height_cm?: number | null
+  weight_kg?: number | null
+  assessment_required?: boolean
+  updated_at: number
+}
+
+export interface App2PlanRow {
+  id: string
+  user_id: string
+  status: 'active' | 'inactive'
+  seed: Record<string, any>
+  updated_at: number
+}
+
 export type AppSettings = {
   language: 'en' | 'pt-BR';
   units: 'metric' | 'imperial';
@@ -94,6 +126,10 @@ export class GymBudDB extends Dexie {
   sessions!: Table<SessionRow, string>
   session_exercises!: Table<SessionExerciseRow, string>
   logged_sets!: Table<LoggedSetRow, string>
+  profiles!: Table<ProfileRow, string>
+  plans!: Table<PlanRow, string>
+  app2_profiles!: Table<App2ProfileRow, string>
+  app2_plans!: Table<App2PlanRow, string>
   onboarding_state!: Table<OnboardingState, string>
   settings!: Table<{ key: string; value: any }, string>
   conflicts!: Table<ConflictRecord, string>
@@ -173,6 +209,27 @@ export class GymBudDB extends Dexie {
       onboarding_state: 'user_id, updated_at',
       settings: 'key',
       conflicts: 'id, entity, entity_id, first_seen_at'
+    })
+
+    // Add profiles and plans tables in version 6
+    this.version(6).stores({
+      meta: 'key, updated_at',
+      sync_events: '++id, ts',
+      queue_mutations:
+        'id, entity, op, created_at, status, attempts, last_error_code, last_error_at',
+      sessions:
+        'id, user_id, plan_id, status, started_at, completed_at, updated_at, [user_id+started_at]',
+      session_exercises:
+        'id, session_id, order_index, updated_at, [session_id+order_index]',
+      logged_sets:
+        'id, session_exercise_id, set_number, updated_at, [session_exercise_id+set_number]',
+      onboarding_state: 'user_id, updated_at',
+      settings: 'key',
+      conflicts: 'id, entity, entity_id, first_seen_at',
+      profiles: 'user_id, updated_at',
+      plans: 'id, user_id, updated_at',
+      app2_profiles: 'user_id, updated_at',
+      app2_plans: 'id, user_id, updated_at'
     })
   }
 }
