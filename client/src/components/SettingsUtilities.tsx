@@ -31,7 +31,7 @@ export function SettingsUtilities() {
       if (result.success) {
         toast.success(`${t('utilities.regenerate.success')} - Plan ID: ${result.plan_id}`)
       } else {
-        const errorMessage = result.error instanceof Error ? result.error.message : String(result.error)
+        const errorMessage = typeof result.error === 'string' ? result.error : String(result.error)
         toast.error(`${t('utilities.regenerate.error')}: ${errorMessage}`)
       }
     } catch (error: unknown) {
@@ -49,7 +49,7 @@ export function SettingsUtilities() {
       if (result.success) {
         toast.success(t('utilities.export.success'))
       } else {
-        const errorMessage = result.error instanceof Error ? result.error.message : String(result.error)
+        const errorMessage = result.error || 'Export failed'
         toast.error(`${t('utilities.export.error')}: ${errorMessage}`)
       }
     } catch (error: unknown) {

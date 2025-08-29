@@ -513,7 +513,7 @@ function SessionPage() {
           )}
         </div>
       </div>
-      {isCoachPanelOpen && (
+      {isCoachPanelOpen && sessionId && (
         <CoachPanel
           sessionId={sessionId}
           isOpen={isCoachPanelOpen}

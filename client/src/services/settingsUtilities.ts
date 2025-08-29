@@ -91,7 +91,7 @@ export async function regeneratePlan(): Promise<RegeneratePlanResult> {
 /**
  * Export user data as JSON or CSV
  */
-export async function exportUserData(format: 'json' | 'csv', includeVoided: boolean = false): Promise<void> {
+export async function exportUserData(format: 'json' | 'csv', includeVoided: boolean = false): Promise<{ success: boolean; error?: string }> {
   try {
     telemetry.track('settings.export.started', { format })
 
@@ -120,22 +120,16 @@ export async function exportUserData(format: 'json' | 'csv', includeVoided: bool
       plans: plansResult.data || [],
       sessions,
       session_exercises: sessionExercises,
-      logged_sets: loggedSets,
-      export_metadata: {
-        user_id: user.id,
-        exported_at: new Date().toISOString(),
-        version: '2.0',
-        include_voided: includeVoided
-      }
+      logged_sets: loggedSets
     }
 
-    const timestamp = new Date().toISOString().slice(0, 16).replace(/[-:]/g, '').replace('T', '-')
-    
+    const timestamp = new Date().toISOString().split('T')[0]
+
     if (format === 'json') {
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
       downloadBlob(blob, `gymbud-export-${timestamp}.json`)
     } else {
-      // CSV export - create multiple CSV files in a ZIP
+      // CSV format - create multiple files
       const csvFiles = [
         { name: 'sessions.csv', data: arrayToCSV(sessions) },
         { name: 'session_exercises.csv', data: arrayToCSV(sessionExercises) },
@@ -150,6 +144,7 @@ export async function exportUserData(format: 'json' | 'csv', includeVoided: bool
     }
 
     telemetry.track('settings.export.completed', { format, records: Object.keys(exportData).length })
+    return { success: true }
 
   } catch (error: unknown) {
     console.error('Export failed:', error)
@@ -240,12 +235,6 @@ export async function installPWA(): Promise<boolean> {
     return true
   } catch (error: unknown) {
     console.error('PWA install error:', error)
-    let errorMessage: string;
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    } else {
-      errorMessage = String(error);
-    }
     return false
   }
 }

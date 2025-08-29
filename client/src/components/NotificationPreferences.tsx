@@ -42,44 +42,26 @@ export function NotificationPreferencesCard() {
       // Request permission first
       const permissionResult = await requestNotificationPermission()
       if (!permissionResult.granted) {
-        toast.error({
-          title: t('notifications.permission.denied'),
-          description: permissionResult.error,
-        })
+        toast.error(`${t('notifications.permission.denied')}: ${permissionResult.error || 'Permission denied'}`)
         return
       }
     }
 
     const newPreferences = { ...preferences, enabled }
     setPreferences(newPreferences)
-    
-    // Update global settings
-    await update({ notifications_opt_in: enabled })
-    
-    // Schedule or clear notifications
-    if (enabled) {
-      await scheduleNotifications(newPreferences)
-    } else {
-      await clearScheduledNotifications()
-    }
-
-    // Store preferences
-    localStorage.setItem('notification_preferences', JSON.stringify(newPreferences))
+    await handleSavePreferences(newPreferences)
   }
 
-  const handleSavePreferences = async () => {
+  const handleSavePreferences = async (newPreferences: NotificationPreferences) => {
     setLoading(true)
     try {
-      if (preferences.enabled) {
-        await scheduleNotifications(preferences)
-        toast.success({
-          title: t('notifications.save'),
-          description: 'Notification preferences saved successfully',
-        })
+      if (newPreferences.enabled) {
+        await scheduleNotifications(newPreferences)
+        toast.success(t('notifications.save'))
       }
       
       // Store preferences
-      localStorage.setItem('notification_preferences', JSON.stringify(preferences))
+      localStorage.setItem('notification_preferences', JSON.stringify(newPreferences))
     } catch (error) {
       console.error('Failed to update notification preferences:', error)
       toast.error(error instanceof Error ? error.message : 'Failed to update notification preferences')
@@ -205,7 +187,7 @@ export function NotificationPreferencesCard() {
 
           {/* Save Button */}
           <Button
-            onClick={handleSavePreferences}
+            onClick={() => handleSavePreferences(preferences)}
             disabled={loading}
             className="w-full bg-gradient-to-r from-[#00BFA6] to-[#64FFDA] text-slate-900 hover:from-[#00ACC1] hover:to-[#4FD1C7] text-sm py-2"
           >
