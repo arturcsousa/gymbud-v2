@@ -30,7 +30,6 @@ export function ReplaceExerciseSheet({
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentExercise, setCurrentExercise] = useState<ExerciseMeta | null>(null);
   const [compatibleExercises, setCompatibleExercises] = useState<ExerciseMeta[]>([]);
   const [filteredExercises, setFilteredExercises] = useState<ExerciseMeta[]>([]);
 
@@ -47,22 +46,15 @@ export function ReplaceExerciseSheet({
           toast.error(t('swap.error'));
           return;
         }
-        setCurrentExercise(current);
 
-        // Get compatible exercises
+        // Get compatible exercises using the current exercise as the original
         const constraints: CompatibilityConstraints = {
-          category: current.category,
-          equipment: current.equipment,
-          muscle_groups: current.muscle_groups,
-          movement_pattern: current.movement_pattern,
-          complexity: current.complexity
+          excludedExercises: [currentExerciseId]
         };
 
-        const compatible = await getCompatibleSubs(constraints);
-        // Filter out current exercise
-        const filtered = compatible.filter(ex => ex.id !== currentExerciseId);
-        setCompatibleExercises(filtered);
-        setFilteredExercises(filtered);
+        const compatible = await getCompatibleSubs(current, 'en', constraints);
+        setCompatibleExercises(compatible);
+        setFilteredExercises(compatible);
       } catch (error) {
         console.error('Failed to load exercises:', error);
         toast.error(t('swap.error'));
@@ -93,7 +85,6 @@ export function ReplaceExerciseSheet({
 
       // Update session exercise in local DB
       await db.session_exercises.update(sessionExerciseId, {
-        exercise_id: selectedExercise.id,
         exercise_name: selectedExercise.name,
         updated_at: Date.now()
       });
@@ -104,7 +95,6 @@ export function ReplaceExerciseSheet({
         op: 'update',
         payload: {
           id: sessionExerciseId,
-          exercise_id: selectedExercise.id,
           exercise_name: selectedExercise.name,
           updated_at: new Date().toISOString()
         }
@@ -193,9 +183,9 @@ export function ReplaceExerciseSheet({
                               <Badge variant="secondary" className="text-xs">
                                 {exercise.category}
                               </Badge>
-                              {exercise.equipment && (
+                              {exercise.equipment && exercise.equipment.length > 0 && (
                                 <Badge variant="outline" className="text-xs">
-                                  {exercise.equipment}
+                                  {exercise.equipment[0]}
                                 </Badge>
                               )}
                             </div>

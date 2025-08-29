@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { db } from '@/db/gymbud-db';
 import { supabase } from '@/lib/supabase';
 
@@ -6,7 +7,6 @@ export interface StatsDiff {
   client: number;
   server: number;
   difference: number;
-  percentDiff: number;
 }
 
 export interface StatsParityResult {
@@ -16,7 +16,7 @@ export interface StatsParityResult {
 }
 
 /**
- * Compare client-side computed stats with server metrics
+ * Check stats parity between client and server
  */
 export async function checkStatsParity(): Promise<StatsParityResult> {
   try {
@@ -26,43 +26,25 @@ export async function checkStatsParity(): Promise<StatsParityResult> {
     ]);
 
     const diffs: StatsDiff[] = [];
-    const tolerance = 0.5; // Allow 0.5 difference for averages
+    const tolerance = 0.01; // 1% tolerance for floating point comparisons
 
     // Compare each metric
-    const metricsToCompare = [
-      'total_sessions',
-      'total_sets',
-      'total_volume',
-      'avg_rpe',
-      'sessions_this_week',
-      'sessions_last_week'
-    ];
-
-    for (const metric of metricsToCompare) {
-      const clientValue = clientStats[metric] || 0;
+    for (const [metric, clientValue] of Object.entries(clientStats)) {
       const serverValue = serverStats[metric] || 0;
-      const difference = Math.abs(clientValue - serverValue);
-      const percentDiff = serverValue > 0 ? (difference / serverValue) * 100 : 0;
-
-      // Check if difference exceeds tolerance
-      const exceedsTolerance = metric.startsWith('avg_') 
-        ? difference > tolerance 
-        : difference > 0; // Counts must match exactly
-
-      if (exceedsTolerance) {
+      
+      if (Math.abs(clientValue - serverValue) > tolerance) {
         diffs.push({
           metric,
           client: clientValue,
           server: serverValue,
-          difference,
-          percentDiff
+          difference: clientValue - serverValue
         });
       }
     }
 
     return {
       ok: diffs.length === 0,
-      diffs: diffs.slice(0, 10), // Limit to top 10 diffs
+      diffs,
       lastChecked: new Date().toISOString()
     };
 
@@ -83,14 +65,13 @@ async function computeClientStats(): Promise<Record<string, number>> {
   const now = new Date();
   const thisWeekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
   const lastWeekStart = new Date(thisWeekStart.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const lastWeekEnd = new Date(thisWeekStart.getTime() - 1);
 
   // Get all sessions
   const sessions = await db.sessions.toArray();
   const completedSessions = sessions.filter(s => s.status === 'completed');
 
   // Get all logged sets (non-voided)
-  const loggedSets = await db.logged_sets.where('voided').equals(false).or('voided').equals(undefined).toArray();
+  const loggedSets = await db.logged_sets.filter(set => !set.voided).toArray();
 
   // Calculate metrics
   const totalSessions = completedSessions.length;
@@ -124,38 +105,29 @@ async function computeClientStats(): Promise<Record<string, number>> {
   return {
     total_sessions: totalSessions,
     total_sets: totalSets,
-    total_volume: Math.round(totalVolume * 100) / 100, // Round to 2 decimals
-    avg_rpe: Math.round(avgRpe * 100) / 100,
+    total_volume: totalVolume,
+    avg_rpe: avgRpe,
     sessions_this_week: sessionsThisWeek,
     sessions_last_week: sessionsLastWeek
   };
 }
 
 /**
- * Fetch stats from server metrics view
+ * Fetch server stats from v_session_metrics view
  */
 async function fetchServerStats(): Promise<Record<string, number>> {
   try {
-    // Fetch from server metrics view (assuming it exists)
     const { data, error } = await supabase
       .from('v_session_metrics')
       .select('*')
       .single();
 
     if (error) {
-      console.warn('Server metrics view not available:', error);
+      console.error('Failed to fetch server stats:', error);
       return {};
     }
 
-    return {
-      total_sessions: data.total_sessions || 0,
-      total_sets: data.total_sets || 0,
-      total_volume: data.total_volume || 0,
-      avg_rpe: data.avg_rpe || 0,
-      sessions_this_week: data.sessions_this_week || 0,
-      sessions_last_week: data.sessions_last_week || 0
-    };
-
+    return data || {};
   } catch (error) {
     console.error('Failed to fetch server stats:', error);
     return {};
@@ -166,19 +138,19 @@ async function fetchServerStats(): Promise<Record<string, number>> {
  * React hook for stats parity checking
  */
 export function useStatsParity() {
-  const [result, setResult] = useState<StatsParityResult>({
+  const [data, setData] = useState<StatsParityResult>({
     ok: true,
     diffs: [],
     lastChecked: ''
   });
   
-  const [isChecking, setIsChecking] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const checkParity = async () => {
-    setIsChecking(true);
+    setIsLoading(true);
     try {
       const parityResult = await checkStatsParity();
-      setResult(parityResult);
+      setData(parityResult);
       
       // Log telemetry if there are mismatches
       if (!parityResult.ok && parityResult.diffs.length > 0) {
@@ -191,16 +163,24 @@ export function useStatsParity() {
     } catch (error) {
       console.error('Parity check failed:', error);
     } finally {
-      setIsChecking(false);
+      setIsLoading(false);
     }
   };
 
+  const reportMismatch = () => {
+    // Log telemetry for parity mismatch reporting
+    console.log('stats_parity_mismatch_reported', {
+      diffs: data.diffs.slice(0, 3),
+      total_diffs: data.diffs.length,
+      build_sha: import.meta.env.VITE_BUILD_SHA || 'unknown',
+      user_reported: true
+    });
+  };
+
   return {
-    result,
-    isChecking,
-    checkParity
+    data,
+    isLoading,
+    checkParity,
+    reportMismatch
   };
 }
-
-// Import useState for the hook
-import { useState } from 'react';

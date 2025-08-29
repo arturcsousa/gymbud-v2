@@ -279,7 +279,7 @@ function SessionPage() {
                     <DropdownMenuContent align="end" className="bg-slate-800 border-slate-600">
                       <ReplaceExerciseSheet
                         sessionExerciseId={currentExercise.session_exercise_id}
-                        currentExerciseId={currentExercise.exercise_id}
+                        currentExerciseId={currentExercise.session_exercise_id}
                         currentExerciseName={currentExercise.exercise_name}
                         onExerciseReplaced={handleExerciseReplaced}
                       >
@@ -314,7 +314,7 @@ function SessionPage() {
               <div className="mt-4">
                 <ReplaceExerciseSheet
                   sessionExerciseId={currentExercise.session_exercise_id}
-                  currentExerciseId={currentExercise.exercise_id}
+                  currentExerciseId={currentExercise.session_exercise_id}
                   currentExerciseName={currentExercise.exercise_name}
                   onExerciseReplaced={handleExerciseReplaced}
                 >
