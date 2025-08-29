@@ -53,5 +53,9 @@
   "empty": {
     "title": "Ainda não há dados de treino",
     "cta": "Comece Seu Primeiro Treino"
+  },
+  "parityMismatch": {
+    "title": "Divergência de Estatísticas Detectada",
+    "cta": "Reportar Problema"
   }
 }

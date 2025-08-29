@@ -62,7 +62,7 @@
     "finish": "Finalizar Treino",
     "pause": "Pausar",
     "header": {
-      "exercise_progress": "Exercício {{current}} de {{total}}",
+      "exercise_progress": "Progresso do Exercício",
       "workout_time": "Tempo de Treino"
     },
     "exercise_card": {
@@ -76,7 +76,7 @@
     },
     "set_logging": {
       "reps": "Repetições",
-      "weight": "Peso",
+      "weight": "Peso (kg)",
       "effort": "Esforço",
       "log_set": "Registrar Série",
       "undo_last": "Desfazer Última Série"
@@ -130,13 +130,21 @@
       "exercise_changed_announcement": "Agora em {{exercise}}, exercício {{current}} de {{total}}",
       "setLogged": "Série registrada com sucesso",
       "restStarted": "Timer de descanso iniciado por {{seconds}} segundos",
-      "restCompleted": "Tempo de descanso concluído",
+      "restCompleted": "Tempo de descanso concluído. Pronto para a próxima série.",
       "exerciseChanged": "Agora em {{exerciseName}}",
-      "undoReturnToSet": "Desfazer: retornando à série {{setNumber}}"
+      "undoReturnToSet": "Desfazendo série {{setNumber}}. Timer de descanso cancelado."
     },
     "toasts": {
       "undoQueued": "Desfazer enfileirado—vai tentar quando online.",
       "undoFailed": "Não foi possível desfazer esta série."
+    },
+    "swap": {
+      "title": "Substituir Exercício",
+      "replace": "Substituir",
+      "searchPlaceholder": "Buscar exercícios...",
+      "noMatches": "Nenhum exercício compatível encontrado",
+      "appliedToast": "Exercício substituído com sucesso",
+      "error": "Erro"
     }
   }
 }

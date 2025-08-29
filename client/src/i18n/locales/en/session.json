@@ -34,7 +34,7 @@
   "finish": "Finish Workout",
   "pause": "Pause",
   "header": {
-    "exercise_progress": "Exercise {{current}} of {{total}}",
+    "exercise_progress": "Exercise Progress",
     "workout_time": "Workout Time"
   },
   "exercise_card": {
@@ -48,7 +48,7 @@
   },
   "set_logging": {
     "reps": "Reps",
-    "weight": "Weight",
+    "weight": "Weight (kg)",
     "effort": "Effort",
     "log_set": "Log Set",
     "undo_last": "Undo Last Set"
@@ -102,12 +102,20 @@
     "exercise_changed_announcement": "Now on {{exercise}}, exercise {{current}} of {{total}}",
     "setLogged": "Set logged successfully",
     "restStarted": "Rest timer started for {{seconds}} seconds",
-    "restCompleted": "Rest time completed",
+    "restCompleted": "Rest time completed. Ready for next set.",
     "exerciseChanged": "Now on {{exerciseName}}",
-    "undoReturnToSet": "Undo: returning to set {{setNumber}}"
+    "undoReturnToSet": "Undoing set {{setNumber}}. Rest timer cancelled."
   },
   "toasts": {
     "undoQueued": "Undo queued—will retry when online.",
     "undoFailed": "Can't undo this set."
+  },
+  "swap": {
+    "title": "Replace Exercise",
+    "replace": "Replace",
+    "searchPlaceholder": "Search exercises...",
+    "noMatches": "No compatible exercises found",
+    "appliedToast": "Exercise replaced successfully",
+    "error": "Error"
   }
 }

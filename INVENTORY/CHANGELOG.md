@@ -1,5 +1,38 @@
 # GymBud v2 - Changelog
 
+## 2025-08-28 20:09 - Milestone F: Engine v2, Library Swaps & Stats Parity (Complete Implementation)
+**Implemented**: Complete GymBud Engine v2 with deterministic session generation, exercise library integration, and stats parity verification
+- **F1: Engine Session Get-or-Create Edge Function**: Deterministic workout session generation with progressive overload
+  - `supabase/functions/engine-session-get-or-create/index.ts`: New Edge Function with plan selection, rotation logic, and deload cycles
+  - Enforces one session per user per day with status validation ('pending' or 'active')
+  - Progressive overload logic inspects recent logged sets and adjusts prescription dynamically
+  - Supports plan selection with validation and fallback to active plan
+  - Returns localized exercise details with sets, reps, rest, and prescription data
+  - Integrates telemetry events for success, failure, and existing session retrieval
+- **F2: Exercise Library Integration & Deterministic Swaps**: Complete exercise substitution system with offline support
+  - `client/src/lib/exercises/catalog.ts`: Exercise metadata fetching using Supabase RPCs and localized views
+  - `client/src/lib/exercises/compat.ts`: Pure compatibility functions based on category, equipment, muscle groups, movement patterns
+  - `client/src/components/ReplaceExerciseSheet.tsx`: Modal UI for exercise substitution with deterministic sorting
+  - Integrated swap CTA button directly on exercise cards in SessionPage for prominent access
+  - Swap updates Dexie local DB, enqueues sync mutations, and creates coach audit entries
+  - Offline-first approach with mutation queue synchronization on reconnect
+  - UI updates immediately on swap with rest timer and cues reflecting new exercise
+- **F3: Stats Parity Verification**: Client vs server metrics comparison with dev tooling
+  - `client/src/stats/parity.ts`: Functions to compute client-side aggregates from Dexie and fetch server metrics
+  - `useStatsParity` React hook for parity checking with tolerance-based validation
+  - Dev-only parity banner in StatsPage showing top diffs and "Report Issue" button
+  - `qa/stats_parity.ts`: QA script for automated parity verification with exit codes
+- **F4: End-to-End Testing**: Comprehensive test coverage for complete workflow
+  - `qa/e2e_engine_swap.md`: Manual testing script with step-by-step verification checklist
+  - `qa/e2e_engine_swap.ts`: Automated E2E test covering user creation, session generation, swaps, and cleanup
+  - Tests determinism, progression, exercise compatibility, audit trails, and stats data integrity
+- **F5: Telemetry & i18n Integration**: Complete localization and monitoring for new features
+  - Telemetry events: `engine_session_get_or_create`, `exercise_swap_opened/applied`, `stats_parity_mismatch`
+  - Full EN/PT-BR localization for swap modal, toasts, and stats parity banner
+  - i18n keys added to `session.json` and `stats.json` for both languages
+
+**Technical**: Deterministic behavior across all components, offline-first exercise swapping, progressive overload logic, stats parity monitoring, comprehensive test suite, and complete i18n coverage. All features maintain security compliance with RLS enforcement and follow established architectural patterns.
+
 ## 2025-08-28 16:50 - Edge Function Validation — Part 2 (Complete Hardening)
 **Implemented**: Comprehensive Edge Function validation system with unified error taxonomy and strict input/output validation
 - **Shared Utilities**: Created robust shared infrastructure for all Edge Functions

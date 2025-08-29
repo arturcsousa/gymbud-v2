@@ -53,5 +53,9 @@
   "empty": {
     "title": "No workout data yet",
     "cta": "Start Your First Workout"
+  },
+  "parityMismatch": {
+    "title": "Stats Parity Mismatch Detected",
+    "cta": "Report Issue"
   }
 }

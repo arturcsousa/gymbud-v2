@@ -3,6 +3,22 @@
 ## Overview
 Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
+## Recent Updates (2025-08-28 20:09)
+- **Milestone F: Engine v2 & Exercise Library Integration**: Complete implementation of deterministic session generation and exercise swap functionality
+  - **ReplaceExerciseSheet**: New modal component for exercise substitution with deterministic compatibility matching
+    - Integrated into SessionPage with prominent CTA button on exercise cards
+    - Uses `client/src/lib/exercises/catalog.ts` for exercise metadata and `client/src/lib/exercises/compat.ts` for compatibility logic
+    - Offline-first with Dexie updates and sync queue integration
+    - Full i18n support with search, selection, and confirmation flows
+  - **Stats Parity System**: Dev-only monitoring for client vs server metrics comparison
+    - `client/src/stats/parity.ts` with `useStatsParity` hook for real-time verification
+    - Dev banner in StatsPage showing parity mismatches with "Report Issue" CTA
+    - Tolerance-based validation for averages, exact matching for counts
+  - **Engine Session Generation**: New Edge Function for deterministic workout creation
+    - `supabase/functions/engine-session-get-or-create/index.ts` with progressive overload logic
+    - One session per user per day enforcement with plan selection and rotation
+    - Integrates with existing session flow and exercise catalog system
+
 ## Recent Updates (2025-08-28 16:14)
 - **Settings Store Implementation**: Complete settings persistence system with offline-first architecture
   - **SettingsProvider**: React context providing app-wide settings access via `useSettings()` hook

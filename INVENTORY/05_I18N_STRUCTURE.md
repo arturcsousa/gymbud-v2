@@ -81,6 +81,32 @@ Added cloud sync error handling:
 }
 ```
 
+### Session Namespace Extensions
+Recent additions for exercise swap functionality and session management:
+```json
+{
+  "swap": {
+    "title": "Replace Exercise / Substituir Exercício",
+    "replace": "Replace / Substituir", 
+    "searchPlaceholder": "Search exercises... / Buscar exercícios...",
+    "noMatches": "No compatible exercises found / Nenhum exercício compatível encontrado",
+    "appliedToast": "Exercise replaced successfully / Exercício substituído com sucesso",
+    "error": "Error / Erro"
+  }
+}
+```
+
+### Stats Namespace Extensions  
+Recent additions for stats parity verification and mismatch detection:
+```json
+{
+  "parityMismatch": {
+    "title": "Stats Parity Mismatch Detected / Divergência de Estatísticas Detectada",
+    "cta": "Report Issue / Reportar Problema"
+  }
+}
+```
+
 ### Authentication Flow
 Complete coverage for signup, signin, email verification, and password reset flows with contextual messaging and error handling.
 

@@ -10,14 +10,23 @@ import {
   Plus,
   CheckCircle2,
   Info,
-  Undo2
+  Undo2,
+  MoreVertical,
+  RefreshCw
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { useSessionData } from '@/hooks/useSessionData'
+import { ReplaceExerciseSheet } from '@/components/ReplaceExerciseSheet'
 
 interface RestTimerState {
   isActive: boolean
@@ -190,6 +199,13 @@ function SessionPage() {
     setLocation('/app/home')
   }
 
+  const handleExerciseReplaced = (newExercise: { id: string; name: string; rest_sec: number }) => {
+    // Update the current exercise in the local state
+    // The actual data will be updated via the ReplaceExerciseSheet component
+    // This triggers a re-render with the new exercise name
+    window.location.reload() // Simple approach to refresh the session data
+  }
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = seconds % 60
@@ -248,9 +264,36 @@ function SessionPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-white">{currentExercise.exercise_name}</h2>
-                <Button variant="ghost" size="sm" className="text-teal-300">
-                  <Info className="w-4 h-4" />
-                </Button>
+                <div className="flex items-center space-x-2">
+                  <Button variant="ghost" size="sm" className="text-teal-300">
+                    <Info className="w-4 h-4" />
+                  </Button>
+                  
+                  {/* Exercise Options Menu */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+                        <MoreVertical className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-slate-800 border-slate-600">
+                      <ReplaceExerciseSheet
+                        sessionExerciseId={currentExercise.session_exercise_id}
+                        currentExerciseId={currentExercise.exercise_id}
+                        currentExerciseName={currentExercise.exercise_name}
+                        onExerciseReplaced={handleExerciseReplaced}
+                      >
+                        <DropdownMenuItem 
+                          className="text-white hover:bg-slate-700 cursor-pointer"
+                          onSelect={(e) => e.preventDefault()}
+                        >
+                          <RefreshCw className="w-4 h-4 mr-2" />
+                          {t('swap.replace')}
+                        </DropdownMenuItem>
+                      </ReplaceExerciseSheet>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
               
               <div className="flex items-center space-x-4 text-sm text-gray-300">
@@ -267,8 +310,27 @@ function SessionPage() {
                 </div>
               </div>
 
+              {/* Swap Exercise CTA Button */}
+              <div className="mt-4">
+                <ReplaceExerciseSheet
+                  sessionExerciseId={currentExercise.session_exercise_id}
+                  currentExerciseId={currentExercise.exercise_id}
+                  currentExerciseName={currentExercise.exercise_name}
+                  onExerciseReplaced={handleExerciseReplaced}
+                >
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white"
+                  >
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    {t('swap.replace')}
+                  </Button>
+                </ReplaceExerciseSheet>
+              </div>
+
               {currentExercise.is_warmup && (
-                <Badge variant="secondary" className="bg-orange-500/20 text-orange-300">
+                <Badge variant="secondary" className="bg-orange-500/20 text-orange-300 mt-2">
                   {t('exercise_card.warmup')}
                 </Badge>
               )}

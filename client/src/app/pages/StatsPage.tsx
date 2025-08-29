@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Share2, TrendingUp, Activity } from 'lucide-react';
+import { Share2, TrendingUp, Activity, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { ChartCard } from '@/components/charts/ChartCard';
@@ -11,6 +11,7 @@ import BottomNav from '@/components/BottomNav';
 import { useStreakBadges } from '@/hooks/useStreakBadges';
 import { useSessionMetrics } from '@/hooks/useSessionMetrics';
 import { useProfileData } from '@/hooks/useProfileData';
+import { useStatsParity } from '@/stats/parity';
 import domtoimage from 'dom-to-image-more';
 
 export default function StatsPage() {
@@ -21,6 +22,9 @@ export default function StatsPage() {
   // Real data hooks
   const { metrics, isLoading: metricsLoading, isOffline: metricsOffline } = useSessionMetrics();
   const { profileData, isLoading: profileLoading, isOffline: profileOffline } = useProfileData();
+  
+  // Stats parity check (dev only)
+  const { result: parityResult, isChecking: parityChecking, checkParity } = useStatsParity();
 
   const isLoading = metricsLoading || profileLoading;
   const isOffline = metricsOffline || profileOffline;
@@ -28,7 +32,12 @@ export default function StatsPage() {
   useEffect(() => {
     // Check for new badges when component mounts
     checkAndAwardBadges();
-  }, [checkAndAwardBadges]);
+    
+    // Check stats parity in dev mode
+    if (import.meta.env.DEV && !isLoading) {
+      checkParity();
+    }
+  }, [checkAndAwardBadges, checkParity, isLoading]);
 
   // Loading state
   if (isLoading) {
@@ -113,6 +122,18 @@ export default function StatsPage() {
     }
   };
 
+  const handleReportParity = () => {
+    // Log telemetry for parity mismatch reporting
+    console.log('stats_parity_mismatch_reported', {
+      diffs: parityResult.diffs.slice(0, 3),
+      total_diffs: parityResult.diffs.length,
+      build_sha: import.meta.env.VITE_BUILD_SHA || 'unknown',
+      user_reported: true
+    });
+    
+    toast.success('Parity mismatch reported to development team');
+  };
+
   return (
     <div 
       className="min-h-screen relative overflow-hidden pb-20"
@@ -139,6 +160,41 @@ export default function StatsPage() {
 
       {/* Main content - positioned directly on page */}
       <div className="relative z-10 px-6 pt-8 pb-4 space-y-6">
+        {/* Dev-only Stats Parity Banner */}
+        {import.meta.env.DEV && !parityResult.ok && parityResult.diffs.length > 0 && (
+          <div className="bg-orange-500/20 backdrop-blur-sm rounded-lg border border-orange-500/30 p-4">
+            <div className="flex items-start space-x-3">
+              <AlertTriangle className="w-5 h-5 text-orange-300 mt-0.5 flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="text-orange-200 font-medium text-sm">
+                  {t('parityMismatch.title', 'Stats Parity Mismatch Detected')}
+                </div>
+                <div className="text-orange-200/80 text-xs space-y-1">
+                  {parityResult.diffs.slice(0, 3).map((diff, index) => (
+                    <div key={index}>
+                      <strong>{diff.metric}:</strong> Client={diff.client}, Server={diff.server} 
+                      ({diff.difference > 0 ? '+' : ''}{diff.difference.toFixed(2)})
+                    </div>
+                  ))}
+                  {parityResult.diffs.length > 3 && (
+                    <div className="text-orange-200/60">
+                      +{parityResult.diffs.length - 3} more differences
+                    </div>
+                  )}
+                </div>
+                <Button
+                  onClick={handleReportParity}
+                  size="sm"
+                  variant="outline"
+                  className="border-orange-400/50 text-orange-200 hover:bg-orange-500/20 text-xs"
+                >
+                  {t('parityMismatch.cta', 'Report Issue')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Offline indicator */}
         {isOffline && (
           <div className="bg-orange-500/20 backdrop-blur-sm rounded-lg border border-orange-500/30 p-3">
