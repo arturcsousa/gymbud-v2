@@ -325,7 +325,7 @@ function SessionPage() {
                 </div>
               </div>
 
-              <ExerciseHelpTicker exerciseId={currentExercise?.variant_id} className="mt-3" />
+              <ExerciseHelpTicker exerciseId={currentExercise?.variant_id ?? undefined} className="mt-3" />
 
               {/* Swap Exercise CTA Button */}
               <div className="mt-4">
