@@ -1,5 +1,23 @@
 # GymBud v2 - Changelog
 
+## August 29, 2025 16:55 ET — Session Runner Help Ticker & Hooks
+**Added**: ExerciseHelpTicker UI with localized instructions, cues, and precautions
+- **Data Hooks**: Created `client/src/data/exercises.ts` with useExercise and useExerciseSearch hooks
+  - Uses TanStack Query v5 with language-aware RPC calls to app2.rpc_get_exercise_by_id
+  - Automatic i18n language detection and fallback (pt-BR → en)
+  - Query keys: ["exercise", exerciseId, lang] and ["exercise-search", q, category, equipment, lang]
+- **ExerciseHelpTicker Component**: Accessible collapsible help interface for Session Runner
+  - Component: `client/src/components/exercise/ExerciseHelpTicker.tsx`
+  - Features: Instructions (bulleted), form cues, contraindications with WCAG 2.1 AA compliance
+  - UX: Collapsible sections with aria-labelledby, aria-controls, keyboard navigation
+  - Integration: Mounted in SessionPage exercise focus card, replaces legacy cues display
+- **i18n Support**: Added exercise help keys for EN/PT-BR in common.json
+  - EN: show/hide, loading, exercise.help.* (heading, instructions, cues, contraindications)
+  - PT-BR: mostrar/ocultar, carregando, exercise.help.* (ajuda, instruções, dicas, precauções)
+- **Documentation**: Updated 06_FRONTEND_ROUTES.md, 08_DATA_HOOKS.md, 05_I18N_STRUCTURE.md
+
+**Technical**: Session Runner now surfaces i18n library enrichment live with locale-aware exercise guidance
+
 ## 2025-08-29 16:24 - Frontend Locale-Aware RPC Integration
 **Added**: Complete locale-aware exercise data integration in Session Runner
 - **useExerciseDetails Hook**: New hook for fetching exercise details with locale-aware data
@@ -33,6 +51,7 @@
   - Fixed database clearing operations to only reference existing tables
 - **Function Return Types**: Fixed all function signature mismatches and return type errors
 - **Build Status**: All 15+ TypeScript compilation errors resolved, ready for Vercel deployment
+- **Root Cause**: AI Coach system had export conflicts, missing dependencies, database schema misalignment, and needed project reference verification
 
 ## 2025-08-29 14:22 - TypeScript Error Fixes for Settings Components
 **Fixed**: All remaining TypeScript compilation errors in settings-related components
