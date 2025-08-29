@@ -103,7 +103,7 @@ function ProfilePage() {
         confidence: getConfidenceFromExperience(data.experience_level),
         constraints,
         warmup_style: 'standard' as const,
-        mobility_focus: [] as const,
+        mobility_focus: [],
         rest_preference: 'as_prescribed' as const,
         intensity_style: 'rpe' as const,
         rpe_coaching_level: 'standard' as const
