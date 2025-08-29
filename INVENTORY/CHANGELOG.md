@@ -1,5 +1,26 @@
 # GymBud v2 - Changelog
 
+## 2025-08-29 11:29 - AI Coach System Implementation
+**Implemented**: Complete AI Coach system with Edge Functions, frontend components, and i18n support
+- **Edge Functions**: Created `coach-suggest` and `coach-apply` with RLS compliance and audit logging
+  - **coach-suggest**: Reads session context, generates up to 10 suggestions based on constraints (equipment, time, fatigue), supports equipment substitution, deload recommendations, and prescription tweaks
+  - **coach-apply**: Idempotent application of recommendations with atomic updates to session_exercises, comprehensive audit logging to coach_audit table, handles substitutions, tweaks, and deloads
+  - **Security**: Both functions enforce user scoping via RLS, 512KB payload limits, 8s timeout, proper JWT validation
+- **Frontend Components**: AI Coach panel with constraint filters and suggestion management
+  - **CoachPanel**: Modal interface with equipment filters, time constraints, fatigue levels, suggestion cards with confidence scores and rationale display
+  - **SessionPage Integration**: Brain icon button in header opens coach panel, maintains session context
+  - **Suggestion Cards**: Visual representation of recommendations with apply/dismiss actions, change previews for substitutions and tweaks
+- **Data Hooks**: Comprehensive React Query integration with telemetry and accessibility
+  - **useCoach**: Combined hook providing suggestions, suggest, apply, dismiss operations with loading states
+  - **useCoachSuggestions**: Fetches recommendations with status filtering and 5-minute stale time
+  - **useSuggest, useApplyRecommendation, useDismissRecommendation**: Individual mutation hooks with toast notifications and cache invalidation
+  - **Telemetry**: Tracks coach_suggest_succeeded/failed, coach_apply_succeeded/failed, coach_dismissed events
+  - **Accessibility**: Screen reader announcements for applied/dismissed suggestions
+- **i18n Support**: Complete English and Portuguese (Brazil) translations
+  - **coach.json**: 43 translation keys covering UI labels, actions, toasts, accessibility messages
+  - **Constraint Filters**: Localized equipment names, fatigue levels, time constraints
+  - **Suggestion Types**: Translated kind labels (substitute, tweak, deload, skip with alternative)
+
 ## 2025-08-29 10:38 - Settings Completeness & Notifications System (G1 + G2 Complete Implementation)
 **Implemented**: Complete Settings utilities and notifications system with self-service features and privacy-safe reminders
 - **G1: Settings Utilities**: Four self-service utilities with full offline-first and RLS-safe implementation
@@ -895,8 +916,8 @@
 
 ## August 26, 2025 18:00 ET
 **Implemented** plan management system with Edge Function and onboarding flow
-- **Edge Function**: Created `supabase/functions/plan-get-or-create/index.ts` for idempotent plan creation/activation
-  - Behavior: Returns ACTIVE plan if exists, promotes DRAFT to ACTIVE, or creates new ACTIVE plan with seed
+- **Edge Function**: Created `supabase/functions/plan-get-or-create/index.ts` with validated request handling
+  - Zod validation for plan creation with seed support
   - RLS enforcement via user JWT forwarding, structured error responses, CORS support
 - **Onboarding Action**: Added `client/src/onboarding/actions.ts` with `finalizeOnboarding()` function
   - Calls plan-get-or-create Edge Function with plan seed from wizard
@@ -919,8 +940,8 @@
 - Migrations: N/A (bug fixes and debugging enhancements)
 
 ## August 26, 2025 17:54 ET
-**Redesigned** auth page with landing page aesthetic and enhanced UX
-- **Visual Design**: Transformed auth page with dark gradient background using slate colors (#0f172a → #1e293b → #334155)
+**Redesigned** auth page to match provided design with exact color palette.
+- **Color Palette**: Updated to use exact design colors (#005870, #0C8F93, #18C7B6, #FF9F1C)
 - **GymBud Branding**: Added custom logo with dumbbell icon and "GymBud" text in header, plus moon icon for dark mode toggle
 - **Layout Enhancement**: Added step indicator, large headings with contextual subtitles, and spacious input fields (h-14)
 - **Modern Styling**: Implemented rounded-2xl corners, dark slate input backgrounds with teal focus states (#18C7B6)
@@ -928,7 +949,7 @@
 - **Decorative Elements**: Added gradient blobs and curved clip-path sections matching landing page aesthetic
 - **Typography**: Updated to use extrabold headings and improved text contrast with proper font weights
 - Context: Auth page now seamlessly matches landing page design quality and brand consistency
-- Migrations: N/A (design enhancement only)
+- Migrations: N/A (design changes only)
 
 ## January 26, 2025 15:11 ET
 **Fixed** TypeScript build errors preventing Vercel deployment

@@ -1,3 +1,42 @@
 {
-  "placeholder": "Inline coach prompts/results"
+  "title": "AI Coach",
+  "explain": "Get smart tweaks when equipment is missing, time is short, or fatigue hits.",
+  "cta": "Get suggestions",
+  "empty": "Tell us what's up and I'll tailor your session.",
+  "filters": {
+    "no_equipment": "No equipment",
+    "time": "Short on time",
+    "fatigue": "Feeling fatigued",
+    "pain": "Pain/discomfort",
+    "preference": "Preference"
+  },
+  "labels": {
+    "confidence": "Confidence",
+    "rationale": "Why this?",
+    "applied": "Applied",
+    "dismissed": "Dismissed"
+  },
+  "kinds": {
+    "substitute": "Substitution",
+    "tweak_prescription": "Tweak",
+    "skip_with_alternative": "Skip with alternative",
+    "deload": "Deload"
+  },
+  "actions": {
+    "accept": "Accept",
+    "dismiss": "Dismiss",
+    "apply": "Apply",
+    "viewChanges": "View changes"
+  },
+  "toasts": {
+    "suggesting": "Generating suggestions…",
+    "suggestionsReady": "Suggestions ready.",
+    "applied": "Suggestion applied.",
+    "dismissed": "Suggestion dismissed.",
+    "error": "Something went wrong."
+  },
+  "a11y": {
+    "applied": "Suggestion applied successfully",
+    "dismissed": "Suggestion dismissed"
+  }
 }

@@ -12,7 +12,8 @@ import {
   Info,
   Undo2,
   MoreVertical,
-  RefreshCw
+  RefreshCw,
+  Brain
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -27,6 +28,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useSessionData } from '@/hooks/useSessionData'
 import { ReplaceExerciseSheet } from '@/components/ReplaceExerciseSheet'
+import { CoachPanel } from '@/components/CoachPanel'
 
 interface RestTimerState {
   isActive: boolean
@@ -65,6 +67,7 @@ function SessionPage() {
     startTime: 0 
   })
   const [workoutStartTime] = useState(Date.now())
+  const [isCoachPanelOpen, setIsCoachPanelOpen] = useState(false)
   
   // Refs for accessibility
   const restTimerRef = useRef<HTMLDivElement>(null)
@@ -252,6 +255,15 @@ function SessionPage() {
             <div className="text-teal-300 font-mono">
               {formatTime(getWorkoutDuration())}
             </div>
+            <Button
+              onClick={() => setIsCoachPanelOpen(true)}
+              variant="ghost"
+              size="sm"
+              className="text-teal-300"
+            >
+              <Brain className="w-4 h-4" />
+              AI Coach
+            </Button>
           </div>
           <Progress value={progressPercentage} className="h-2" />
         </div>
@@ -501,6 +513,11 @@ function SessionPage() {
           )}
         </div>
       </div>
+      {isCoachPanelOpen && (
+        <CoachPanel
+          onClose={() => setIsCoachPanelOpen(false)}
+        />
+      )}
     </div>
   )
 }

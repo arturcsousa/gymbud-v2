@@ -9,6 +9,29 @@ Complete internationalization system supporting English (EN) and Portuguese Braz
 
 ## Namespaces
 
+### coach
+AI Coach system for workout suggestions and adjustments
+- **Main Interface**: 
+  - `title`: "AI Coach" / "Coach IA"
+  - `explain`: Description of coach functionality
+  - `cta`: "Get suggestions" / "Ver sugestões"
+  - `empty`: Empty state message when no constraints set
+- **Constraint Filters**:
+  - `filters.no_equipment`: Equipment unavailability filter
+  - `filters.time`: Time constraint filter  
+  - `filters.fatigue`: Fatigue level filter
+  - `filters.pain`: Pain/discomfort filter
+  - `filters.preference`: General preference filter
+- **Suggestion Management**:
+  - `labels.confidence`: Confidence percentage display
+  - `labels.rationale`: "Why this?" rationale label
+  - `labels.applied/dismissed`: Status indicators
+  - `kinds.*`: Suggestion types (substitute, tweak_prescription, skip_with_alternative, deload)
+  - `actions.*`: User actions (accept, dismiss, apply, viewChanges)
+- **User Feedback**:
+  - `toasts.*`: Loading, success, error toast messages
+  - `a11y.*`: Screen reader announcements for applied/dismissed suggestions
+
 ### settings
 Settings page and configuration UI
 - **Basic Settings**: language, units, notifications toggle
@@ -91,13 +114,6 @@ Active workout session interface
 - **Session Controls**: Start, pause, complete, navigation
 - **Exercise Swaps**: Substitution interface with compatibility matching
 - **Progress Indicators**: Session completion, rest timers
-
-### coach
-AI coaching interface and interactions
-- **Coaching Prompts**: AI-generated guidance and suggestions
-- **Form Feedback**: Exercise technique recommendations
-- **Substitutions**: Exercise replacement suggestions and reasoning
-- **Progress Analysis**: AI-driven insights and adjustments
 
 ### progress
 Progress tracking and analytics

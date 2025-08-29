@@ -1,3 +1,42 @@
 {
-  "placeholder": "Inline coach prompts/results"
+  "title": "Coach IA",
+  "explain": "Receba ajustes quando faltar equipamento, o tempo estiver curto ou houver fadiga.",
+  "cta": "Ver sugestões",
+  "empty": "Diga o que está acontecendo e eu ajusto o treino.",
+  "filters": {
+    "no_equipment": "Sem equipamento",
+    "time": "Pouco tempo",
+    "fatigue": "Cansado(a)",
+    "pain": "Dor/desconforto",
+    "preference": "Preferência"
+  },
+  "labels": {
+    "confidence": "Confiança",
+    "rationale": "Por quê?",
+    "applied": "Aplicada",
+    "dismissed": "Descartada"
+  },
+  "kinds": {
+    "substitute": "Substituição",
+    "tweak_prescription": "Ajuste",
+    "skip_with_alternative": "Pular com alternativa",
+    "deload": "Deload"
+  },
+  "actions": {
+    "accept": "Aceitar",
+    "dismiss": "Descartar",
+    "apply": "Aplicar",
+    "viewChanges": "Ver alterações"
+  },
+  "toasts": {
+    "suggesting": "Gerando sugestões…",
+    "suggestionsReady": "Sugestões prontas.",
+    "applied": "Sugestão aplicada.",
+    "dismissed": "Sugestão descartada.",
+    "error": "Algo deu errado."
+  },
+  "a11y": {
+    "applied": "Sugestão aplicada com sucesso",
+    "dismissed": "Sugestão descartada"
+  }
 }

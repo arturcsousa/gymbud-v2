@@ -3,6 +3,20 @@
 ## Overview
 Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
+## Recent Updates (2025-08-29 11:29)
+- **AI Coach System Implementation**: Complete coaching system with Edge Functions and interactive UI
+  - **CoachPanel Component**: Modal interface accessible from SessionPage header with Brain icon
+    - Constraint filters for equipment availability, time limits, fatigue levels, and pain flags
+    - Real-time suggestion generation with confidence scores and rationale display
+    - Apply/dismiss actions with visual feedback and accessibility support
+  - **Data Integration**: React Query hooks with comprehensive state management
+    - `useCoach` combined hook providing suggestions, suggest, apply, dismiss operations
+    - Telemetry tracking for coach interactions and screen reader announcements
+    - Cache invalidation and background sync with session data
+  - **SessionPage Enhancement**: Integrated AI Coach button in header alongside workout timer
+    - Maintains session context and provides contextual coaching suggestions
+    - Seamless modal overlay without disrupting workout flow
+
 ## Recent Updates (2025-08-28 20:09)
 - **Milestone F: Engine v2 & Exercise Library Integration**: Complete implementation of deterministic session generation and exercise swap functionality
   - **ReplaceExerciseSheet**: New modal component for exercise substitution with deterministic compatibility matching
