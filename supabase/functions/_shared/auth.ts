@@ -18,22 +18,22 @@ export function getClient(req: Request) {
   return { supabase, token };
 }
 
-export async function requireUser(req: Request): Promise<
-  | { user: User; error: null }
-  | { user: null; error: 'auth_missing' | 'auth_invalid' }
-> {
+export async function requireUser(
+  req: Request, 
+  options: { allowServiceRole?: boolean } = {}
+): Promise<{ user: any; supabase: any }> {
   const { supabase } = getClient(req);
   
   try {
     const { data: { user }, error } = await supabase.auth.getUser();
     
     if (error || !user) {
-      return { user: null, error: 'auth_missing' };
+      throw new Error('Authentication required');
     }
     
-    return { user, error: null };
-  } catch {
-    return { user: null, error: 'auth_invalid' };
+    return { user, supabase };
+  } catch (e) {
+    throw new Error('Authentication failed');
   }
 }
 

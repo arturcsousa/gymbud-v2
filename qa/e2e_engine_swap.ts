@@ -147,27 +147,27 @@ class E2EEngineSwapTest {
     const start = Date.now();
     
     try {
-      // Call engine-session-get-or-create
-      const response = await fetch(`${supabaseUrl}/functions/v1/engine-session-get-or-create`, {
+      // Call session-get-or-create
+      const response = await fetch(`${supabaseUrl}/functions/v1/session-get-or-create`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${supabaseServiceKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          today: new Date().toISOString().split('T')[0],
+          date: new Date().toISOString().split('T')[0],
           plan_id: this.testPlanId
         })
       });
 
       if (!response.ok) {
-        throw new Error(`Engine API failed: ${response.status} ${response.statusText}`);
+        throw new Error(`Session API failed: ${response.status} ${response.statusText}`);
       }
 
       const result = await response.json();
       
       if (!result.ok || !result.data?.session) {
-        throw new Error(`Invalid engine response: ${JSON.stringify(result)}`);
+        throw new Error(`Invalid session response: ${JSON.stringify(result)}`);
       }
 
       const session = result.data.session;
@@ -193,9 +193,9 @@ class E2EEngineSwapTest {
         throw new Error('Session not found in database');
       }
 
-      this.addResult('Engine Session Generation', 'PASS', `Session created: ${this.sessionId}`, Date.now() - start);
+      this.addResult('Session Generation', 'PASS', `Session created: ${this.sessionId}`, Date.now() - start);
     } catch (error) {
-      this.addResult('Engine Session Generation', 'FAIL', error.message, Date.now() - start);
+      this.addResult('Session Generation', 'FAIL', error.message, Date.now() - start);
       throw error;
     }
   }
@@ -204,15 +204,15 @@ class E2EEngineSwapTest {
     const start = Date.now();
     
     try {
-      // Call engine again with same parameters
-      const response = await fetch(`${supabaseUrl}/functions/v1/engine-session-get-or-create`, {
+      // Call session-get-or-create again with same parameters
+      const response = await fetch(`${supabaseUrl}/functions/v1/session-get-or-create`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${supabaseServiceKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          today: new Date().toISOString().split('T')[0],
+          date: new Date().toISOString().split('T')[0],
           plan_id: this.testPlanId
         })
       });
@@ -220,7 +220,7 @@ class E2EEngineSwapTest {
       const result = await response.json();
       
       if (!result.ok || result.data.session.id !== this.sessionId) {
-        throw new Error('Engine should return same session ID for same day');
+        throw new Error('Session API should return same session ID for same day');
       }
 
       // Verify no duplicate sessions
@@ -262,14 +262,14 @@ class E2EEngineSwapTest {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       
-      const response = await fetch(`${supabaseUrl}/functions/v1/engine-session-get-or-create`, {
+      const response = await fetch(`${supabaseUrl}/functions/v1/session-get-or-create`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${supabaseServiceKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          today: tomorrow.toISOString().split('T')[0],
+          date: tomorrow.toISOString().split('T')[0],
           plan_id: this.testPlanId
         })
       });

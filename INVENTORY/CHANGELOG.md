@@ -53,126 +53,49 @@
 - **Build Status**: All 15+ TypeScript compilation errors resolved, ready for Vercel deployment
 - **Root Cause**: AI Coach system had export conflicts, missing dependencies, database schema misalignment, and needed project reference verification
 
-## 2025-08-29 14:22 - TypeScript Error Fixes for Settings Components
-**Fixed**: All remaining TypeScript compilation errors in settings-related components
-- **NotificationPreferences.tsx**: Fixed error type handling in catch block with proper type guard
-- **SettingsUtilities.tsx**: 
-  - Removed unused CardHeader and CardTitle imports
-  - Fixed error type handling with proper `error: unknown` parameter and type guards
-  - Fixed Checkbox onCheckedChange type mismatch with `(checked) => setIncludeVoided(checked === true)`
-- **notificationScheduler.ts**: Fixed error type handling in catch blocks (already properly typed)
-- **settingsUtilities.ts**: Fixed all error type handling with proper type guards and error message extraction
-- **CoachPanel.tsx**: Fixed export redeclaration by changing to function declaration without export keyword
-- **Build Status**: All TypeScript compilation errors resolved, ready for Vercel deployment
-- **Root Cause**: Settings components had inconsistent error type handling and unused imports causing compilation failures
+## 2025-08-29 17:42 ET — Upgraded session-get-or-create Edge Function
+**Upgraded**: session-get-or-create Edge Function to replace engine-session-get-or-create with full feature parity.
+- Updated: `supabase/functions/session-get-or-create/index.ts` - Added plan-aware logic, rotation support, progressive overload, baseline detection
+- Updated: `supabase/migrations/20250829_add_session_helper_functions.sql` - Added `fn_user_tz`, `fn_plan_seed`, `fn_user_completed_sessions_count`, `fn_build_prescription`
+- Updated: `client/src/hooks/useSessionGetOrCreate.ts` - Enhanced types for baseline, plan_id, and prescription fields
+- Updated: `client/src/services/settingsUtilities.ts` - Switched from engine-session-get-or-create to session-get-or-create
+- Updated: `qa/e2e_engine_swap.ts` - Updated test suite to use new function with corrected parameter names
+- Deprecated: `supabase/functions/engine-session-get-or-create/index.ts` - Replaced with deprecation notice
+- Features: Timezone-aware date handling, plan rotation cycles, deload logic, progressive overload, per-exercise seed overrides
+- Context: Complete replacement of old engine function with enhanced capabilities and maintained backward compatibility
+- Migrations: Apply updated SQL migration before deploying Edge Function
 
-## 2025-08-29 13:58 - Complete Vercel Build Fixes & Database Audit
-**Fixed**: All TypeScript compilation errors and completed database project reference audit
-- **Export Redeclaration Errors**: Fixed useCoach.ts function export conflicts
-  - Removed individual `export` keywords from all function declarations
-  - Maintained single named export statement: `export { useCoachSuggestions, useSuggest, useApplyRecommendation, useDismissRecommendation, useCoach }`
-- **TypeScript Error Handling**: Fixed unknown error type handling across multiple files
-  - notificationScheduler.ts: Added proper error type guards with `error instanceof Error ? error.message : String(error)`
-  - settingsUtilities.ts: Fixed all catch blocks to handle `error: unknown` parameter
-- **Database Schema Alignment**: Fixed property access and import errors
-  - notificationScheduler.ts: Changed `weight_kg` to `weight` for LoggedSetRow compatibility
-  - notificationScheduler.ts: Changed `created_at` to `updated_at` for SessionRow compatibility
-  - notificationScheduler.ts: Added `updated_at` property to MetaRow entries
-  - settingsUtilities.ts: Fixed import path from `@/sync/pullUpdates` to `@/sync/queue`
-  - settingsUtilities.ts: Removed references to non-existent `db.profiles` and `db.plans` Dexie tables
-  - settingsUtilities.ts: Updated profiles/plans queries to use Supabase directly (app2 schema)
-- **Database Project Audit**: Comprehensive verification of all Supabase project references
-  - **Environment Configuration**: `client/.env.local` correctly configured with project ID `lrcrmmquuwphxispctgq`
-  - **Client Configuration**: `client/src/lib/supabase.ts` properly uses environment variables
-  - **Edge Functions**: All functions use `Deno.env.get('SUPABASE_URL')` without hardcoded references
-  - **Audit Result**: No incorrect project references found, all connections point to correct GymBud project
-- **Missing Dependencies**: Added `@radix-ui/react-separator@^1.0.3` and created Separator UI component
-- **Build Status**: All 25+ TypeScript compilation errors resolved, ready for Vercel deployment
-- **Root Cause**: AI Coach system had export conflicts, missing dependencies, database schema misalignment, and needed project reference verification
+## 2025-08-29 16:44 - Conflict Resolution System Implementation
+**Implemented**: Complete conflict detection and resolution system for offline-first sync layer
+- **Dexie Schema**: Upgraded to version 5 with `conflicts` store for persistent conflict tracking
+  - `ConflictRecord` type: entity, entity_id, op, local/server snapshots, field-level diff, timestamps
+  - Indexed by id, entity, entity_id, first_seen_at for efficient querying
+- **Conflict Detection**: Enhanced sync queue with automatic conflict detection on push and pull paths
+  - Version conflict detection in `sendToServer()` with server snapshot fetching
+  - Silent overlap detection in `safeMergeRow()` when local pending mutations exist
+  - Field-level diff generation using `shallowDiff()` utility (ignores metadata fields)
+- **Resolution Actions**: Implemented conflict resolution with user choice preservation
+  - `retryWithOverride()`: Keep local changes, retry mutation with override flag
+  - `acceptServerVersion()`: Accept server data, discard local pending changes
+  - Automatic conflict cleanup and telemetry tracking for resolution outcomes
+- **Developer UI**: Added Conflicts panel in Settings page behind dev mode toggle
+  - Real-time conflict list with entity details, field-level diff table, resolution buttons
+  - Responsive design with mobile-friendly button layout and proper accessibility
+  - Visual conflict badges and timestamp display for conflict age tracking
+- **Telemetry Integration**: Added conflict-specific telemetry events
+  - `conflict_detected`: When version conflicts are identified during sync
+  - `conflict_resolved_keep_mine`: When user chooses to override with local changes
+  - `conflict_resolved_keep_server`: When user accepts server version
+- **i18n Coverage**: Complete EN/PT-BR localization for conflict resolution UI
+  - Settings namespace: conflicts.title, none, badge, seenAt, field, local, server
+  - Action labels: keepMine (override), keepServer with contextual descriptions
+  - Portuguese translations: "Conflitos", "Ficar com o meu (forçar)", "Ficar com o do servidor"
+- **Utilities**: Created supporting infrastructure for conflict management
+  - `client/src/db/conflicts.ts`: Conflict CRUD operations (upsert, delete, clear)
+  - `client/src/lib/diff.ts`: Shallow field comparison with metadata filtering
+  - Enhanced queue system with override support and conflict persistence
 
-## 2025-08-29 12:19 - Vercel Build Fixes for AI Coach System
-**Fixed**: TypeScript compilation errors and missing dependencies for successful Vercel deployment
-- **Missing UI Component**: Created `client/src/components/ui/separator.tsx` with Radix UI Separator implementation
-- **Missing Dependency**: Added `@radix-ui/react-separator@^1.0.3` to package.json dependencies
-- **Named Exports**: Added named exports to AI Coach components for TypeScript compatibility
-  - `export { CoachPanel }` in CoachPanel.tsx
-  - `export { useCoachSuggestions, useSuggest, useApplyRecommendation, useDismissRecommendation, useCoach }` in useCoach.ts
-- **Build Status**: All TypeScript compilation errors resolved, ready for Vercel deployment
-- **Root Cause**: AI Coach system components were missing required UI dependencies and proper named exports
-
-## 2025-08-29 11:29 - AI Coach System Implementation
-**Implemented**: Complete AI Coach system with Edge Functions, frontend components, and i18n support
-- **Edge Functions**: Created `coach-suggest` and `coach-apply` with RLS compliance and audit logging
-  - **coach-suggest**: Reads session context, generates up to 10 suggestions based on constraints (equipment, time, fatigue), supports equipment substitution, deload recommendations, and prescription tweaks
-  - **coach-apply**: Idempotent application of recommendations with atomic updates to session_exercises, comprehensive audit logging to coach_audit table, handles substitutions, tweaks, and deloads
-  - **Security**: Both functions enforce user scoping via RLS, 512KB payload limits, 8s timeout, proper JWT validation
-- **Frontend Components**: AI Coach panel with constraint filters and suggestion management
-  - **CoachPanel**: Modal interface with equipment filters, time constraints, fatigue levels, suggestion cards with confidence scores and rationale display
-  - **SessionPage Integration**: Brain icon button in header opens coach panel, maintains session context
-  - **Suggestion Cards**: Visual representation of recommendations with apply/dismiss actions, change previews for substitutions and tweaks
-- **Data Hooks**: Comprehensive React Query integration with telemetry and accessibility
-  - **useCoach**: Combined hook providing suggestions, suggest, apply, dismiss operations with loading states
-  - **useCoachSuggestions**: Fetches recommendations with status filtering and 5-minute stale time
-  - **useSuggest, useApplyRecommendation, useDismissRecommendation**: Individual mutation hooks with toast notifications and cache invalidation
-  - **Telemetry**: Tracks coach_suggest_succeeded/failed, coach_apply_succeeded/failed, coach_dismissed events
-  - **Accessibility**: Screen reader announcements for applied/dismissed suggestions
-- **i18n Support**: Complete English and Portuguese (Brazil) translations
-  - **coach.json**: 43 translation keys covering UI labels, actions, toasts, accessibility messages
-  - **Constraint Filters**: Localized equipment names, fatigue levels, time constraints
-  - **Suggestion Types**: Translated kind labels (substitute, tweak, deload, skip with alternative)
-
-## 2025-08-29 13:47 - Build Fixes
-**Fixed**: All TypeScript compilation errors and missing dependencies for successful Vercel deployment
-- **Missing UI Component**: Created `client/src/components/ui/separator.tsx` with Radix UI Separator implementation
-- **Missing Dependency**: Added `@radix-ui/react-separator@^1.0.3` to package.json dependencies
-- **Export Redeclaration Errors**: Fixed useCoach.ts function export conflicts
-  - Removed individual `export` keywords from function declarations
-  - Kept single named export statement at end of file
-  - `export { useCoachSuggestions, useSuggest, useApplyRecommendation, useDismissRecommendation, useCoach }`
-- **TypeScript Error Handling**: Fixed unknown error type handling in multiple files
-  - notificationScheduler.ts: Added proper error type guards with `error instanceof Error ? error.message : String(error)`
-  - settingsUtilities.ts: Fixed all catch blocks to handle `error: unknown` parameter
-- **Database Schema Alignment**: Fixed property access errors
-  - notificationScheduler.ts: Changed `weight_kg` to `weight` for LoggedSetRow compatibility
-  - notificationScheduler.ts: Changed `created_at` to `updated_at` for SessionRow compatibility
-  - notificationScheduler.ts: Added `updated_at` property to MetaRow entries
-  - settingsUtilities.ts: Fixed import path from `@/sync/pullUpdates` to `@/sync/queue`
-  - settingsUtilities.ts: Updated profiles/plans queries to use Supabase directly (app2 schema)
-- **Build Status**: All 15 TypeScript compilation errors resolved, ready for Vercel deployment
-- **Root Cause**: AI Coach system components had export conflicts, missing dependencies, and database schema misalignment
-
-## 2025-08-28 20:09 - Milestone F: Engine v2, Library Swaps & Stats Parity (Complete Implementation)
-**Implemented**: Complete GymBud Engine v2 with deterministic session generation, exercise library integration, and stats parity verification
-- **F1: Engine Session Get-or-Create Edge Function**: Deterministic workout session generation with progressive overload
-  - `supabase/functions/engine-session-get-or-create/index.ts`: New Edge Function with plan selection, rotation logic, and deload cycles
-  - Enforces one session per user per day with status validation ('pending' or 'active')
-  - Progressive overload logic inspects recent logged sets and adjusts prescription dynamically
-  - Supports plan selection with validation and fallback to active plan
-  - Returns localized exercise details with sets, reps, rest, and prescription data
-  - Integrates telemetry events for success, failure, and existing session retrieval
-- **F2: Exercise Library Integration & Deterministic Swaps**: Complete exercise substitution system with offline support
-  - `client/src/lib/exercises/catalog.ts`: Exercise metadata fetching using Supabase RPCs and localized views
-  - `client/src/lib/exercises/compat.ts`: Pure compatibility functions based on category, equipment, muscle groups, movement patterns
-  - `client/src/components/ReplaceExerciseSheet.tsx`: Modal UI for exercise substitution with deterministic sorting
-  - Integrated swap CTA button directly on exercise cards in SessionPage for prominent access
-  - Swap updates Dexie local DB, enqueues sync mutations, and creates coach audit entries
-  - Offline-first approach with mutation queue synchronization on reconnect
-  - UI updates immediately on swap with rest timer and cues reflecting new exercise
-- **F3: Stats Parity Verification**: Client vs server metrics comparison with dev tooling
-  - `client/src/stats/parity.ts`: Functions to compute client-side aggregates from Dexie and fetch server metrics
-  - `useStatsParity` React hook for parity checking with tolerance-based validation
-  - Dev-only parity banner in StatsPage showing top diffs and "Report Issue" button
-  - `qa/stats_parity.ts`: QA script for automated parity verification with exit codes
-- **F4: End-to-End Testing**: Comprehensive test coverage for complete workflow
-  - `qa/e2e_engine_swap.md`: Manual testing script with step-by-step verification checklist
-  - `qa/e2e_engine_swap.ts`: Automated E2E test covering user creation, session generation, swaps, and cleanup
-  - Tests determinism, progression, exercise compatibility, audit trails, and stats data integrity
-- **F5: Telemetry & i18n Integration**: Complete localization and monitoring for new features
-  - Telemetry events: `engine_session_get_or_create`, `exercise_swap_opened/applied`, `stats_parity_mismatch`
-  - Full EN/PT-BR localization for swap modal, toasts, and stats parity banner
-  - i18n keys added to `session.json` and `stats.json` for both languages
-
-**Technical**: Deterministic behavior across all components, offline-first exercise swapping, progressive overload logic, stats parity monitoring, comprehensive test suite, and complete i18n coverage. All features maintain security compliance with RLS enforcement and follow established architectural patterns.
+**Technical**: First-cut conflict resolution system with user-driven resolution, field-level diff visualization, and comprehensive telemetry for debugging offline-first sync conflicts
 
 ## 2025-08-28 16:50 - Edge Function Validation — Part 2 (Complete Hardening)
 **Implemented**: Comprehensive Edge Function validation system with unified error taxonomy and strict input/output validation

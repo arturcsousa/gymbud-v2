@@ -63,8 +63,8 @@ export async function regeneratePlan(): Promise<RegeneratePlanResult> {
       db.queue_mutations.clear()
     ])
 
-    // Trigger fresh engine-session-get-or-create call
-    const { error: sessionError } = await supabase.functions.invoke('engine-session-get-or-create', {
+    // Trigger fresh session-get-or-create call
+    const { error: sessionError } = await supabase.functions.invoke('session-get-or-create', {
       body: {}
     })
 
