@@ -1,171 +1,157 @@
 # GymBud v2 - i18n Structure
 
 ## Overview
-Complete internationalization setup for GymBud v2 with English (default) and Portuguese (Brazil) support.
+Complete internationalization system supporting English (EN) and Portuguese Brazil (PT-BR) with namespace-based organization.
 
-## Configuration
-- **Library**: react-i18next + i18next + i18next-browser-languagedetector
-- **Languages**: EN (default), PT-BR
-- **Detection**: localStorage → navigator → htmlTag fallback
-- **Settings**: keySeparator: false, returnNull: false, escapeValue: false
+## Languages
+- **English (en)**: Default language, fallback for missing keys
+- **Portuguese Brazil (pt-BR)**: Full localization with Brazilian conventions
 
-## Namespace Structure
+## Namespaces
 
-### Core Namespaces
-- **common**: Navigation, CTAs, language labels, universal UI elements
-- **landing**: Marketing page content (hero, features, pricing, FAQ)
-- **app**: Main application UI (navigation, sync, auth, general actions)
-- **auth**: Authentication flows (signin, signup, verification, password reset)
+### settings
+Settings page and configuration UI
+- **Basic Settings**: language, units, notifications toggle
+- **Utilities Section**: 
+  - `utilities.regenerate.*`: Plan regeneration with confirmation dialogs
+  - `utilities.export.*`: Data export with format selection (JSON/CSV) and voided sets option
+  - `utilities.delete.*`: Account deletion with two-step confirmation and typed verification
+  - `utilities.about.*`: Version info, build details, PWA install prompts, privacy/terms links
+- **Enhanced Notifications**:
+  - `notifications.title/desc/enable`: Main notification settings
+  - `notifications.daily.*`: Daily reminder time configuration
+  - `notifications.weekly.*`: Weekly summary day/time selection with weekday names (0-6)
+  - `notifications.quietHours.*`: Quiet hours configuration with start/end times
+  - `notifications.permission.*`: Permission handling and browser compatibility messages
+  - `notifications.save`: Save preferences action
+- **Sync Management**: sync status, events log, dead-letter queue, conflicts resolution
+- **Developer Tools**: sync events, failed mutations, conflict resolution UI
 
-### Feature Namespaces
-- **onboarding**: 12-step wizard (profile, goals, experience, schedule, equipment, preferences, workout, diet, progress, motivation, account, final)
-- **assessment**: Baseline assessment and capacity testing
-- **plan**: Training plan management and display
-- **session**: Workout session runner and logging
-- **coach**: AI coaching interactions and suggestions
-- **progress**: Analytics, stats, and progress tracking
-- **pricing**: Subscription and billing content
-- **settings**: User preferences, sync management, account settings, app configuration
-- **errors**: Error messages and validation feedback
-- **validation**: Form validation messages
+### app
+Core application UI and navigation
+- **Navigation**: Bottom nav labels, page titles, common actions
+- **Sync Status**: Real-time sync indicators, pending counts, last sync timestamps
+- **Settings Integration**: Account info, sign out, sync controls
+- **Auth Flow**: Sign in/out labels, authentication states
 
-### Specialized Namespaces
-- **faq**: Frequently asked questions
-- **stats**: Analytics page content and chart labels
-- **badges**: Achievement and streak badge system
-- **sync**: Sync status, events, and failure management
+### common
+Shared UI elements and universal actions
+- **Navigation**: Back, next, save, cancel, close buttons
+- **Language Switching**: Language labels and selection
+- **CTA Buttons**: Primary action buttons across the app
+- **Universal Labels**: Common form labels and validation messages
 
-## Key Translation Areas
+### landing
+Marketing website content (gymbud.ai)
+- **Hero Section**: Main value proposition, headlines, subheadings
+- **Features**: How it works, differentiators, program descriptions
+- **Social Proof**: Progress tracking, user benefits
+- **Pricing**: Plan tiers, feature comparisons
+- **Final CTA**: Sign up prompts and conversion elements
 
-### Settings Namespace Extensions
-Recent additions for app settings persistence, sync failure management, and conflict resolution:
-```json
-{
-  "saved": "Saved / Salvo",
-  "language": "Language / Idioma", 
-  "units": "Units / Unidades",
-  "metric": "Metric (kg, cm) / Métrico (kg, cm)",
-  "imperial": "Imperial (lb, ft) / Imperial (lb, ft)",
-  "notifications": "Notifications / Notificações",
-  "notificationsDesc": "Receive workout reminders and updates / Receba lembretes de treino e atualizações",
-  "syncing": "Syncing... / Sincronizando...",
-  "sync": {
-    "deadLetterQueue": "Dead-Letter Queue / Fila de Falhas",
-    "noFailed": "No failed syncs / Nenhuma sincronização falhada",
-    "retry": "Retry / Tentar novamente",
-    "retryAll": "Retry all / Tentar todas novamente", 
-    "delete": "Delete / Excluir",
-    "deleteAll": "Delete all / Excluir todas",
-    "lastTried": "Last tried: / Última tentativa:"
-  },
-  "conflicts": {
-    "title": "Conflicts / Conflitos",
-    "none": "No conflicts 🎉 / Sem conflitos 🎉",
-    "badge": "Needs decision / Precisa de decisão",
-    "seenAt": "First seen: {{ts}} / Primeira detecção: {{ts}}",
-    "field": "Field / Campo",
-    "local": "Yours / Seu",
-    "server": "Server / Servidor",
-    "noFieldDiff": "No field-level differences available / Sem diferenças por campo",
-    "keepMine": "Keep mine (override) / Ficar com o meu (forçar)",
-    "keepServer": "Keep server / Ficar com o do servidor"
-  }
-}
-```
+### faq
+Frequently asked questions
+- **Common Questions**: 6 core FAQ items with answers
+- **Support Topics**: Technical questions, billing, account management
+- **Product Information**: Feature explanations, compatibility
 
-### Error Namespace Extensions
-Added cloud sync error handling:
-```json
-{
-  "save_failed": "Could not save your settings to the cloud / Não foi possível salvar suas preferências na nuvem"
-}
-```
+### auth
+Authentication flows and user management
+- **Sign In/Up**: Form labels, validation, mode switching
+- **Email Verification**: OTP input, resend logic, confirmation flow
+- **Password Reset**: Request/update flows, token handling, success states
+- **Error Handling**: Auth-specific error messages and recovery
 
-### Session Namespace Extensions
-Recent additions for exercise swap functionality and session management:
-```json
-{
-  "swap": {
-    "title": "Replace Exercise / Substituir Exercício",
-    "replace": "Replace / Substituir", 
-    "searchPlaceholder": "Search exercises... / Buscar exercícios...",
-    "noMatches": "No compatible exercises found / Nenhum exercício compatível encontrado",
-    "appliedToast": "Exercise replaced successfully / Exercício substituído com sucesso",
-    "error": "Error / Erro"
-  }
-}
-```
+### onboarding
+12-step onboarding wizard for new users
+- **Profile Setup**: Personal information, biometrics, experience levels
+- **Goal Setting**: Training objectives, schedule preferences
+- **Equipment**: Available equipment selection and explanations
+- **Preferences**: Workout style, warm-up preferences
+- **Progress Tracking**: Measurement preferences, motivation factors
+- **Navigation**: Step progression, completion flow
 
-### Stats Namespace Extensions  
-Recent additions for stats parity verification and mismatch detection:
-```json
-{
-  "parityMismatch": {
-    "title": "Stats Parity Mismatch Detected / Divergência de Estatísticas Detectada",
-    "cta": "Report Issue / Reportar Problema"
-  }
-}
-```
+### assessment
+Initial fitness assessment and baseline capture
+- **Instructions**: Assessment guidance and expectations
+- **Exercise Descriptions**: Movement explanations and form cues
+- **Progress Tracking**: Assessment completion and results
+- **Baseline Integration**: Connection to training plan generation
 
-### Authentication Flow
-Complete coverage for signup, signin, email verification, and password reset flows with contextual messaging and error handling.
+### plan
+Training plan management and overview
+- **Plan Details**: Program information, schedule, progression
+- **Plan Actions**: Regeneration, modifications, plan switching
+- **Integration**: Connection to daily sessions and progress tracking
 
-### Onboarding Wizard
-All 12 steps fully localized with explanatory text, form labels, validation messages, and progress indicators.
+### session
+Active workout session interface
+- **Exercise Display**: Exercise names, instructions, form cues
+- **Set Logging**: Weight, reps, completion tracking
+- **Session Controls**: Start, pause, complete, navigation
+- **Exercise Swaps**: Substitution interface with compatibility matching
+- **Progress Indicators**: Session completion, rest timers
 
-### Session Runner
-Comprehensive workout session translations including:
-- Exercise navigation and instructions
-- Set logging (reps, weight, RPE scales)
-- Rest timer controls and announcements
-- Effort level descriptions (1-10 RPE scale)
-- Accessibility announcements
+### coach
+AI coaching interface and interactions
+- **Coaching Prompts**: AI-generated guidance and suggestions
+- **Form Feedback**: Exercise technique recommendations
+- **Substitutions**: Exercise replacement suggestions and reasoning
+- **Progress Analysis**: AI-driven insights and adjustments
 
-### Analytics & Progress
-Stats page with chart labels, sharing functionality, streak badges, and progress metrics in both languages.
+### progress
+Progress tracking and analytics
+- **Metrics Display**: Volume, strength, consistency tracking
+- **Charts**: Progress visualization and trend analysis
+- **Achievements**: Milestone tracking and celebration
+- **Export**: Progress data sharing and export options
 
-## File Structure
-```
-client/src/i18n/
-├── index.ts (configuration)
-├── locales/
-│   ├── en/
-│   │   ├── common.json
-│   │   ├── landing.json
-│   │   ├── app.json
-│   │   ├── auth.json
-│   │   ├── onboarding.json
-│   │   ├── assessment.json
-│   │   ├── plan.json
-│   │   ├── session.json
-│   │   ├── coach.json
-│   │   ├── progress.json
-│   │   ├── settings.json (enhanced with app settings + sync failure UI)
-│   │   ├── pricing.json
-│   │   ├── errors.json (enhanced with cloud sync errors)
-│   │   ├── validation.json
-│   │   ├── faq.json
-│   │   ├── stats.json
-│   │   ├── badges.json
-│   │   └── sync.json
-│   └── pt-BR/
-│       └── [same structure as en/]
-```
+### pricing
+Subscription and billing management
+- **Plan Tiers**: Feature comparisons and pricing
+- **Billing**: Payment processing, subscription management
+- **Upgrades**: Plan changes and feature unlocks
 
-## Usage Patterns
-- Multiple namespace loading: `useTranslation(['common', 'app', 'settings'])`
-- Interpolation: `t('sync.lastTried') + ' ' + timestamp`
-- Pluralization: `t('app:sync.pending', { count: pendingMutationsCount })`
-- Contextual keys: `t('settings:sync.deadLetterQueue')` for developer UI
-- Settings context: `t('settings.saved')` for auto-save notifications
+### errors
+Error handling and user feedback
+- **Validation Errors**: Form validation messages
+- **Network Errors**: Connectivity and sync error messages
+- **Auth Errors**: Authentication failure messages
+- **General Errors**: Fallback error messages and recovery guidance
 
-## Quality Assurance
-- All user-facing strings localized in both EN and PT-BR
-- Consistent terminology across namespaces
-- Cultural adaptation for Brazilian Portuguese
-- Technical terms appropriately translated or preserved
-- Developer UI strings included for debugging tools
-- Settings persistence UI fully localized with contextual descriptions
+### validation
+Form validation messages
+- **Field Validation**: Required fields, format validation
+- **Business Rules**: Application-specific validation
+- **User Guidance**: Helpful validation messaging
 
-## Recent Updates
-**2025-08-28**: Edge Function Validation — Part 2 implementation did not require i18n changes as all validation occurs server-side with structured API responses. Error messages use standardized HTTP status codes and machine-readable error taxonomy rather than user-facing strings.
+## Key Features
+
+### Namespace Loading
+- Dynamic namespace loading with `useTranslation(['namespace1', 'namespace2'])`
+- Automatic fallback to English for missing translations
+- Lazy loading support for performance optimization
+
+### Interpolation Support
+- Variable interpolation: `{{count}}`, `{{name}}`, `{{value}}`
+- Pluralization: `_one`, `_other` suffixes for count-based messages
+- Date/time formatting with locale-aware display
+
+### Settings Integration
+- Language switching persists to localStorage and user metadata
+- Real-time language updates across all components
+- Sync with user preferences and cloud backup
+
+### Utilities & Notifications
+- Complete localization for self-service utilities (regenerate, export, delete, about)
+- Enhanced notification preferences with time/weekday selection
+- Quiet hours configuration with proper time formatting
+- Permission handling messages for Web Notifications API
+- Weekday names with proper cultural conventions (Sunday=0 vs Monday=1)
+
+## Technical Implementation
+- **Library**: react-i18next with i18next-browser-languagedetector
+- **Detection**: localStorage → navigator → htmlTag fallback chain
+- **Configuration**: keySeparator: false, returnNull: false, escapeValue: false
+- **File Structure**: `/client/src/i18n/locales/{lang}/{namespace}.json`
+- **Bootstrap**: `/client/src/i18n/index.ts` with language detection and namespace registration

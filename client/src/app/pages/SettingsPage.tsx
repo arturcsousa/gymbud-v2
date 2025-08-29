@@ -8,13 +8,21 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { toast } from '@/components/ui/use-toast'
 import { supabase } from '@/lib/supabase'
 import { db } from '@/db/gymbud-db'
 import { useSettings } from '@/providers/SettingsProvider'
 import { pendingCount, requestFlush, retryFailed, retryAllFailed, deleteFailed, clearAllFailed, retryWithOverride, acceptServerVersion } from '@/sync/queue'
 import { errorLabels } from '@/lib/errors/mapEdgeError'
-import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Bell, Globe, Database, LogOut, Code } from 'lucide-react'
+import { regeneratePlan, exportUserData, deleteAccount, getVersionInfo, canInstallPWA, installPWA } from '@/services/settingsUtilities'
+import { requestNotificationPermission, scheduleNotifications, clearScheduledNotifications, type NotificationPreferences } from '@/services/notificationScheduler'
+import { RefreshCw, CheckCircle, AlertCircle, ArrowLeft, User, Bell, Globe, Database, LogOut, Code, Download, Trash2, RotateCcw, Info, Smartphone } from 'lucide-react'
 import BottomNav from '@/components/BottomNav'
+import { SettingsUtilities } from '@/components/SettingsUtilities'
+import { NotificationPreferencesCard } from '@/components/NotificationPreferences'
 
 function SyncEventsLog() {
   const { t } = useTranslation(['settings'])
@@ -370,23 +378,11 @@ function SettingsPage() {
           </div>
         </div>
 
-        {/* Notifications */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <Bell className="w-4 h-4 text-white" />
-                <span className="text-white text-sm font-medium">{t('settings.notifications')}</span>
-              </div>
-              <div className="text-white/70 text-xs mt-1">{t('settings.notificationsDesc')}</div>
-            </div>
-            <Switch
-              checked={settings.notifications_opt_in}
-              onCheckedChange={(on) => update({ notifications_opt_in: !!on })}
-              className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-[#00BFA6] data-[state=checked]:to-[#64FFDA]"
-            />
-          </div>
-        </div>
+        {/* Enhanced Notifications */}
+        <NotificationPreferencesCard />
+
+        {/* Utilities Section */}
+        <SettingsUtilities />
 
         {/* Sync Status */}
         <div className="bg-white/10 backdrop-blur-xl rounded-xl p-4 shadow-xl ring-1 ring-white/20">

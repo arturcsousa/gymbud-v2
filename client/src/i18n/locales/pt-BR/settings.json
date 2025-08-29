@@ -7,6 +7,83 @@
   "notifications": "Notificações",
   "notificationsDesc": "Receba lembretes de treino e atualizações",
   "syncing": "Sincronizando...",
+  "utilities": {
+    "title": "Utilitários",
+    "regenerate": {
+      "title": "Regenerar Plano",
+      "desc": "Criar um novo plano de treino com exercícios diferentes",
+      "cta": "Regenerar Plano",
+      "confirm": "Isso substituirá seu plano atual. Continuar?",
+      "success": "Plano regenerado com sucesso!",
+      "error": "Falha ao regenerar plano"
+    },
+    "export": {
+      "title": "Exportar Dados",
+      "desc": "Baixar seus dados de treino",
+      "format": {
+        "json": "Formato JSON",
+        "csv": "Formato CSV"
+      },
+      "cta": "Exportar Dados",
+      "includeVoided": "Incluir séries desfeitas",
+      "success": "Dados exportados com sucesso!",
+      "error": "Falha ao exportar dados"
+    },
+    "delete": {
+      "title": "Excluir Conta",
+      "desc": "Excluir permanentemente sua conta e todos os dados",
+      "confirmPrompt": "Digite EXCLUIR para confirmar",
+      "confirmHint": "Esta ação não pode ser desfeita",
+      "cta": "Excluir Conta",
+      "done": "Conta excluída com sucesso",
+      "error": "Falha ao excluir conta"
+    },
+    "about": {
+      "title": "Sobre",
+      "version": "Versão",
+      "build": "Build",
+      "checkUpdates": "Verificar Atualizações",
+      "installApp": "Instalar App",
+      "privacy": "Política de Privacidade",
+      "terms": "Termos de Serviço"
+    }
+  },
+  "notifications": {
+    "preferences": "Preferências",
+    "scheduling": "Agendamento",
+    "title": "Notificações",
+    "desc": "Gerenciar lembretes de treino e resumos",
+    "enable": "Ativar Notificações",
+    "daily": {
+      "title": "Lembrete Diário",
+      "time": "Horário do Lembrete"
+    },
+    "weekly": {
+      "title": "Resumo Semanal",
+      "weekday": "Dia da Semana",
+      "time": "Horário do Resumo"
+    },
+    "quietHours": {
+      "title": "Horário Silencioso",
+      "start": "Horário de Início",
+      "end": "Horário de Fim",
+      "desc": "Sem notificações durante estes horários"
+    },
+    "weekdays": {
+      "0": "Domingo",
+      "1": "Segunda-feira", 
+      "2": "Terça-feira",
+      "3": "Quarta-feira",
+      "4": "Quinta-feira",
+      "5": "Sexta-feira",
+      "6": "Sábado"
+    },
+    "permission": {
+      "denied": "Notificações estão bloqueadas. Por favor, ative-as nas configurações do navegador.",
+      "notSupported": "Notificações não são suportadas neste navegador."
+    },
+    "save": "Salvar Preferências"
+  },
   "sync": {
     "title": "Sincronização",
     "status": "Status",
@@ -16,10 +93,10 @@
     "failure": "falha",
     "items": "itens",
     "noEvents": "Nenhum evento de sincronização ainda",
-    "description": "Gerencie dados offline e sincronização com a nuvem.",
+    "description": "Gerenciar dados offline e sincronização com a nuvem.",
     "sync_now": "Sincronizar Agora",
     "pending": "Pendente",
-    "pending_count": "{{count}} pendente",
+    "pending_count": "{{count}} pendentes",
     "last_sync": "Última Sincronização",
     "status": {
       "running": "Executando",
@@ -35,7 +112,7 @@
       "failure": "Falha ({{code}})"
     },
     "deadLetterQueue": "Fila de Falhas",
-    "noFailed": "Nenhuma sincronização falhada",
+    "noFailed": "Nenhuma sincronização falhada ",
     "retry": "Tentar novamente",
     "retryAll": "Tentar todas novamente",
     "delete": "Excluir",
@@ -44,14 +121,14 @@
   },
   "conflicts": {
     "title": "Conflitos",
-    "none": "Sem conflitos ",
+    "none": "Nenhum conflito ",
     "badge": "Precisa de decisão",
-    "seenAt": "Primeira detecção: {{ts}}",
+    "seenAt": "Primeiro visto: {{ts}}",
     "field": "Campo",
-    "local": "Seu",
+    "local": "Seus",
     "server": "Servidor",
-    "noFieldDiff": "Sem diferenças por campo",
-    "keepMine": "Ficar com o meu (forçar)",
-    "keepServer": "Ficar com o do servidor"
+    "noFieldDiff": "Nenhuma diferença de campo disponível",
+    "keepMine": "Manter meus (sobrescrever)",
+    "keepServer": "Manter servidor"
   }
 }

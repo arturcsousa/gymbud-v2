@@ -1,5 +1,41 @@
 # GymBud v2 - Changelog
 
+## 2025-08-29 10:38 - Settings Completeness & Notifications System (G1 + G2 Complete Implementation)
+**Implemented**: Complete Settings utilities and notifications system with self-service features and privacy-safe reminders
+- **G1: Settings Utilities**: Four self-service utilities with full offline-first and RLS-safe implementation
+  - **Regenerate Plan**: Button calls existing `plan-get-or-create` EF with seed rotation, clears Dexie mirrors (sessions, session_exercises, logged_sets, queue_mutations), triggers fresh session generation
+  - **Export Data**: Client-side assembly from Dexie with JSON/CSV formats, includes all user tables (profiles, plans, sessions, session_exercises, logged_sets), optional voided sets inclusion, pull-updates reconciliation before export
+  - **Delete Account**: Two-step confirmation with typed "DELETE" phrase, calls new `account-delete` Edge Function for RLS-compliant cascading deletes, marks profile for deletion, clears all Dexie data, signs out user
+  - **Version/About**: Shows app version, build SHA, PWA install prompt when available, links to privacy/terms on marketing site
+- **G2: Notifications System**: Privacy-safe opt-in reminders with local scheduling and Web Notifications API
+  - **Preferences UI**: Time/weekday pickers for daily reminders (default 8PM) and weekly summaries (default Sunday 6PM), quiet hours configuration, weekday selector with full i18n
+  - **Client Scheduler**: Local notification scheduling for next 7 days (daily) and 4 weeks (weekly), respects quiet hours, stores in IndexedDB for persistence, setTimeout timers for 24h window
+  - **Permission Handling**: Requests Web Notifications permission, graceful fallback with explanatory toasts, tracks permission states via telemetry
+  - **Weekly Summaries**: Generates dynamic content from Dexie metrics (session count, total volume, streak calculation), contextual messages for inactive periods
+- **Edge Function**: Created `supabase/functions/account-delete/index.ts` with comprehensive user data deletion
+  - Deletes user-owned app2.* rows in dependency order (logged_sets → session_exercises → sessions → plans → coach_audit)
+  - Marks profiles.deletion_requested=true instead of immediate deletion for audit trail
+  - RLS-compliant via user JWT, structured response with per-table deletion results
+  - Handles partial failures with detailed error reporting and rollback guidance
+- **Services Layer**: Comprehensive utilities and notification management
+  - `client/src/services/settingsUtilities.ts`: Regenerate, export, delete, version functions with telemetry integration
+  - `client/src/services/notificationScheduler.ts`: Permission requests, scheduling logic, quiet hours, streak calculation, weekly summary generation
+  - CSV export with proper escaping, JSON export with metadata, blob download helpers
+- **UI Components**: Modular components for clean Settings page organization
+  - `client/src/components/SettingsUtilities.tsx`: Four utility cards with loading states, confirmation dialogs, format selectors
+  - `client/src/components/NotificationPreferences.tsx`: Enhanced notification settings with time inputs, weekday selectors, quiet hours configuration
+  - Consistent glassy card design, proper error handling, optimistic UI updates
+- **i18n Coverage**: Complete EN/PT-BR localization for all new features
+  - Settings namespace: utilities.* (regenerate, export, delete, about) and notifications.* (preferences, scheduling, weekdays)
+  - Portuguese translations: "Regenerar Plano", "Exportar Dados", "Excluir Conta", "Notificações", weekday names, time labels
+  - Error messages, confirmation dialogs, success toasts, permission explanations
+- **Telemetry Integration**: Comprehensive event tracking for all utilities and notification actions
+  - Settings events: `settings.plan.regenerate_*`, `settings.export.*`, `settings.account.delete_*`, `settings.about.install_*`
+  - Notification events: `notifications.permission.*`, `notifications.scheduled.*`, `notifications.shown`
+  - Privacy-safe tracking with no PII, structured event properties for debugging
+
+**Technical**: Self-service utilities reduce support burden, notifications system respects user privacy with local-first scheduling, comprehensive error handling and recovery flows, maintains offline-first architecture with proper sync integration
+
 ## 2025-08-28 20:09 - Milestone F: Engine v2, Library Swaps & Stats Parity (Complete Implementation)
 **Implemented**: Complete GymBud Engine v2 with deterministic session generation, exercise library integration, and stats parity verification
 - **F1: Engine Session Get-or-Create Edge Function**: Deterministic workout session generation with progressive overload
@@ -759,49 +795,6 @@
 - Migrations: No database changes, only frontend translation file restructuring
 
 ## August 26, 2025 20:25 ET
-**Implemented** Phase A Step 5 - Error mapping and Settings sync card with persistent sync telemetry
-- **Error Mapper**: Created `lib/errors/mapEdgeError.ts` utility standardizing error codes (auth_missing, rls_denied, invalid_payload, network_offline, rate_limited, server_unavailable, timeout, unknown)
-- **Dexie Schema Update**: Added sync_events table (version 2) with event capping to last 50 entries for sync history tracking
-- **Queue Integration**: Enhanced queue flush with error mapping, meta tracking (last_sync_at, last_sync_status, last_sync_error_code), and event logging
-- **Settings Sync Card**: Added comprehensive sync section to SettingsPage with live pending count, sync status badges, timeline, and manual sync trigger
-- **i18n Support**: Added settings.sync.* and errors.* translation keys for EN and PT-BR with user-friendly error messages
-- **Cross-tab Sync**: Implemented live queries with useLiveQuery for real-time sync status updates across browser tabs
-- Context: Users now have persistent sync visibility with error tracking and manual sync control in Settings
-- Migrations: Dexie will auto-upgrade to version 2 with sync_events table on next app load
-
-## August 26, 2025 20:24 ET
-**Implemented** global toast notification system with PWA updates and sync feedback
-- **Toast Infrastructure**: Added sonner package and created Toasts.tsx provider with custom styling (rounded-2xl, top-center, 4s duration)
-- **PWA Update Notifications**: Created usePWAUpdate hook using virtual:pwa-register for update prompts and offline ready alerts
-- **Sync Status Toasts**: Enhanced queue flush with success/failure notifications showing batch results and user-friendly messages
-- **i18n Integration**: Added app.update.* and app.sync.* translation keys for EN and PT-BR with consistent messaging
-- **PWA Config Update**: Changed registerType from 'prompt' to 'autoUpdate' with clientsClaim and skipWaiting for immediate updates
-- **Global Integration**: Wired toast provider in main.tsx and PWA hook in App.tsx for app-wide coverage
-- Context: Users now receive clear feedback on app updates, offline readiness, and data synchronization status
-- Migrations: Run `pnpm add sonner` to install toast dependency
-
-## August 26, 2025 20:18 ET
-**Fixed** PWA manifest link and mobile viewport issues
-- **PWA Manifest**: Fixed icon paths from `/icons/icon-192.png` to `/icons/icon-192.jpg` to match actual file format
-- **Icon Type**: Updated MIME type from `image/png` to `image/jpeg` for proper PWA manifest validation
-- **Auth Debugging**: Added comprehensive logging for Supabase signup process to diagnose 500 errors
-- **Email Confirmation**: Added proper handling for email confirmation flow with user-friendly messaging
-- **Error Details**: Enhanced error logging with signup attempt details and response inspection
-- Context: Resolved PWA manifest download errors and improved auth error visibility for debugging
-- Migrations: N/A (bug fixes and debugging enhancements)
-
-## August 26, 2025 19:52 ET
-**Restored** custom AuthPage design and fixed React hooks error
-- **React Error Fix**: Removed `useLocation` hook from async `finalizeOnboarding` function (React error #321)
-- **Navigation Fix**: Switched back to `window.location.href` for reliable redirect to `/app/session/today`
-- **Custom Design**: Restored glassmorphic design with gradient background and decorative blobs
-- **Brand Styling**: Added custom logo with dumbbell icon and "GymBud" text in header, plus moon icon for dark mode toggle
-- **Language Switcher**: Re-added LanguageSwitcher component to header for i18n support
-- **TypeScript Fix**: Removed unused React import to resolve TS6133 build error
-- Context: Ensures auth page displays with premium branding while maintaining robust authentication flow
-- Migrations: N/A (UI and error fixes only)
-
-## August 26, 2025 18:42 ET
 **Fixed** TypeScript subscription unsubscribe pattern
 - **Subscription Fix**: Corrected destructuring to `{ data: { subscription } }` from `onAuthStateChange`
 - **Unsubscribe Pattern**: Uses `subscription.unsubscribe()` directly for proper cleanup
@@ -809,7 +802,7 @@
 - Context: Ensures proper Supabase v2 auth state subscription cleanup without TypeScript errors
 - Migrations: N/A (TypeScript fix only)
 
-## August 26, 2025 18:41 ET
+## August 26, 2025 18:42 ET
 **Fixed** Supabase v2 unsubscribe pattern and verified RLS permissions
 - **RLS Verification**: Confirmed correct Row Level Security policy enforcement for all tables
 - **Unsubscribe Fix**: Corrected `onAuthStateChange` unsubscribe pattern to prevent memory leaks
@@ -916,7 +909,7 @@
 - Migrations: Deploy Edge Function with `supabase functions deploy plan-get-or-create`
 
 ## August 26, 2025 17:56 ET
-**Fixed** PWA manifest icon error and enhanced auth error handling
+**Fixed** PWA manifest link and mobile viewport issues
 - **PWA Manifest**: Fixed icon paths from `/icons/icon-192.png` to `/icons/icon-192.jpg` to match actual file format
 - **Icon Type**: Updated MIME type from `image/png` to `image/jpeg` for proper PWA manifest validation
 - **Auth Debugging**: Added comprehensive logging for Supabase signup process to diagnose 500 errors

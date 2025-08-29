@@ -415,3 +415,10 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - **Service Worker** with precaching and stale-while-revalidate strategies
 - **Installable app** with proper manifest and icon configuration
 - **Background sync** with mutation queue and conflict resolution
+
+## URL Structure Examples
+- `https://app.gymbud.ai/` - Home dashboard
+- `https://app.gymbud.ai/settings` - Enhanced settings with utilities
+- `https://app.gymbud.ai/history/session_123` - Session detail
+- `https://app.gymbud.ai/auth/verify?email=user@example.com` - Email verification
+- `https://app.gymbud.ai/onboarding` - New user setup wizard

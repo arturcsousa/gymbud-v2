@@ -7,6 +7,83 @@
   "notifications": "Notifications",
   "notificationsDesc": "Receive workout reminders and updates",
   "syncing": "Syncing...",
+  "utilities": {
+    "title": "Utilities",
+    "regenerate": {
+      "title": "Regenerate Plan",
+      "desc": "Create a new training plan with fresh exercises",
+      "cta": "Regenerate Plan",
+      "confirm": "This will replace your current plan. Continue?",
+      "success": "Plan regenerated successfully!",
+      "error": "Failed to regenerate plan"
+    },
+    "export": {
+      "title": "Export Data",
+      "desc": "Download your training data",
+      "format": {
+        "json": "JSON Format",
+        "csv": "CSV Format"
+      },
+      "cta": "Export Data",
+      "includeVoided": "Include undone sets",
+      "success": "Data exported successfully!",
+      "error": "Failed to export data"
+    },
+    "delete": {
+      "title": "Delete Account",
+      "desc": "Permanently delete your account and all data",
+      "confirmPrompt": "Type DELETE to confirm",
+      "confirmHint": "This action cannot be undone",
+      "cta": "Delete Account",
+      "done": "Account deleted successfully",
+      "error": "Failed to delete account"
+    },
+    "about": {
+      "title": "About",
+      "version": "Version",
+      "build": "Build",
+      "checkUpdates": "Check for Updates",
+      "installApp": "Install App",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    }
+  },
+  "notifications": {
+    "preferences": "Preferences",
+    "scheduling": "Scheduling",
+    "title": "Notifications",
+    "desc": "Manage workout reminders and summaries",
+    "enable": "Enable Notifications",
+    "daily": {
+      "title": "Daily Reminder",
+      "time": "Reminder Time"
+    },
+    "weekly": {
+      "title": "Weekly Summary",
+      "weekday": "Day of Week",
+      "time": "Summary Time"
+    },
+    "quietHours": {
+      "title": "Quiet Hours",
+      "start": "Start Time",
+      "end": "End Time",
+      "desc": "No notifications during these hours"
+    },
+    "weekdays": {
+      "0": "Sunday",
+      "1": "Monday", 
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    },
+    "permission": {
+      "denied": "Notifications are blocked. Please enable them in your browser settings.",
+      "notSupported": "Notifications are not supported in this browser."
+    },
+    "save": "Save Preferences"
+  },
   "sync": {
     "title": "Sync",
     "status": "Status",
