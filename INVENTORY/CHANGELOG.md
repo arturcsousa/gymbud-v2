@@ -1,5 +1,29 @@
 # GymBud v2 - Changelog
 
+## 2025-08-29 13:58 - Complete Vercel Build Fixes & Database Audit
+**Fixed**: All TypeScript compilation errors and completed database project reference audit
+- **Export Redeclaration Errors**: Fixed useCoach.ts function export conflicts
+  - Removed individual `export` keywords from all function declarations
+  - Maintained single named export statement: `export { useCoachSuggestions, useSuggest, useApplyRecommendation, useDismissRecommendation, useCoach }`
+- **TypeScript Error Handling**: Fixed unknown error type handling across multiple files
+  - notificationScheduler.ts: Added proper error type guards with `error instanceof Error ? error.message : String(error)`
+  - settingsUtilities.ts: Fixed all catch blocks to handle `error: unknown` parameter
+- **Database Schema Alignment**: Fixed property access and import errors
+  - notificationScheduler.ts: Changed `weight_kg` to `weight` for LoggedSetRow compatibility
+  - notificationScheduler.ts: Changed `created_at` to `updated_at` for SessionRow compatibility
+  - notificationScheduler.ts: Added `updated_at` property to MetaRow entries
+  - settingsUtilities.ts: Fixed import path from `@/sync/pullUpdates` to `@/sync/queue`
+  - settingsUtilities.ts: Removed references to non-existent `db.profiles` and `db.plans` Dexie tables
+  - settingsUtilities.ts: Updated profiles/plans queries to use Supabase directly (app2 schema)
+- **Database Project Audit**: Comprehensive verification of all Supabase project references
+  - **Environment Configuration**: `client/.env.local` correctly configured with project ID `lrcrmmquuwphxispctgq`
+  - **Client Configuration**: `client/src/lib/supabase.ts` properly uses environment variables
+  - **Edge Functions**: All functions use `Deno.env.get('SUPABASE_URL')` without hardcoded references
+  - **Audit Result**: No incorrect project references found, all connections point to correct GymBud project
+- **Missing Dependencies**: Added `@radix-ui/react-separator@^1.0.3` and created Separator UI component
+- **Build Status**: All 25+ TypeScript compilation errors resolved, ready for Vercel deployment
+- **Root Cause**: AI Coach system had export conflicts, missing dependencies, database schema misalignment, and needed project reference verification
+
 ## 2025-08-29 12:19 - Vercel Build Fixes for AI Coach System
 **Fixed**: TypeScript compilation errors and missing dependencies for successful Vercel deployment
 - **Missing UI Component**: Created `client/src/components/ui/separator.tsx` with Radix UI Separator implementation
@@ -319,7 +343,7 @@
 
 **Technical**: Translation keys now work correctly with i18next namespace structure, all text clearly visible against teal gradient background
 
-## 2025-08-28 13:52 - RLS Policy Verification Harness (Database Work)
+## 2025-08-28 16:44 - RLS Policy Verification Harness (Database Work)
 **Added**: Comprehensive RLS policy testing infrastructure for database security validation
 - **Test Structure**: Created `/qa/` directory with RLS audit harness files
   - `/qa/rls_audit.ts` - Node script using @supabase/supabase-js@2 for policy testing
@@ -934,7 +958,7 @@
 - Migrations: N/A (bug fixes and debugging enhancements)
 
 ## August 26, 2025 17:54 ET
-**Redesigned** auth page to match provided design with exact color palette.
+**Redesigned** landing page to match provided design with exact color palette.
 - **Color Palette**: Updated to use exact design colors (#005870, #0C8F93, #18C7B6, #FF9F1C)
 - **GymBud Branding**: Added custom logo with dumbbell icon and "GymBud" text in header, plus moon icon for dark mode toggle
 - **Layout Enhancement**: Added step indicator, large headings with contextual subtitles, and spacious input fields (h-14)
@@ -942,7 +966,7 @@
 - **Interactive Elements**: Primary button using GymBud teal with hover animations, "Skip for now" link for signup flow
 - **Decorative Elements**: Added gradient blobs and curved clip-path sections matching landing page aesthetic
 - **Typography**: Updated to use extrabold headings and improved text contrast with proper font weights
-- Context: Auth page now seamlessly matches landing page design quality and brand consistency
+- Context: Complete visual redesign to match provided mockup, maintaining all translation functionality
 - Migrations: N/A (design changes only)
 
 ## January 26, 2025 15:11 ET

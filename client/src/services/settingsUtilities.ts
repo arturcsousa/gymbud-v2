@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { db } from '@/db/gymbud-db'
-import { pullUpdates } from '@/sync/pullUpdates'
+import { pullUpdates } from '@/sync/queue'
 import { telemetry } from '@/lib/telemetry'
 
 export interface ExportData {

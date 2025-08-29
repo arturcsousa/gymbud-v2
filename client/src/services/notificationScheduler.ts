@@ -231,7 +231,7 @@ async function generateWeeklySummary(): Promise<string> {
       .toArray()
 
     const totalVolume = loggedSets.reduce((sum, set) => {
-      return sum + (set.weight_kg || 0) * (set.reps || 0)
+      return sum + (set.weight || 0) * (set.reps || 0)
     }, 0)
 
     const streak = await calculateStreak()
