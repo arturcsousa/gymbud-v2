@@ -1,5 +1,20 @@
 # GymBud v2 - Changelog
 
+## 2025-08-29 16:24 - Frontend Locale-Aware RPC Integration
+**Added**: Complete locale-aware exercise data integration in Session Runner
+- **useExerciseDetails Hook**: New hook for fetching exercise details with locale-aware data
+  - Uses `app2.rpc_get_exercise_by_id` with dynamic language parameter (pt-BR/en)
+  - Fetches cues, contraindications, and exercise metadata based on current i18n language
+  - Integrates with TanStack Query for caching and background updates
+- **Session Runner Enhancement**: Updated SessionPage to display exercise guidance
+  - **Exercise Cues**: Form tips displayed in teal-colored ticker below exercise info
+  - **Contraindications**: Safety warnings shown in orange-colored alert boxes when present
+  - **Dynamic Loading**: Exercise details fetched using variant_id from enriched session view
+- **ReplaceExerciseSheet Update**: Now uses current i18n language instead of hardcoded 'en'
+  - Automatically switches between English and Portuguese exercise search results
+- **Database Integration**: Updated useSessionData to include variant_id field from v_session_exercises_enriched
+- **Audit Documentation**: Updated audit_report.json with locale-aware data implementation details
+
 ## 2025-08-29 14:57 - TypeScript Build Error Resolution (Complete)
 **Fixed**: All TypeScript compilation errors preventing successful Vercel deployment
 - **CoachPanel Props**: Fixed missing `sessionId` and `isOpen` props in SessionPage.tsx CoachPanel usage

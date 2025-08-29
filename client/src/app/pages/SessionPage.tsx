@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useSessionData } from '@/hooks/useSessionData'
+import { useExerciseDetails } from '@/hooks/useExerciseDetails'
 import { ReplaceExerciseSheet } from '@/components/ReplaceExerciseSheet'
 import { CoachPanel } from '@/components/CoachPanel'
 
@@ -57,6 +58,12 @@ function SessionPage() {
     isUndoingSet
   } = useSessionData(sessionId)
 
+  // Fetch exercise details for current exercise
+  const currentExercise = exercises[currentExerciseIndex]
+  const { data: exerciseDetails, isLoading: isLoadingExercise } = useExerciseDetails(
+    currentExercise?.variant_id || undefined
+  )
+
   // UI state
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
   const [setInputs, setSetInputs] = useState({ reps: '', weight: '', rpe: '' })
@@ -74,7 +81,6 @@ function SessionPage() {
   const setInputRef = useRef<HTMLInputElement>(null)
 
   // Current exercise and its sets
-  const currentExercise = exercises[currentExerciseIndex]
   const currentExerciseSets = loggedSets.filter(
     set => set.session_exercise_id === currentExercise?.session_exercise_id
   )
@@ -321,6 +327,26 @@ function SessionPage() {
                   <span>{currentExercise.rest_sec}s</span>
                 </div>
               </div>
+
+              {/* Exercise Cues Ticker */}
+              {exerciseDetails?.cues && exerciseDetails.cues.length > 0 && (
+                <div className="mt-3 p-2 bg-teal-500/10 border border-teal-500/20 rounded-lg">
+                  <div className="text-xs text-teal-300 font-medium mb-1">Form Cues</div>
+                  <div className="text-sm text-teal-100">
+                    {exerciseDetails.cues.join(' • ')}
+                  </div>
+                </div>
+              )}
+
+              {/* Contraindications Warning */}
+              {exerciseDetails?.contraindications && exerciseDetails.contraindications.length > 0 && (
+                <div className="mt-3 p-2 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                  <div className="text-xs text-orange-300 font-medium mb-1">⚠️ Safety Notes</div>
+                  <div className="text-sm text-orange-100">
+                    {exerciseDetails.contraindications.join(' • ')}
+                  </div>
+                </div>
+              )}
 
               {/* Swap Exercise CTA Button */}
               <div className="mt-4">

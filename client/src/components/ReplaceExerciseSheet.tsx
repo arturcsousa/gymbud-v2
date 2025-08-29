@@ -25,7 +25,8 @@ export function ReplaceExerciseSheet({
   onExerciseReplaced,
   children
 }: ReplaceExerciseSheetProps) {
-  const { t } = useTranslation('session');
+  const { t, i18n } = useTranslation('session');
+  const currentLang = i18n.language === 'pt-BR' ? 'pt-BR' : 'en';
   
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +53,7 @@ export function ReplaceExerciseSheet({
           excludedExercises: [currentExerciseId]
         };
 
-        const compatible = await getCompatibleSubs(current, 'en', constraints);
+        const compatible = await getCompatibleSubs(current, currentLang, constraints);
         setCompatibleExercises(compatible);
         setFilteredExercises(compatible);
       } catch (error) {
@@ -64,7 +65,7 @@ export function ReplaceExerciseSheet({
     };
 
     loadExercises();
-  }, [isOpen, currentExerciseId, t]);
+  }, [isOpen, currentExerciseId, t, currentLang]);
 
   // Filter exercises based on search term
   useEffect(() => {

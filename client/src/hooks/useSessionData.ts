@@ -13,6 +13,7 @@ interface SessionExercise {
   session_date: string;
   plan_id: string | null;
   exercise_name: string;
+  variant_id: string | null; // Exercise UUID for fetching details
   order_index: number;
   sets: number;
   reps: number | null;
@@ -68,6 +69,7 @@ function convertSessionExerciseRows(rows: SessionExerciseRow[]): SessionExercise
     session_date: new Date().toISOString().split('T')[0],
     plan_id: null,
     exercise_name: row.exercise_name,
+    variant_id: null, // Exercise UUID for fetching details
     order_index: row.order_index,
     sets: 3, // Default values - these should come from prescription
     reps: null,

@@ -3,6 +3,14 @@
 ## Overview
 Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
+## Recent Updates (2025-08-29 16:24)
+- **Locale-Aware Exercise Data Integration**: Complete frontend integration with locale-aware RPCs
+  - **useExerciseDetails Hook**: New hook (`client/src/hooks/useExerciseDetails.ts`) for fetching exercise details with locale-aware data
+  - **Session Runner Enhancement**: SessionPage now displays exercise cues and contraindications in user's language
+  - **ReplaceExerciseSheet Update**: Exercise replacement now uses current i18n language for search results
+  - **Database Integration**: Updated useSessionData to extract variant_id from v_session_exercises_enriched view
+  - **TanStack Query Integration**: Added useExerciseDetails to query_keys_found in audit report
+
 ## Recent Updates (2025-08-29 13:58)
 - **Complete Vercel Build Fixes & Database Audit**: Resolved all TypeScript compilation errors and verified database connections
   - **Export Conflicts**: Fixed useCoach.ts function redeclaration by removing individual export keywords

@@ -1,11 +1,19 @@
 # GymBud v2 - i18n Structure
 
 ## Overview
-Complete internationalization system supporting English (EN) and Portuguese Brazil (PT-BR) with namespace-based organization.
+Complete internationalization system supporting English (EN) and Portuguese Brazil (PT-BR) with namespace-based organization and locale-aware data integration.
 
 ## Languages
 - **English (en)**: Default language, fallback for missing keys
 - **Portuguese Brazil (pt-BR)**: Full localization with Brazilian conventions
+
+## Locale-Aware Data Integration (2025-08-29)
+- **Exercise Data**: Frontend automatically fetches exercise details in current language
+  - Uses `app2.rpc_get_exercise_by_id` with dynamic language parameter
+  - Exercise cues, contraindications, and names adapt to user's selected language
+  - Integrated in Session Runner and exercise replacement flows
+- **Language Detection**: `i18n.language === 'pt-BR' ? 'pt-BR' : 'en'` fallback pattern
+- **Database Integration**: Locale-aware views with fallback chain (requested locale → en → base)
 
 ## Namespaces
 

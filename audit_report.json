@@ -1,0 +1,367 @@
+{
+  "meta": {
+    "audit_timestamp": "2025-08-29T19:55:44.000Z",
+    "git_status": "Repository appears clean, no .git directory accessible for detailed status",
+    "current_branch": "unknown",
+    "last_commit": "unknown",
+    "node_version_constraints": "No .nvmrc file found",
+    "package_manager": "npm (package-lock.json present)"
+  },
+  "repo": {
+    "package_json": {
+      "name": "gymbud-client",
+      "version": "0.0.0",
+      "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+        "preview": "vite preview",
+        "test": "vitest",
+        "typecheck": "tsc --noEmit",
+        "vercel-build": "npm run typecheck && npm run build"
+      },
+      "dependencies_count": 35,
+      "dev_dependencies_count": 16,
+      "key_deps": ["@supabase/supabase-js@^2.39.0", "@tanstack/react-query@^5.0.0", "dexie@^4.2.0", "wouter@^3.0.0", "i18next@^23.7.0"]
+    },
+    "tsconfig": {
+      "strict_mode": true,
+      "path_aliases": {"@/*": ["./src/*"]},
+      "target": "ES2020",
+      "jsx": "react-jsx"
+    },
+    "env_files": {
+      "env_example": false,
+      "env_local": false,
+      "required_vars": ["VITE_SUPABASE_URL", "VITE_SUPABASE_ANON_KEY", "VITE_APP_URL", "VITE_SITE_URL"]
+    },
+    "license": null,
+    "readme": "./README.md",
+    "contributing": null,
+    "ci_pipelines": []
+  },
+  "frontend": {
+    "root_path": "./client",
+    "routes": [
+      {"path": "/", "component": "HomePage", "file": "./client/src/app/pages/HomePage.tsx", "guard": "AuthGuard"},
+      {"path": "/auth/:action?", "component": "AuthPage", "file": "./client/src/app/pages/AuthPage.tsx", "guard": null},
+      {"path": "/app/auth/verify", "component": "VerifyPage", "file": "./client/src/app/pages/auth/VerifyPage.tsx", "guard": null},
+      {"path": "/app/auth/reset", "component": "ResetPasswordPage", "file": "./client/src/app/pages/auth/ResetPasswordPage.tsx", "guard": null},
+      {"path": "/app/onboarding/biometrics", "component": "BiometricsPage", "file": "./client/src/app/pages/onboarding/BiometricsPage.tsx", "guard": "AuthGuard"},
+      {"path": "/app/onboarding/goals", "component": "GoalsPage", "file": "./client/src/app/pages/onboarding/GoalsPage.tsx", "guard": "AuthGuard"},
+      {"path": "/app/onboarding/profile", "component": "ProfilePage", "file": "./client/src/app/pages/onboarding/ProfilePage.tsx", "guard": "AuthGuard"},
+      {"path": "/app/onboarding/review", "component": "ReviewPage", "file": "./client/src/app/pages/onboarding/ReviewPage.tsx", "guard": "AuthGuard"},
+      {"path": "/session/:id", "component": "SessionPage", "file": "./client/src/app/pages/SessionPage.tsx", "guard": "AuthGuard"},
+      {"path": "/history", "component": "HistoryPage", "file": "./client/src/app/pages/HistoryPage.tsx", "guard": "AuthGuard"},
+      {"path": "/history/:id", "component": "HistoryDetailPage", "file": "./client/src/app/pages/HistoryDetailPage.tsx", "guard": "AuthGuard"},
+      {"path": "/stats", "component": "StatsPage", "file": "./client/src/app/pages/StatsPage.tsx", "guard": "AuthGuard"},
+      {"path": "/settings", "component": "SettingsPage", "file": "./client/src/app/pages/SettingsPage.tsx", "guard": "AuthGuard"}
+    ],
+    "global_providers": ["QueryClientProvider", "SettingsProvider", "GradientLayout", "Toasts"],
+    "tanstack_query": {
+      "stale_time": "5 minutes",
+      "retry": 1,
+      "query_keys_found": ["useCoach", "useSessionData", "useProfileData", "useSessionMetrics", "useExerciseDetails"],
+      "persistence": "commented out in AppShell.tsx"
+    },
+    "locale_aware_data": {
+      "implementation": "./client/src/hooks/useExerciseDetails.ts",
+      "rpc_integration": "app2.rpc_get_exercise_by_id with dynamic language parameter",
+      "language_detection": "i18n.language with pt-BR/en fallback",
+      "exercise_catalog": "./client/src/lib/exercises/catalog.ts uses locale-aware RPCs",
+      "session_runner_integration": "SessionPage displays cues and contraindications from exercise details"
+    },
+    "dexie_stores": {
+      "db_version": 6,
+      "tables": ["meta", "sync_events", "queue_mutations", "sessions", "session_exercises", "logged_sets", "onboarding_state", "settings", "conflicts", "profiles", "plans", "app2_profiles", "app2_plans"],
+      "migrations": "6 version upgrades with proper schema evolution"
+    },
+    "ui_system": {
+      "tailwind_config": true,
+      "shadcn_ui": true,
+      "radix_components": ["@radix-ui/react-checkbox", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-label", "@radix-ui/react-progress", "@radix-ui/react-select", "@radix-ui/react-separator", "@radix-ui/react-slider", "@radix-ui/react-slot", "@radix-ui/react-switch"],
+      "common_components": ["Button", "Card", "Input", "Label", "Modal", "Toast"]
+    },
+    "pwa": {
+      "manifest_path": "./client/public/manifest.webmanifest",
+      "service_worker": "vite-plugin-pwa with workbox",
+      "icons": ["/icons/icon-192.png", "/icons/icon-512.png", "/icons/maskable-512.png"],
+      "start_url": "/",
+      "scope": "/",
+      "theme_color": "#005870"
+    },
+    "session_runner": {
+      "main_component": "./client/src/app/pages/SessionPage.tsx",
+      "timer_integration": true,
+      "rest_sec_support": true,
+      "undo_redo": "not implemented",
+      "keyboard_bindings": "not implemented"
+    },
+    "error_toast_system": {
+      "library": "sonner",
+      "centralized": true,
+      "toast_provider": "./client/src/app/providers/Toasts.tsx"
+    }
+  },
+  "backend": {
+    "supabase_client": {
+      "initialization": "./client/src/lib/supabase.ts",
+      "version": "@supabase/supabase-js@^2.39.0",
+      "auth_config": {
+        "persist_session": true,
+        "auto_refresh_token": true,
+        "detect_session_in_url": true
+      },
+      "env_validation": true
+    },
+    "network_layer": {
+      "edge_function_calls": ["./client/src/sync/queue.ts", "./client/src/services/settingsUtilities.ts", "./client/src/app/pages/onboarding/ReviewPage.tsx", "./client/src/lib/plan/ensureActivePlan.ts", "./client/src/onboarding/actions.ts"],
+      "http_envelope": "Edge Functions use shared HTTP utilities",
+      "zod_validation": "Present in Edge Functions"
+    },
+    "db_mutations": [
+      {"location": "./client/src/sync/queue.ts", "method": "supabase.functions.invoke", "entities": ["sync-logged-sets", "sync-sessions", "sync-session-exercises"]},
+      {"location": "./client/src/services/settingsUtilities.ts", "method": "supabase.functions.invoke", "entities": ["account-delete"]},
+      {"location": "./client/src/onboarding/actions.ts", "method": "supabase.functions.invoke", "entities": ["plan-get-or-create"]}
+    ]
+  },
+  "edge_functions": {
+    "functions": [
+      {
+        "name": "sync-logged-sets",
+        "path": "./supabase/functions/sync-logged-sets/index.ts",
+        "methods": ["POST"],
+        "auth_guard": true,
+        "zod_schemas": true,
+        "timeout": "8000ms",
+        "max_items": 200,
+        "idempotency": true,
+        "error_taxonomy": ["invalid_payload", "auth_invalid", "rate_limited", "conflict", "denied"]
+      },
+      {
+        "name": "engine-session-get-or-create",
+        "path": "./supabase/functions/engine-session-get-or-create/index.ts",
+        "methods": ["POST"],
+        "auth_guard": true,
+        "zod_schemas": true,
+        "deterministic": true,
+        "features": ["plan_selection", "existing_session_check", "session_generation", "progressive_overload"]
+      },
+      {
+        "name": "coach-suggest",
+        "path": "./supabase/functions/coach-suggest/index.ts",
+        "methods": ["POST"],
+        "auth_guard": true,
+        "zod_schemas": true,
+        "ai_integration": true,
+        "suggestion_types": ["substitute", "tweak_prescription", "skip_with_alternative", "deload"]
+      },
+      {
+        "name": "sync-sessions",
+        "path": "./supabase/functions/sync-sessions",
+        "status": "exists"
+      },
+      {
+        "name": "sync-session-exercises", 
+        "path": "./supabase/functions/sync-session-exercises",
+        "status": "exists"
+      },
+      {
+        "name": "coach-apply",
+        "path": "./supabase/functions/coach-apply",
+        "status": "exists"
+      },
+      {
+        "name": "account-delete",
+        "path": "./supabase/functions/account-delete",
+        "status": "exists"
+      },
+      {
+        "name": "plan-get-or-create",
+        "path": "./supabase/functions/plan-get-or-create",
+        "status": "exists"
+      },
+      {
+        "name": "pull-updates",
+        "path": "./supabase/functions/pull-updates",
+        "status": "exists"
+      },
+      {
+        "name": "sync-coach-audit",
+        "path": "./supabase/functions/sync-coach-audit",
+        "status": "exists"
+      }
+    ]
+  },
+  "database_docs": {
+    "migration_files": "No migrations directory found",
+    "schema_dump": null,
+    "seed_files": null,
+    "inventory_notes": "./INVENTORY/03_DB_NOTES.md"
+  },
+  "inventory_alignment": {
+    "files": [
+      {
+        "file": "./INVENTORY/03_DB_NOTES.md",
+        "exists": true,
+        "last_modified": "recent",
+        "claims_vs_reality": "Documents app2 schema, exercise catalog, RLS policies - aligns with Edge Function usage"
+      },
+      {
+        "file": "./INVENTORY/05_I18N_STRUCTURE.md", 
+        "exists": true,
+        "claims_vs_reality": "Should document i18n structure but not examined in detail"
+      },
+      {
+        "file": "./INVENTORY/06_FRONTEND_ROUTES.md",
+        "exists": true,
+        "claims_vs_reality": "Documents routes and recent build fixes - aligns with actual AppShell.tsx routes"
+      },
+      {
+        "file": "./INVENTORY/07_PROGRESS_STATS_SPEC.md",
+        "exists": true,
+        "claims_vs_reality": "Not examined in detail"
+      },
+      {
+        "file": "./INVENTORY/08_DATA_HOOKS.md",
+        "exists": true,
+        "claims_vs_reality": "Not examined in detail"
+      },
+      {
+        "file": "./INVENTORY/CHANGELOG.md",
+        "exists": true,
+        "last_modified": "very recent",
+        "claims_vs_reality": "Extensive changelog with recent TypeScript build fixes - aligns with current codebase state"
+      }
+    ]
+  },
+  "security_rls": {
+    "role_assumptions": ["anon", "authenticated"],
+    "rls_usage": "Edge Functions use auth.uid() for RLS compliance",
+    "auth_guards": ["AuthGuard component wraps protected routes", "requireUser() in Edge Functions"],
+    "tables_referenced": ["sessions", "session_exercises", "logged_sets", "profiles", "plans", "coach_recommendations", "exercise_library"]
+  },
+  "offline_sync": {
+    "queue_implementation": "./client/src/sync/queue.ts",
+    "mutation_shape": "QueueMutation with entity, op, payload, status, attempts",
+    "enqueue_conditions": "User actions that modify data",
+    "flush_conditions": "Online status change, manual sync",
+    "retry_backoff": "MAX_ATTEMPTS = 5 with failure tracking",
+    "watermark_strategy": "updated_at timestamps for pull-updates",
+    "large_pull_paths": "pull-updates Edge Function"
+  },
+  "deterministic_engine_v2": {
+    "implementation": "./supabase/functions/engine-session-get-or-create/index.ts",
+    "inputs": ["user_id", "plan_id", "today", "timezone"],
+    "outputs": ["session with exercises and prescriptions"],
+    "deterministic_features": ["day slot calculation", "progressive overload", "deload cycles"],
+    "caching": "Database-level session existence check",
+    "idempotency": "Same user/date returns same session"
+  },
+  "ai_coach": {
+    "ui_components": ["CoachPanel mentioned in routes but not examined"],
+    "suggest_flow": "./supabase/functions/coach-suggest/index.ts",
+    "apply_flow": "./supabase/functions/coach-apply (exists but not examined)",
+    "constraint_filters": ["no_equipment", "time_limit_min", "pain_flags", "fatigue"],
+    "audit_table": "coach_recommendations and coach_audit tables referenced",
+    "i18n_coverage": "coach.json namespace exists in i18n"
+  },
+  "stats_progress": {
+    "progress_page": "./client/src/app/pages/StatsPage.tsx",
+    "charts": "recharts library included",
+    "data_hooks": "useHistory, useHistoryDetail, useSessionMetrics hooks present",
+    "mock_data": "not examined in detail"
+  },
+  "i18n": {
+    "namespaces": ["common", "landing", "faq", "app", "auth", "onboarding", "assessment", "plan", "session", "coach", "progress", "pricing", "errors", "validation", "stats", "badges", "settings", "sync"],
+    "languages": ["en", "pt-BR"],
+    "language_detector": "localStorage → navigator → htmlTag",
+    "missing_keys": "not analyzed",
+    "coverage": "Comprehensive coverage across all major features",
+    "interpolation_safety": "escapeValue: false"
+  },
+  "telemetry": {
+    "implementation": "./client/src/lib/telemetry.ts",
+    "events": ["auth events", "onboarding events", "sync events", "void events"],
+    "batching": "Events stored in memory array",
+    "pii_handling": "Email domains only, no full emails",
+    "integration": "Console logging in dev, TODO for PostHog/Sentry"
+  },
+  "build_deploy": {
+    "vite_config": "./client/vite.config.ts",
+    "vercel_config": "./vercel.json",
+    "output_dir": "client/dist",
+    "static_headers": ["X-Content-Type-Options", "X-Frame-Options", "X-XSS-Protection"],
+    "csp": null,
+    "size_budgets": null
+  },
+  "testing_quality": {
+    "vitest": "configured in package.json",
+    "jest": false,
+    "cypress": false,
+    "playwright": false,
+    "smoke_tests": "not found",
+    "type_coverage": "TypeScript strict mode enabled",
+    "eslint_config": "next/core-web-vitals rules",
+    "prettier": "not explicitly configured"
+  },
+  "accessibility_i18n_a11y": {
+    "aria_usage": "not analyzed in detail",
+    "focus_management": "not analyzed",
+    "skip_links": "not found",
+    "color_contrast": "design tokens not examined",
+    "keyboard_traps": "not analyzed",
+    "locale_switch": "LanguageSwitcher component mentioned in memories"
+  },
+  "routing_navigation": {
+    "auth_gating": "AuthGuard component protects routes",
+    "onboarding_flow": "biometrics → goals → profile → review",
+    "plan_redirects": "ensureActivePlan.ts handles plan-aware redirects",
+    "deep_links": "wouter handles client-side routing"
+  },
+  "performance": {
+    "code_splitting": "not analyzed",
+    "bundle_analysis": "not performed",
+    "image_optimization": "not analyzed",
+    "gif_strategy": "exercise library mentions GIF support"
+  },
+  "findings": {
+    "gaps": [
+      "No database migrations directory found - schema changes not tracked",
+      "Query persistence commented out in AppShell.tsx",
+      "Session runner missing undo/redo and keyboard bindings",
+      "No explicit testing setup beyond vitest configuration",
+      "PWA manifest references icons that may not exist",
+      "No environment variable documentation or .env.example",
+      "Missing CI/CD pipeline configuration"
+    ],
+    "risks": [
+      {"severity": "medium", "issue": "No database migration tracking", "rationale": "Schema changes not versioned, potential deployment issues"},
+      {"severity": "low", "issue": "Commented out query persistence", "rationale": "May impact offline experience"},
+      {"severity": "medium", "issue": "Only one TODO/FIXME found", "rationale": "May indicate incomplete implementation or lack of technical debt tracking"},
+      {"severity": "low", "issue": "No explicit error boundaries", "rationale": "React errors could crash entire app"}
+    ],
+    "quick_wins": [
+      "Add .env.example with required variables",
+      "Uncomment and configure TanStack Query persistence",
+      "Add basic smoke tests for critical paths",
+      "Document database schema in migrations",
+      "Add error boundaries to main components"
+    ],
+    "blocked_by": [
+      "Missing environment variables for full functionality",
+      "Database schema not accessible for complete validation",
+      "No access to live deployment for runtime validation"
+    ]
+  },
+  "action_items": [
+    {"title": "Create database migration system", "effort": 3, "impact": 4, "files": ["./supabase/migrations/"]},
+    {"title": "Add environment variable documentation", "effort": 1, "impact": 3, "files": ["./.env.example"]},
+    {"title": "Enable TanStack Query persistence", "effort": 2, "impact": 3, "files": ["./client/src/app/AppShell.tsx"]},
+    {"title": "Implement session runner keyboard shortcuts", "effort": 3, "impact": 2, "files": ["./client/src/app/pages/SessionPage.tsx"]},
+    {"title": "Add comprehensive test suite", "effort": 5, "impact": 4, "files": ["./client/src/**/*.test.ts"]},
+    {"title": "Verify PWA icon assets exist", "effort": 1, "impact": 2, "files": ["./client/public/icons/"]},
+    {"title": "Add error boundaries", "effort": 2, "impact": 3, "files": ["./client/src/app/components/ErrorBoundary.tsx"]},
+    {"title": "Set up CI/CD pipeline", "effort": 4, "impact": 4, "files": ["./.github/workflows/"]}
+  ]
+}
