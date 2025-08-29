@@ -31,7 +31,7 @@ export function SettingsUtilities() {
       if (result.success) {
         toast.success(`${t('utilities.regenerate.success')} - Plan ID: ${result.plan_id}`)
       } else {
-        const errorMessage = typeof result.error === 'string' ? result.error : String(result.error)
+        const errorMessage = result.error || 'Unknown error'
         toast.error(`${t('utilities.regenerate.error')}: ${errorMessage}`)
       }
     } catch (error: unknown) {
@@ -73,7 +73,7 @@ export function SettingsUtilities() {
         toast.success(`${t('utilities.delete.done')}: Redirecting to home page...`)
         setTimeout(() => setLocation('/'), 2000)
       } else {
-        const errorMessage = typeof result.error === 'string' ? result.error : (result.error as Error)?.message || 'Unknown error'
+        const errorMessage = result.error || 'Unknown error'
         toast.error(`${t('utilities.delete.error')}: ${errorMessage}`)
       }
     } catch (error: unknown) {
