@@ -26,10 +26,12 @@ export function VerifyPage({ params }: VerifyPageProps) {
   
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const intervalRef = useRef<NodeJS.Timeout>();
+  const autoResendAttempted = useRef(false); // Prevent duplicate auto-resends
 
-  // Auto-resend on mount if we have an email
+  // Auto-resend on mount if we have an email - with duplicate protection
   useEffect(() => {
-    if (email && !autoResendDone) {
+    if (email && !autoResendDone && !autoResendAttempted.current) {
+      autoResendAttempted.current = true;
       handleResend(true);
       setAutoResendDone(true);
     }
@@ -101,6 +103,9 @@ export function VerifyPage({ params }: VerifyPageProps) {
       return;
     }
 
+    // Additional protection against rapid successive calls
+    if (loading) return;
+
     try {
       setLoading(true);
       setError("");
@@ -110,7 +115,15 @@ export function VerifyPage({ params }: VerifyPageProps) {
         email: email,
       });
 
-      if (error) throw error;
+      if (error) {
+        // Handle rate limiting errors gracefully
+        if (error.message.includes('429') || error.message.toLowerCase().includes('too many')) {
+          setError(t('auth.verify.rateLimited', 'Please wait before requesting another code.'));
+          setResendCooldown(120); // Longer cooldown for rate limit
+          return;
+        }
+        throw error;
+      }
 
       // Track OTP sent
       telemetry.trackAuthOtpSent(email, isAutoResend);
@@ -125,6 +138,7 @@ export function VerifyPage({ params }: VerifyPageProps) {
       }
 
     } catch (error: any) {
+      console.error('Resend error:', error);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -174,6 +188,8 @@ export function VerifyPage({ params }: VerifyPageProps) {
     e.preventDefault();
     if (email) {
       setShowEmailInput(false);
+      // Reset auto-resend protection when manually submitting email
+      autoResendAttempted.current = false;
       handleResend(true);
       setAutoResendDone(true);
     }
@@ -186,6 +202,8 @@ export function VerifyPage({ params }: VerifyPageProps) {
     setResendCount(0);
     setResendCooldown(0);
     setAutoResendDone(false);
+    // Reset auto-resend protection when changing email
+    autoResendAttempted.current = false;
   };
 
   // Auto-submit when all 6 digits are entered
