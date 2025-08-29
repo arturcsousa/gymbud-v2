@@ -1,5 +1,24 @@
 # GymBud v2 - Changelog
 
+## August 29, 2025 19:22 ET — Plan Creation Fix After ProfilePage Simplification
+**Fixed**: Resolved 500 error in plan creation caused by enum value mismatches between frontend and database schema
+- **Root Cause**: Database enum constraints didn't match frontend values causing constraint violations
+  - Database `experience_level` expects: `["new", "returning", "advanced"]`
+  - Frontend was sending: `["beginner", "intermediate", "advanced"]`
+  - Database `environment` expects: `["professional_gym", "home_gym", "bodyweight_only"]`
+  - Frontend was sending: `["gym", "home", "bodyweight"]`
+- **Solution**: Added enum mapping functions in ReviewPage to translate frontend values to database enums
+  - `mapExperienceLevel()`: beginner→new, intermediate→returning, advanced→advanced
+  - `mapEnvironment()`: gym→professional_gym, home→home_gym, bodyweight→bodyweight_only
+  - Added fallback defaults for safe enum handling
+- **Defensive Programming**: Enhanced fallback logic for all auto-populated fields
+  - Confidence generation from experience level when missing from onboarding state
+  - Safe defaults for warmup_style, rest_preference, intensity_style, mobility_focus
+- **Database Compatibility**: Ensures all plan seed data matches exact database enum constraints
+- **Testing**: End-to-end onboarding flow now completes successfully with proper enum mapping
+
+**Technical**: Maintains data consistency between simplified frontend and strict database enum constraints
+
 ## August 29, 2025 19:17 ET — ProfilePage Simplification with Backend Auto-Population
 **Simplified**: Streamlined onboarding ProfilePage to collect only essential user inputs with intelligent backend defaults
 - **Frontend Simplification**: Removed complex UI components for movement confidence, rest preference, intensity guidance, mobility focus, and warm-up style
@@ -123,6 +142,8 @@
 - **Function Return Types**: Fixed all function signature mismatches and return type errors
 - **Build Status**: All 15+ TypeScript compilation errors resolved, ready for Vercel deployment
 - **Root Cause**: AI Coach system had export conflicts, missing dependencies, database schema misalignment, and needed project reference verification
+
+**Technical**: Complete type safety restoration for history functionality with proper database schema alignment and dependency resolution
 
 ## 2025-08-29 17:42 ET — Upgraded session-get-or-create Edge Function
 **Upgraded**: session-get-or-create Edge Function to replace engine-session-get-or-create with full feature parity.

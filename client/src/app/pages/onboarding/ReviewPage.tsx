@@ -47,20 +47,53 @@ function ReviewPage() {
 
     setLoading(true)
     try {
+      // Helper function to generate confidence from experience level
+      const getConfidenceFromExperience = (level: string) => {
+        const value = level === 'beginner' ? 1 : level === 'intermediate' ? 3 : 5
+        return {
+          squat: value,
+          deadlift: value,
+          bench: value,
+          overhead: value,
+          pull: value,
+          carry: value
+        }
+      }
+
+      // Helper function to map frontend experience level to database enum
+      const mapExperienceLevel = (level: string) => {
+        switch (level) {
+          case 'beginner': return 'new'
+          case 'intermediate': return 'returning'
+          case 'advanced': return 'advanced'
+          default: return 'new'
+        }
+      }
+
+      // Helper function to map frontend environment to database enum
+      const mapEnvironment = (env: string) => {
+        switch (env) {
+          case 'gym': return 'professional_gym'
+          case 'home': return 'home_gym'
+          case 'bodyweight': return 'bodyweight_only'
+          default: return 'professional_gym'
+        }
+      }
+
       // Convert onboarding state to PlanSeed
       const planSeed: PlanSeed = {
         goal_primary: onboardingState.goal_primary!,
         days_per_week: onboardingState.days_per_week!,
         days_of_week: onboardingState.days_of_week!,
-        environment: onboardingState.environment!,
+        environment: mapEnvironment(onboardingState.environment!),
         equipment: onboardingState.equipment || [],
-        experience_level: onboardingState.experience_level!,
-        confidence: onboardingState.confidence!,
+        experience_level: mapExperienceLevel(onboardingState.experience_level!),
+        confidence: onboardingState.confidence || getConfidenceFromExperience(onboardingState.experience_level!),
         constraints: onboardingState.constraints || [],
-        warmup_style: onboardingState.warmup_style!,
+        warmup_style: onboardingState.warmup_style || 'standard',
         mobility_focus: onboardingState.mobility_focus || [],
-        rest_preference: onboardingState.rest_preference!,
-        intensity_style: onboardingState.intensity_style!,
+        rest_preference: onboardingState.rest_preference || 'as_prescribed',
+        intensity_style: onboardingState.intensity_style || 'rpe',
         rpe_coaching_level: onboardingState.rpe_coaching_level || 'standard',
         first_name: onboardingState.first_name!,
         last_name: onboardingState.last_name!,
