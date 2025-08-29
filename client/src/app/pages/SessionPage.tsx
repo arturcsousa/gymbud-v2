@@ -58,12 +58,6 @@ function SessionPage() {
     isUndoingSet
   } = useSessionData(sessionId)
 
-  // Fetch exercise details for current exercise
-  const currentExercise = exercises[currentExerciseIndex]
-  const { data: exerciseDetails, isLoading: isLoadingExercise } = useExerciseDetails(
-    currentExercise?.variant_id || undefined
-  )
-
   // UI state
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
   const [setInputs, setSetInputs] = useState({ reps: '', weight: '', rpe: '' })
@@ -75,7 +69,13 @@ function SessionPage() {
   })
   const [workoutStartTime] = useState(Date.now())
   const [isCoachPanelOpen, setIsCoachPanelOpen] = useState(false)
-  
+
+  // Fetch exercise details for current exercise
+  const currentExercise = exercises[currentExerciseIndex]
+  const { data: exerciseDetails } = useExerciseDetails(
+    currentExercise?.variant_id || undefined
+  )
+
   // Refs for accessibility
   const restTimerRef = useRef<HTMLDivElement>(null)
   const setInputRef = useRef<HTMLInputElement>(null)
