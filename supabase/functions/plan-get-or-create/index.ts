@@ -16,6 +16,34 @@ interface InputBody {
   seed?: Json; // Optional if promoting existing draft; required if inserting fresh
 }
 
+interface PlanSeed {
+  goal_primary: string;
+  days_per_week: number;
+  days_of_week: string[];
+  environment: string;
+  equipment: string[];
+  experience_level: string;
+  confidence: Record<string, number>;
+  constraints: string[];
+  warmup_style: string;
+  mobility_focus: string[];
+  rest_preference: string;
+  intensity_style: string;
+  rpe_coaching_level: string;
+  first_name: string;
+  last_name: string;
+  biometrics: {
+    height_cm: number;
+    weight_kg: number;
+    body_fat_pct?: number;
+    rhr_bpm?: number;
+    birthdate?: string;
+  };
+  ai_tone: string;
+  units: string;
+  date_format: string;
+}
+
 function json(status: number, body: unknown) {
   return new Response(JSON.stringify(body), {
     status,
@@ -26,6 +54,53 @@ function json(status: number, body: unknown) {
       "Access-Control-Allow-Methods": "POST, OPTIONS"
     },
   });
+}
+
+function extractPlanFields(seed: PlanSeed) {
+  // Map frontend values to database enum values
+  const mapExperienceLevel = (level: string) => {
+    switch (level) {
+      case 'beginner': return 'beginner';
+      case 'intermediate': return 'intermediate'; 
+      case 'advanced': return 'advanced';
+      default: return 'beginner';
+    }
+  };
+
+  const mapEnvironment = (env: string) => {
+    switch (env) {
+      case 'commercial_gym': return 'commercial_gym';
+      case 'home_basic': return 'home_basic';
+      case 'outdoors_mixed': return 'outdoors_mixed';
+      default: return 'commercial_gym';
+    }
+  };
+
+  const mapCoachingTone = (tone: string) => {
+    switch (tone) {
+      case 'supportive': return 'supportive';
+      case 'direct': return 'direct';
+      case 'motivational': return 'motivational';
+      default: return 'supportive';
+    }
+  };
+
+  return {
+    goals: [seed.goal_primary], // Convert single goal to array
+    experience_level: mapExperienceLevel(seed.experience_level),
+    years_away: null, // Not captured in onboarding
+    frequency_days_per_week: seed.days_per_week,
+    schedule_days: seed.days_of_week,
+    session_duration_min: 45, // Default session duration
+    environment: mapEnvironment(seed.environment),
+    coaching_tone: mapCoachingTone(seed.ai_tone),
+    height_cm: seed.biometrics.height_cm,
+    weight_kg: seed.biometrics.weight_kg,
+    resting_hr: seed.biometrics.rhr_bpm || null,
+    body_fat_pct: seed.biometrics.body_fat_pct || null,
+    locale: 'en', // Default locale
+    baseline_completed: false
+  };
 }
 
 serve(async (req) => {
@@ -115,10 +190,18 @@ serve(async (req) => {
       return json(400, { error: "invalid_seed", detail: "Seed is required when no draft exists." });
     }
 
+    const planSeed = body.seed as PlanSeed;
+    const planFields = extractPlanFields(planSeed);
+
     const { data: inserted, error: insertErr } = await supabase
       .schema("app2")
       .from("plans")
-      .insert({ user_id: userId, status: "active", seed: body.seed as Json })
+      .insert({ 
+        user_id: userId, 
+        status: "active", 
+        seed: body.seed as Json,
+        ...planFields
+      })
       .select("id")
       .single();
 
