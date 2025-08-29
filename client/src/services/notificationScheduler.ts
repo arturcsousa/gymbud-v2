@@ -212,7 +212,7 @@ async function generateWeeklySummary(): Promise<string> {
 
     // Get sessions from last week
     const recentSessions = await db.sessions
-      .where('created_at')
+      .where('started_at')
       .above(oneWeekAgo.toISOString())
       .toArray()
 
@@ -250,7 +250,7 @@ async function generateWeeklySummary(): Promise<string> {
 async function calculateStreak(): Promise<number> {
   try {
     const sessions = await db.sessions
-      .orderBy('created_at')
+      .orderBy('started_at')
       .reverse()
       .toArray()
 
@@ -259,7 +259,10 @@ async function calculateStreak(): Promise<number> {
     today.setHours(0, 0, 0, 0)
 
     for (const session of sessions) {
-      const sessionDate = new Date(session.created_at)
+      // Skip sessions without a start time
+      if (!session.started_at) continue
+      
+      const sessionDate = new Date(session.started_at)
       sessionDate.setHours(0, 0, 0, 0)
       
       const daysDiff = Math.floor((today.getTime() - sessionDate.getTime()) / (1000 * 60 * 60 * 24))
@@ -321,7 +324,8 @@ async function storeScheduledNotifications(notifications: ScheduledNotification[
   try {
     const metaEntries = notifications.map(n => ({
       key: `notification_${n.id}`,
-      value: JSON.stringify(n)
+      value: JSON.stringify(n),
+      updated_at: Date.now()
     }))
 
     await db.meta.bulkPut(metaEntries)
