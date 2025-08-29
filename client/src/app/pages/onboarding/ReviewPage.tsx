@@ -48,35 +48,25 @@ function ReviewPage() {
     setLoading(true)
     try {
       // Helper function to generate confidence from experience level
-      const getConfidenceFromExperience = (level: string) => {
-        const value = level === 'beginner' ? 1 : level === 'intermediate' ? 3 : 5
+      const getConfidenceFromExperience = (level: string): Record<'squat'|'hinge'|'lunge'|'push'|'pull'|'carry', 1|2|3|4|5> => {
+        const value = (level === 'beginner' ? 1 : level === 'intermediate' ? 3 : 5) as 1|2|3|4|5
         return {
           squat: value,
-          deadlift: value,
-          bench: value,
-          overhead: value,
+          hinge: value,
+          lunge: value,
+          push: value,
           pull: value,
           carry: value
-        }
-      }
-
-      // Helper function to map frontend experience level to database enum
-      const mapExperienceLevel = (level: string) => {
-        switch (level) {
-          case 'beginner': return 'new'
-          case 'intermediate': return 'returning'
-          case 'advanced': return 'advanced'
-          default: return 'new'
         }
       }
 
       // Helper function to map frontend environment to database enum
       const mapEnvironment = (env: string) => {
         switch (env) {
-          case 'gym': return 'professional_gym'
-          case 'home': return 'home_gym'
-          case 'bodyweight': return 'bodyweight_only'
-          default: return 'professional_gym'
+          case 'gym': return 'commercial_gym'
+          case 'home': return 'home_basic'
+          case 'bodyweight': return 'outdoors_mixed'
+          default: return 'commercial_gym'
         }
       }
 
@@ -87,7 +77,7 @@ function ReviewPage() {
         days_of_week: onboardingState.days_of_week!,
         environment: mapEnvironment(onboardingState.environment!),
         equipment: onboardingState.equipment || [],
-        experience_level: mapExperienceLevel(onboardingState.experience_level!),
+        experience_level: onboardingState.experience_level!,
         confidence: onboardingState.confidence || getConfidenceFromExperience(onboardingState.experience_level!),
         constraints: onboardingState.constraints || [],
         warmup_style: onboardingState.warmup_style || 'standard',
