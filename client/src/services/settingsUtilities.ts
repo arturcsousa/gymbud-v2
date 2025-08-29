@@ -77,7 +77,12 @@ export async function regeneratePlan(): Promise<RegeneratePlanResult> {
 
   } catch (error: unknown) {
     console.error('Plan regeneration error:', error)
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    let errorMessage: string;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else {
+      errorMessage = String(error);
+    }
     telemetry.track('settings.plan.regenerate_failed', { error: errorMessage })
     return { success: false, error: errorMessage }
   }
@@ -146,9 +151,15 @@ export async function exportUserData(format: 'json' | 'csv', includeVoided: bool
 
     telemetry.track('settings.export.completed', { format, records: Object.keys(exportData).length })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Export error:', error)
-    telemetry.track('settings.export.failed', { format, error: error.message })
+    let errorMessage: string;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else {
+      errorMessage = String(error);
+    }
+    telemetry.track('settings.export.failed', { format, error: errorMessage })
     throw error
   }
 }
@@ -189,10 +200,16 @@ export async function deleteAccount(): Promise<DeleteAccountResult> {
     telemetry.track('settings.account.delete_confirmed')
     return { success: true, details: data?.details }
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Account deletion error:', error)
-    telemetry.track('settings.account.delete_failed', { error: error.message })
-    return { success: false, error: error.message }
+    let errorMessage: string;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else {
+      errorMessage = String(error);
+    }
+    telemetry.track('settings.account.delete_failed', { error: errorMessage })
+    return { success: false, error: errorMessage }
   }
 }
 
@@ -226,8 +243,14 @@ export async function installPWA(): Promise<boolean> {
     telemetry.track('settings.about.install_prompt_clicked')
     
     return true
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('PWA install error:', error)
+    let errorMessage: string;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else {
+      errorMessage = String(error);
+    }
     return false
   }
 }

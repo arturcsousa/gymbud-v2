@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'wouter'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -34,16 +34,18 @@ export function SettingsUtilities() {
           description: `Plan ID: ${result.plan_id}`,
         })
       } else {
+        const errorMessage = result.error instanceof Error ? result.error.message : String(result.error)
         toast({
           title: t('utilities.regenerate.error'),
-          description: result.error,
+          description: errorMessage,
           variant: 'destructive',
         })
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
       toast({
         title: t('utilities.regenerate.error'),
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive',
       })
     } finally {
@@ -59,10 +61,11 @@ export function SettingsUtilities() {
         title: t('utilities.export.success'),
         description: `Data exported as ${exportFormat.toUpperCase()}`,
       })
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
       toast({
         title: t('utilities.export.error'),
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive',
       })
     } finally {
@@ -90,16 +93,18 @@ export function SettingsUtilities() {
         })
         setTimeout(() => setLocation('/'), 2000)
       } else {
+        const errorMessage = result.error instanceof Error ? result.error.message : String(result.error)
         toast({
           title: t('utilities.delete.error'),
-          description: result.error,
+          description: errorMessage,
           variant: 'destructive',
         })
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
       toast({
         title: t('utilities.delete.error'),
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive',
       })
     } finally {
@@ -118,10 +123,11 @@ export function SettingsUtilities() {
           description: 'Install prompt triggered',
         })
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
       toast({
         title: 'Install Error',
-        description: error.message,
+        description: errorMessage,
         variant: 'destructive',
       })
     } finally {
@@ -189,7 +195,7 @@ export function SettingsUtilities() {
               <Checkbox
                 id="include-voided"
                 checked={includeVoided}
-                onCheckedChange={setIncludeVoided}
+                onCheckedChange={(checked) => setIncludeVoided(checked === true)}
                 className="border-white/30"
               />
               <label htmlFor="include-voided" className="text-white/80 text-xs">

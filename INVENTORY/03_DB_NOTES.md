@@ -64,3 +64,32 @@ Reused as-is:
 ## Client/EF expectations
 - EF pull-updates watermark uses `updated_at` on `sessions` & `session_exercises`.
 - FE reads must go through the RPCs above to get locale-aware fields with fallback.
+
+## Exercise Library Import (2025-08-29)
+
+### Tables
+- `preserve.exercise_library`
+  - Confirmed fields for import:
+    - `equipment text[]`, `primary_muscles text[]`, `secondary_muscles text[]`
+    - `gif_url text`, `axes jsonb`, `source text`, `external_id text unique`
+    - `name_lc` is a **generated column** (do not insert)
+- `preserve.exercise_library_i18n`
+  - `exercise_id uuid`, `locale text ('en','pt-BR')`
+  - `name text`, `instructions_bulleted text[]`, `cues text[]`
+- Optional: `preserve.exercise_media` (multiple assets per exercise)
+
+### Constraints / Indexes
+- `ux_exlib_external` (unique on `external_id`) — idempotent merges
+- Global unique on `name_lc` (existing). If we want the **same name in different categories**, switch to `(name_lc, category)`.
+
+### Staging (ops-only)
+- `_exlib_stage`, `_i18n_stage`, `_gif_stage` — used for dashboard CSV import and merges.
+
+### Pending Backfills
+- `description` (text)
+- `patterns` (text[])
+- `goal_effectiveness` (jsonb: strength, hypertrophy, endurance, mobility)
+
+### Variants
+- Keep `exercise_variants` to encode curated substitutions. Minimal schema:
+  - `(base_exercise_id uuid, variant_exercise_id uuid, rank int, note text)`

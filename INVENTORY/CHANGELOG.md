@@ -1,5 +1,18 @@
 # GymBud v2 - Changelog
 
+## 2025-08-29 14:22 - TypeScript Error Fixes for Settings Components
+**Fixed**: All remaining TypeScript compilation errors in settings-related components
+- **NotificationPreferences.tsx**: Fixed error type handling in catch block with proper type guard
+- **SettingsUtilities.tsx**: 
+  - Removed unused CardHeader and CardTitle imports
+  - Fixed error type handling with proper `error: unknown` parameter and type guards
+  - Fixed Checkbox onCheckedChange type mismatch with `(checked) => setIncludeVoided(checked === true)`
+- **notificationScheduler.ts**: Fixed error type handling in catch blocks (already properly typed)
+- **settingsUtilities.ts**: Fixed all error type handling with proper type guards and error message extraction
+- **CoachPanel.tsx**: Fixed export redeclaration by changing to function declaration without export keyword
+- **Build Status**: All TypeScript compilation errors resolved, ready for Vercel deployment
+- **Root Cause**: Settings components had inconsistent error type handling and unused imports causing compilation failures
+
 ## 2025-08-29 13:58 - Complete Vercel Build Fixes & Database Audit
 **Fixed**: All TypeScript compilation errors and completed database project reference audit
 - **Export Redeclaration Errors**: Fixed useCoach.ts function export conflicts

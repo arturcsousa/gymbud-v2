@@ -32,7 +32,7 @@ interface CoachPanelProps {
   onClose: () => void;
 }
 
-export function CoachPanel({ sessionId, isOpen, onClose }: CoachPanelProps) {
+function CoachPanel({ sessionId, isOpen, onClose }: CoachPanelProps) {
   const { t } = useTranslation('coach');
   const [constraints, setConstraints] = useState<CoachConstraints>({});
   const [showFilters, setShowFilters] = useState(false);

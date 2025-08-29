@@ -16,7 +16,7 @@ export function NotificationPreferencesCard() {
   const { settings, update } = useSettings()
   const [loading, setLoading] = useState(false)
   const [preferences, setPreferences] = useState<NotificationPreferences>({
-    enabled: settings.notifications_opt_in || false,
+    enabled: settings?.notifications_opt_in || false,
     dailyTime: '20:00',
     weeklyDay: 0, // Sunday
     weeklyTime: '18:00',

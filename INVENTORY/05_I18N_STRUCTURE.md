@@ -141,6 +141,28 @@ Form validation messages
 - **Business Rules**: Application-specific validation
 - **User Guidance**: Helpful validation messaging
 
+## Exercise i18n (EN + pt-BR) — 2025-08-29
+
+### Source of truth
+- EN rows loaded for all imported exercises.
+- PT-BR not provided by the source dataset; to be generated with a domain glossary (Brazilian gym terminology).
+
+### Table mapping
+- `preserve.exercise_library_i18n`:
+  - `exercise_id uuid` (FK)
+  - `locale text` ('en', 'pt-BR')
+  - `name text` — short label for the card
+  - `instructions_bulleted text[]` — imperative bullets
+  - `cues text[]` — 1–3 short reminders
+
+### Fallbacks
+- If `pt-BR` missing, the client falls back to `en`.
+- Post-import backfill will create `pt-BR` rows for all `ExerciseDB` exercises.
+
+### Translation policy
+- Use curated glossary (supino, agachamento, remada, terra, desenvolvimento, rosca, tríceps na polia, passada, avanço, puxada alta/baixa etc.).
+- Keep sentences in Portuguese; accept common gym loanwords where natural (leg press, crunch).
+
 ## Key Features
 
 ### Namespace Loading
