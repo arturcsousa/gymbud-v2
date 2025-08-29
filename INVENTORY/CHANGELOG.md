@@ -1,5 +1,21 @@
 # GymBud v2 - Changelog
 
+## 2025-08-29 14:57 - TypeScript Build Error Resolution
+**Fixed**: All TypeScript compilation errors preventing successful Vercel deployment
+- **CoachPanel Props**: Fixed missing `sessionId` and `isOpen` props in SessionPage.tsx CoachPanel usage
+- **Toast System**: Fixed toast import errors across multiple components
+  - Updated `use-toast.ts` to export `toast` function directly alongside `useToast` hook
+  - Fixed imports in SettingsPage.tsx, NotificationPreferences.tsx, and SettingsUtilities.tsx
+  - Replaced object-style toast calls with direct function calls (`toast.success()`, `toast.error()`)
+- **Unused Imports**: Removed unused imports in SettingsPage.tsx (Input, Checkbox, Dialog components)
+- **Error Handling**: Fixed instanceof expression errors and unknown error type handling
+  - Added proper type guards for error handling in catch blocks
+  - Fixed error message extraction with `error instanceof Error ? error.message : String(error)`
+- **Database Access**: Fixed property access errors in settingsUtilities.ts
+  - Removed references to non-existent `db.profiles` and `db.plans` Dexie tables
+  - Updated to use correct database schema and return proper error responses
+- **Build Status**: All TypeScript compilation errors resolved, ready for Vercel deployment
+
 ## 2025-08-29 14:22 - TypeScript Error Fixes for Settings Components
 **Fixed**: All remaining TypeScript compilation errors in settings-related components
 - **NotificationPreferences.tsx**: Fixed error type handling in catch block with proper type guard
@@ -657,7 +673,11 @@
 - **Queue Integration**: Enhanced sync/queue.ts with enqueueLoggedSet and enqueueSessionUpdate helper functions for offline-first mutations
 - **Session Management**: Automatic session status transitions (pending→active→completed) with started_at/completed_at timestamps
 - **Telemetry Events**: Comprehensive event logging (set_logged, session_started, session_completed, rest_started, exercise_advanced) to sync_events
-- **i18n Support**: Complete session runner translation keys for EN + PT-BR including effort levels, rest timer, navigation, and accessibility
+- **i18n Support**: Complete English and Portuguese (Brazil) translations
+  - **session.json**: 43 translation keys covering UI labels, actions, toasts, accessibility messages
+  - **Exercise Navigation**: Localized exercise names, equipment, and muscle groups
+  - **Set Logging**: Translated set logging fields (reps, weight, RPE)
+  - **Rest Timer**: Localized rest timer labels and alerts
 - **Error Handling**: Toast notifications for set logging failures, session update errors, with graceful offline fallbacks
 - **Accessibility**: ARIA live regions for rest timer announcements, screen reader support for set logging and exercise transitions
 - Context: Live workout logging now functional - users can log sets in real-time, data flows to stats via logged_sets table
@@ -952,7 +972,7 @@
   - RLS enforcement via user JWT forwarding, structured error responses, CORS support
 - **Onboarding Action**: Added `client/src/onboarding/actions.ts` with `finalizeOnboarding()` function
   - Calls plan-get-or-create Edge Function with plan seed from wizard
-  - Navigates to `/app/session/today` after successful plan activation
+  - Navigates to `/` after successful plan activation
 - **Plan Guard Helper**: Created `client/src/lib/plan/ensureActivePlan.ts` for app entry self-healing
   - Queries for active plan and calls Edge Function if none exists
   - Optional seed parameter for fallback plan creation
