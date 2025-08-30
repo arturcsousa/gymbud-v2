@@ -22,21 +22,10 @@ export function VerifyPage({ params }: VerifyPageProps) {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [resendCount, setResendCount] = useState(0);
   const [showEmailInput, setShowEmailInput] = useState(!emailFromUrl);
-  const [autoResendDone, setAutoResendDone] = useState(false);
   
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const intervalRef = useRef<NodeJS.Timeout>();
   const autoResendAttempted = useRef(false); // Prevent duplicate auto-resends
-
-  // REMOVED: Auto-resend on mount to prevent 429 rate limiting
-  // Supabase already sends OTP during signup - no need for immediate resend
-  // useEffect(() => {
-  //   if (email && !autoResendDone && !autoResendAttempted.current) {
-  //     autoResendAttempted.current = true;
-  //     handleResend(true);
-  //     setAutoResendDone(true);
-  //   }
-  // }, [email, autoResendDone]);
 
   // Cooldown timer
   useEffect(() => {
@@ -211,8 +200,9 @@ export function VerifyPage({ params }: VerifyPageProps) {
       setShowEmailInput(false);
       // Reset auto-resend protection when manually submitting email
       autoResendAttempted.current = false;
-      handleResend(true);
-      setAutoResendDone(true);
+      // REMOVED: Automatic resend to prevent rate limiting
+      // User can manually click "Send Code" if needed
+      // handleResend(true);
     }
   };
 
@@ -222,7 +212,6 @@ export function VerifyPage({ params }: VerifyPageProps) {
     setError("");
     setResendCount(0);
     setResendCooldown(0);
-    setAutoResendDone(false);
     // Reset auto-resend protection when changing email
     autoResendAttempted.current = false;
   };
