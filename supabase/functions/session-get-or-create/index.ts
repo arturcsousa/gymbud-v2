@@ -9,6 +9,8 @@ type ReqBody = {
   date?: string;               // ISO date; if absent, use today
   lang?: "en" | "pt-BR";
   plan_id?: string | null;     // optional explicit plan
+  baseline?: boolean;          // mark session as baseline
+  populate?: boolean;          // auto-populate exercises if empty
 };
 
 serve(async (req) => {
@@ -68,7 +70,12 @@ serve(async (req) => {
 
       if (sx.error) throw sx.error;
 
-      return new Response(JSON.stringify(ok({ session: existing.data, exercises: sx.data })), {
+      return new Response(JSON.stringify(ok({
+        plan_id: planId,
+        reused: true,
+        session: existing.data,
+        exercises: sx.data
+      })), {
         status: 200,
         headers: CORS_HEADERS
       });
@@ -108,7 +115,7 @@ serve(async (req) => {
     // 4) If RPC did not set session_date, ensure it now (safe even if already set)
     const upd = await supabase
       .from("app2.sessions")
-      .update({ session_date: resolvedDate })
+      .update({ session_date: resolvedDate, baseline: !!body?.baseline })
       .eq("id", sessionId)
       .select("id, plan_id, session_date, status")
       .single();
@@ -124,7 +131,49 @@ serve(async (req) => {
 
     if (sx.error) throw sx.error;
 
-    return new Response(JSON.stringify(ok({ session: upd.data, exercises: sx.data })), {
+    // Optional populate if exercises are empty and requested
+    if ((!sx.data || sx.data.length === 0) && body?.populate === true) {
+      // Try to populate via RPC or Edge Function
+      try {
+        await supabase.rpc("engine_build_session", { p_session_id: sessionId });
+        
+        // Re-fetch exercises after population
+        const sxPopulated = await supabase
+          .from("app2.session_exercises")
+          .select("id, exercise_id, order_index, prescription")
+          .eq("session_id", sessionId)
+          .order("order_index", { ascending: true });
+        
+        if (!sxPopulated.error) {
+          return new Response(JSON.stringify(ok({
+            plan_id: planId,
+            reused: false,
+            session: upd.data,
+            exercises: sxPopulated.data
+          })), {
+            status: 200,
+            headers: CORS_HEADERS
+          });
+        }
+      } catch (e) {
+        // Population failed, continue with empty exercises
+        console.warn("Exercise population failed:", e);
+      }
+    }
+
+    // Audit log
+    await supabase.from("app2.coach_audit").insert({
+      user_id: user.id,
+      action: "session_get_or_create",
+      meta: { plan_id: planId, session_id: sessionId, reused: false, date: resolvedDate }
+    }).catch(() => {}); // Non-blocking
+
+    return new Response(JSON.stringify(ok({
+      plan_id: planId,
+      reused: false,
+      session: upd.data,
+      exercises: sx.data
+    })), {
       status: 200,
       headers: CORS_HEADERS
     });
