@@ -30,6 +30,9 @@ serve(async (req) => {
     const { user, supabase } = await requireUser(req, { allowServiceRole: false });
     console.log('Auth successful, user ID:', user.id);
 
+    // IMPORTANT: scope to the app2 schema
+    const db = supabase.schema('app2');
+
     console.log('Parsing request body...');
     const body = (await req.json().catch(() => ({}))) as Partial<ReqBody> | undefined;
     console.log('Request body:', JSON.stringify(body, null, 2));
@@ -56,8 +59,8 @@ serve(async (req) => {
 
     if (!planId) {
       console.log('No plan_id provided, looking up active plan for user...');
-      const plan = await supabase
-        .from("app2.plans")
+      const plan = await db
+        .from("plans")
         .select("id")
         .eq("user_id", user.id)
         .eq("status", "active")
@@ -83,8 +86,8 @@ serve(async (req) => {
 
     // 2) Check for existing session for this plan+date
     console.log('Checking for existing session with plan_id:', planId, 'and date:', resolvedDate);
-    const existing = await supabase
-      .from("app2.sessions")
+    const existing = await db
+      .from("sessions")
       .select("id, plan_id, session_date, status")
       .eq("plan_id", planId)
       .eq("session_date", resolvedDate)
@@ -102,8 +105,8 @@ serve(async (req) => {
       console.log('Found existing session:', existing.data.id);
       // Fetch exercises if session exists
       console.log('Fetching exercises for existing session...');
-      const sx = await supabase
-        .from("app2.session_exercises")
+      const sx = await db
+        .from("session_exercises")
         .select("id, exercise_id, order_index, prescription")
         .eq("session_id", existing.data.id)
         .order("order_index", { ascending: true });
@@ -148,8 +151,8 @@ serve(async (req) => {
     } else {
       console.log('RPC failed, falling back to direct insert. Error:', sessionResult.error);
       // If the RPC fails because of exposure/privileges, fall back to direct insert.
-      const ins = await supabase
-        .from("app2.sessions")
+      const ins = await db
+        .from("sessions")
         .insert({ plan_id: planId, status: "pending", session_date: resolvedDate })
         .select("id")
         .single();
@@ -177,8 +180,8 @@ serve(async (req) => {
     const updateData = { session_date: resolvedDate, baseline: !!body?.baseline };
     console.log('Update data:', updateData);
     
-    const upd = await supabase
-      .from("app2.sessions")
+    const upd = await db
+      .from("sessions")
       .update(updateData)
       .eq("id", sessionId)
       .select("id, plan_id, session_date, status")
@@ -193,8 +196,8 @@ serve(async (req) => {
 
     // 5) Fetch exercises (may be empty)
     console.log('Fetching exercises for new session...');
-    const sx = await supabase
-      .from("app2.session_exercises")
+    const sx = await db
+      .from("session_exercises")
       .select("id, exercise_id, order_index, prescription")
       .eq("session_id", sessionId)
       .order("order_index", { ascending: true });
@@ -217,8 +220,8 @@ serve(async (req) => {
         
         // Re-fetch exercises after population
         console.log('Re-fetching exercises after population...');
-        const sxPopulated = await supabase
-          .from("app2.session_exercises")
+        const sxPopulated = await db
+          .from("session_exercises")
           .select("id, exercise_id, order_index, prescription")
           .eq("session_id", sessionId)
           .order("order_index", { ascending: true });
