@@ -152,17 +152,12 @@ Deno.serve(async (req) => {
 
     const userId = user.id;
 
-    // 0) Ensure user profile exists (using public view)
+    // 0) Ensure user profile exists (using SECURITY DEFINER function)
     console.log('Ensuring user profile exists...');
-    const { error: profileErr } = await supabase
-      .from("app2_profiles")
-      .upsert({
-        user_id: userId,
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'user_id',
-        ignoreDuplicates: false
-      });
+    const { error: profileErr } = await supabase.rpc('ef_upsert_profile', {
+      p_user_id: userId,
+      p_updated_at: new Date().toISOString()
+    });
 
     if (profileErr) {
       console.error('Profile upsert error:', profileErr);
@@ -175,12 +170,9 @@ Deno.serve(async (req) => {
 
     // 1) Check for existing ACTIVE plan
     console.log('Checking for active plan...');
-    const { data: active, error: activeErr } = await supabase
-      .from("app2_plans")
-      .select("id, status")
-      .eq("user_id", userId)
-      .eq("status", "active")
-      .maybeSingle();
+    const { data: active, error: activeErr } = await supabase.rpc('ef_get_active_plan', {
+      p_user_id: userId
+    });
 
     if (activeErr) {
       console.error('Active plan check error:', activeErr);
@@ -190,24 +182,19 @@ Deno.serve(async (req) => {
       }), { status: 500, headers: CORS_HEADERS });
     }
     
-    if (active) {
-      console.log('Found active plan:', active.id);
+    if (active && active.length > 0) {
+      console.log('Found active plan:', active[0].id);
       return new Response(JSON.stringify({
         ok: true,
-        data: { plan_id: active.id, status: "active" }
+        data: { plan_id: active[0].id, status: "active" }
       }), { status: 200, headers: CORS_HEADERS });
     }
 
     // 2) Check for DRAFT to promote
     console.log('Checking for draft plan...');
-    const { data: draft, error: draftErr } = await supabase
-      .from("app2_plans")
-      .select("id, status, seed")
-      .eq("user_id", userId)
-      .eq("status", "draft")
-      .order("updated_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    const { data: draft, error: draftErr } = await supabase.rpc('ef_get_draft_plan', {
+      p_user_id: userId
+    });
 
     if (draftErr) {
       console.error('Draft plan check error:', draftErr);
@@ -217,19 +204,14 @@ Deno.serve(async (req) => {
       }), { status: 500, headers: CORS_HEADERS });
     }
 
-    if (draft) {
-      console.log('Found draft to promote:', draft.id);
-      const newSeed = body.seed || draft.seed || {};
-      const { data: promoted, error: promoteErr } = await supabase
-        .from("app2_plans")
-        .update({ 
-          status: "active", 
-          seed: newSeed, 
-          updated_at: new Date().toISOString() 
-        })
-        .eq("id", draft.id)
-        .select("id")
-        .single();
+    if (draft && draft.length > 0) {
+      console.log('Found draft to promote:', draft[0].id);
+      const newSeed = body.seed || draft[0].seed || {};
+      const { data: promoted, error: promoteErr } = await supabase.rpc('ef_promote_draft', {
+        p_plan_id: draft[0].id,
+        p_seed: newSeed,
+        p_updated_at: new Date().toISOString()
+      });
 
       if (promoteErr) {
         console.error('Draft promotion error:', promoteErr);
@@ -239,10 +221,10 @@ Deno.serve(async (req) => {
         }), { status: 409, headers: CORS_HEADERS });
       }
       
-      console.log('Promoted draft to active:', promoted.id);
+      console.log('Promoted draft to active:', promoted[0].id);
       return new Response(JSON.stringify({
         ok: true,
-        data: { plan_id: promoted.id, status: "active" }
+        data: { plan_id: promoted[0].id, status: "active" }
       }), { status: 200, headers: CORS_HEADERS });
     }
 
@@ -271,16 +253,24 @@ Deno.serve(async (req) => {
     const planFields = extractPlanFields(planSeed);
     
     console.log('Inserting plan with fields:', planFields);
-    const { data: inserted, error: insertErr } = await supabase
-      .from("app2_plans")
-      .insert({ 
-        user_id: userId, 
-        status: "active", 
-        seed: planSeed,
-        ...planFields
-      })
-      .select("id")
-      .single();
+    const { data: inserted, error: insertErr } = await supabase.rpc('ef_create_plan', {
+      p_user_id: userId,
+      p_seed: planSeed,
+      p_goals: planFields.goals,
+      p_experience_level: planFields.experience_level,
+      p_years_away: planFields.years_away,
+      p_frequency_days_per_week: planFields.frequency_days_per_week,
+      p_schedule_days: planFields.schedule_days,
+      p_session_duration_min: planFields.session_duration_min,
+      p_environment: planFields.environment,
+      p_coaching_tone: planFields.coaching_tone,
+      p_height_cm: planFields.height_cm,
+      p_weight_kg: planFields.weight_kg,
+      p_resting_hr: planFields.resting_hr,
+      p_body_fat_pct: planFields.body_fat_pct,
+      p_locale: planFields.locale,
+      p_baseline_completed: planFields.baseline_completed
+    });
 
     if (insertErr) {
       console.error('Insert error:', insertErr);
@@ -290,10 +280,10 @@ Deno.serve(async (req) => {
       }), { status: 409, headers: CORS_HEADERS });
     }
     
-    console.log('Created plan:', inserted.id);
+    console.log('Created plan:', inserted[0].id);
     return new Response(JSON.stringify({
       ok: true,
-      data: { plan_id: inserted.id, status: "active" }
+      data: { plan_id: inserted[0].id, status: "active" }
     }), { status: 200, headers: CORS_HEADERS });
 
   } catch (error) {
