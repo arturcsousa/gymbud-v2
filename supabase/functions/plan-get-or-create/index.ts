@@ -154,10 +154,32 @@ Deno.serve(async (req) => {
 
     // 0) Ensure user profile exists (using SECURITY DEFINER function)
     console.log('Ensuring user profile exists...');
-    const { error: profileErr } = await supabase.rpc('ef_upsert_profile', {
+    
+    // Extract profile data from seed if available
+    let profileData = {
       p_user_id: userId,
+      p_first_name: 'User', // Default fallback
+      p_last_name: 'User',   // Default fallback
+      p_height_cm: 170,      // Default fallback
+      p_weight_kg: 70,       // Default fallback
       p_updated_at: new Date().toISOString()
-    });
+    };
+
+    if (body.seed && isPlanSeed(body.seed)) {
+      profileData = {
+        p_user_id: userId,
+        p_first_name: body.seed.first_name,
+        p_last_name: body.seed.last_name,
+        p_height_cm: body.seed.biometrics.height_cm,
+        p_weight_kg: body.seed.biometrics.weight_kg,
+        p_body_fat_pct: body.seed.biometrics.body_fat_pct || null,
+        p_rhr_bpm: body.seed.biometrics.rhr_bpm || null,
+        p_birthdate: body.seed.biometrics.birthdate || null,
+        p_updated_at: new Date().toISOString()
+      };
+    }
+
+    const { error: profileErr } = await supabase.rpc('ef_upsert_profile', profileData);
 
     if (profileErr) {
       console.error('Profile upsert error:', profileErr);
