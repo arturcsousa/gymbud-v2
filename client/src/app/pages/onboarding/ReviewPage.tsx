@@ -131,11 +131,11 @@ function ReviewPage() {
 
       // Step 2: Call session creation Edge Function
       console.log('=== CLIENT: Starting session creation ===');
-      console.log('Using plan_id:', planResponse.plan_id);
+      console.log('Using plan_id:', planResponse.data.plan_id);
       
       const { data: sessionData, error: sessionError } = await supabase.functions.invoke('session-get-or-create', {
         body: { 
-          plan_id: planResponse.plan_id,
+          plan_id: planResponse.data.plan_id,
           // date will default to user timezone "today"
           // timezone will be resolved from user profile
         }

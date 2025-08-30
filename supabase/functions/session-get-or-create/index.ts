@@ -34,6 +34,18 @@ serve(async (req) => {
     const body = (await req.json().catch(() => ({}))) as Partial<ReqBody> | undefined;
     console.log('Request body:', JSON.stringify(body, null, 2));
 
+    // Early validation: if plan_id is provided, ensure it's not empty/null
+    if (body?.plan_id !== undefined && (!body.plan_id || body.plan_id.trim() === '')) {
+      console.error('Invalid plan_id provided:', body.plan_id);
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: { code: 'INVALID_PLAN_ID', message: 'plan_id cannot be empty' }
+        }),
+        { status: 400, headers: CORS_HEADERS }
+      );
+    }
+
     // Use today's date if not provided
     const resolvedDate = body?.date ?? new Date().toISOString().slice(0, 10);
     console.log('Resolved date:', resolvedDate);
