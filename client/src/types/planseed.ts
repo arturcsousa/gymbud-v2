@@ -43,9 +43,6 @@ export type PlanCreateResponse = {
     code: string;
     message: string;
   };
-} | {
-  error: string;
-  detail?: string;
 };
 
 export type ProfileUpdateRequest = {

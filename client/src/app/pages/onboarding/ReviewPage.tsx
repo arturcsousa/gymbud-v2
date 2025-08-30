@@ -124,9 +124,9 @@ function ReviewPage() {
       
       if ('error' in planResponse) {
         console.error('=== CLIENT: Plan response contains error ===');
-        console.error('Plan error detail:', planResponse.detail);
-        console.error('Plan error message:', planResponse.error);
-        throw new Error(planResponse.detail || planResponse.error || 'Failed to create plan')
+        console.error('Plan error code:', planResponse.error.code);
+        console.error('Plan error message:', planResponse.error.message);
+        throw new Error(planResponse.error.message || 'Failed to create plan')
       }
 
       // Step 2: Call session creation Edge Function
