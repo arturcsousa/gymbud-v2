@@ -1,5 +1,24 @@
 # GymBud v2 - Changelog
 
+## August 30, 2025 14:57 ET — Session Creation CORS & Edge Function Fixes
+**Fixed**: Resolved CORS and 500 Internal Server Error issues preventing onboarding completion
+- **CORS Issue**: `session-get-or-create` Edge Function missing CORS headers for preflight OPTIONS requests
+  - Added proper CORS handling with `Access-Control-Allow-*` headers
+  - Fixed preflight request failures that blocked browser requests from app.gymbud.ai
+- **500 Internal Server Error**: Function calling non-existent database functions
+  - Root cause: Function expected `fn_user_tz`, `fn_plan_seed`, `fn_user_completed_sessions_count`, etc.
+  - Solution: Simplified function to use existing `create_training_session_from_plan` database function
+  - Removed complex plan rotation and exercise selection logic to match current schema
+- **Edge Function Deployment**: Created self-contained version without shared module dependencies
+  - Deployed version 18 with inline auth and HTTP utilities to avoid import issues
+  - Function now successfully creates sessions and returns proper JSON responses
+- **Onboarding Flow**: End-to-end plan creation and session generation now functional
+  - Plan creation via `plan-get-or-create` already had proper CORS (working correctly)
+  - Session creation via `session-get-or-create` now matches same CORS pattern
+  - Both functions return consistent `{ok: true, data: {...}}` response format
+
+**Technical**: Onboarding completion flow restored with proper CORS handling and simplified Edge Function logic compatible with existing database schema
+
 ## August 30, 2025 14:30 ET — Baseline Lifecycle (Triggers + Routing)
 - Added server logic to mark the first completed session as the baseline and to flip baseline flags on profiles & all plans.
 - New triggers:
