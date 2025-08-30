@@ -152,9 +152,32 @@ Deno.serve(async (req) => {
 
     const userId = user.id;
 
+    // 0) Ensure user profile exists in app2 schema (required for RLS access)
+    console.log('Ensuring user profile exists...');
+    const { error: profileErr } = await supabase
+      .schema("app2")
+      .from("profiles")
+      .upsert({
+        user_id: userId,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id',
+        ignoreDuplicates: false
+      });
+
+    if (profileErr) {
+      console.error('Profile upsert error:', profileErr);
+      return new Response(JSON.stringify({
+        ok: false,
+        error: { code: 'internal', message: `Profile setup failed: ${profileErr.message}` }
+      }), { status: 500, headers: CORS_HEADERS });
+    }
+    console.log('User profile ensured');
+
     // 1) Check for existing ACTIVE plan
     console.log('Checking for active plan...');
     const { data: active, error: activeErr } = await supabase
+      .schema("app2")
       .from("plans")
       .select("id, status")
       .eq("user_id", userId)
@@ -180,6 +203,7 @@ Deno.serve(async (req) => {
     // 2) Check for DRAFT to promote
     console.log('Checking for draft plan...');
     const { data: draft, error: draftErr } = await supabase
+      .schema("app2")
       .from("plans")
       .select("id, status, seed")
       .eq("user_id", userId)
@@ -200,6 +224,7 @@ Deno.serve(async (req) => {
       console.log('Found draft to promote:', draft.id);
       const newSeed = body.seed || draft.seed || {};
       const { data: promoted, error: promoteErr } = await supabase
+        .schema("app2")
         .from("plans")
         .update({ 
           status: "active", 
@@ -251,6 +276,7 @@ Deno.serve(async (req) => {
     
     console.log('Inserting plan with fields:', planFields);
     const { data: inserted, error: insertErr } = await supabase
+      .schema("app2")
       .from("plans")
       .insert({ 
         user_id: userId, 
