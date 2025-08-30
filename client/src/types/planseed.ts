@@ -32,8 +32,17 @@ export type PlanCreateRequest = {
 };
 
 export type PlanCreateResponse = {
-  plan_id: string;
-  status: string;
+  ok: true;
+  data: {
+    plan_id: string;
+    status: string;
+  };
+} | {
+  ok: false;
+  error: {
+    code: string;
+    message: string;
+  };
 } | {
   error: string;
   detail?: string;

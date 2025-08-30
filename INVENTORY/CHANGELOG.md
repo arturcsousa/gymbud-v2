@@ -1,5 +1,25 @@
 # GymBud v2 - Changelog
 
+## August 30, 2025 15:29 ET — Session Creation Client-Server Communication Fix
+**Fixed**: Resolved client-server communication bug causing 500 errors during session creation
+- **Root Cause**: Client code accessing `planResponse.plan_id` instead of `planResponse.data.plan_id`
+  - Plan Edge Function returns `{ ok: true, data: { plan_id: "...", status: "active" } }`
+  - Client was logging "Using plan_id: undefined" and sending empty payload to session EF
+  - Session EF received content_length: "2" (essentially empty `{}` body)
+- **Client Fix**: Updated `ReviewPage.tsx` to correctly extract plan_id from response structure
+  - Changed `planResponse.plan_id` → `planResponse.data.plan_id` in session creation call
+  - Added proper validation logging to track plan_id extraction
+- **Helper Function**: Created `client/src/lib/planSession.ts` for robust plan-to-session workflow
+  - Type-safe plan and session response handling with proper error boundaries
+  - Validation guards to ensure plan_id exists before proceeding to session creation
+  - Comprehensive logging for debugging client-server communication
+- **Server Hardening**: Added validation guard in `session-get-or-create` Edge Function
+  - Early 400 Bad Request response for empty/invalid plan_id instead of 500 Internal Server Error
+  - Proper error structure: `{ ok: false, error: { code: 'INVALID_PLAN_ID', message: '...' } }`
+  - Prevents downstream crashes from malformed requests
+
+**Technical**: End-to-end onboarding flow now properly extracts plan_id and sends valid payloads, with graceful error handling for malformed requests
+
 ## August 30, 2025 14:57 ET — Session Creation CORS & Edge Function Fixes
 **Fixed**: Resolved CORS and 500 Internal Server Error issues preventing onboarding completion
 - **CORS Issue**: `session-get-or-create` Edge Function missing CORS headers for preflight OPTIONS requests
