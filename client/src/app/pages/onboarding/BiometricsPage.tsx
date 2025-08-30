@@ -196,7 +196,7 @@ function BiometricsPage() {
             </div>
 
             {/* Optional Fields */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="body_fat_pct" className="text-white/70 font-medium text-sm">
                   {t('onboarding:steps.biometrics.body_fat_pct')}

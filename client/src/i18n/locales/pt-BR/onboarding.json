@@ -8,7 +8,7 @@
     "weight_kg": "Peso (kg)",
     "body_fat_pct": "% de gordura",
     "rhr_bpm": "Frequência cardíaca de repouso (BPM)",
-    "birthdate": "Data de nascimento (opcional)",
+    "birthdate": "Data de nascimento",
     "next": "Avançar",
     "back": "Voltar"
   },

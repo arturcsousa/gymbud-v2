@@ -7,10 +7,8 @@
 
 // Run with user-context (RLS enforced) by forwarding Authorization header.
 
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import "@supabase/functions-js";
 import { requireUser } from '../_shared/auth.ts';
-import { jsonResponse, ok, fail } from '../_shared/http.ts';
+import { json, ok, fail } from '../_shared/http.ts';
 
 type Json = Record<string, unknown> | unknown[] | string | number | boolean | null;
 
@@ -50,27 +48,28 @@ function extractPlanFields(seed: PlanSeed) {
   // Map frontend values to database enum values
   const mapExperienceLevel = (level: string) => {
     switch (level) {
-      case 'beginner': return 'beginner';
-      case 'intermediate': return 'intermediate'; 
+      case 'beginner': return 'new';
+      case 'intermediate': return 'returning'; 
       case 'advanced': return 'advanced';
-      default: return 'beginner';
+      default: return 'new';
     }
   };
 
   const mapEnvironment = (env: string) => {
     switch (env) {
-      case 'commercial_gym': return 'commercial_gym';
-      case 'home_basic': return 'home_basic';
-      case 'outdoors_mixed': return 'outdoors_mixed';
-      default: return 'commercial_gym';
+      case 'commercial_gym': return 'professional_gym';
+      case 'home_basic': return 'home_gym';
+      case 'home_rack': return 'home_gym';
+      case 'outdoors_mixed': return 'bodyweight_only';
+      default: return 'professional_gym';
     }
   };
 
   const mapCoachingTone = (tone: string) => {
     switch (tone) {
       case 'supportive': return 'supportive';
-      case 'direct': return 'direct';
-      case 'motivational': return 'motivational';
+      case 'direct': return 'drill_sergeant';
+      case 'motivational': return 'funny';
       default: return 'supportive';
     }
   };
@@ -140,7 +139,7 @@ Deno.serve(async (req) => {
   }
 
   if (req.method !== "POST") {
-    return jsonResponse(fail('method_not_allowed', 'POST required'), 405);
+    return json(405, fail('method_not_allowed', 'POST required'));
   }
 
   // Use shared auth pattern with error handling
@@ -150,7 +149,7 @@ Deno.serve(async (req) => {
     user = authResult.user;
     supabase = authResult.supabase;
   } catch (error) {
-    return jsonResponse(fail('auth_invalid', 'Authentication failed'), 401);
+    return json(401, fail('auth_invalid', 'Authentication failed'));
   }
   
   const userId = user.id;
@@ -172,8 +171,8 @@ Deno.serve(async (req) => {
       .eq("status", "active")
       .maybeSingle();
 
-    if (activeErr) return jsonResponse(fail('internal', activeErr.message), 500);
-    if (active) return jsonResponse(ok({ plan_id: active.id, status: "active" }), 200);
+    if (activeErr) return json(500, fail('internal', activeErr.message));
+    if (active) return json(200, ok({ plan_id: active.id, status: "active" }));
 
     // 2) Try to find a DRAFT to promote
     const { data: draft, error: draftErr } = await supabase
@@ -186,7 +185,7 @@ Deno.serve(async (req) => {
       .limit(1)
       .maybeSingle();
 
-    if (draftErr) return jsonResponse(fail('internal', draftErr.message), 500);
+    if (draftErr) return json(500, fail('internal', draftErr.message));
 
     if (draft) {
       const newSeed = typeof body.seed !== "undefined" ? body.seed : (draft.seed ?? {});
@@ -198,18 +197,18 @@ Deno.serve(async (req) => {
         .select("id")
         .single();
 
-      if (promoteErr) return jsonResponse(fail('conflict_promote_failed', promoteErr.message), 409);
-      return jsonResponse(ok({ plan_id: promoted.id, status: "active" }), 200);
+      if (promoteErr) return json(409, fail('conflict_promote_failed', promoteErr.message));
+      return json(200, ok({ plan_id: promoted.id, status: "active" }));
     }
 
     // 3) No ACTIVE or DRAFT — must INSERT using provided seed
     if (typeof body.seed === "undefined" || body.seed === null) {
-      return jsonResponse(fail('invalid_payload', 'Seed is required when no draft exists.'), 400);
+      return json(400, fail('invalid_payload', 'Seed is required when no draft exists.'));
     }
 
     const planSeed = body.seed;
     if (!isPlanSeed(planSeed)) {
-      return jsonResponse(fail('invalid_payload', 'Invalid seed provided.'), 400);
+      return json(400, fail('invalid_payload', 'Invalid seed provided.'));
     }
 
     const planFields = extractPlanFields(planSeed);
@@ -226,11 +225,11 @@ Deno.serve(async (req) => {
       .select("id")
       .single();
 
-    if (insertErr) return jsonResponse(fail('version_conflict', insertErr.message), 409);
-    return jsonResponse(ok({ plan_id: inserted.id, status: "active" }), 200);
+    if (insertErr) return json(409, fail('version_conflict', insertErr.message));
+    return json(200, ok({ plan_id: inserted.id, status: "active" }));
 
   } catch (error) {
     console.error("Unexpected error in plan-get-or-create:", error);
-    return jsonResponse(fail('internal', error.message), 500);
+    return json(500, fail('internal', error.message));
   }
 });

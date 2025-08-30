@@ -11,7 +11,7 @@
       "weight_kg": "Weight (kg)",
       "body_fat_pct": "Body fat %",
       "rhr_bpm": "Resting heart rate (BPM)",
-      "birthdate": "Birthdate (optional)",
+      "birthdate": "Birthdate",
       "next": "Next",
       "back": "Back"
     },

@@ -1,6 +1,6 @@
-import "@supabase/functions-js";
-import { createClient } from "@supabase/supabase-js";
-import type { User } from "@supabase/supabase-js";
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
+import type { User } from "jsr:@supabase/supabase-js@2";
 
 export function getClient(req: Request) {
   const url = Deno.env.get('SUPABASE_URL')!;
