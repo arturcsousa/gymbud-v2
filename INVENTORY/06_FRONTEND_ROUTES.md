@@ -3,6 +3,13 @@
 ## Overview
 Progressive Web Application (PWA) built with Vite + React using `wouter` for client-side routing with offline-first capabilities and comprehensive sync engine.
 
+## Recent Updates (2025-08-30 14:57)
+- **Onboarding Completion Fixes**: Resolved CORS and Edge Function issues preventing onboarding flow completion
+  - **session-get-or-create Edge Function**: Fixed missing CORS headers and 500 errors from non-existent database functions
+  - **Onboarding Flow**: End-to-end plan creation and session generation now functional from ReviewPage
+  - **Route Completion**: Users can now successfully complete onboarding and proceed to main app routes
+  - **API Integration**: Both plan-get-or-create and session-get-or-create Edge Functions working with proper CORS
+
 ## Recent Updates (2025-08-29 16:24)
 - **Locale-Aware Exercise Data Integration**: Complete frontend integration with locale-aware RPCs
   - **useExerciseDetails Hook**: New hook (`client/src/hooks/useExerciseDetails.ts`) for fetching exercise details with locale-aware data
@@ -344,6 +351,75 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - **Analytics**: User behavior tracking integration
 - **A/B Testing**: Component-level testing capabilities
 - **CMS Integration**: Content management for marketing copy
+
+## PWA Features
+- **Offline-first architecture** with IndexedDB storage
+- **Service Worker** with precaching and stale-while-revalidate strategies
+- **Installable app** with proper manifest and icon configuration
+- **Background sync** with mutation queue and conflict resolution
+
+## URL Structure Examples
+- `https://app.gymbud.ai/` - Home dashboard
+- `https://app.gymbud.ai/settings` - Enhanced settings with utilities
+- `https://app.gymbud.ai/history/session_123` - Session detail
+- `https://app.gymbud.ai/auth/verify?email=user@example.com` - Email verification
+- `https://app.gymbud.ai/onboarding` - New user setup wizard
+
+### Session Runner — Exercise Help
+- **Component**: ExerciseHelpTicker (`client/src/components/exercise/ExerciseHelpTicker.tsx`)
+- **Mount point**: Session Runner exercise pane; requires current exerciseId prop
+- **Data**: uses app2.rpc_get_exercise_by_id(lang-aware; returns instructions_bulleted, cues, contraindications)
+- **UX**: collapsible, accessible (aria-labelledby, aria-controls, keyboard toggles)
+
+### Baseline Redirect (August 30, 2025)
+- Post-onboarding, the app calls engine-session-get-or-create, then navigates to /session/:id.
+- We do not use /session/baseline. "Baseline" is a property of the first completed session, not a route.
+
+## Navigation Patterns
+
+### Bottom Navigation
+- **Home** (`/app`) - Dashboard and today's plan
+- **Session** (`/app/session`) - Active workout runner
+- **History** (`/app/history`) - Past workout sessions
+- **Stats** (`/app/stats`) - Progress analytics and charts
+- **Settings** (`/app/settings`) - Account and app preferences
+
+### Authentication Flow
+1. **Landing** → **AuthPage** (signin/signup)
+2. **Signup** → **VerifyPage** (email confirmation)
+3. **Verification Success** → **OnboardingWizard** (new users) or **HomePage** (existing)
+4. **Password Reset** → **ResetPasswordPage** → **AuthPage**
+
+### Onboarding Flow
+1. **Profile Setup** (4 steps) → **Plan Generation** → **HomePage**
+2. Automatic plan creation via `plan-get-or-create` Edge Function
+3. Seamless transition to active training plans
+
+## Developer Features
+
+### Debug Tools (Settings → Developer Mode)
+- **Sync Events Log** - Real-time sync operation history
+- **Dead-Letter Queue Panel** - Failed sync mutations management
+  - Failed mutations browser with error details
+  - Manual retry capabilities for individual or bulk operations
+  - Mutation deletion for unrecoverable failures
+  - Comprehensive error classification and user-friendly labels
+- **Conflicts Panel** - Sync conflict resolution interface
+  - Real-time conflicts detection and display with field-level diffs
+  - User-driven resolution with "Keep mine" (override) and "Keep server" options
+  - Automatic conflict cleanup and telemetry tracking for resolution outcomes
+  - Visual indicators for conflict age and decision requirements
+
+### Telemetry Integration
+- Comprehensive event tracking for sync operations, authentication flows, and user interactions
+- Privacy-safe logging with domain-only tracking and no PII exposure
+- Real-time debugging capabilities for offline-first sync system
+
+## i18n Coverage
+- **Complete EN/PT-BR localization** for all routes and components
+- **Namespace structure**: 14 translation files per language
+- **Context-aware translations** including developer UI strings
+- **Cultural adaptation** for Brazilian Portuguese conventions
 
 ## App Routes (`/app/*`)
 
