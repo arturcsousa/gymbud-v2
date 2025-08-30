@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
 import { ok, fail, byteSize, jsonResponse } from '../_shared/http.ts';
 import { requireUser, getClient } from '../_shared/auth.ts';
 import { z, ZodError } from 'https://deno.land/x/zod@v3.23.8/mod.ts';
@@ -31,14 +30,8 @@ serve(async (req) => {
     return jsonResponse(fail(code, 'Authentication required'), 401);
   }
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-  const authHeader = req.headers.get("Authorization") ?? "";
-
-  // IMPORTANT: run under the *end-user* JWT so RLS applies.
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: authHeader } },
-  });
+  // Get authenticated Supabase client
+  const { supabase } = getClient(req);
 
   let body: unknown;
   try { 

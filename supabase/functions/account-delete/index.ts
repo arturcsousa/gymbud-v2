@@ -1,5 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { requireUser, getClient } from '../_shared/auth.ts'
+import { ok, fail, jsonResponse } from '../_shared/http.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,35 +13,11 @@ serve(async (req) => {
   }
 
   try {
-    // Get user from JWT
-    const authHeader = req.headers.get('Authorization')
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: authHeader },
-        },
-      }
-    )
-
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
-    if (userError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid or expired token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
+    // Auth validation
+    const { user, supabase } = await requireUser(req)
 
     // Create service role client for cascading deletes
-    const supabaseAdmin = createClient(
+    const supabaseAdmin = getClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
@@ -52,7 +29,7 @@ serve(async (req) => {
       // Delete user data in dependency order (RLS will ensure only user's data is deleted)
       
       // 1. Delete logged_sets (depends on session_exercises)
-      const { error: loggedSetsError } = await supabaseClient
+      const { error: loggedSetsError } = await supabase
         .from('logged_sets')
         .delete()
         .eq('user_id', user.id)
@@ -64,7 +41,7 @@ serve(async (req) => {
       }
 
       // 2. Delete session_exercises (depends on sessions)
-      const { error: sessionExercisesError } = await supabaseClient
+      const { error: sessionExercisesError } = await supabase
         .from('session_exercises')
         .delete()
         .eq('user_id', user.id)
@@ -76,7 +53,7 @@ serve(async (req) => {
       }
 
       // 3. Delete sessions (depends on plans)
-      const { error: sessionsError } = await supabaseClient
+      const { error: sessionsError } = await supabase
         .from('sessions')
         .delete()
         .eq('user_id', user.id)
@@ -88,7 +65,7 @@ serve(async (req) => {
       }
 
       // 4. Delete plans
-      const { error: plansError } = await supabaseClient
+      const { error: plansError } = await supabase
         .from('plans')
         .delete()
         .eq('user_id', user.id)
@@ -100,7 +77,7 @@ serve(async (req) => {
       }
 
       // 5. Delete coach_audit records
-      const { error: coachAuditError } = await supabaseClient
+      const { error: coachAuditError } = await supabase
         .from('coach_audit')
         .delete()
         .eq('user_id', user.id)
@@ -112,7 +89,7 @@ serve(async (req) => {
       }
 
       // 6. Mark profile for deletion (instead of deleting immediately)
-      const { error: profileError } = await supabaseClient
+      const { error: profileError } = await supabase
         .from('profiles')
         .update({ 
           deletion_requested: true,
@@ -130,43 +107,23 @@ serve(async (req) => {
       const hasErrors = deletionResults.some(result => result.error)
       
       if (hasErrors) {
-        return new Response(
-          JSON.stringify({ 
-            error: 'Partial deletion failure', 
-            details: deletionResults,
-            message: 'Some data could not be deleted. Please contact support.'
-          }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
+        return fail(500, 'Partial deletion failure', deletionResults, 'Some data could not be deleted. Please contact support.')
       }
 
       // All deletions successful
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: 'Account data deleted successfully',
-          details: deletionResults
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return ok({ 
+        success: true, 
+        message: 'Account data deleted successfully',
+        details: deletionResults
+      })
 
     } catch (error) {
       console.error('Account deletion error:', error)
-      return new Response(
-        JSON.stringify({ 
-          error: 'Account deletion failed', 
-          message: error.message,
-          details: deletionResults
-        }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return fail(500, 'Account deletion failed', deletionResults, error.message)
     }
 
   } catch (error) {
     console.error('Account deletion function error:', error)
-    return new Response(
-      JSON.stringify({ error: 'Internal server error', message: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return fail(500, 'Internal server error', null, error.message)
   }
 })

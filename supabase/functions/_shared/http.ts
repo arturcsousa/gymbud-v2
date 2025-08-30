@@ -62,27 +62,44 @@ export function json(status: number, body: unknown) {
   return new Response(JSON.stringify(body), { status, headers: CORS_HEADERS });
 }
 
+// Function overloads
 export function err(
   status: number,
   code: string,
   message: string,
   details?: unknown
-) {
-  return json(status, { ok: false, error: { code, message, details } });
-}
-
+): Response;
 export function err(
   code: ApiErrorCode,
   message: string,
   details?: unknown
+): Response;
+// Implementation
+export function err(
+  statusOrCode: number | ApiErrorCode,
+  codeOrMessage: string,
+  messageOrDetails?: string | unknown,
+  details?: unknown
 ): Response {
-  return new Response(JSON.stringify({ 
-    ok: false, 
-    error: { code, message, details } 
-  }), { 
-    status: getStatusCode(code), 
-    headers: CORS_HEADERS 
-  });
+  if (typeof statusOrCode === 'number') {
+    // First overload: err(status, code, message, details?)
+    const status = statusOrCode;
+    const code = codeOrMessage;
+    const message = messageOrDetails as string;
+    return json(status, { ok: false, error: { code, message, details } });
+  } else {
+    // Second overload: err(code, message, details?)
+    const code = statusOrCode;
+    const message = codeOrMessage;
+    const errorDetails = messageOrDetails;
+    return new Response(JSON.stringify({ 
+      ok: false, 
+      error: { code, message, details: errorDetails } 
+    }), { 
+      status: getStatusCode(code), 
+      headers: CORS_HEADERS 
+    });
+  }
 }
 
 export function toHttpError(error: unknown): Response {
