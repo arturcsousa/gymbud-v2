@@ -100,14 +100,34 @@ function ReviewPage() {
       }
 
       // Call plan creation Edge Function
+      console.log('=== CLIENT: Starting plan creation ===');
+      console.log('Plan seed being sent:', JSON.stringify(planSeed, null, 2));
+      
       const { data, error } = await supabase.functions.invoke('plan-get-or-create', {
         body: { seed: planSeed }
       })
 
-      if (error) throw error
+      console.log('=== CLIENT: Edge Function response ===');
+      console.log('Response data:', data);
+      console.log('Response error:', error);
+
+      if (error) {
+        console.error('=== CLIENT: Edge Function error details ===');
+        console.error('Error message:', error.message);
+        console.error('Error context:', error.context);
+        console.error('Full error object:', error);
+        throw error
+      }
 
       const response = data as PlanCreateResponse
+      console.log('=== CLIENT: Parsed response ===');
+      console.log('Response type:', typeof response);
+      console.log('Response content:', response);
+      
       if ('error' in response) {
+        console.error('=== CLIENT: Response contains error ===');
+        console.error('Response error detail:', response.detail);
+        console.error('Response error message:', response.error);
         throw new Error(response.detail || response.error || 'Failed to create plan')
       }
 

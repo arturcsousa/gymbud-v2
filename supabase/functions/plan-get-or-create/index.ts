@@ -127,8 +127,14 @@ function isPlanSeed(value: unknown): value is PlanSeed {
 }
 
 Deno.serve(async (req) => {
+  console.log('=== PLAN-GET-OR-CREATE START ===');
+  console.log('Request method:', req.method);
+  console.log('Request URL:', req.url);
+  console.log('Request headers:', Object.fromEntries(req.headers.entries()));
+  
   // Handle CORS preflight if this ever gets called cross-origin
   if (req.method === "OPTIONS") {
+    console.log('Handling OPTIONS request');
     return new Response(null, {
       headers: {
         "Access-Control-Allow-Origin": "*",
@@ -139,30 +145,37 @@ Deno.serve(async (req) => {
   }
 
   if (req.method !== "POST") {
+    console.log('Invalid method, returning 405');
     return json(405, fail('method_not_allowed', 'POST required'));
   }
 
+  console.log('Starting authentication...');
   // Use shared auth pattern with error handling
   let user, supabase;
   try {
     const authResult = await requireUser(req);
     user = authResult.user;
     supabase = authResult.supabase;
+    console.log('Authentication successful, user ID:', user.id);
   } catch (error) {
+    console.error('Authentication failed:', error);
     return json(401, fail('auth_invalid', 'Authentication failed'));
   }
   
   const userId = user.id;
 
+  console.log('Parsing request body...');
   let body: InputBody = {};
   try {
     body = (await req.json()) as InputBody;
     console.log('Received request body:', JSON.stringify(body, null, 2));
-  } catch {
+  } catch (error) {
+    console.log('Failed to parse request body (allowing empty):', error);
     // allow empty body for promote-from-draft path
   }
 
   try {
+    console.log('Checking for existing ACTIVE plan...');
     // 1) If ACTIVE exists, return it
     const { data: active, error: activeErr } = await supabase
       .schema("app2")
@@ -172,8 +185,17 @@ Deno.serve(async (req) => {
       .eq("status", "active")
       .maybeSingle();
 
-    if (activeErr) return json(500, fail('internal', activeErr.message));
-    if (active) return json(200, ok({ plan_id: active.id, status: "active" }));
+    if (activeErr) {
+      console.error('Error checking for active plan:', activeErr);
+      return json(500, fail('internal', activeErr.message));
+    }
+    
+    if (active) {
+      console.log('Found existing active plan:', active.id);
+      return json(200, ok({ plan_id: active.id, status: "active" }));
+    }
+    
+    console.log('No active plan found, checking for DRAFT...');
 
     // 2) Try to find a DRAFT to promote
     const { data: draft, error: draftErr } = await supabase
@@ -186,9 +208,13 @@ Deno.serve(async (req) => {
       .limit(1)
       .maybeSingle();
 
-    if (draftErr) return json(500, fail('internal', draftErr.message));
+    if (draftErr) {
+      console.error('Error checking for draft plan:', draftErr);
+      return json(500, fail('internal', draftErr.message));
+    }
 
     if (draft) {
+      console.log('Found draft plan to promote:', draft.id);
       const newSeed = typeof body.seed !== "undefined" ? body.seed : (draft.seed ?? {});
       const { data: promoted, error: promoteErr } = await supabase
         .schema("app2")
@@ -198,12 +224,19 @@ Deno.serve(async (req) => {
         .select("id")
         .single();
 
-      if (promoteErr) return json(409, fail('conflict_promote_failed', promoteErr.message));
+      if (promoteErr) {
+        console.error('Error promoting draft plan:', promoteErr);
+        return json(409, fail('conflict_promote_failed', promoteErr.message));
+      }
+      
+      console.log('Successfully promoted draft to active:', promoted.id);
       return json(200, ok({ plan_id: promoted.id, status: "active" }));
     }
 
+    console.log('No draft found, creating new plan...');
     // 3) No ACTIVE or DRAFT — must INSERT using provided seed
     if (typeof body.seed === "undefined" || body.seed === null) {
+      console.log('No seed provided for new plan creation');
       return json(400, fail('invalid_payload', 'Seed is required when no draft exists.'));
     }
 
@@ -217,7 +250,7 @@ Deno.serve(async (req) => {
     
     console.log('Plan seed validation passed');
     const planFields = extractPlanFields(planSeed);
-
+    
     console.log('Plan insertion data:', {
       user_id: userId,
       status: "active",
@@ -225,6 +258,7 @@ Deno.serve(async (req) => {
       ...planFields
     });
 
+    console.log('Attempting database insert...');
     const { data: inserted, error: insertErr } = await supabase
       .schema("app2")
       .from("plans")
@@ -239,12 +273,21 @@ Deno.serve(async (req) => {
 
     if (insertErr) {
       console.error('Database insert error:', insertErr);
+      console.error('Insert error details:', {
+        code: insertErr.code,
+        message: insertErr.message,
+        details: insertErr.details,
+        hint: insertErr.hint
+      });
       return json(409, fail('version_conflict', insertErr.message));
     }
+    
+    console.log('Successfully created new plan:', inserted.id);
     return json(200, ok({ plan_id: inserted.id, status: "active" }));
 
   } catch (error) {
     console.error("Unexpected error in plan-get-or-create:", error);
+    console.error("Error stack:", error.stack);
     return json(500, fail('internal', error.message));
   }
 });
