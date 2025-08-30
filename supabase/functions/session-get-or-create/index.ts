@@ -2,7 +2,7 @@
 // Simplified session creation that works with existing database schema
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { getClient, requireUser } from "../_shared/auth.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import { ok, err, toHttpError, options, CORS_HEADERS } from "../_shared/http.ts";
 
 type ReqBody = {
@@ -12,6 +12,13 @@ type ReqBody = {
   baseline?: boolean;          // mark session as baseline
   populate?: boolean;          // auto-populate exercises if empty
 };
+
+function json(status: number, body: any) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' }
+  });
+}
 
 serve(async (req) => {
   console.log('=== SESSION-GET-OR-CREATE START ===');
@@ -26,9 +33,25 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Starting authentication...');
-    const { user, supabase } = await requireUser(req, { allowServiceRole: false });
-    console.log('Auth successful, user ID:', user.id);
+    // Manual auth handling with explicit Authorization header forwarding
+    const authz = req.headers.get('Authorization') ?? '';
+    if (!authz) {
+      return json(401, { ok: false, error: { code: 'NO_AUTH', message: 'Missing Authorization header' } });
+    }
+
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,         // keep anon; RLS is enforced via Authorization below
+      { global: { headers: { Authorization: authz } } }
+    );
+
+    // get user id (preferred)
+    const { data: userData, error: userErr } = await supabase.auth.getUser();
+    if (userErr || !userData?.user?.id) {
+      return json(401, { ok: false, error: { code: 'NO_USER', message: userErr?.message ?? 'Auth context missing' } });
+    }
+    const userId = userData.user.id;
+    console.log('Auth successful, user ID:', userId);
 
     // IMPORTANT: scope to the app2 schema
     const db = supabase.schema('app2');
@@ -62,7 +85,7 @@ serve(async (req) => {
       const plan = await db
         .from("plans")
         .select("id")
-        .eq("user_id", user.id)
+        .eq("user_id", userId)
         .eq("status", "active")
         .limit(1)
         .maybeSingle();
@@ -139,7 +162,7 @@ serve(async (req) => {
     // Try RPC first
     console.log('Attempting RPC create_training_session_from_plan...');
     const sessionResult = await supabase.rpc("create_training_session_from_plan", {
-      p_user_id: user.id,
+      p_user_id: userId,
       p_locale: body?.lang ?? "en"
     });
 
@@ -251,7 +274,7 @@ serve(async (req) => {
     // Audit log
     console.log('Creating audit log entry...');
     const auditData = {
-      user_id: user.id,
+      user_id: userId,
       action: "session_get_or_create",
       meta: { plan_id: planId, session_id: sessionId, reused: false, date: resolvedDate }
     };
