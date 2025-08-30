@@ -10,11 +10,14 @@ export type ApiErrorCode =
   | 'auth_missing'
   | 'auth_invalid'
   | 'invalid_payload'
+  | 'invalid_seed'
   | 'payload_too_large'
   | 'rate_limited'
   | 'version_conflict'
+  | 'conflict_promote_failed'
   | 'rls_denied'
   | 'not_found'
+  | 'method_not_allowed'
   | 'internal';
 
 export type ApiError = { 
@@ -121,11 +124,14 @@ function getStatusCode(code: ApiErrorCode): number {
     case 'rate_limited':
       return 429;
     case 'version_conflict':
+    case 'conflict_promote_failed':
       return 409;
     case 'rls_denied':
       return 403;
     case 'not_found':
       return 404;
+    case 'method_not_allowed':
+      return 405;
     case 'internal':
     default:
       return 500;

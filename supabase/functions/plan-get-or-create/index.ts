@@ -7,7 +7,8 @@
 
 // Run with user-context (RLS enforced) by forwarding Authorization header.
 
-import "https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts";
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import "@supabase/functions-js";
 import { requireUser } from '../_shared/auth.ts';
 import { jsonResponse, ok, fail } from '../_shared/http.ts';
 
@@ -92,6 +93,40 @@ function extractPlanFields(seed: PlanSeed) {
   };
 }
 
+function isPlanSeed(value: unknown): value is PlanSeed {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  
+  const obj = value as Record<string, unknown>;
+  
+  return (
+    typeof obj.goal_primary === 'string' &&
+    typeof obj.days_per_week === 'number' &&
+    Array.isArray(obj.days_of_week) &&
+    typeof obj.environment === 'string' &&
+    Array.isArray(obj.equipment) &&
+    typeof obj.experience_level === 'string' &&
+    typeof obj.confidence === 'object' &&
+    obj.confidence !== null &&
+    !Array.isArray(obj.confidence) &&
+    Array.isArray(obj.constraints) &&
+    typeof obj.warmup_style === 'string' &&
+    Array.isArray(obj.mobility_focus) &&
+    typeof obj.rest_preference === 'string' &&
+    typeof obj.intensity_style === 'string' &&
+    typeof obj.rpe_coaching_level === 'string' &&
+    typeof obj.first_name === 'string' &&
+    typeof obj.last_name === 'string' &&
+    typeof obj.biometrics === 'object' &&
+    obj.biometrics !== null &&
+    !Array.isArray(obj.biometrics) &&
+    typeof obj.ai_tone === 'string' &&
+    typeof obj.units === 'string' &&
+    typeof obj.date_format === 'string'
+  );
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight if this ever gets called cross-origin
   if (req.method === "OPTIONS") {
@@ -137,7 +172,7 @@ Deno.serve(async (req) => {
       .eq("status", "active")
       .maybeSingle();
 
-    if (activeErr) return jsonResponse(fail('select_active_failed', activeErr.message), 500);
+    if (activeErr) return jsonResponse(fail('internal', activeErr.message), 500);
     if (active) return jsonResponse(ok({ plan_id: active.id, status: "active" }), 200);
 
     // 2) Try to find a DRAFT to promote
@@ -151,7 +186,7 @@ Deno.serve(async (req) => {
       .limit(1)
       .maybeSingle();
 
-    if (draftErr) return jsonResponse(fail('select_draft_failed', draftErr.message), 500);
+    if (draftErr) return jsonResponse(fail('internal', draftErr.message), 500);
 
     if (draft) {
       const newSeed = typeof body.seed !== "undefined" ? body.seed : (draft.seed ?? {});
@@ -169,10 +204,14 @@ Deno.serve(async (req) => {
 
     // 3) No ACTIVE or DRAFT — must INSERT using provided seed
     if (typeof body.seed === "undefined" || body.seed === null) {
-      return jsonResponse(fail('invalid_seed', 'Seed is required when no draft exists.'), 400);
+      return jsonResponse(fail('invalid_payload', 'Seed is required when no draft exists.'), 400);
     }
 
-    const planSeed = body.seed as PlanSeed;
+    const planSeed = body.seed;
+    if (!isPlanSeed(planSeed)) {
+      return jsonResponse(fail('invalid_payload', 'Invalid seed provided.'), 400);
+    }
+
     const planFields = extractPlanFields(planSeed);
 
     const { data: inserted, error: insertErr } = await supabase
@@ -181,17 +220,17 @@ Deno.serve(async (req) => {
       .insert({ 
         user_id: userId, 
         status: "active", 
-        seed: body.seed as Json,
+        seed: planSeed,
         ...planFields
       })
       .select("id")
       .single();
 
-    if (insertErr) return jsonResponse(fail('conflict_insert_failed', insertErr.message), 409);
+    if (insertErr) return jsonResponse(fail('version_conflict', insertErr.message), 409);
     return jsonResponse(ok({ plan_id: inserted.id, status: "active" }), 200);
 
   } catch (error) {
     console.error("Unexpected error in plan-get-or-create:", error);
-    return jsonResponse(fail('internal_server_error', error.message), 500);
+    return jsonResponse(fail('internal', error.message), 500);
   }
 });

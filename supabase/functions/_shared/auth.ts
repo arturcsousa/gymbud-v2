@@ -1,6 +1,6 @@
-import "https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import type { User } from "https://esm.sh/@supabase/supabase-js@2";
+import "@supabase/functions-js";
+import { createClient } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
 
 export function getClient(req: Request) {
   const url = Deno.env.get('SUPABASE_URL')!;
