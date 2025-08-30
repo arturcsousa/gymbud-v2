@@ -3,6 +3,8 @@
 ## Overview
 Complete internationalization system supporting English (EN) and Portuguese Brazil (PT-BR) with namespace-based organization and locale-aware data integration.
 
+**Recent Updates (2025-08-30)**: Fixed CORS issues in Edge Functions that were preventing proper i18n-aware API calls during onboarding flow.
+
 ## Languages
 - **English (en)**: Default language, fallback for missing keys
 - **Portuguese Brazil (pt-BR)**: Full localization with Brazilian conventions
