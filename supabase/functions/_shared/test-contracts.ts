@@ -1,5 +1,7 @@
 #!/usr/bin/env -S deno run --allow-net --allow-env
 
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+
 /**
  * Contract Tests for Edge Function Validation
  * 
