@@ -4,7 +4,7 @@
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { getClient, requireUser } from "../_shared/auth.ts";
-import { ok, err, toHttpError } from "../_shared/http.ts";
+import { ok, err, toHttpError, options, CORS_HEADERS } from "../_shared/http.ts";
 
 type ReqBody = {
   date?: string;               // ISO date; if absent, use user TZ "today"
@@ -26,6 +26,10 @@ function toISODateInTZ(tz: string): string {
 }
 
 serve(async (req) => {
+  // Handle CORS preflight requests
+  const corsResponse = options(req);
+  if (corsResponse) return corsResponse;
+
   try {
     const { user, supabase } = await requireUser(req, { allowServiceRole: false });
     const body = (await req.json().catch(() => ({}))) as Partial<ReqBody> | undefined;
@@ -53,7 +57,10 @@ serve(async (req) => {
         .eq("session_id", existing.data.id)
         .order("order_index", { ascending: true });
       if (sx.error) throw sx.error;
-      return ok({ session: existing.data, exercises: sx.data });
+      return new Response(JSON.stringify(ok({ session: existing.data, exercises: sx.data })), {
+        status: 200,
+        headers: CORS_HEADERS
+      });
     }
 
     // 3) New session skeleton
@@ -114,7 +121,10 @@ serve(async (req) => {
 
     if (exerciseIds.length === 0) {
       await supabase.from("sessions").delete().eq("id", sessionId);
-      return err("not_found", "No exercises available for the given constraints.");
+      return new Response(JSON.stringify(err("not_found", "No exercises available for the given constraints.")), {
+        status: 404,
+        headers: CORS_HEADERS
+      });
     }
 
     // 7) Build per-exercise prescription with overload/deload and seed merge
@@ -188,7 +198,10 @@ serve(async (req) => {
 
     if (session.error) throw session.error;
 
-    return ok({ session: session.data, exercises: sx.data });
+    return new Response(JSON.stringify(ok({ session: session.data, exercises: sx.data })), {
+      status: 200,
+      headers: CORS_HEADERS
+    });
   } catch (e) {
     return toHttpError(e);
   }
