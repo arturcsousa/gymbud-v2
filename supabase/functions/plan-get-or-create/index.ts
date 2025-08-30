@@ -157,6 +157,7 @@ Deno.serve(async (req) => {
   let body: InputBody = {};
   try {
     body = (await req.json()) as InputBody;
+    console.log('Received request body:', JSON.stringify(body, null, 2));
   } catch {
     // allow empty body for promote-from-draft path
   }
@@ -207,11 +208,22 @@ Deno.serve(async (req) => {
     }
 
     const planSeed = body.seed;
+    console.log('Plan seed validation input:', JSON.stringify(planSeed, null, 2));
+    
     if (!isPlanSeed(planSeed)) {
+      console.log('Plan seed validation failed');
       return json(400, fail('invalid_payload', 'Invalid seed provided.'));
     }
-
+    
+    console.log('Plan seed validation passed');
     const planFields = extractPlanFields(planSeed);
+
+    console.log('Plan insertion data:', {
+      user_id: userId,
+      status: "active",
+      seed: planSeed,
+      ...planFields
+    });
 
     const { data: inserted, error: insertErr } = await supabase
       .schema("app2")
@@ -225,7 +237,10 @@ Deno.serve(async (req) => {
       .select("id")
       .single();
 
-    if (insertErr) return json(409, fail('version_conflict', insertErr.message));
+    if (insertErr) {
+      console.error('Database insert error:', insertErr);
+      return json(409, fail('version_conflict', insertErr.message));
+    }
     return json(200, ok({ plan_id: inserted.id, status: "active" }));
 
   } catch (error) {
