@@ -159,9 +159,7 @@ Deno.serve(async (req) => {
     let profileData = {
       p_user_id: userId,
       p_first_name: 'User', // Default fallback
-      p_last_name: 'User',   // Default fallback
-      p_height_cm: 170,      // Default fallback
-      p_weight_kg: 70,       // Default fallback
+      p_last_name: 'User',  // Default fallback
       p_updated_at: new Date().toISOString()
     };
 
@@ -173,8 +171,8 @@ Deno.serve(async (req) => {
         p_height_cm: body.seed.biometrics.height_cm,
         p_weight_kg: body.seed.biometrics.weight_kg,
         p_body_fat_pct: body.seed.biometrics.body_fat_pct || null,
-        p_rhr_bpm: body.seed.biometrics.rhr_bpm || null,
-        p_birthdate: body.seed.biometrics.birthdate || null,
+        p_resting_hr: body.seed.biometrics.rhr_bpm || null,
+        p_date_of_birth: body.seed.biometrics.birthdate ? new Date(body.seed.biometrics.birthdate).toISOString().split('T')[0] : null,
         p_updated_at: new Date().toISOString()
       };
     }

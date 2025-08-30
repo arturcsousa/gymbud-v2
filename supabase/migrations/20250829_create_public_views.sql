@@ -1,4 +1,3 @@
-
 -- Migration: Create SECURITY DEFINER functions for Edge Function access to app2 tables
 -- Date: 2025-08-29
 
@@ -20,36 +19,36 @@ DROP FUNCTION IF EXISTS public.ef_create_plan CASCADE;
 
 -- Create SECURITY DEFINER functions that bypass RLS for Edge Functions
 
--- Function to upsert profile with all required fields
+-- Function to upsert profile with correct column names
 CREATE OR REPLACE FUNCTION public.ef_upsert_profile(
   p_user_id uuid,
   p_first_name text,
   p_last_name text,
-  p_height_cm integer,
-  p_weight_kg numeric,
+  p_height_cm numeric DEFAULT NULL,
+  p_weight_kg numeric DEFAULT NULL,
   p_body_fat_pct numeric DEFAULT NULL,
-  p_rhr_bpm integer DEFAULT NULL,
-  p_birthdate date DEFAULT NULL,
+  p_resting_hr integer DEFAULT NULL,
+  p_date_of_birth date DEFAULT NULL,
   p_updated_at timestamptz DEFAULT now()
 ) RETURNS void AS $$
 BEGIN
   INSERT INTO app2.profiles (
     user_id, first_name, last_name, height_cm, weight_kg, 
-    body_fat_pct, rhr_bpm, birthdate, updated_at
+    body_fat_pct, resting_hr, date_of_birth, updated_at
   )
   VALUES (
     p_user_id, p_first_name, p_last_name, p_height_cm, p_weight_kg,
-    p_body_fat_pct, p_rhr_bpm, p_birthdate, p_updated_at
+    p_body_fat_pct, p_resting_hr, p_date_of_birth, p_updated_at
   )
   ON CONFLICT (user_id) 
   DO UPDATE SET 
     first_name = p_first_name,
     last_name = p_last_name,
-    height_cm = p_height_cm,
-    weight_kg = p_weight_kg,
-    body_fat_pct = p_body_fat_pct,
-    rhr_bpm = p_rhr_bpm,
-    birthdate = p_birthdate,
+    height_cm = COALESCE(p_height_cm, app2.profiles.height_cm),
+    weight_kg = COALESCE(p_weight_kg, app2.profiles.weight_kg),
+    body_fat_pct = COALESCE(p_body_fat_pct, app2.profiles.body_fat_pct),
+    resting_hr = COALESCE(p_resting_hr, app2.profiles.resting_hr),
+    date_of_birth = COALESCE(p_date_of_birth, app2.profiles.date_of_birth),
     updated_at = p_updated_at;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
