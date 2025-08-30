@@ -1,5 +1,12 @@
 # GymBud v2 - Changelog
 
+## August 30, 2025 14:30 ET — Baseline Lifecycle (Triggers + Routing)
+- Added server logic to mark the first completed session as the baseline and to flip baseline flags on profiles & all plans.
+- New triggers:
+  - trg_mark_baseline_on_first_completion (sessions)
+  - trg_plans_inherit_baseline (plans)
+- Frontend rule: redirect to /session/:id after onboarding (no /session/baseline).
+
 ## August 29, 2025 19:22 ET — Plan Creation Fix After ProfilePage Simplification
 **Fixed**: Resolved 500 error in plan creation caused by enum value mismatches between frontend and database schema
 - **Root Cause**: Database enum constraints didn't match frontend values causing constraint violations

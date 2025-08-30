@@ -475,3 +475,7 @@ User Action → IndexedDB (immediate) → Mutation Queue → Sync Engine → Sup
 - **Mount point**: Session Runner exercise pane; requires current exerciseId prop
 - **Data**: uses app2.rpc_get_exercise_by_id(lang-aware; returns instructions_bulleted, cues, contraindications)
 - **UX**: collapsible, accessible (aria-labelledby, aria-controls, keyboard toggles)
+
+### Baseline Redirect (August 30, 2025)
+- Post-onboarding, the app calls engine-session-get-or-create, then navigates to /session/:id.
+- We do not use /session/baseline. "Baseline" is a property of the first completed session, not a route.

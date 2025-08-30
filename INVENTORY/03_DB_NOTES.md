@@ -93,3 +93,27 @@ Reused as-is:
 ### Variants
 - Keep `exercise_variants` to encode curated substitutions. Minimal schema:
   - `(base_exercise_id uuid, variant_exercise_id uuid, rank int, note text)`
+
+## Baseline Lifecycle (August 30, 2025)
+
+**Intent:** The first completed session after onboarding is the user's baseline. No special routes. Server ensures flags/timestamps and inheritance to future plans.
+
+**DB Columns**
+- app2.profiles.baseline_completed boolean NOT NULL DEFAULT false
+- app2.profiles.baseline_completed_at timestamptz
+- app2.plans.baseline_completed boolean NOT NULL DEFAULT false
+- app2.plans.baseline_completed_at timestamptz
+- app2.sessions.baseline boolean NOT NULL DEFAULT false
+
+**Triggers**
+- app2.trg_mark_baseline_on_first_completion (AFTER UPDATE OF status ON app2.sessions)
+  - When a user completes their very first session:
+    - Marks that session baseline=true
+    - Sets profiles.baseline_completed=true, baseline_completed_at=now(), assessment_required=false
+    - Sets all user plans baseline_completed=true, baseline_completed_at=now()
+
+- app2.trg_plans_inherit_baseline (BEFORE INSERT ON app2.plans)
+  - If profiles.baseline_completed is true, new plans start with baseline_completed=true and inherit timestamp.
+
+**Routing**
+- No /session/baseline route. Client navigates to /session/:id where :id is the created/fetched session.
