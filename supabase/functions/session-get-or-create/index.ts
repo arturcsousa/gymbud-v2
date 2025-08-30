@@ -80,6 +80,25 @@ serve(async (req) => {
     let planId = body?.plan_id ?? null;
     console.log('Initial plan_id from body:', planId);
 
+    // Verify plan ownership when plan_id is provided
+    if (planId) {
+      const chk = await db
+        .from("plans")
+        .select("id,user_id")
+        .eq("id", planId)
+        .maybeSingle();
+
+      if (chk.error) {
+        return json(500, { ok: false, error: { code: "PLAN_LOOKUP_FAILED", message: chk.error.message }});
+      }
+      if (!chk.data) {
+        return json(404, { ok: false, error: { code: "PLAN_NOT_FOUND", message: "plan_id not found" }});
+      }
+      if (chk.data.user_id !== userId) {
+        return json(403, { ok: false, error: { code: "NOT_OWNER", message: "You do not own this plan" }});
+      }
+    }
+
     if (!planId) {
       console.log('No plan_id provided, looking up active plan for user...');
       const plan = await db
@@ -176,7 +195,13 @@ serve(async (req) => {
       // If the RPC fails because of exposure/privileges, fall back to direct insert.
       const ins = await db
         .from("sessions")
-        .insert({ plan_id: planId, status: "pending", session_date: resolvedDate })
+        .insert({
+          plan_id: planId,
+          user_id: userId,
+          status: "scheduled",
+          session_date: resolvedDate,
+          baseline: !!body?.baseline,
+        })
         .select("id")
         .single();
 
