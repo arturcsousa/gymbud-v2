@@ -99,45 +99,75 @@ function ReviewPage() {
         date_format: 'dmy' // Default value - could be made configurable
       }
 
-      // Call plan creation Edge Function
+      // Step 1: Call plan creation Edge Function
       console.log('=== CLIENT: Starting plan creation ===');
       console.log('Plan seed being sent:', JSON.stringify(planSeed, null, 2));
       
-      const { data, error } = await supabase.functions.invoke('plan-get-or-create', {
+      const { data: planData, error: planError } = await supabase.functions.invoke('plan-get-or-create', {
         body: { seed: planSeed }
       })
 
-      console.log('=== CLIENT: Edge Function response ===');
-      console.log('Response data:', data);
-      console.log('Response error:', error);
+      console.log('=== CLIENT: Plan creation response ===');
+      console.log('Plan data:', planData);
+      console.log('Plan error:', planError);
 
-      if (error) {
-        console.error('=== CLIENT: Edge Function error details ===');
-        console.error('Error message:', error.message);
-        console.error('Error context:', error.context);
-        console.error('Full error object:', error);
-        throw error
+      if (planError) {
+        console.error('=== CLIENT: Plan creation error ===');
+        console.error('Error message:', planError.message);
+        console.error('Full error object:', planError);
+        throw planError
       }
 
-      const response = data as PlanCreateResponse
-      console.log('=== CLIENT: Parsed response ===');
-      console.log('Response type:', typeof response);
-      console.log('Response content:', response);
+      const planResponse = planData as PlanCreateResponse
+      console.log('=== CLIENT: Parsed plan response ===');
+      console.log('Plan response:', planResponse);
       
-      if ('error' in response) {
-        console.error('=== CLIENT: Response contains error ===');
-        console.error('Response error detail:', response.detail);
-        console.error('Response error message:', response.error);
-        throw new Error(response.detail || response.error || 'Failed to create plan')
+      if ('error' in planResponse) {
+        console.error('=== CLIENT: Plan response contains error ===');
+        console.error('Plan error detail:', planResponse.detail);
+        console.error('Plan error message:', planResponse.error);
+        throw new Error(planResponse.detail || planResponse.error || 'Failed to create plan')
       }
+
+      // Step 2: Call session creation Edge Function
+      console.log('=== CLIENT: Starting session creation ===');
+      console.log('Using plan_id:', planResponse.data.plan_id);
+      
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke('session-get-or-create', {
+        body: { 
+          plan_id: planResponse.data.plan_id,
+          // date will default to user timezone "today"
+          // timezone will be resolved from user profile
+        }
+      })
+
+      console.log('=== CLIENT: Session creation response ===');
+      console.log('Session data:', sessionData);
+      console.log('Session error:', sessionError);
+
+      if (sessionError) {
+        console.error('=== CLIENT: Session creation error ===');
+        console.error('Error message:', sessionError.message);
+        console.error('Full error object:', sessionError);
+        throw sessionError
+      }
+
+      if (!sessionData?.session?.id) {
+        console.error('=== CLIENT: Session response missing session ID ===');
+        console.error('Session response:', sessionData);
+        throw new Error('Session creation failed - no session ID returned')
+      }
+
+      console.log('=== CLIENT: Session created successfully ===');
+      console.log('Session ID:', sessionData.session.id);
 
       // Clear onboarding state
       await OnboardingStore.clearState(userId)
       
-      // Navigate to assessment/first session
-      navigate('/app/session/baseline')
+      // Navigate to the created session
+      navigate(`/session/${sessionData.session.id}`)
     } catch (error) {
-      console.error('Failed to create plan:', error)
+      console.error('Failed to create plan and session:', error)
     } finally {
       setLoading(false)
     }

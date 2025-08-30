@@ -19,12 +19,12 @@ DROP FUNCTION IF EXISTS public.ef_create_plan CASCADE;
 
 -- Create SECURITY DEFINER functions that bypass RLS for Edge Functions
 
--- Function to upsert profile with correct column names
+-- Function to upsert user profile (SECURITY DEFINER allows access to app2 schema)
 CREATE OR REPLACE FUNCTION public.ef_upsert_profile(
   p_user_id uuid,
   p_first_name text,
   p_last_name text,
-  p_height_cm numeric DEFAULT NULL,
+  p_height_cm integer DEFAULT NULL,
   p_weight_kg numeric DEFAULT NULL,
   p_body_fat_pct numeric DEFAULT NULL,
   p_resting_hr integer DEFAULT NULL,
@@ -54,8 +54,9 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Function to get active plan
-CREATE OR REPLACE FUNCTION public.ef_get_active_plan(p_user_id uuid)
-RETURNS TABLE(id uuid, status text) AS $$
+CREATE OR REPLACE FUNCTION public.ef_get_active_plan(
+  p_user_id uuid
+) RETURNS TABLE(id uuid, status text) AS $$
 BEGIN
   RETURN QUERY
   SELECT p.id, p.status::text
@@ -66,8 +67,9 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Function to get draft plan
-CREATE OR REPLACE FUNCTION public.ef_get_draft_plan(p_user_id uuid)
-RETURNS TABLE(id uuid, status text, seed jsonb) AS $$
+CREATE OR REPLACE FUNCTION public.ef_get_draft_plan(
+  p_user_id uuid
+) RETURNS TABLE(id uuid, status text, seed jsonb) AS $$
 BEGIN
   RETURN QUERY
   SELECT p.id, p.status::text, p.seed
@@ -98,13 +100,13 @@ CREATE OR REPLACE FUNCTION public.ef_create_plan(
   p_user_id uuid,
   p_seed jsonb,
   p_goals text[],
-  p_experience_level text,
+  p_experience_level app2.experience_level,
   p_years_away integer,
   p_frequency_days_per_week integer,
   p_schedule_days text[],
   p_session_duration_min integer,
-  p_environment text,
-  p_coaching_tone text,
+  p_environment app2.environment,
+  p_coaching_tone app2.coaching_tone,
   p_height_cm integer,
   p_weight_kg numeric,
   p_resting_hr integer,
@@ -120,9 +122,9 @@ BEGIN
     environment, coaching_tone, height_cm, weight_kg, resting_hr,
     body_fat_pct, locale, baseline_completed
   ) VALUES (
-    p_user_id, 'active', p_seed, p_goals, p_experience_level::app2.experience_level_enum,
+    p_user_id, 'active', p_seed, p_goals, p_experience_level,
     p_years_away, p_frequency_days_per_week, p_schedule_days, p_session_duration_min,
-    p_environment::app2.environment_enum, p_coaching_tone::app2.coaching_tone_enum,
+    p_environment, p_coaching_tone,
     p_height_cm, p_weight_kg, p_resting_hr, p_body_fat_pct, p_locale, p_baseline_completed
   )
   RETURNING app2.plans.id;
@@ -130,6 +132,11 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Grant execute permissions to authenticated users
+GRANT EXECUTE ON FUNCTION public.ef_upsert_profile TO authenticated;
+GRANT EXECUTE ON FUNCTION public.ef_get_active_plan TO authenticated;
+GRANT EXECUTE ON FUNCTION public.ef_get_draft_plan TO authenticated;
+GRANT EXECUTE ON FUNCTION public.ef_promote_draft TO authenticated;
+GRANT EXECUTE ON FUNCTION public.ef_create_plan TO authenticated;
 GRANT EXECUTE ON FUNCTION public.ef_upsert_profile TO authenticated;
 GRANT EXECUTE ON FUNCTION public.ef_get_active_plan TO authenticated;
 GRANT EXECUTE ON FUNCTION public.ef_get_draft_plan TO authenticated;
