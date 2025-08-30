@@ -54,7 +54,11 @@ Deno.serve(async (req: Request) => {
 
   try {
     const { supabase } = getClient(req);
-    const recommendations = await generateSuggestions(supabase, user.id, payload);
+    
+    // IMPORTANT: scope to the app2 schema
+    const db = supabase.schema('app2');
+    
+    const recommendations = await generateSuggestions(db, user.id, payload);
     
     return cors(ok({ items: recommendations }));
   } catch (error) {
@@ -64,12 +68,12 @@ Deno.serve(async (req: Request) => {
 });
 
 async function generateSuggestions(
-  supabase: any,
+  db: any,
   userId: string,
   payload: CoachSuggestRequest
 ): Promise<CoachRecommendation[]> {
   // Load session context with RLS
-  const { data: session } = await supabase
+  const { data: session } = await db
     .from('sessions')
     .select('*')
     .eq('id', payload.session_id)
@@ -81,7 +85,7 @@ async function generateSuggestions(
   }
 
   // Load session exercises
-  const { data: sessionExercises } = await supabase
+  const { data: sessionExercises } = await db
     .from('session_exercises')
     .select(`
       *,
@@ -104,7 +108,7 @@ async function generateSuggestions(
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   
-  const { data: recentSets } = await supabase
+  const { data: recentSets } = await db
     .from('logged_sets')
     .select(`
       *,
@@ -135,11 +139,11 @@ async function generateSuggestions(
       );
       
       if (needsUnavailableEquipment) {
-        const substitute = await findSubstitute(supabase, exercise, constraints.no_equipment, payload.language);
+        const substitute = await findSubstitute(db, exercise, constraints.no_equipment, payload.language);
         if (substitute) {
           // Check for existing identical suggestion
           const existing = await checkExistingSuggestion(
-            supabase, 
+            db, 
             payload.session_id, 
             sessionExercise.id, 
             'substitute', 
@@ -149,7 +153,7 @@ async function generateSuggestions(
           
           if (!existing) {
             const recommendation = await createRecommendation(
-              supabase,
+              db,
               userId,
               'substitute',
               'no_equipment',
@@ -172,7 +176,7 @@ async function generateSuggestions(
     // Time constraint deload
     if (constraints.time_limit_min && constraints.time_limit_min < 45) {
       const existing = await checkExistingSuggestion(
-        supabase,
+        db,
         payload.session_id,
         sessionExercise.id,
         'deload',
@@ -181,7 +185,7 @@ async function generateSuggestions(
       
       if (!existing) {
         const recommendation = await createRecommendation(
-          supabase,
+          db,
           userId,
           'deload',
           'time_limit',
@@ -204,7 +208,7 @@ async function generateSuggestions(
     // Fatigue-based adjustments
     if (constraints.fatigue === 'high') {
       const existing = await checkExistingSuggestion(
-        supabase,
+        db,
         payload.session_id,
         sessionExercise.id,
         'tweak_prescription',
@@ -213,7 +217,7 @@ async function generateSuggestions(
       
       if (!existing) {
         const recommendation = await createRecommendation(
-          supabase,
+          db,
           userId,
           'tweak_prescription',
           'fatigue',
@@ -241,13 +245,13 @@ async function generateSuggestions(
 }
 
 async function findSubstitute(
-  supabase: any, 
+  db: any, 
   originalExercise: any, 
   unavailableEquipment: string[],
   language: string
 ): Promise<any> {
   // Query localized exercise library for substitutes
-  const { data: alternatives } = await supabase
+  const { data: alternatives } = await db
     .from('v_exercise_library_localized')
     .select('*')
     .eq('language', language)
@@ -262,14 +266,14 @@ async function findSubstitute(
 }
 
 async function checkExistingSuggestion(
-  supabase: any,
+  db: any,
   sessionId: string,
   sessionExerciseId: string,
   kind: string,
   cause: string,
   suggestedExerciseId?: string
 ): Promise<boolean> {
-  const query = supabase
+  const query = db
     .from('coach_recommendations')
     .select('id')
     .eq('session_id', sessionId)
@@ -287,7 +291,7 @@ async function checkExistingSuggestion(
 }
 
 async function createRecommendation(
-  supabase: any,
+  db: any,
   userId: string,
   kind: string,
   cause: string,
@@ -295,7 +299,7 @@ async function createRecommendation(
   suggestedExerciseId: string | undefined,
   deltaJson: any
 ): Promise<CoachRecommendation> {
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from('coach_recommendations')
     .insert({
       kind,

@@ -30,6 +30,9 @@ serve(async (req) => {
   // Auth validation
   const { user, supabase } = await requireUser(req);
 
+  // IMPORTANT: scope to the app2 schema
+  const db = supabase.schema('app2');
+
   let body: PullRequest = {};
   try {
     body = await req.json();
@@ -43,8 +46,7 @@ serve(async (req) => {
   try {
     // Fetch sessions updated since last pull
     // Uses idx_sessions_user_updated_at with user_id as left-most column
-    const { data: sessions, error: sessionsError } = await supabase
-      .schema("app2")
+    const { data: sessions, error: sessionsError } = await db
       .from("sessions")
       .select("*")
       .eq("user_id", user.id)
@@ -57,8 +59,7 @@ serve(async (req) => {
 
     // Fetch session_exercises updated since last pull
     // Uses idx_session_exercises_session_updated_at via JOIN to sessions
-    const { data: sessionExercises, error: sessionExercisesError } = await supabase
-      .schema("app2")
+    const { data: sessionExercises, error: sessionExercisesError } = await db
       .from("session_exercises")
       .select(`
         *,
@@ -74,8 +75,7 @@ serve(async (req) => {
 
     // Fetch logged_sets created since last pull (insert-only, use created_at)
     // Uses idx_logged_sets_sx_created_at and cascade join to user
-    const { data: loggedSets, error: loggedSetsError } = await supabase
-      .schema("app2")
+    const { data: loggedSets, error: loggedSetsError } = await db
       .from("logged_sets")
       .select(`
         *,

@@ -257,7 +257,7 @@ serve(async (req) => {
     };
     console.log('Audit data:', auditData);
     
-    await supabase.from("app2.coach_audit").insert(auditData).catch((e) => {
+    await db.from("coach_audit").insert(auditData).catch((e) => {
       console.warn('Audit log failed (non-blocking):', e);
     });
 

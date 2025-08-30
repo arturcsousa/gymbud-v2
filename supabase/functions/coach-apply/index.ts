@@ -40,7 +40,9 @@ Deno.serve(async (req: Request) => {
 
   try {
     const { supabase } = getClient(req);
-    const result = await applyRecommendation(supabase, user.id, payload.recommendation_id);
+    // IMPORTANT: scope to the app2 schema
+    const db = supabase.schema('app2');
+    const result = await applyRecommendation(db, user.id, payload.recommendation_id);
     
     return cors(ok({ applied: result }));
   } catch (error) {
@@ -50,7 +52,7 @@ Deno.serve(async (req: Request) => {
     }
     if (error.message === 'Recommendation already applied') {
       // Return success for idempotency
-      const existingResult = await getExistingApplyResult(getClient(req).supabase, payload.recommendation_id);
+      const existingResult = await getExistingApplyResult(getClient(req).supabase.schema('app2'), payload.recommendation_id);
       return cors(ok({ applied: existingResult }));
     }
     return cors(err(500, 'INTERNAL_ERROR', 'Failed to apply recommendation'));
@@ -58,12 +60,12 @@ Deno.serve(async (req: Request) => {
 });
 
 async function applyRecommendation(
-  supabase: any,
+  db: any,
   userId: string,
   recommendationId: string
 ): Promise<ApplyResult> {
   // Fetch recommendation with RLS enforcement
-  const { data: recommendation, error: recError } = await supabase
+  const { data: recommendation, error: recError } = await db
     .from('coach_recommendations')
     .select(`
       *,
@@ -81,7 +83,7 @@ async function applyRecommendation(
 
   if (recError || !recommendation) {
     // Check if already applied for idempotency
-    const { data: appliedRec } = await supabase
+    const { data: appliedRec } = await db
       .from('coach_recommendations')
       .select('*')
       .eq('id', recommendationId)
@@ -152,7 +154,7 @@ async function applyRecommendation(
   if (Object.keys(updateData).length > 0) {
     updateData.updated_at = new Date().toISOString();
     
-    const { error: updateError } = await supabase
+    const { error: updateError } = await db
       .from('session_exercises')
       .update(updateData)
       .eq('id', sessionExercise.id);
@@ -163,7 +165,7 @@ async function applyRecommendation(
   }
 
   // Mark recommendation as applied
-  const { error: recUpdateError } = await supabase
+  const { error: recUpdateError } = await db
     .from('coach_recommendations')
     .update({
       status: 'applied',
@@ -185,7 +187,7 @@ async function applyRecommendation(
     changes: changes
   };
 
-  const { error: auditError } = await supabase
+  const { error: auditError } = await db
     .from('coach_audit')
     .insert({
       event: 'coach_apply',
@@ -206,11 +208,11 @@ async function applyRecommendation(
 }
 
 async function getExistingApplyResult(
-  supabase: any,
+  db: any,
   recommendationId: string
 ): Promise<ApplyResult> {
   // Try to reconstruct result from audit log
-  const { data: auditLog } = await supabase
+  const { data: auditLog } = await db
     .from('coach_audit')
     .select('meta')
     .eq('event', 'coach_apply')

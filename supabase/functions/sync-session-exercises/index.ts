@@ -33,6 +33,9 @@ serve(async (req) => {
   // Get authenticated Supabase client
   const { supabase } = getClient(req);
 
+  // IMPORTANT: scope to the app2 schema
+  const db = supabase.schema('app2');
+
   let body: unknown;
   try { 
     body = await req.json(); 
@@ -76,7 +79,7 @@ serve(async (req) => {
 
     try {
       // Use RPC for idempotent upsert with server-side user_id binding
-      const { error } = await supabase.rpc('upsert_session_exercise_v1', {
+      const { error } = await db.rpc('upsert_session_exercise_v1', {
         p_id: item.id,
         p_session_id: item.session_id,
         p_exercise_id: item.exercise_id ?? null,

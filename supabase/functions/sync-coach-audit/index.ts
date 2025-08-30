@@ -25,6 +25,9 @@ serve(async (req) => {
   // Get authenticated Supabase client
   const { supabase } = getClient(req);
 
+  // IMPORTANT: scope to the app2 schema
+  const db = supabase.schema('app2');
+
   let body: { mutations?: Mutation[] };
   try {
     body = await req.json();
@@ -64,8 +67,7 @@ serve(async (req) => {
 
     // Validate foreign key ownership via RLS if session_exercise_id is provided
     if (rowData.session_exercise_id) {
-      const { data: sessionExerciseCheck, error: sessionExerciseError } = await supabase
-        .schema("app2")
+      const { data: sessionExerciseCheck, error: sessionExerciseError } = await db
         .from("session_exercises")
         .select("id")
         .eq("id", rowData.session_exercise_id)
@@ -78,8 +80,7 @@ serve(async (req) => {
     }
 
     // Insert-only with idempotency via ON CONFLICT DO NOTHING
-    const { error } = await supabase
-      .schema("app2")
+    const { error } = await db
       .from("coach_audit")
       .upsert([rowData], { onConflict: "id", ignoreDuplicates: true });
 

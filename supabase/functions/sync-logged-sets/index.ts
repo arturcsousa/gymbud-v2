@@ -52,6 +52,9 @@ Deno.serve(async (req) => {
 
   const { supabase } = getClient(req);
 
+  // IMPORTANT: scope to the app2 schema
+  const db = supabase.schema('app2');
+
   // Process items with idempotency and RLS-friendly writes
   const results: Array<{ 
     id: string; 
@@ -68,7 +71,7 @@ Deno.serve(async (req) => {
 
     try {
       // Use RPC for idempotent upsert with server-side user_id binding
-      const { error } = await supabase.rpc('upsert_logged_set_v1', {
+      const { error } = await db.rpc('upsert_logged_set_v1', {
         p_id: item.id,
         p_session_id: item.session_id,
         p_session_exercise_id: item.session_exercise_id,

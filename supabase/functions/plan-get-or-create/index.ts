@@ -146,6 +146,9 @@ Deno.serve(async (req) => {
     const supabase = authResult.supabase;
     console.log('Auth success:', user.id);
 
+    // IMPORTANT: scope to the app2 schema
+    const db = supabase.schema('app2');
+
     console.log('Parsing body...');
     const body = await req.json() as InputBody;
     console.log('Body received:', JSON.stringify(body, null, 2));
@@ -177,7 +180,7 @@ Deno.serve(async (req) => {
       };
     }
 
-    const { error: profileErr } = await supabase.rpc('ef_upsert_profile', profileData);
+    const { error: profileErr } = await db.rpc('ef_upsert_profile', profileData);
 
     if (profileErr) {
       console.error('Profile upsert error:', profileErr);
@@ -190,7 +193,7 @@ Deno.serve(async (req) => {
 
     // 1) Check for existing ACTIVE plan
     console.log('Checking for active plan...');
-    const { data: active, error: activeErr } = await supabase.rpc('ef_get_active_plan', {
+    const { data: active, error: activeErr } = await db.rpc('ef_get_active_plan', {
       p_user_id: userId
     });
 
@@ -212,7 +215,7 @@ Deno.serve(async (req) => {
 
     // 2) Check for DRAFT to promote
     console.log('Checking for draft plan...');
-    const { data: draft, error: draftErr } = await supabase.rpc('ef_get_draft_plan', {
+    const { data: draft, error: draftErr } = await db.rpc('ef_get_draft_plan', {
       p_user_id: userId
     });
 
@@ -227,7 +230,7 @@ Deno.serve(async (req) => {
     if (draft && draft.length > 0) {
       console.log('Found draft to promote:', draft[0].id);
       const newSeed = body.seed || draft[0].seed || {};
-      const { data: promoted, error: promoteErr } = await supabase.rpc('ef_promote_draft', {
+      const { data: promoted, error: promoteErr } = await db.rpc('ef_promote_draft', {
         p_plan_id: draft[0].id,
         p_seed: newSeed,
         p_updated_at: new Date().toISOString()
@@ -273,7 +276,7 @@ Deno.serve(async (req) => {
     const planFields = extractPlanFields(planSeed);
     
     console.log('Inserting plan with fields:', planFields);
-    const { data: inserted, error: insertErr } = await supabase.rpc('ef_create_plan', {
+    const { data: inserted, error: insertErr } = await db.rpc('ef_create_plan', {
       p_user_id: userId,
       p_seed: planSeed,
       p_goals: planFields.goals,
