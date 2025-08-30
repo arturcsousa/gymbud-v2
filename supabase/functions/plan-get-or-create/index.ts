@@ -155,7 +155,6 @@ Deno.serve(async (req) => {
     // 1) Check for existing ACTIVE plan
     console.log('Checking for active plan...');
     const { data: active, error: activeErr } = await supabase
-      .schema("app2")
       .from("plans")
       .select("id, status")
       .eq("user_id", userId)
@@ -181,7 +180,6 @@ Deno.serve(async (req) => {
     // 2) Check for DRAFT to promote
     console.log('Checking for draft plan...');
     const { data: draft, error: draftErr } = await supabase
-      .schema("app2")
       .from("plans")
       .select("id, status, seed")
       .eq("user_id", userId)
@@ -202,7 +200,6 @@ Deno.serve(async (req) => {
       console.log('Found draft to promote:', draft.id);
       const newSeed = body.seed || draft.seed || {};
       const { data: promoted, error: promoteErr } = await supabase
-        .schema("app2")
         .from("plans")
         .update({ 
           status: "active", 
@@ -254,7 +251,6 @@ Deno.serve(async (req) => {
     
     console.log('Inserting plan with fields:', planFields);
     const { data: inserted, error: insertErr } = await supabase
-      .schema("app2")
       .from("plans")
       .insert({ 
         user_id: userId, 

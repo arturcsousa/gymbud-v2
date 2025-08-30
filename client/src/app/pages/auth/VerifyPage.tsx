@@ -28,14 +28,15 @@ export function VerifyPage({ params }: VerifyPageProps) {
   const intervalRef = useRef<NodeJS.Timeout>();
   const autoResendAttempted = useRef(false); // Prevent duplicate auto-resends
 
-  // Auto-resend on mount if we have an email - with duplicate protection
-  useEffect(() => {
-    if (email && !autoResendDone && !autoResendAttempted.current) {
-      autoResendAttempted.current = true;
-      handleResend(true);
-      setAutoResendDone(true);
-    }
-  }, [email, autoResendDone]);
+  // REMOVED: Auto-resend on mount to prevent 429 rate limiting
+  // Supabase already sends OTP during signup - no need for immediate resend
+  // useEffect(() => {
+  //   if (email && !autoResendDone && !autoResendAttempted.current) {
+  //     autoResendAttempted.current = true;
+  //     handleResend(true);
+  //     setAutoResendDone(true);
+  //   }
+  // }, [email, autoResendDone]);
 
   // Cooldown timer
   useEffect(() => {
